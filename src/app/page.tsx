@@ -17,7 +17,7 @@ export default function Home() {
               </div>
               <div>
                 <h1 className="font-bold text-xl text-gobierno-teal">Centro de Adopción Atlixco</h1>
-                <p className="text-xs text-gobierno-gray">Gobierno Municipal de Atlixco</p>
+                <p className="text-xs text-gobierno-gray">Gobierno Municipal de Atlixco | 2024</p>
               </div>
             </div>
             <nav className="hidden md:flex items-center space-x-8">

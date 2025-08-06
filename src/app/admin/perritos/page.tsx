@@ -3,6 +3,10 @@ import Link from 'next/link'
 import { Plus, Search, Filter } from 'lucide-react'
 import { prisma } from '../../../../lib/db'
 
+// Force dynamic rendering to prevent build-time database calls
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 async function getPerritos() {
   try {
     const perritos = await prisma.perrito.findMany({

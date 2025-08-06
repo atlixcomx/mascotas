@@ -5,6 +5,10 @@ import Link from 'next/link'
 import { Calendar, Heart, MapPin, User, Shield, Zap, Eye } from 'lucide-react'
 import { prisma } from '../../../../../lib/db'
 
+// Force dynamic rendering to prevent build-time database calls
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 interface PageProps {
   params: { slug: string }
 }

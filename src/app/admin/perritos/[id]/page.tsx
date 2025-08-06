@@ -3,6 +3,10 @@ import FormularioPerrito from '../../../../components/admin/FormularioPerrito'
 import { ArrowLeft, Eye, FileText } from 'lucide-react'
 import Link from 'next/link'
 
+// Force dynamic rendering to prevent build-time database calls
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 interface PageProps {
   params: { id: string }
 }

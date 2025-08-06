@@ -11,6 +11,10 @@ import {
   Calendar
 } from 'lucide-react'
 
+// Force dynamic rendering to prevent build-time database calls
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 async function getDashboardStats() {
   try {
     const [

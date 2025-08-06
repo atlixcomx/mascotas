@@ -2,6 +2,10 @@ import { Suspense } from 'react'
 import { prisma } from '../../../../lib/db'
 import { FileText, Clock, CheckCircle, XCircle, Eye, Phone, Mail } from 'lucide-react'
 
+// Force dynamic rendering to prevent build-time database calls
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 async function getSolicitudes() {
   try {
     const solicitudes = await prisma.solicitud.findMany({

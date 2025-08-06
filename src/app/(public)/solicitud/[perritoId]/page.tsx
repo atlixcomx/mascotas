@@ -4,6 +4,10 @@ import Link from 'next/link'
 import { prisma } from '../../../../../lib/db'
 import FormularioAdopcion from '../../../../components/FormularioAdopcion'
 
+// Force dynamic rendering to prevent build-time database calls
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 interface PageProps {
   params: { perritoId: string }
 }

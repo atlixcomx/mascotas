@@ -34,9 +34,9 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={`${montserrat.variable} font-montserrat antialiased`}>
-        {/* <AuthProvider> */}
+        <AuthProvider>
           {children}
-        {/* </AuthProvider> */}
+        </AuthProvider>
       </body>
     </html>
   );

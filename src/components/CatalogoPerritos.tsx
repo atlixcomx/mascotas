@@ -96,7 +96,19 @@ export default function CatalogoPerritos() {
 
         const response = await fetch(`/api/perritos?${params.toString()}`)
         const result = await response.json()
-        setData(result)
+        // Asegurar que siempre haya un array de perritos
+        setData({
+          perritos: result.perritos || [],
+          pagination: result.pagination || {
+            page: 1,
+            limit: 12,
+            total: 0,
+            totalPages: 0,
+            hasNext: false,
+            hasPrev: false
+          },
+          filters: result.filters || {}
+        })
       } catch (error) {
         console.error('Error fetching perritos:', error)
       } finally {
@@ -226,7 +238,7 @@ export default function CatalogoPerritos() {
             </div>
 
             {/* Stats */}
-            {data && (
+            {data && data.perritos && (
               <div className="text-sm text-slate-600">
                 Mostrando {data.perritos.length} de {data.pagination.total} perritos
               </div>
@@ -236,7 +248,7 @@ export default function CatalogoPerritos() {
 
         {/* Grid de Perritos */}
         <div className="lg:col-span-3">
-          {data && data.perritos.length > 0 ? (
+          {data && data.perritos && data.perritos.length > 0 ? (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                 {data.perritos.map((perrito) => (

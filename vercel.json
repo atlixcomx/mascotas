@@ -1,7 +1,7 @@
 {
-  "buildCommand": "npm run build:vercel",
   "framework": "nextjs",
   "installCommand": "npm install --legacy-peer-deps",
+  "buildCommand": "npm run build:vercel",
   "env": {
     "PRISMA_HIDE_UPDATE_MESSAGE": "true",
     "NODE_ENV": "production"

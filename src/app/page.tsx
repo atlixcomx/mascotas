@@ -1,8 +1,3 @@
-'use client'
-
-import Link from 'next/link'
-import { Heart, Shield, Home, Users, PawPrint, Phone } from 'lucide-react'
-
 export default function Home() {
   return (
     <div style={{ 
@@ -10,7 +5,7 @@ export default function Home() {
       backgroundColor: '#f8f8f8',
       fontFamily: 'system-ui, -apple-system, sans-serif' 
     }}>
-      {/* Header Oficial */}
+      {/* Header */}
       <header style={{
         backgroundColor: 'white',
         boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
@@ -45,7 +40,9 @@ export default function Home() {
                 justifyContent: 'center',
                 boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
               }}>
-                <PawPrint style={{ color: 'white', width: '28px', height: '28px' }} />
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 2L3 7V11C3 16.5 6.8 21.7 12 23C17.2 21.7 21 16.5 21 11V7L12 2Z" />
+                </svg>
               </div>
               <div>
                 <h1 style={{
@@ -66,50 +63,38 @@ export default function Home() {
               alignItems: 'center',
               gap: '32px'
             }}>
-              <Link href="/" style={{
+              <a href="/" style={{
                 color: '#4a4a4a',
                 textDecoration: 'none',
-                fontWeight: '500',
-                transition: 'color 0.2s'
+                fontWeight: '500'
               }}>
                 Inicio
-              </Link>
-              <Link href="/perritos" style={{
+              </a>
+              <a href="/perritos" style={{
                 color: '#4a4a4a',
                 textDecoration: 'none',
-                fontWeight: '500',
-                transition: 'color 0.2s'
+                fontWeight: '500'
               }}>
                 Perritos
-              </Link>
-              <Link href="/perritos" style={{
-                color: '#4a4a4a',
-                textDecoration: 'none',
-                fontWeight: '500',
-                transition: 'color 0.2s'
-              }}>
-                Adoptar
-              </Link>
+              </a>
               <a href="#contacto" style={{
                 color: '#4a4a4a',
                 textDecoration: 'none',
-                fontWeight: '500',
-                transition: 'color 0.2s'
+                fontWeight: '500'
               }}>
                 Contacto
               </a>
-              <Link href="/admin" style={{
+              <a href="/admin" style={{
                 backgroundColor: '#af1731',
                 color: 'white',
                 padding: '10px 20px',
                 borderRadius: '6px',
                 textDecoration: 'none',
                 fontSize: '14px',
-                fontWeight: '600',
-                transition: 'all 0.2s'
+                fontWeight: '600'
               }}>
                 Portal Administrativo
-              </Link>
+              </a>
             </nav>
           </div>
         </div>
@@ -122,123 +107,45 @@ export default function Home() {
         position: 'relative'
       }}>
         <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(0,0,0,0.1)'
-        }}></div>
-        <div style={{
           maxWidth: '1200px',
           margin: '0 auto',
-          position: 'relative'
+          textAlign: 'center'
         }}>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))',
-            gap: '48px',
-            alignItems: 'center'
+          <h1 style={{
+            fontSize: '56px',
+            fontWeight: 'bold',
+            color: 'white',
+            marginBottom: '24px',
+            lineHeight: '1.1',
+            margin: '0 0 24px 0'
           }}>
-            <div>
-              <h1 style={{
-                fontSize: '56px',
-                fontWeight: 'bold',
-                color: 'white',
-                marginBottom: '24px',
-                lineHeight: '1.1',
-                margin: 0
-              }}>
-                Dale una Segunda
-                <span style={{ 
-                  display: 'block', 
-                  color: '#e2be96' 
-                }}>Oportunidad</span>
-              </h1>
-              <p style={{
-                fontSize: '20px',
-                color: 'rgba(255,255,255,0.9)',
-                marginBottom: '32px',
-                lineHeight: '1.6'
-              }}>
-                En el Centro de Adopción de Atlixco, conectamos corazones con perritos que buscan un hogar lleno de amor y cuidado. Forma parte de nuestra misión social.
-              </p>
-              <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '16px'
-              }}>
-                <Link href="/perritos" style={{
-                  backgroundColor: '#af1731',
-                  color: 'white',
-                  padding: '16px 32px',
-                  borderRadius: '8px',
-                  textDecoration: 'none',
-                  fontSize: '18px',
-                  fontWeight: '600',
-                  textAlign: 'center',
-                  transition: 'all 0.2s',
-                  display: 'inline-block'
-                }}>
-                  Ver Perritos Disponibles
-                </Link>
-              </div>
-            </div>
-            <div style={{ position: 'relative' }}>
-              <div style={{
-                background: 'linear-gradient(135deg, #c79b66, #e2be96)',
-                borderRadius: '24px',
-                padding: '32px',
-                boxShadow: '0 20px 40px rgba(0,0,0,0.2)'
-              }}>
-                <div style={{
-                  backgroundColor: 'white',
-                  borderRadius: '16px',
-                  padding: '24px'
-                }}>
-                  <h3 style={{
-                    fontSize: '28px',
-                    fontWeight: 'bold',
-                    color: '#0e312d',
-                    marginBottom: '16px',
-                    margin: 0
-                  }}>¿Por qué adoptar?</h3>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-                      <Heart style={{ 
-                        width: '24px', 
-                        height: '24px', 
-                        color: '#af1731',
-                        marginTop: '4px',
-                        flexShrink: 0
-                      }} />
-                      <span style={{ color: '#4a4a4a' }}>Salvas una vida y ganas un compañero leal</span>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-                      <Shield style={{ 
-                        width: '24px', 
-                        height: '24px', 
-                        color: '#af1731',
-                        marginTop: '4px',
-                        flexShrink: 0
-                      }} />
-                      <span style={{ color: '#4a4a4a' }}>Todos nuestros perritos están vacunados y esterilizados</span>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-                      <Home style={{ 
-                        width: '24px', 
-                        height: '24px', 
-                        color: '#af1731',
-                        marginTop: '4px',
-                        flexShrink: 0
-                      }} />
-                      <span style={{ color: '#4a4a4a' }}>Apoyo continuo durante el proceso de adaptación</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+            Dale una Segunda
+            <span style={{ 
+              display: 'block', 
+              color: '#e2be96' 
+            }}>Oportunidad</span>
+          </h1>
+          <p style={{
+            fontSize: '20px',
+            color: 'rgba(255,255,255,0.9)',
+            marginBottom: '32px',
+            maxWidth: '600px',
+            margin: '0 auto 32px'
+          }}>
+            En el Centro de Adopción de Atlixco, conectamos corazones con perritos que buscan un hogar lleno de amor y cuidado.
+          </p>
+          <a href="/perritos" style={{
+            backgroundColor: '#af1731',
+            color: 'white',
+            padding: '16px 32px',
+            borderRadius: '8px',
+            textDecoration: 'none',
+            fontSize: '18px',
+            fontWeight: '600',
+            display: 'inline-block'
+          }}>
+            Ver Perritos Disponibles
+          </a>
         </div>
       </section>
 
@@ -254,21 +161,10 @@ export default function Home() {
           <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-            gap: '32px'
+            gap: '32px',
+            textAlign: 'center'
           }}>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '64px',
-                height: '64px',
-                backgroundColor: 'rgba(61, 155, 132, 0.1)',
-                borderRadius: '50%',
-                marginBottom: '16px'
-              }}>
-                <Heart style={{ width: '32px', height: '32px', color: '#3d9b84' }} />
-              </div>
+            <div>
               <div style={{
                 fontSize: '36px',
                 fontWeight: 'bold',
@@ -277,19 +173,7 @@ export default function Home() {
               }}>100+</div>
               <div style={{ color: '#666' }}>Perritos Rescatados</div>
             </div>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '64px',
-                height: '64px',
-                backgroundColor: 'rgba(175, 23, 49, 0.1)',
-                borderRadius: '50%',
-                marginBottom: '16px'
-              }}>
-                <Home style={{ width: '32px', height: '32px', color: '#af1731' }} />
-              </div>
+            <div>
               <div style={{
                 fontSize: '36px',
                 fontWeight: 'bold',
@@ -298,19 +182,7 @@ export default function Home() {
               }}>98%</div>
               <div style={{ color: '#666' }}>Tasa de Adopción Exitosa</div>
             </div>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '64px',
-                height: '64px',
-                backgroundColor: 'rgba(199, 155, 102, 0.2)',
-                borderRadius: '50%',
-                marginBottom: '16px'
-              }}>
-                <Users style={{ width: '32px', height: '32px', color: '#c79b66' }} />
-              </div>
+            <div>
               <div style={{
                 fontSize: '36px',
                 fontWeight: 'bold',
@@ -319,19 +191,7 @@ export default function Home() {
               }}>140+</div>
               <div style={{ color: '#666' }}>Comercios Pet-Friendly</div>
             </div>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '64px',
-                height: '64px',
-                backgroundColor: 'rgba(36, 98, 87, 0.1)',
-                borderRadius: '50%',
-                marginBottom: '16px'
-              }}>
-                <Shield style={{ width: '32px', height: '32px', color: '#246257' }} />
-              </div>
+            <div>
               <div style={{
                 fontSize: '36px',
                 fontWeight: 'bold',
@@ -350,75 +210,47 @@ export default function Home() {
         padding: '64px 20px'
       }}>
         <div style={{
-          maxWidth: '1200px',
-          margin: '0 auto'
+          maxWidth: '800px',
+          margin: '0 auto',
+          backgroundColor: 'white',
+          borderRadius: '16px',
+          boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
+          padding: '48px',
+          textAlign: 'center'
         }}>
-          <div style={{
-            backgroundColor: 'white',
-            borderRadius: '16px',
-            boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
-            padding: '48px'
+          <h2 style={{
+            fontSize: '32px',
+            fontWeight: 'bold',
+            color: '#0e312d',
+            marginBottom: '32px',
+            margin: '0 0 32px 0'
           }}>
-            <h2 style={{
-              fontSize: '32px',
-              fontWeight: 'bold',
-              color: '#0e312d',
-              marginBottom: '32px',
-              textAlign: 'center',
-              margin: '0 0 32px 0'
-            }}>
-              ¿Listo para cambiar una vida?
-            </h2>
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-              gap: '32px'
-            }}>
-              <div>
-                <h3 style={{
-                  fontSize: '20px',
-                  fontWeight: '600',
-                  color: '#0e312d',
-                  marginBottom: '16px',
-                  margin: '0 0 16px 0'
-                }}>Información de Contacto</h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <Phone style={{ width: '20px', height: '20px', color: '#af1731' }} />
-                    <span style={{ color: '#4a4a4a' }}>(244) 445-0000</span>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <Home style={{ width: '20px', height: '20px', color: '#af1731' }} />
-                    <span style={{ color: '#4a4a4a' }}>Av. Hidalgo 123, Centro, Atlixco, Puebla</span>
-                  </div>
-                </div>
-              </div>
-              <div style={{ textAlign: 'center' }}>
-                <p style={{
-                  color: '#4a4a4a',
-                  marginBottom: '24px',
-                  fontSize: '16px'
-                }}>
-                  Visita nuestro centro y conoce a tu nuevo mejor amigo
-                </p>
-                <Link href="/perritos" style={{
-                  backgroundColor: '#af1731',
-                  color: 'white',
-                  padding: '16px 32px',
-                  borderRadius: '8px',
-                  textDecoration: 'none',
-                  fontWeight: '600',
-                  display: 'inline-block',
-                  transition: 'all 0.2s'
-                }}>
-                  Ver Perritos Disponibles
-                </Link>
-              </div>
-            </div>
+            ¿Listo para cambiar una vida?
+          </h2>
+          <p style={{
+            color: '#4a4a4a',
+            marginBottom: '24px',
+            fontSize: '16px'
+          }}>
+            Visita nuestro centro y conoce a tu nuevo mejor amigo
+          </p>
+          <div style={{ marginBottom: '24px' }}>
+            <p style={{ color: '#666', margin: '8px 0' }}>📍 Av. Hidalgo 123, Centro, Atlixco, Puebla</p>
+            <p style={{ color: '#666', margin: '8px 0' }}>📞 (244) 445-0000</p>
           </div>
+          <a href="/perritos" style={{
+            backgroundColor: '#af1731',
+            color: 'white',
+            padding: '16px 32px',
+            borderRadius: '8px',
+            textDecoration: 'none',
+            fontWeight: '600',
+            display: 'inline-block'
+          }}>
+            Ver Perritos Disponibles
+          </a>
         </div>
       </section>
     </div>
   )
 }
-// Updated: August 6, 2025 - Full homepage restored

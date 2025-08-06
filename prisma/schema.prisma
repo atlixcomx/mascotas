@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -14,7 +14,7 @@ model Perrito {
   id            String   @id @default(cuid())
   nombre        String
   slug          String   @unique
-  fotos         String   // JSON string de array de URLs
+  fotos         String   @db.Text // JSON string de array de URLs
   fotoPrincipal String
   edad          String
   tamano        String   // chico, mediano, grande
@@ -23,7 +23,7 @@ model Perrito {
   peso          Float?
   
   // Historia
-  historia      String
+  historia      String   @db.Text
   fechaIngreso  DateTime
   procedencia   String?
   
@@ -31,14 +31,14 @@ model Perrito {
   vacunas       Boolean  @default(false)
   esterilizado  Boolean  @default(false)
   desparasitado Boolean  @default(false)
-  saludNotas    String?
+  saludNotas    String?  @db.Text
   
   // Temperamento
   energia       String   // baja, media, alta
   aptoNinos     Boolean  @default(false)
   aptoPerros    Boolean  @default(false)
   aptoGatos     Boolean  @default(false)
-  caracter      String   // JSON string de array de características
+  caracter      String   @db.Text // JSON string de array de características
   
   // Estado
   estado        String   @default("disponible") // disponible, proceso, adoptado
@@ -71,9 +71,9 @@ model Solicitud {
   // Información adicional
   tipoVivienda  String   // casa, departamento
   tienePatio    Boolean
-  experiencia   String
+  experiencia   String   @db.Text
   otrasMascotas String?
-  motivoAdopcion String
+  motivoAdopcion String   @db.Text
   
   // Documentos
   ineUrl        String?
@@ -90,7 +90,7 @@ model Solicitud {
   
   // Notas y seguimiento
   notas         NotaSolicitud[]
-  motivoRechazo String?
+  motivoRechazo String?  @db.Text
   
   // QR tracking
   origenQR      String?  // código del comercio
@@ -108,7 +108,7 @@ model Comercio {
   logo          String?
   
   // Información
-  descripcion   String
+  descripcion   String   @db.Text
   direccion     String
   telefono      String
   email         String?
@@ -116,8 +116,8 @@ model Comercio {
   horarios      String
   
   // Pet friendly
-  servicios     String   // JSON string de array de servicios
-  restricciones String?
+  servicios     String   @db.Text // JSON string de array de servicios
+  restricciones String?  @db.Text
   certificado   Boolean  @default(false)
   fechaCert     DateTime?
   
@@ -154,7 +154,7 @@ model NotaPerrito {
   id          String   @id @default(cuid())
   perritoId   String
   perrito     Perrito  @relation(fields: [perritoId], references: [id])
-  contenido   String
+  contenido   String   @db.Text
   autor       String
   tipo        String   // salud, comportamiento, general
   createdAt   DateTime @default(now())
@@ -164,7 +164,7 @@ model NotaSolicitud {
   id          String    @id @default(cuid())
   solicitudId String
   solicitud   Solicitud @relation(fields: [solicitudId], references: [id])
-  contenido   String
+  contenido   String   @db.Text
   autor       String
   tipo        String    // interna, seguimiento, entrevista
   createdAt   DateTime  @default(now())

@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
-import { ChevronLeft, ChevronRight, Check, User, Home, Heart, FileText } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Check, User, Home, Heart, FileText, AlertCircle } from 'lucide-react'
+import ErrorMessage from './ui/ErrorMessage'
 
 interface Perrito {
   id: string
@@ -61,6 +62,8 @@ export default function FormularioAdopcion({ perrito }: FormularioAdopcionProps)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState<{ codigo: string } | null>(null)
+  const [retryCount, setRetryCount] = useState(0)
+  const [isRetrying, setIsRetrying] = useState(false)
 
   const {
     register,
@@ -119,9 +122,13 @@ export default function FormularioAdopcion({ perrito }: FormularioAdopcionProps)
     }
   }
 
-  const onSubmit = async (data: SolicitudData) => {
+  const onSubmit = async (data: SolicitudData, attempt = 0) => {
     setLoading(true)
-    setError('')
+    if (attempt === 0) {
+      setError('')
+      setRetryCount(0)
+    }
+    setIsRetrying(attempt > 0)
 
     try {
       const response = await fetch('/api/solicitudes', {
@@ -145,12 +152,30 @@ export default function FormularioAdopcion({ perrito }: FormularioAdopcionProps)
       localStorage.removeItem(`solicitud-${perrito.id}`)
       
       setSuccess({ codigo: result.solicitud.codigo })
+      setRetryCount(0)
 
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al enviar la solicitud')
+      const errorMessage = err instanceof Error ? err.message : 'Error al enviar la solicitud'
+      
+      // Intentar retry automático hasta 2 veces para errores de red
+      if (attempt < 2 && (errorMessage.includes('fetch') || errorMessage.includes('network'))) {
+        setRetryCount(attempt + 1)
+        setTimeout(() => {
+          onSubmit(data, attempt + 1)
+        }, 1000 * (attempt + 1)) // Delay incremental
+      } else {
+        setError(errorMessage)
+        setRetryCount(attempt)
+      }
     } finally {
       setLoading(false)
+      setIsRetrying(false)
     }
+  }
+
+  const retrySubmit = () => {
+    const data = getValues()
+    onSubmit(data, 0)
   }
 
   if (success) {
@@ -496,9 +521,13 @@ export default function FormularioAdopcion({ perrito }: FormularioAdopcionProps)
               </div>
 
               {error && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                  <p className="text-red-800">{error}</p>
-                </div>
+                <ErrorMessage 
+                  error={error}
+                  onRetry={retrySubmit}
+                  retryCount={retryCount}
+                  isRetrying={isRetrying}
+                  showRetryInfo={true}
+                />
               )}
             </div>
           )}

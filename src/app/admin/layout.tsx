@@ -87,7 +87,7 @@ export default function AdminLayout({
           position: 'fixed',
           inset: 0,
           zIndex: 40,
-          display: isClient && window.innerWidth >= 1024 ? 'none' : 'block'
+          display: 'block'
         }}>
           <div style={{
             position: 'absolute',
@@ -107,7 +107,7 @@ export default function AdminLayout({
         width: '256px',
         backgroundColor: 'white',
         boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-        transform: sidebarOpen || isClient && window.innerWidth >= 1024 ? 'translateX(0)' : 'translateX(-100%)',
+        transform: sidebarOpen ? 'translateX(0)' : 'translateX(-100%)',
         transition: 'transform 200ms ease-in-out'
       }}>
         
@@ -137,7 +137,7 @@ export default function AdminLayout({
           <button
             onClick={() => setSidebarOpen(false)}
             style={{
-              display: isClient && window.innerWidth >= 1024 ? 'none' : 'block',
+              display: 'block',
               padding: '4px',
               borderRadius: '6px',
               color: '#94a3b8',
@@ -245,7 +245,7 @@ export default function AdminLayout({
 
       {/* Main content */}
       <div style={{ 
-        marginLeft: isClient && window.innerWidth >= 1024 ? '256px' : '0',
+        marginLeft: '256px',
         transition: 'margin-left 200ms ease-in-out'
       }}>
         {/* Top bar */}
@@ -262,7 +262,7 @@ export default function AdminLayout({
               <button
                 onClick={() => setSidebarOpen(true)}
                 style={{
-                  display: isClient && window.innerWidth >= 1024 ? 'none' : 'flex',
+                  display: 'flex',
                   padding: '8px',
                   borderRadius: '6px',
                   color: '#94a3b8',
@@ -276,7 +276,7 @@ export default function AdminLayout({
                 <Menu style={{ width: '20px', height: '20px' }} />
               </button>
               <h1 style={{
-                marginLeft: isClient && window.innerWidth >= 1024 ? '0' : '12px',
+                marginLeft: '0',
                 fontSize: '18px',
                 fontWeight: '600',
                 color: '#0e312d',

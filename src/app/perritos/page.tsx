@@ -5,7 +5,7 @@ import CatalogoPerritos from '../../components/CatalogoPerritos'
 
 export default function PerritosPage() {
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f8f8f8' }}>
+    <div>
       {/* Header */}
       <div style={{ backgroundColor: 'white', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
         <div style={{ 

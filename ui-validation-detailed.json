@@ -6,9 +6,7 @@
     "hasContent": true,
     "hasStyles": true,
     "hasScripts": true,
-    "issues": [
-      "Falta: Tiene header/nav"
-    ]
+    "issues": []
   },
   {
     "name": "UI Test Page",

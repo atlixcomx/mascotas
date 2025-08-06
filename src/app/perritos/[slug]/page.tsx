@@ -1,152 +1,156 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Calendar, Heart, MapPin, User, Shield, Zap, Eye } from 'lucide-react'
+import { usePerrito } from '../../../hooks/usePerritos'
+import LoadingSpinner from '../../../components/ui/LoadingSpinner'
+import ErrorMessage from '../../../components/ui/ErrorMessage'
+import PerritoDetailSkeleton from '../../../components/ui/PerritoDetailSkeleton'
 
 interface PageProps {
   params: { slug: string }
 }
 
-interface Perrito {
-  id: string
-  nombre: string
-  slug: string
-  fotoPrincipal: string
-  fotos: string[]
-  raza: string
-  edad: string
-  sexo: string
-  tamano: string
-  energia: string
-  peso: number | null
-  caracter: string[]
-  historia: string
-  estado: string
-  destacado: boolean
-  esNuevo: boolean
-  vistas: number
-  fechaIngreso: string
-  procedencia: string | null
-  aptoNinos: boolean
-  aptoPerros: boolean
-  aptoGatos: boolean
-  vacunas: boolean
-  esterilizado: boolean
-  desparasitado: boolean
-  saludNotas: string | null
-  similares: any[]
-}
 
 export default function PerritoDetailPage({ params }: PageProps) {
-  const [perrito, setPerrito] = useState<Perrito | null>(null)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    async function fetchPerrito() {
-      try {
-        const response = await fetch(`/api/perritos/${params.slug}`)
-        
-        if (!response.ok) {
-          setPerrito(null)
-        } else {
-          const data = await response.json()
-          setPerrito(data)
-        }
-      } catch (error) {
-        console.error('Error fetching perrito:', error)
-        setPerrito(null)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchPerrito()
-  }, [params.slug])
+  const {
+    perrito,
+    loading,
+    error,
+    notFound: perritoNotFound,
+    retryCount,
+    isRetrying,
+    retry
+  } = usePerrito(params.slug)
 
   if (loading) {
+    return <PerritoDetailSkeleton />
+  }
+
+  if (error) {
     return (
-      <div className="min-h-screen bg-slate-50">
-        <div className="animate-pulse">
-          <div className="bg-white border-b p-4">
-            <div className="h-4 bg-slate-200 rounded w-1/4"></div>
-          </div>
-          <div className="max-w-7xl mx-auto px-4 py-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <div className="h-96 bg-slate-200 rounded-lg"></div>
-              <div className="space-y-4">
-                <div className="h-8 bg-slate-200 rounded w-3/4"></div>
-                <div className="h-4 bg-slate-200 rounded w-1/2"></div>
-                <div className="grid grid-cols-2 gap-4">
-                  {[...Array(4)].map((_, i) => (
-                    <div key={i} className="h-16 bg-slate-200 rounded"></div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div style={{ 
+        minHeight: '100vh',
+        backgroundColor: '#f8fafc',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '20px'
+      }}>
+        <ErrorMessage 
+          error={error}
+          onRetry={retry}
+          retryCount={retryCount}
+          isRetrying={isRetrying}
+        />
       </div>
     )
   }
 
-  if (!perrito) {
+  if (perritoNotFound || !perrito) {
     notFound()
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
       {/* Breadcrumb */}
-      <div className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <nav className="text-sm">
-            <Link href="/" className="text-atlixco-600 hover:text-atlixco-700">Inicio</Link>
-            <span className="mx-2 text-slate-400">/</span>
-            <Link href="/perritos" className="text-atlixco-600 hover:text-atlixco-700">Perritos</Link>
-            <span className="mx-2 text-slate-400">/</span>
-            <span className="text-slate-600">{perrito.nombre}</span>
+      <div style={{ backgroundColor: 'white', borderBottom: '1px solid #e2e8f0' }}>
+        <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '16px 20px' }}>
+          <nav style={{ fontSize: '14px' }}>
+            <Link href="/" style={{ color: '#af1731', textDecoration: 'none' }}>Inicio</Link>
+            <span style={{ margin: '0 8px', color: '#94a3b8' }}>/</span>
+            <Link href="/perritos" style={{ color: '#af1731', textDecoration: 'none' }}>Perritos</Link>
+            <span style={{ margin: '0 8px', color: '#94a3b8' }}>/</span>
+            <span style={{ color: '#64748b' }}>{perrito.nombre}</span>
           </nav>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '32px 20px' }}>
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
+          gap: '32px',
+          marginBottom: '48px'
+        }}>
           
           {/* Galería de fotos */}
           <div>
-            <div className="relative mb-4">
+            <div style={{ position: 'relative', marginBottom: '16px' }}>
               <Image
                 src={perrito.fotoPrincipal}
                 alt={perrito.nombre}
                 width={600}
                 height={400}
-                className="w-full h-96 object-cover rounded-lg shadow-lg"
+                style={{
+                  width: '100%',
+                  height: '384px',
+                  objectFit: 'cover',
+                  borderRadius: '8px',
+                  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
+                }}
                 priority
               />
               
               {/* Badges */}
-              <div className="absolute top-4 left-4 flex flex-col gap-2">
+              <div style={{
+                position: 'absolute',
+                top: '16px',
+                left: '16px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '8px'
+              }}>
                 {perrito.esNuevo && (
-                  <span className="bg-atlixco-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                  <span style={{
+                    backgroundColor: '#af1731',
+                    color: 'white',
+                    padding: '4px 12px',
+                    borderRadius: '9999px',
+                    fontSize: '14px',
+                    fontWeight: '500'
+                  }}>
                     ✨ Nuevo
                   </span>
                 )}
                 {perrito.destacado && (
-                  <span className="bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                  <span style={{
+                    backgroundColor: '#eab308',
+                    color: 'white',
+                    padding: '4px 12px',
+                    borderRadius: '9999px',
+                    fontSize: '14px',
+                    fontWeight: '500'
+                  }}>
                     ⭐ Destacado
                   </span>
                 )}
-                <span className={`badge-${perrito.estado}`}>
+                <span style={{
+                  backgroundColor: perrito.estado === 'disponible' ? '#10b981' : '#f59e0b',
+                  color: 'white',
+                  padding: '4px 12px',
+                  borderRadius: '9999px',
+                  fontSize: '14px',
+                  fontWeight: '500'
+                }}>
                   {perrito.estado}
                 </span>
               </div>
 
               {/* Stats en imagen */}
-              <div className="absolute bottom-4 right-4 bg-black/70 text-white px-3 py-2 rounded-lg">
-                <div className="flex items-center gap-2 text-sm">
-                  <Eye className="h-4 w-4" />
+              <div style={{
+                position: 'absolute',
+                bottom: '16px',
+                right: '16px',
+                backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                color: 'white',
+                padding: '8px 12px',
+                borderRadius: '8px'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px' }}>
+                  <Eye style={{ width: '16px', height: '16px' }} />
                   {perrito.vistas} vistas
                 </div>
               </div>
@@ -154,7 +158,7 @@ export default function PerritoDetailPage({ params }: PageProps) {
 
             {/* Thumbnails de fotos adicionales */}
             {perrito.fotos.length > 1 && (
-              <div className="grid grid-cols-4 gap-2">
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px' }}>
                 {perrito.fotos.slice(1, 5).map((foto: string, index: number) => (
                   <Image
                     key={index}
@@ -162,7 +166,16 @@ export default function PerritoDetailPage({ params }: PageProps) {
                     alt={`${perrito.nombre} foto ${index + 2}`}
                     width={150}
                     height={100}
-                    className="w-full h-20 object-cover rounded-md cursor-pointer hover:opacity-80"
+                    style={{
+                      width: '100%',
+                      height: '80px',
+                      objectFit: 'cover',
+                      borderRadius: '6px',
+                      cursor: 'pointer',
+                      transition: 'opacity 0.2s'
+                    }}
+                    onMouseOver={(e) => e.currentTarget.style.opacity = '0.8'}
+                    onMouseOut={(e) => e.currentTarget.style.opacity = '1'}
                   />
                 ))}
               </div>
@@ -171,9 +184,24 @@ export default function PerritoDetailPage({ params }: PageProps) {
 
           {/* Información del perrito */}
           <div>
-            <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-              <h1 className="text-3xl font-bold text-slate-900 mb-2">{perrito.nombre}</h1>
-              <p className="text-lg text-slate-600 mb-4">{perrito.raza}</p>
+            <div style={{
+              backgroundColor: 'white',
+              borderRadius: '8px',
+              boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+              padding: '24px',
+              marginBottom: '24px'
+            }}>
+              <h1 style={{
+                fontSize: '30px',
+                fontWeight: 'bold',
+                color: '#0f172a',
+                marginBottom: '8px'
+              }}>{perrito.nombre}</h1>
+              <p style={{
+                fontSize: '18px',
+                color: '#64748b',
+                marginBottom: '16px'
+              }}>{perrito.raza}</p>
 
               {/* Información básica */}
               <div className="grid grid-cols-2 gap-4 mb-6">

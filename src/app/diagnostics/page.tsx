@@ -1,3 +1,7 @@
+'use client'
+
+import DiagnosticPanel from '../../components/DiagnosticPanel'
+
 export default function DiagnosticsPage() {
   const envVars = {
     NODE_ENV: process.env.NODE_ENV || 'not set',
@@ -8,79 +12,76 @@ export default function DiagnosticsPage() {
 
   return (
     <div style={{ 
-      padding: '40px', 
+      padding: '20px', 
       fontFamily: 'system-ui, -apple-system, sans-serif',
-      maxWidth: '800px',
-      margin: '0 auto'
+      backgroundColor: '#f8fafc',
+      minHeight: '100vh'
     }}>
-      <h1 style={{ color: '#af1731', marginBottom: '30px' }}>
-        🔧 Diagnóstico del Sistema
-      </h1>
+      <DiagnosticPanel />
       
-      <div style={{ 
-        backgroundColor: '#f5f5f5', 
-        padding: '20px', 
-        borderRadius: '8px',
-        marginBottom: '20px'
+      {/* Panel adicional con info del entorno */}
+      <div style={{
+        maxWidth: '800px',
+        margin: '32px auto 0',
+        backgroundColor: 'white',
+        borderRadius: '12px',
+        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+        padding: '32px'
       }}>
-        <h2 style={{ color: '#246257', marginBottom: '15px' }}>
-          Variables de Entorno
-        </h2>
-        <pre style={{ 
-          backgroundColor: 'white', 
-          padding: '15px', 
-          borderRadius: '4px',
-          overflow: 'auto'
+        <h2 style={{ 
+          color: '#af1731', 
+          marginBottom: '20px',
+          fontSize: '20px',
+          fontWeight: 'bold'
         }}>
+          Información del Entorno
+        </h2>
+        
+        <div style={{ 
+          backgroundColor: '#f8fafc', 
+          padding: '20px', 
+          borderRadius: '8px',
+          marginBottom: '20px'
+        }}>
+          <h3 style={{ color: '#374151', marginBottom: '15px', fontSize: '16px' }}>
+            Variables de Entorno
+          </h3>
+          <pre style={{ 
+            backgroundColor: 'white', 
+            padding: '15px', 
+            borderRadius: '4px',
+            overflow: 'auto',
+            fontSize: '12px',
+            border: '1px solid #e5e7eb'
+          }}>
 {JSON.stringify(envVars, null, 2)}
-        </pre>
-      </div>
+          </pre>
+        </div>
 
-      <div style={{ 
-        backgroundColor: '#e8f5e9', 
-        padding: '20px', 
-        borderRadius: '8px',
-        marginBottom: '20px'
-      }}>
-        <h2 style={{ color: '#246257', marginBottom: '15px' }}>
-          Estado del Deployment
-        </h2>
-        <p>✅ Esta página cargó correctamente</p>
-        <p>✅ Next.js está funcionando</p>
-        <p>✅ El servidor responde</p>
-      </div>
-
-      <div style={{ 
-        backgroundColor: '#fff3e0', 
-        padding: '20px', 
-        borderRadius: '8px'
-      }}>
-        <h2 style={{ color: '#246257', marginBottom: '15px' }}>
-          Páginas de Prueba (Sin Base de Datos)
-        </h2>
-        <ul style={{ lineHeight: '2' }}>
-          <li>
-            <a href="/ui-test" style={{ color: '#3d9b84' }}>
-              /ui-test - Página de prueba UI
-            </a>
-          </li>
-          <li>
-            <a href="/test" style={{ color: '#3d9b84' }}>
-              /test - Página de test
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <div style={{ 
-        marginTop: '20px',
-        padding: '15px',
-        backgroundColor: '#ffebee',
-        borderRadius: '8px'
-      }}>
-        <p style={{ margin: 0 }}>
-          <strong>Nota:</strong> Esta página no requiere base de datos ni autenticación.
-        </p>
+        <div style={{ 
+          backgroundColor: '#f0fdf4', 
+          padding: '20px', 
+          borderRadius: '8px',
+          border: '1px solid #d1fae5'
+        }}>
+          <h3 style={{ color: '#15803d', marginBottom: '15px', fontSize: '16px' }}>
+            Estado del Deployment
+          </h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ color: '#10b981' }}>✅</span>
+              <span style={{ fontSize: '14px' }}>Esta página cargó correctamente</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ color: '#10b981' }}>✅</span>
+              <span style={{ fontSize: '14px' }}>Next.js está funcionando</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ color: '#10b981' }}>✅</span>
+              <span style={{ fontSize: '14px' }}>El servidor responde</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

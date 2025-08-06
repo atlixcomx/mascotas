@@ -1,4 +1,6 @@
 import "./globals.css";
+import Layout from "../components/layout/Layout";
+import AuthProvider from "../components/providers/AuthProvider";
 
 export const dynamic = 'force-dynamic';
 
@@ -14,7 +16,11 @@ export default function RootLayout({
         <meta name="description" content="Encuentra tu compañero perfecto en el Centro de Adopción de Atlixco, Puebla." />
       </head>
       <body>
-        {children}
+        <AuthProvider>
+          <Layout>
+            {children}
+          </Layout>
+        </AuthProvider>
       </body>
     </html>
   );

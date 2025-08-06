@@ -5,47 +5,16 @@ import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Search, Filter, Heart, Eye, Calendar } from 'lucide-react'
-
-interface Perrito {
-  id: string
-  nombre: string
-  slug: string
-  fotoPrincipal: string
-  edad: string
-  tamano: string
-  raza: string
-  sexo: string
-  energia: string
-  aptoNinos: boolean
-  aptoPerros: boolean
-  aptoGatos: boolean
-  destacado: boolean
-  fechaIngreso: string
-  estado: string
-  caracter: string[]
-  esNuevo: boolean
-}
-
-interface ApiResponse {
-  perritos: Perrito[]
-  pagination: {
-    page: number
-    limit: number
-    total: number
-    totalPages: number
-    hasNext: boolean
-    hasPrev: boolean
-  }
-  filters: any
-}
+import { usePerritos } from '../hooks/usePerritos'
+import LoadingSpinner from './ui/LoadingSpinner'
+import ErrorMessage from './ui/ErrorMessage'
+import EmptyState from './ui/EmptyState'
 
 export default function CatalogoPerritos() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const pathname = usePathname()
   
-  const [data, setData] = useState<ApiResponse | null>(null)
-  const [loading, setLoading] = useState(true)
   const [showFilters, setShowFilters] = useState(false)
   const [favorites, setFavorites] = useState<string[]>([])
 
@@ -59,6 +28,18 @@ export default function CatalogoPerritos() {
     orderBy: searchParams.get('orderBy') || 'createdAt',
     page: parseInt(searchParams.get('page') || '1')
   })
+
+  // Usar el hook personalizado
+  const {
+    perritos,
+    pagination,
+    loading,
+    error,
+    isEmpty,
+    retryCount,
+    isRetrying,
+    retry
+  } = usePerritos(filters)
 
   // Cargar favoritos del localStorage
   useEffect(() => {
@@ -81,43 +62,6 @@ export default function CatalogoPerritos() {
     router.push(`${pathname}?${params.toString()}`)
   }
 
-  // Fetch data cuando cambien los filtros
-  useEffect(() => {
-    const fetchPerritos = async () => {
-      setLoading(true)
-      try {
-        const params = new URLSearchParams()
-        
-        Object.entries(filters).forEach(([key, value]) => {
-          if (value && value !== '' && value !== false) {
-            params.set(key, value.toString())
-          }
-        })
-
-        const response = await fetch(`/api/perritos?${params.toString()}`)
-        const result = await response.json()
-        // Asegurar que siempre haya un array de perritos
-        setData({
-          perritos: result.perritos || [],
-          pagination: result.pagination || {
-            page: 1,
-            limit: 12,
-            total: 0,
-            totalPages: 0,
-            hasNext: false,
-            hasPrev: false
-          },
-          filters: result.filters || {}
-        })
-      } catch (error) {
-        console.error('Error fetching perritos:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchPerritos()
-  }, [filters])
 
   // Manejar cambios en filtros
   const handleFilterChange = (key: string, value: any) => {
@@ -144,17 +88,33 @@ export default function CatalogoPerritos() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  // Estados de carga y error
   if (loading) {
     return (
       <div style={{ 
         maxWidth: '1200px', 
         margin: '0 auto', 
         padding: '32px 20px',
-        textAlign: 'center',
-        fontSize: '18px',
-        color: '#666'
+        textAlign: 'center'
       }}>
-        Cargando...
+        <LoadingSpinner size="lg" text="Cargando perritos..." />
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div style={{ 
+        maxWidth: '1200px', 
+        margin: '0 auto', 
+        padding: '32px 20px'
+      }}>
+        <ErrorMessage 
+          error={error}
+          onRetry={retry}
+          retryCount={retryCount}
+          isRetrying={isRetrying}
+        />
       </div>
     )
   }
@@ -337,22 +297,20 @@ export default function CatalogoPerritos() {
             </div>
 
             {/* Stats */}
-            {data && data.perritos && (
-              <div style={{ 
-                fontSize: '14px', 
-                color: '#666',
-                textAlign: 'center',
-                padding: '16px 0'
-              }}>
-                Mostrando {data.perritos.length} de {data.pagination.total} perritos
-              </div>
-            )}
+            <div style={{ 
+              fontSize: '14px', 
+              color: '#666',
+              textAlign: 'center',
+              padding: '16px 0'
+            }}>
+              Mostrando {perritos.length} de {pagination.total} perritos
+            </div>
           </div>
         </div>
 
         {/* Grid de Perritos */}
         <div style={{ gridColumn: 'span 2' }}>
-          {data && data.perritos && data.perritos.length > 0 ? (
+          {!isEmpty ? (
             <>
               <div style={{ 
                 display: 'grid', 
@@ -360,7 +318,7 @@ export default function CatalogoPerritos() {
                 gap: '24px', 
                 marginBottom: '32px'
               }}>
-                {data.perritos.map((perrito) => (
+                {perritos.map((perrito) => (
                   <div key={perrito.id} style={{
                     backgroundColor: 'white',
                     borderRadius: '12px',
@@ -551,7 +509,7 @@ export default function CatalogoPerritos() {
               </div>
 
               {/* Paginación */}
-              {data.pagination.totalPages > 1 && (
+              {pagination.totalPages > 1 && (
                 <div style={{ 
                   display: 'flex', 
                   justifyContent: 'center', 
@@ -559,16 +517,16 @@ export default function CatalogoPerritos() {
                   gap: '8px'
                 }}>
                   <button
-                    onClick={() => handlePageChange(data.pagination.page - 1)}
-                    disabled={!data.pagination.hasPrev}
+                    onClick={() => handlePageChange(pagination.page - 1)}
+                    disabled={!pagination.hasPrev}
                     style={{
                       padding: '8px 12px',
                       border: '1px solid #d1d5db',
                       borderRadius: '6px',
                       backgroundColor: 'white',
                       color: '#4a4a4a',
-                      cursor: data.pagination.hasPrev ? 'pointer' : 'not-allowed',
-                      opacity: data.pagination.hasPrev ? 1 : 0.5,
+                      cursor: pagination.hasPrev ? 'pointer' : 'not-allowed',
+                      opacity: pagination.hasPrev ? 1 : 0.5,
                       transition: 'background-color 0.2s'
                     }}
                   >
@@ -580,20 +538,20 @@ export default function CatalogoPerritos() {
                     fontSize: '14px', 
                     color: '#666'
                   }}>
-                    Página {data.pagination.page} de {data.pagination.totalPages}
+                    Página {pagination.page} de {pagination.totalPages}
                   </span>
                   
                   <button
-                    onClick={() => handlePageChange(data.pagination.page + 1)}
-                    disabled={!data.pagination.hasNext}
+                    onClick={() => handlePageChange(pagination.page + 1)}
+                    disabled={!pagination.hasNext}
                     style={{
                       padding: '8px 12px',
                       border: '1px solid #d1d5db',
                       borderRadius: '6px',
                       backgroundColor: 'white',
                       color: '#4a4a4a',
-                      cursor: data.pagination.hasNext ? 'pointer' : 'not-allowed',
-                      opacity: data.pagination.hasNext ? 1 : 0.5,
+                      cursor: pagination.hasNext ? 'pointer' : 'not-allowed',
+                      opacity: pagination.hasNext ? 1 : 0.5,
                       transition: 'background-color 0.2s'
                     }}
                   >
@@ -603,45 +561,23 @@ export default function CatalogoPerritos() {
               )}
             </>
           ) : (
-            <div style={{ 
-              textAlign: 'center', 
-              padding: '48px 0'
-            }}>
-              <p style={{ 
-                color: '#666', 
-                fontSize: '18px', 
-                marginBottom: '16px',
-                margin: '0 0 16px 0'
-              }}>
-                No se encontraron perritos con los filtros seleccionados.
-              </p>
-              <button
-                onClick={() => {
-                  setFilters({
-                    search: '',
-                    tamano: '',
-                    edad: '',
-                    energia: '',
-                    aptoNinos: false,
-                    orderBy: 'createdAt',
-                    page: 1
-                  })
-                  router.push('/perritos')
-                }}
-                style={{
-                  border: '2px solid #c79b66',
-                  color: '#840f31',
-                  backgroundColor: 'transparent',
-                  fontWeight: '600',
-                  padding: '12px 26px',
-                  borderRadius: '6px',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s'
-                }}
-              >
-                Limpiar Filtros
-              </button>
-            </div>
+            <EmptyState
+              title="No se encontraron perritos"
+              message="No hay perritos que coincidan con los filtros seleccionados. Intenta ajustar tus criterios de búsqueda."
+              actionText="Limpiar Filtros"
+              onAction={() => {
+                setFilters({
+                  search: '',
+                  tamano: '',
+                  edad: '',
+                  energia: '',
+                  aptoNinos: false,
+                  orderBy: 'createdAt',
+                  page: 1
+                })
+                router.push('/perritos')
+              }}
+            />
           )}
         </div>
       </div>

@@ -1,11 +1,9 @@
-import NextAuth, { NextAuthOptions } from 'next-auth'
+import { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
-import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import bcrypt from 'bcryptjs'
 import { prisma } from './db'
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
       name: 'credentials',
@@ -15,6 +13,7 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
+          console.log('Missing credentials')
           return null
         }
 
@@ -26,15 +25,18 @@ export const authOptions: NextAuthOptions = {
           })
 
           if (!user || !user.activo) {
+            console.log('User not found or inactive:', credentials.email)
             return null
           }
 
           const isPasswordValid = await bcrypt.compare(credentials.password, user.password)
 
           if (!isPasswordValid) {
+            console.log('Invalid password for user:', credentials.email)
             return null
           }
 
+          console.log('User authenticated successfully:', user.email)
           return {
             id: user.id,
             email: user.email,
@@ -49,10 +51,12 @@ export const authOptions: NextAuthOptions = {
     })
   ],
   session: {
-    strategy: 'jwt'
+    strategy: 'jwt',
+    maxAge: 24 * 60 * 60, // 24 horas
   },
   jwt: {
-    secret: process.env.NEXTAUTH_SECRET
+    secret: process.env.NEXTAUTH_SECRET,
+    maxAge: 24 * 60 * 60, // 24 horas
   },
   callbacks: {
     async jwt({ token, user }) {
@@ -72,8 +76,7 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: '/admin/login',
     error: '/admin/login',
-  }
+  },
+  secret: process.env.NEXTAUTH_SECRET,
+  debug: process.env.NODE_ENV === 'development'
 }
-
-const handler = NextAuth(authOptions)
-export { handler as GET, handler as POST }

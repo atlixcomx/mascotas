@@ -221,12 +221,555 @@ body {
   background: var(--puebla-secondary);
 }
 
-/* Utilidades responsivas */
+/* BREAKPOINTS Y UTILIDADES RESPONSIVE */
+
+/* Breakpoints estándar */
+/* sm: 640px, md: 768px, lg: 1024px, xl: 1280px, 2xl: 1536px */
+
+/* Utilidades de display responsive */
+.hidden-mobile {
+  display: block;
+}
+
+.hidden-desktop {
+  display: none;
+}
+
+.mobile-only {
+  display: none;
+}
+
+.desktop-only {
+  display: block;
+}
+
+/* Utilidades de spacing responsive */
+.container-responsive {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Utilidades de grid responsive */
+.grid-responsive {
+  display: grid;
+  gap: 24px;
+}
+
+.grid-cols-1 { grid-template-columns: repeat(1, 1fr); }
+.grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+.grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+.grid-auto-fit-sm { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+.grid-auto-fit-md { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.grid-auto-fit-lg { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+
+/* Utilidades de flex responsive */
+.flex-responsive {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.flex-col-mobile {
+  flex-direction: row;
+}
+
+/* Utilidades de texto responsive */
+.text-responsive {
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.title-responsive {
+  font-size: 24px;
+  line-height: 1.3;
+  font-weight: 600;
+}
+
+.subtitle-responsive {
+  font-size: 18px;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+/* Botones touch-friendly */
+.btn-touch {
+  min-height: 44px;
+  padding: 12px 20px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-touch:active {
+  transform: scale(0.98);
+}
+
+/* Cards responsive */
+.card-responsive {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.card-responsive:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* TABLET (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .container-responsive {
+    padding: 0 32px;
+  }
+  
+  .grid-responsive {
+    gap: 20px;
+  }
+  
+  .title-responsive {
+    font-size: 22px;
+  }
+  
+  .subtitle-responsive {
+    font-size: 17px;
+  }
+}
+
+/* MÓVIL (hasta 768px) */
 @media (max-width: 768px) {
+  /* Display utilities */
+  .hidden-mobile {
+    display: none !important;
+  }
+  
+  .hidden-desktop {
+    display: block !important;
+  }
+  
+  .mobile-only {
+    display: block !important;
+  }
+  
+  .desktop-only {
+    display: none !important;
+  }
+
+  /* Layout responsive */
+  .container-responsive {
+    padding: 0 16px;
+  }
+
+  .grid-responsive {
+    gap: 16px;
+  }
+
+  .grid-cols-2,
+  .grid-cols-3,
+  .grid-cols-4 {
+    grid-template-columns: 1fr;
+  }
+
+  .flex-col-mobile {
+    flex-direction: column;
+  }
+
+  /* Texto responsive */
+  .text-responsive {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .title-responsive {
+    font-size: 20px;
+    line-height: 1.2;
+  }
+
+  .subtitle-responsive {
+    font-size: 16px;
+    line-height: 1.3;
+  }
+
+  /* Botones responsive */
   .btn-primary, .btn-secondary, .btn-gobierno {
     padding: 12px 20px;
     font-size: 14px;
+    min-height: 44px;
   }
+
+  .btn-touch {
+    min-height: 48px;
+    padding: 14px 20px;
+    font-size: 15px;
+  }
+
+  /* Cards responsive */
+  .card-responsive {
+    border-radius: 8px;
+    margin: 0 -4px;
+  }
+
+  /* Inputs touch-friendly */
+  .input {
+    min-height: 44px;
+    padding: 12px 16px;
+    font-size: 16px;
+  }
+
+  /* Formularios responsive */
+  label {
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+}
+
+/* MÓVIL PEQUEÑO (hasta 480px) */
+@media (max-width: 480px) {
+  .container-responsive {
+    padding: 0 12px;
+  }
+
+  .grid-responsive {
+    gap: 12px;
+  }
+
+  .text-responsive {
+    font-size: 13px;
+  }
+
+  .title-responsive {
+    font-size: 18px;
+  }
+
+  .subtitle-responsive {
+    font-size: 15px;
+  }
+
+  .btn-primary, .btn-secondary, .btn-gobierno {
+    padding: 14px 16px;
+    font-size: 13px;
+  }
+
+  .btn-touch {
+    min-height: 50px;
+    padding: 15px 18px;
+    font-size: 14px;
+  }
+
+  .card-responsive {
+    border-radius: 6px;
+    margin: 0 -6px;
+  }
+}
+
+/* PANTALLAS GRANDES (1200px+) */
+@media (min-width: 1200px) {
+  .container-responsive {
+    max-width: 1400px;
+    padding: 0 40px;
+  }
+
+  .grid-responsive {
+    gap: 32px;
+  }
+
+  .title-responsive {
+    font-size: 28px;
+  }
+
+  .subtitle-responsive {
+    font-size: 20px;
+  }
+}
+
+/* UTILIDADES DE ACCESIBILIDAD Y TOUCH */
+@media (hover: none) and (pointer: coarse) {
+  /* Dispositivos touch */
+  .btn-primary, .btn-secondary, .btn-gobierno, .btn-touch {
+    min-height: 48px;
+  }
+
+  .input {
+    min-height: 48px;
+  }
+
+  /* Eliminar hover effects en touch devices */
+  .card-responsive:hover {
+    transform: none;
+  }
+}
+
+/* Prefers reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .btn-primary, .btn-gobierno {
+    border: 2px solid currentColor;
+  }
+
+  .card-responsive {
+    border: 1px solid #333;
+  }
+}
+
+/* TOUCH GESTURES Y INTERACCIONES MÓVILES */
+
+/* Eliminación de highlights de tap */
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+/* Elementos clickables */
+button, .btn-primary, .btn-secondary, .btn-gobierno, .btn-touch,
+[role="button"], [tabindex="0"], a, .clickable {
+  cursor: pointer;
+  -webkit-tap-highlight-color: rgba(175, 23, 49, 0.1);
+  tap-highlight-color: rgba(175, 23, 49, 0.1);
+}
+
+/* Touch feedback para botones */
+.btn-primary:active, .btn-secondary:active, .btn-gobierno:active {
+  transform: scale(0.98);
+  transition: transform 0.1s ease;
+}
+
+/* Swipe gestures básicos para cards */
+.swipe-container {
+  position: relative;
+  overflow: hidden;
+  touch-action: pan-y;
+}
+
+.swipeable {
+  touch-action: pan-x pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: transform 0.3s ease;
+}
+
+.swipeable.swiping {
+  transition: none;
+}
+
+/* Indicadores de swipe */
+.swipe-indicator {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.swipe-indicator.left {
+  left: 0;
+  background: linear-gradient(to right, var(--puebla-primary), transparent);
+  color: white;
+}
+
+.swipe-indicator.right {
+  right: 0;
+  background: linear-gradient(to left, var(--gobierno-teal), transparent);
+  color: white;
+}
+
+.swipe-indicator.active {
+  opacity: 0.8;
+}
+
+/* Pull to refresh */
+.pull-to-refresh {
+  position: relative;
+  overflow: hidden;
+}
+
+.pull-to-refresh::before {
+  content: '';
+  position: absolute;
+  top: -60px;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: var(--accent-beige);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+  transform: translateY(0);
+}
+
+.pull-to-refresh.pulling::before {
+  transform: translateY(60px);
+}
+
+/* Optimizaciones para scroll */
+.smooth-scroll {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* Mejoras para inputs en touch */
+input[type="text"], input[type="email"], input[type="tel"], 
+input[type="password"], input[type="number"], textarea, select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border-radius: 6px;
+  touch-action: manipulation;
+}
+
+/* iOS specific fixes */
+@supports (-webkit-touch-callout: none) {
+  input[type="text"], input[type="email"], input[type="tel"],
+  input[type="password"], input[type="number"], textarea {
+    font-size: 16px; /* Prevents zoom on focus in iOS */
+  }
+  
+  .btn-primary, .btn-secondary, .btn-gobierno {
+    -webkit-appearance: none;
+    border-radius: 6px;
+  }
+}
+
+/* Android specific fixes */
+@media (max-width: 768px) {
+  input, textarea, select {
+    font-size: 16px; /* Prevents zoom on Android */
+  }
+}
+
+/* Long press feedback */
+.long-pressable {
+  position: relative;
+}
+
+.long-pressable::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(175, 23, 49, 0.1);
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.long-pressable.long-pressing::after {
+  opacity: 1;
+}
+
+/* Drag and drop visual feedback */
+.draggable {
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.draggable.dragging {
+  transform: rotate(5deg) scale(1.05);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  opacity: 0.9;
+}
+
+/* Scroll snap for carousels */
+.scroll-snap-x {
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.scroll-snap-item {
+  scroll-snap-align: start;
+}
+
+/* Gestión de momentum scrolling */
+.no-momentum-scroll {
+  -webkit-overflow-scrolling: auto;
+}
+
+.momentum-scroll {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Touch-friendly form controls */
+.form-control-touch {
+  min-height: 44px;
+  padding: 12px 16px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 2px solid #e5e7eb;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-control-touch:focus {
+  border-color: var(--puebla-primary);
+  box-shadow: 0 0 0 3px rgba(175, 23, 49, 0.1);
+  outline: none;
+}
+
+/* Checkbox y radio touch-friendly */
+input[type="checkbox"], input[type="radio"] {
+  min-width: 18px;
+  min-height: 18px;
+  margin: 0;
+  accent-color: var(--puebla-primary);
+}
+
+/* Range slider touch-friendly */
+input[type="range"] {
+  height: 44px;
+  -webkit-appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-track {
+  height: 6px;
+  background: #e5e7eb;
+  border-radius: 3px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+  background: var(--puebla-primary);
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+input[type="range"]::-moz-range-track {
+  height: 6px;
+  background: #e5e7eb;
+  border-radius: 3px;
+  border: none;
+}
+
+input[type="range"]::-moz-range-thumb {
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+  background: var(--puebla-primary);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* Estilos para links */

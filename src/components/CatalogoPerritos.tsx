@@ -164,15 +164,11 @@ export default function CatalogoPerritos() {
         />
       </div>
 
-      <div style={{ 
-        display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', 
-        gap: '32px',
-        alignItems: 'start'
-      }}>
+      {/* Layout responsive */}
+      <div className="catalog-layout">
         
-        {/* Sidebar de Filtros */}
-        <div style={{ position: 'sticky', top: '16px' }}>
+        {/* Sidebar de Filtros - Oculto en móvil */}
+        <div className="filter-sidebar">
           <FilterPanel
             filters={filters}
             onFilterChange={handleFilterChange}
@@ -183,36 +179,33 @@ export default function CatalogoPerritos() {
           />
         </div>
 
+        {/* Filtros móviles */}
+        <div className="mobile-filters">
+          <FilterPanel
+            filters={filters}
+            onFilterChange={handleFilterChange}
+            onClearFilters={handleClearFilters}
+            resultCount={perritos.length}
+            totalCount={pagination.total}
+            showHeader={false}
+            isMobile={true}
+          />
+        </div>
+
         {/* Grid de Perritos */}
-        <div style={{ gridColumn: 'span 2' }}>
+        <div className="perritos-grid">
           {!isEmpty ? (
             <>
-              <div style={{ 
-                display: 'grid', 
-                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', 
-                gap: '24px', 
-                marginBottom: '32px'
-              }}>
+              <div className="perritos-cards-grid">
                 {perritos.map((perrito) => (
-                  <div key={perrito.id} style={{
-                    backgroundColor: 'white',
-                    borderRadius: '12px',
-                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-                    overflow: 'hidden',
-                    transition: 'transform 0.2s, box-shadow 0.2s'
-                  }}>
-                    <div style={{ position: 'relative' }}>
+                  <div key={perrito.id} className="perrito-card">
+                    <div className="perrito-image-container">
                       <Image
                         src={perrito.fotoPrincipal}
                         alt={perrito.nombre}
                         width={400}
                         height={300}
-                        style={{
-                          width: '100%',
-                          height: '192px',
-                          objectFit: 'cover',
-                          transition: 'transform 0.3s'
-                        }}
+                        className="perrito-image"
                       />
                       
                       {/* Badges */}
@@ -445,6 +438,135 @@ export default function CatalogoPerritos() {
           )}
         </div>
       </div>
+
+      {/* Estilos responsive */}
+      <style jsx>{`
+        .catalog-layout {
+          display: grid;
+          grid-template-columns: 300px 1fr;
+          gap: 32px;
+          align-items: start;
+        }
+
+        .filter-sidebar {
+          position: sticky;
+          top: 16px;
+        }
+
+        .mobile-filters {
+          display: none;
+        }
+
+        .perritos-grid {
+          min-width: 0;
+        }
+
+        .perritos-cards-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: 24px;
+          margin-bottom: 32px;
+        }
+
+        .perrito-card {
+          background-color: white;
+          border-radius: 12px;
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+          overflow: hidden;
+          transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .perrito-card:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .perrito-image-container {
+          position: relative;
+          overflow: hidden;
+        }
+
+        .perrito-image {
+          width: 100%;
+          height: 192px;
+          object-fit: cover;
+          transition: transform 0.3s;
+        }
+
+        .perrito-card:hover .perrito-image {
+          transform: scale(1.05);
+        }
+
+        /* Tablet */
+        @media (max-width: 1024px) {
+          .catalog-layout {
+            grid-template-columns: 280px 1fr;
+            gap: 24px;
+          }
+
+          .perritos-cards-grid {
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+          }
+        }
+
+        /* Móvil */
+        @media (max-width: 768px) {
+          .catalog-layout {
+            display: block;
+          }
+
+          .filter-sidebar {
+            display: none;
+          }
+
+          .mobile-filters {
+            display: block;
+          }
+
+          .perritos-cards-grid {
+            grid-template-columns: 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+          }
+
+          .perrito-card {
+            border-radius: 8px;
+          }
+
+          .perrito-image {
+            height: 200px;
+          }
+        }
+
+        /* Móvil pequeño */
+        @media (max-width: 480px) {
+          .perritos-cards-grid {
+            gap: 12px;
+          }
+
+          .perrito-card {
+            margin: 0 -4px;
+          }
+
+          .perrito-image {
+            height: 180px;
+          }
+        }
+
+        /* Pantallas grandes */
+        @media (min-width: 1200px) {
+          .catalog-layout {
+            grid-template-columns: 320px 1fr;
+            gap: 40px;
+          }
+
+          .perritos-cards-grid {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 28px;
+          }
+        }
+      `}</style>
     </div>
   )
 }

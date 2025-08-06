@@ -249,12 +249,18 @@ export default async function PerritoDetailPage({ params }: PageProps) {
 
               {/* CTA Principal */}
               <div className="space-y-3">
-                <Link
-                  href={`/solicitud/${perrito.id}`}
-                  className="block w-full text-center btn-primary py-3"
-                >
-                  🏠 ¡Quiero Adoptarlo!
-                </Link>
+                {perrito.estado === 'disponible' ? (
+                  <Link
+                    href={`/solicitud/${perrito.id}`}
+                    className="block w-full text-center btn-primary py-3"
+                  >
+                    🏠 ¡Quiero Adoptarlo!
+                  </Link>
+                ) : (
+                  <div className="block w-full text-center bg-gray-400 text-white py-3 rounded-lg">
+                    {perrito.estado === 'proceso' ? 'En proceso de adopción' : 'No disponible'}
+                  </div>
+                )}
                 <button className="w-full btn-secondary py-3">
                   <Heart className="h-4 w-4 mr-2" />
                   Agregar a Favoritos

@@ -26,7 +26,7 @@ npx prisma migrate dev
 # Iniciar desarrollo
 npm run dev 🌐 URLs
 
-Producción: https://atlixco.vercel.app
+Producción: https://4tlixco.vercel.app
 Desarrollo: http://localhost:3000
 GitHub: https://github.com/sjamesmx/atlixco
 

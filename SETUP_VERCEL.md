@@ -22,7 +22,7 @@ vercel env add NEXTAUTH_SECRET
 
 # 5. Agregar NEXTAUTH_URL
 vercel env add NEXTAUTH_URL  
-# Cuando pregunte el valor: https://atlixco.vercel.app
+# Cuando pregunte el valor: https://4tlixco.vercel.app
 # Seleccionar: Production, Preview, Development (todos)
 
 # 6. Forzar nuevo deploy
@@ -39,7 +39,7 @@ vercel --prod --force
 |------|-------|--------------|
 | DATABASE_URL | file:./dev.db | Production, Preview, Development |
 | NEXTAUTH_SECRET | atlixco-adopcion-secret-key-2024 | Production, Preview, Development |  
-| NEXTAUTH_URL | https://atlixco.vercel.app | Production, Preview, Development |
+| NEXTAUTH_URL | https://4tlixco.vercel.app | Production, Preview, Development |
 
 5. Deployments > Redeploy último deployment
 
@@ -48,13 +48,13 @@ vercel --prod --force
 ## PASO 2: VERIFICAR QUE FUNCIONA
 
 ### A. Test Homepage
-- Abrir: https://atlixco.vercel.app
+- Abrir: https://4tlixco.vercel.app
 - ✅ Debe cargar la homepage
 - ✅ Click en "Ver Perritos Disponibles" 
 - ✅ Debe ir a catálogo (aunque esté vacío)
 
 ### B. Test Admin
-- Abrir: https://atlixco.vercel.app/admin
+- Abrir: https://4tlixco.vercel.app/admin
 - ✅ Login con: admin@atlixco.gob.mx / Atlixco2024!
 - ✅ Debe entrar al dashboard
 - ✅ Métricas deben aparecer (aunque en 0)
@@ -112,7 +112,7 @@ vercel --prod --force
 ## PASO 4: TEST COMPLETO DEL FLUJO
 
 ### A. Test Usuario Público:
-1. Ir a: https://atlixco.vercel.app
+1. Ir a: https://4tlixco.vercel.app
 2. ✅ Homepage debe mostrar stats actualizados  
 3. Click "Ver Perritos Disponibles"
 4. ✅ Catálogo debe mostrar los 3 perritos
@@ -125,7 +125,7 @@ vercel --prod --force
 11. ✅ Debe generar código ADPX-XXXX
 
 ### B. Test Admin:
-1. Volver a admin: https://atlixco.vercel.app/admin
+1. Volver a admin: https://4tlixco.vercel.app/admin
 2. ✅ Dashboard debe mostrar: 3 perritos, 1 solicitud
 3. Click "Perritos" en sidebar
 4. ✅ Debe mostrar los 3 perritos creados
@@ -148,9 +148,9 @@ vercel --prod --force
 - API funcionando correctamente
 
 ### ✅ URLs Activas:
-- Público: https://atlixco.vercel.app
-- Admin: https://atlixco.vercel.app/admin  
-- Catálogo: https://atlixco.vercel.app/perritos
+- Público: https://4tlixco.vercel.app
+- Admin: https://4tlixco.vercel.app/admin  
+- Catálogo: https://4tlixco.vercel.app/perritos
 
 ### ✅ Credenciales:
 - Email: admin@atlixco.gob.mx

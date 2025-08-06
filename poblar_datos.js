@@ -91,7 +91,7 @@ const perritos = [
 async function poblarPerritos() {
   console.log('🚀 Poblando base de datos con perritos de ejemplo...');
   
-  const baseUrl = 'https://atlixco.vercel.app'; // Cambiar por tu URL
+  const baseUrl = 'https://4tlixco.vercel.app'; // Cambiar por tu URL
   
   // Primero necesitamos hacer login para obtener la sesión
   console.log('🔐 Nota: Debes estar logueado como admin en el navegador');
@@ -110,7 +110,7 @@ async function poblarPerritos() {
   });
   
   console.log('\n📋 INSTRUCCIONES PARA POBLAR:');
-  console.log('1. Ir a: https://atlixco.vercel.app/admin/login');
+  console.log('1. Ir a: https://4tlixco.vercel.app/admin/login');
   console.log('2. Login: admin@atlixco.gob.mx / Atlixco2024!');
   console.log('3. Ir a: Admin > Perritos > Agregar Perrito');
   console.log('4. Copiar y pegar los datos de arriba para cada perrito');

@@ -37,9 +37,9 @@ echo "atlixco-adopcion-secret-key-2024" | vercel env add NEXTAUTH_SECRET develop
 
 # NEXTAUTH_URL
 echo "Configurando NEXTAUTH_URL..."
-echo "https://atlixco.vercel.app" | vercel env add NEXTAUTH_URL production
-echo "https://atlixco.vercel.app" | vercel env add NEXTAUTH_URL preview
-echo "https://atlixco.vercel.app" | vercel env add NEXTAUTH_URL development
+echo "https://4tlixco.vercel.app" | vercel env add NEXTAUTH_URL production
+echo "https://4tlixco.vercel.app" | vercel env add NEXTAUTH_URL preview
+echo "https://4tlixco.vercel.app" | vercel env add NEXTAUTH_URL development
 
 # 5. Deploy con nuevas variables
 echo "🚀 Desplegando con nuevas variables..."
@@ -48,15 +48,15 @@ vercel --prod --force
 echo "✅ ¡Configuración completada!"
 echo ""
 echo "🌐 URLs disponibles:"
-echo "   Público: https://atlixco.vercel.app"
-echo "   Admin:   https://atlixco.vercel.app/admin"
+echo "   Público: https://4tlixco.vercel.app"
+echo "   Admin:   https://4tlixco.vercel.app/admin"
 echo ""
 echo "🔑 Credenciales admin:"
 echo "   Email:    admin@atlixco.gob.mx"  
 echo "   Password: Atlixco2024!"
 echo ""
 echo "📋 Próximos pasos:"
-echo "   1. Abrir https://atlixco.vercel.app/admin"
+echo "   1. Abrir https://4tlixco.vercel.app/admin"
 echo "   2. Hacer login con las credenciales"
 echo "   3. Agregar perritos de ejemplo en Admin > Perritos"
 echo "   4. Probar el flujo completo"

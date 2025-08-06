@@ -145,43 +145,105 @@ export default function CatalogoPerritos() {
   }
 
   if (loading) {
-    return <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">Cargando...</div>
+    return (
+      <div style={{ 
+        maxWidth: '1200px', 
+        margin: '0 auto', 
+        padding: '32px 20px',
+        textAlign: 'center',
+        fontSize: '18px',
+        color: '#666'
+      }}>
+        Cargando...
+      </div>
+    )
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+    <div style={{ 
+      maxWidth: '1200px', 
+      margin: '0 auto', 
+      padding: '32px 20px'
+    }}>
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
+        gap: '32px'
+      }}>
         
         {/* Sidebar de Filtros */}
-        <div className="lg:col-span-1">
-          <div className="bg-white p-6 rounded-lg shadow-sm sticky top-4">
+        <div>
+          <div style={{ 
+            backgroundColor: 'white', 
+            padding: '24px', 
+            borderRadius: '8px', 
+            boxShadow: '0 1px 3px rgba(0,0,0,0.1)', 
+            position: 'sticky', 
+            top: '16px'
+          }}>
             
             {/* Búsqueda */}
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+            <div style={{ marginBottom: '24px' }}>
+              <label style={{ 
+                display: 'block', 
+                fontSize: '14px', 
+                fontWeight: '500', 
+                color: '#4a4a4a', 
+                marginBottom: '8px'
+              }}>
                 Buscar
               </label>
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <div style={{ position: 'relative' }}>
+                <Search style={{ 
+                  position: 'absolute', 
+                  left: '12px', 
+                  top: '50%', 
+                  transform: 'translateY(-50%)', 
+                  width: '16px', 
+                  height: '16px', 
+                  color: '#9ca3af'
+                }} />
                 <input
                   type="text"
                   placeholder="Nombre o raza..."
                   value={filters.search}
                   onChange={(e) => handleFilterChange('search', e.target.value)}
-                  className="input pl-10"
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px 12px 40px',
+                    border: '1px solid #d1d5db',
+                    borderRadius: '6px',
+                    fontSize: '16px',
+                    backgroundColor: '#fafafa',
+                    outline: 'none'
+                  }}
                 />
               </div>
             </div>
 
             {/* Tamaño */}
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+            <div style={{ marginBottom: '24px' }}>
+              <label style={{ 
+                display: 'block', 
+                fontSize: '14px', 
+                fontWeight: '500', 
+                color: '#4a4a4a', 
+                marginBottom: '8px'
+              }}>
                 Tamaño
               </label>
               <select
                 value={filters.tamano}
                 onChange={(e) => handleFilterChange('tamano', e.target.value)}
-                className="input"
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  border: '1px solid #d1d5db',
+                  borderRadius: '6px',
+                  fontSize: '16px',
+                  backgroundColor: '#fafafa',
+                  outline: 'none'
+                }}
               >
                 <option value="">Todos</option>
                 <option value="chico">Chico</option>
@@ -191,14 +253,28 @@ export default function CatalogoPerritos() {
             </div>
 
             {/* Energía */}
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+            <div style={{ marginBottom: '24px' }}>
+              <label style={{ 
+                display: 'block', 
+                fontSize: '14px', 
+                fontWeight: '500', 
+                color: '#4a4a4a', 
+                marginBottom: '8px'
+              }}>
                 Nivel de Energía
               </label>
               <select
                 value={filters.energia}
                 onChange={(e) => handleFilterChange('energia', e.target.value)}
-                className="input"
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  border: '1px solid #d1d5db',
+                  borderRadius: '6px',
+                  fontSize: '16px',
+                  backgroundColor: '#fafafa',
+                  outline: 'none'
+                }}
               >
                 <option value="">Todos</option>
                 <option value="baja">Baja</option>
@@ -208,27 +284,50 @@ export default function CatalogoPerritos() {
             </div>
 
             {/* Apto para niños */}
-            <div className="mb-6">
-              <label className="flex items-center">
+            <div style={{ marginBottom: '24px' }}>
+              <label style={{ 
+                display: 'flex', 
+                alignItems: 'center',
+                cursor: 'pointer'
+              }}>
                 <input
                   type="checkbox"
                   checked={filters.aptoNinos}
                   onChange={(e) => handleFilterChange('aptoNinos', e.target.checked)}
-                  className="rounded border-slate-300 text-atlixco-500 focus:ring-atlixco-500"
+                  style={{
+                    width: '16px',
+                    height: '16px',
+                    marginRight: '8px',
+                    accentColor: '#af1731'
+                  }}
                 />
-                <span className="ml-2 text-sm text-slate-700">Apto para niños</span>
+                <span style={{ fontSize: '14px', color: '#4a4a4a' }}>Apto para niños</span>
               </label>
             </div>
 
             {/* Ordenar */}
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+            <div style={{ marginBottom: '24px' }}>
+              <label style={{ 
+                display: 'block', 
+                fontSize: '14px', 
+                fontWeight: '500', 
+                color: '#4a4a4a', 
+                marginBottom: '8px'
+              }}>
                 Ordenar por
               </label>
               <select
                 value={filters.orderBy}
                 onChange={(e) => handleFilterChange('orderBy', e.target.value)}
-                className="input"
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  border: '1px solid #d1d5db',
+                  borderRadius: '6px',
+                  fontSize: '16px',
+                  backgroundColor: '#fafafa',
+                  outline: 'none'
+                }}
               >
                 <option value="createdAt">Más recientes</option>
                 <option value="nombre">Nombre</option>
@@ -239,7 +338,12 @@ export default function CatalogoPerritos() {
 
             {/* Stats */}
             {data && data.perritos && (
-              <div className="text-sm text-slate-600">
+              <div style={{ 
+                fontSize: '14px', 
+                color: '#666',
+                textAlign: 'center',
+                padding: '16px 0'
+              }}>
                 Mostrando {data.perritos.length} de {data.pagination.total} perritos
               </div>
             )}
@@ -247,30 +351,67 @@ export default function CatalogoPerritos() {
         </div>
 
         {/* Grid de Perritos */}
-        <div className="lg:col-span-3">
+        <div style={{ gridColumn: 'span 2' }}>
           {data && data.perritos && data.perritos.length > 0 ? (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+              <div style={{ 
+                display: 'grid', 
+                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', 
+                gap: '24px', 
+                marginBottom: '32px'
+              }}>
                 {data.perritos.map((perrito) => (
-                  <div key={perrito.id} className="card overflow-hidden group">
-                    <div className="relative">
+                  <div key={perrito.id} style={{
+                    backgroundColor: 'white',
+                    borderRadius: '12px',
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                    overflow: 'hidden',
+                    transition: 'transform 0.2s, box-shadow 0.2s'
+                  }}>
+                    <div style={{ position: 'relative' }}>
                       <Image
                         src={perrito.fotoPrincipal}
                         alt={perrito.nombre}
                         width={400}
                         height={300}
-                        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                        style={{
+                          width: '100%',
+                          height: '192px',
+                          objectFit: 'cover',
+                          transition: 'transform 0.3s'
+                        }}
                       />
                       
                       {/* Badges */}
-                      <div className="absolute top-2 left-2 flex flex-col gap-1">
+                      <div style={{ 
+                        position: 'absolute', 
+                        top: '8px', 
+                        left: '8px', 
+                        display: 'flex', 
+                        flexDirection: 'column', 
+                        gap: '4px'
+                      }}>
                         {perrito.esNuevo && (
-                          <span className="bg-atlixco-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+                          <span style={{
+                            backgroundColor: '#af1731',
+                            color: 'white',
+                            padding: '4px 8px',
+                            borderRadius: '12px',
+                            fontSize: '12px',
+                            fontWeight: '500'
+                          }}>
                             Nuevo
                           </span>
                         )}
                         {perrito.destacado && (
-                          <span className="bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+                          <span style={{
+                            backgroundColor: '#eab308',
+                            color: 'white',
+                            padding: '4px 8px',
+                            borderRadius: '12px',
+                            fontSize: '12px',
+                            fontWeight: '500'
+                          }}>
                             ⭐ Destacado
                           </span>
                         )}
@@ -279,41 +420,106 @@ export default function CatalogoPerritos() {
                       {/* Botón favorito */}
                       <button
                         onClick={() => toggleFavorite(perrito.id)}
-                        className="absolute top-2 right-2 p-2 bg-white/80 hover:bg-white rounded-full transition-colors"
+                        style={{
+                          position: 'absolute',
+                          top: '8px',
+                          right: '8px',
+                          padding: '8px',
+                          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                          border: 'none',
+                          borderRadius: '50%',
+                          cursor: 'pointer',
+                          transition: 'background-color 0.2s'
+                        }}
                       >
                         <Heart
-                          className={`h-4 w-4 ${
-                            favorites.includes(perrito.id)
-                              ? 'text-red-500 fill-current'
-                              : 'text-slate-600'
-                          }`}
+                          style={{
+                            width: '16px',
+                            height: '16px',
+                            color: favorites.includes(perrito.id) ? '#ef4444' : '#666',
+                            fill: favorites.includes(perrito.id) ? '#ef4444' : 'none'
+                          }}
                         />
                       </button>
                     </div>
 
-                    <div className="p-4">
-                      <div className="flex justify-between items-start mb-2">
-                        <h3 className="font-semibold text-lg text-slate-900">
+                    <div style={{ padding: '16px' }}>
+                      <div style={{ 
+                        display: 'flex', 
+                        justifyContent: 'space-between', 
+                        alignItems: 'flex-start', 
+                        marginBottom: '8px'
+                      }}>
+                        <h3 style={{ 
+                          fontWeight: '600', 
+                          fontSize: '18px', 
+                          color: '#1a1a1a',
+                          margin: 0
+                        }}>
                           {perrito.nombre}
                         </h3>
-                        <span className={`badge-${perrito.estado}`}>
+                        <span style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          padding: '4px 12px',
+                          borderRadius: '20px',
+                          fontSize: '12px',
+                          fontWeight: '500',
+                          backgroundColor: perrito.estado === 'disponible' ? 'rgba(61, 155, 132, 0.1)' : 
+                                           perrito.estado === 'proceso' ? 'rgba(199, 155, 102, 0.1)' : 
+                                           'rgba(178, 178, 177, 0.1)',
+                          color: perrito.estado === 'disponible' ? '#246257' : 
+                                 perrito.estado === 'proceso' ? '#8b6638' : 
+                                 '#4a4a4a',
+                          border: `1px solid ${perrito.estado === 'disponible' ? 'rgba(61, 155, 132, 0.3)' : 
+                                                perrito.estado === 'proceso' ? 'rgba(199, 155, 102, 0.3)' : 
+                                                'rgba(178, 178, 177, 0.3)'}`
+                        }}>
                           {perrito.estado}
                         </span>
                       </div>
 
-                      <p className="text-slate-600 text-sm mb-3">
+                      <p style={{ 
+                        color: '#666', 
+                        fontSize: '14px', 
+                        marginBottom: '12px',
+                        margin: '0 0 12px 0'
+                      }}>
                         {perrito.raza} • {perrito.sexo} • {perrito.edad}
                       </p>
 
-                      <div className="flex flex-wrap gap-1 mb-3">
-                        <span className="px-2 py-1 bg-slate-100 text-slate-700 rounded text-xs">
+                      <div style={{ 
+                        display: 'flex', 
+                        flexWrap: 'wrap', 
+                        gap: '4px', 
+                        marginBottom: '12px'
+                      }}>
+                        <span style={{
+                          padding: '4px 8px',
+                          backgroundColor: '#f1f1f1',
+                          color: '#4a4a4a',
+                          borderRadius: '4px',
+                          fontSize: '12px'
+                        }}>
                           {perrito.tamano}
                         </span>
-                        <span className="px-2 py-1 bg-slate-100 text-slate-700 rounded text-xs">
+                        <span style={{
+                          padding: '4px 8px',
+                          backgroundColor: '#f1f1f1',
+                          color: '#4a4a4a',
+                          borderRadius: '4px',
+                          fontSize: '12px'
+                        }}>
                           Energía {perrito.energia}
                         </span>
                         {perrito.aptoNinos && (
-                          <span className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs">
+                          <span style={{
+                            padding: '4px 8px',
+                            backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                            color: '#15803d',
+                            borderRadius: '4px',
+                            fontSize: '12px'
+                          }}>
                             ✓ Niños
                           </span>
                         )}
@@ -321,7 +527,21 @@ export default function CatalogoPerritos() {
 
                       <Link
                         href={`/perritos/${perrito.slug}`}
-                        className="block w-full text-center btn-primary text-sm py-2"
+                        style={{
+                          display: 'block',
+                          width: '100%',
+                          textAlign: 'center',
+                          backgroundColor: '#af1731',
+                          color: 'white',
+                          fontWeight: '600',
+                          padding: '12px 16px',
+                          borderRadius: '6px',
+                          textDecoration: 'none',
+                          fontSize: '14px',
+                          transition: 'background-color 0.2s',
+                          border: 'none',
+                          cursor: 'pointer'
+                        }}
                       >
                         Ver Detalles
                       </Link>
@@ -332,23 +552,50 @@ export default function CatalogoPerritos() {
 
               {/* Paginación */}
               {data.pagination.totalPages > 1 && (
-                <div className="flex justify-center items-center gap-2">
+                <div style={{ 
+                  display: 'flex', 
+                  justifyContent: 'center', 
+                  alignItems: 'center', 
+                  gap: '8px'
+                }}>
                   <button
                     onClick={() => handlePageChange(data.pagination.page - 1)}
                     disabled={!data.pagination.hasPrev}
-                    className="px-3 py-2 border border-slate-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50"
+                    style={{
+                      padding: '8px 12px',
+                      border: '1px solid #d1d5db',
+                      borderRadius: '6px',
+                      backgroundColor: 'white',
+                      color: '#4a4a4a',
+                      cursor: data.pagination.hasPrev ? 'pointer' : 'not-allowed',
+                      opacity: data.pagination.hasPrev ? 1 : 0.5,
+                      transition: 'background-color 0.2s'
+                    }}
                   >
                     Anterior
                   </button>
                   
-                  <span className="px-4 py-2 text-sm text-slate-600">
+                  <span style={{ 
+                    padding: '8px 16px', 
+                    fontSize: '14px', 
+                    color: '#666'
+                  }}>
                     Página {data.pagination.page} de {data.pagination.totalPages}
                   </span>
                   
                   <button
                     onClick={() => handlePageChange(data.pagination.page + 1)}
                     disabled={!data.pagination.hasNext}
-                    className="px-3 py-2 border border-slate-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50"
+                    style={{
+                      padding: '8px 12px',
+                      border: '1px solid #d1d5db',
+                      borderRadius: '6px',
+                      backgroundColor: 'white',
+                      color: '#4a4a4a',
+                      cursor: data.pagination.hasNext ? 'pointer' : 'not-allowed',
+                      opacity: data.pagination.hasNext ? 1 : 0.5,
+                      transition: 'background-color 0.2s'
+                    }}
                   >
                     Siguiente
                   </button>
@@ -356,8 +603,16 @@ export default function CatalogoPerritos() {
               )}
             </>
           ) : (
-            <div className="text-center py-12">
-              <p className="text-slate-600 text-lg">
+            <div style={{ 
+              textAlign: 'center', 
+              padding: '48px 0'
+            }}>
+              <p style={{ 
+                color: '#666', 
+                fontSize: '18px', 
+                marginBottom: '16px',
+                margin: '0 0 16px 0'
+              }}>
                 No se encontraron perritos con los filtros seleccionados.
               </p>
               <button
@@ -373,7 +628,16 @@ export default function CatalogoPerritos() {
                   })
                   router.push('/perritos')
                 }}
-                className="mt-4 btn-secondary"
+                style={{
+                  border: '2px solid #c79b66',
+                  color: '#840f31',
+                  backgroundColor: 'transparent',
+                  fontWeight: '600',
+                  padding: '12px 26px',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
               >
                 Limpiar Filtros
               </button>

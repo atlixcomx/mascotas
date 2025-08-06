@@ -15,14 +15,28 @@ export const metadata: Metadata = {
 
 export default function PerritosPage() {
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div style={{ minHeight: '100vh', backgroundColor: '#f8f8f8' }}>
       {/* Header */}
-      <div className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-slate-900 mb-2">
+      <div style={{ backgroundColor: 'white', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+        <div style={{ 
+          maxWidth: '1200px', 
+          margin: '0 auto', 
+          padding: '32px 20px'
+        }}>
+          <h1 style={{ 
+            fontSize: '32px', 
+            fontWeight: 'bold', 
+            color: '#0e312d', 
+            marginBottom: '8px',
+            margin: '0 0 8px 0'
+          }}>
             Perritos en Adopción
           </h1>
-          <p className="text-lg text-slate-600">
+          <p style={{ 
+            fontSize: '18px', 
+            color: '#666',
+            margin: 0
+          }}>
             Encuentra a tu nuevo mejor amigo entre nuestros perritos rescatados
           </p>
         </div>
@@ -30,29 +44,68 @@ export default function PerritosPage() {
 
       {/* Catálogo */}
       <Suspense fallback={
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="animate-pulse">
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <div style={{ 
+          maxWidth: '1200px', 
+          margin: '0 auto', 
+          padding: '32px 20px'
+        }}>
+          <div style={{ opacity: 0.6 }}>
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
+              gap: '32px'
+            }}>
               {/* Sidebar skeleton */}
-              <div className="lg:col-span-1">
-                <div className="bg-white p-6 rounded-lg shadow-sm">
-                  <div className="h-4 bg-slate-200 rounded w-20 mb-4"></div>
-                  <div className="space-y-3">
-                    <div className="h-3 bg-slate-200 rounded"></div>
-                    <div className="h-3 bg-slate-200 rounded"></div>
-                    <div className="h-3 bg-slate-200 rounded"></div>
+              <div>
+                <div style={{ 
+                  backgroundColor: 'white', 
+                  padding: '24px', 
+                  borderRadius: '8px', 
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+                }}>
+                  <div style={{ 
+                    height: '16px', 
+                    backgroundColor: '#e5e5e5', 
+                    borderRadius: '4px', 
+                    width: '80px', 
+                    marginBottom: '16px'
+                  }}></div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <div style={{ height: '12px', backgroundColor: '#e5e5e5', borderRadius: '4px' }}></div>
+                    <div style={{ height: '12px', backgroundColor: '#e5e5e5', borderRadius: '4px' }}></div>
+                    <div style={{ height: '12px', backgroundColor: '#e5e5e5', borderRadius: '4px' }}></div>
                   </div>
                 </div>
               </div>
               {/* Grid skeleton */}
-              <div className="lg:col-span-3">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div style={{ gridColumn: 'span 2' }}>
+                <div style={{ 
+                  display: 'grid', 
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
+                  gap: '24px'
+                }}>
                   {[...Array(6)].map((_, i) => (
-                    <div key={i} className="bg-white rounded-lg shadow-sm overflow-hidden">
-                      <div className="h-48 bg-slate-200"></div>
-                      <div className="p-4">
-                        <div className="h-4 bg-slate-200 rounded w-3/4 mb-2"></div>
-                        <div className="h-3 bg-slate-200 rounded w-1/2"></div>
+                    <div key={i} style={{ 
+                      backgroundColor: 'white', 
+                      borderRadius: '8px', 
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.1)', 
+                      overflow: 'hidden'
+                    }}>
+                      <div style={{ height: '192px', backgroundColor: '#e5e5e5' }}></div>
+                      <div style={{ padding: '16px' }}>
+                        <div style={{ 
+                          height: '16px', 
+                          backgroundColor: '#e5e5e5', 
+                          borderRadius: '4px', 
+                          width: '75%', 
+                          marginBottom: '8px'
+                        }}></div>
+                        <div style={{ 
+                          height: '12px', 
+                          backgroundColor: '#e5e5e5', 
+                          borderRadius: '4px', 
+                          width: '50%'
+                        }}></div>
                       </div>
                     </div>
                   ))}

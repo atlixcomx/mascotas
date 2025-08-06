@@ -30,7 +30,9 @@ const nextConfig = {
   // Generar páginas de forma incremental
   generateBuildId: async () => {
     return 'build-' + Date.now();
-  }
+  },
+  // Desactivar generación estática para reducir memoria
+  output: 'standalone'
 };
 
 module.exports = nextConfig;

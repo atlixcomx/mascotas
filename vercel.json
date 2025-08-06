@@ -1,6 +1,10 @@
 {
   "framework": "nextjs",
-  "buildCommand": "bash vercel-build.sh",
+  "build": {
+    "env": {
+      "NODE_OPTIONS": "--max-old-space-size=4096"
+    }
+  },
   "functions": {
     "src/app/**/*.tsx": {
       "maxDuration": 30

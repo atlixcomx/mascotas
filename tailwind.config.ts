@@ -7,6 +7,19 @@ const config: Config = {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  safelist: [
+    // Colores Atlixco
+    'bg-atlixco-50', 'bg-atlixco-100', 'bg-atlixco-200', 'bg-atlixco-300', 'bg-atlixco-400', 
+    'bg-atlixco-500', 'bg-atlixco-600', 'bg-atlixco-700', 'bg-atlixco-800', 'bg-atlixco-900',
+    'text-atlixco-50', 'text-atlixco-100', 'text-atlixco-200', 'text-atlixco-300', 'text-atlixco-400', 
+    'text-atlixco-500', 'text-atlixco-600', 'text-atlixco-700', 'text-atlixco-800', 'text-atlixco-900',
+    'border-atlixco-50', 'border-atlixco-100', 'border-atlixco-200', 'border-atlixco-300', 'border-atlixco-400', 
+    'border-atlixco-500', 'border-atlixco-600', 'border-atlixco-700', 'border-atlixco-800', 'border-atlixco-900',
+    'hover:bg-atlixco-500', 'hover:bg-atlixco-600', 'hover:bg-atlixco-700', 'hover:text-atlixco-700',
+    // Colores Gobierno
+    'bg-gobierno-800', 'bg-gobierno-900', 'text-gobierno-800', 'text-gobierno-900',
+    'border-gobierno-800', 'border-gobierno-900',
+  ],
   theme: {
     extend: {
       colors: {

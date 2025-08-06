@@ -22,8 +22,9 @@ export const metadata: Metadata = {
   },
 };
 
-// Forzar que toda la aplicación sea dinámica
+// Configuración de renderizado
 export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
 export const revalidate = 0
 
 export default function RootLayout({

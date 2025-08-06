@@ -1,0 +1,207 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Perrito {
+  id            String   @id @default(cuid())
+  nombre        String
+  slug          String   @unique
+  fotos         String   // JSON string de array de URLs
+  fotoPrincipal String
+  edad          String
+  tamano        String   // chico, mediano, grande
+  raza          String
+  sexo          String   // macho, hembra
+  peso          Float?
+  
+  // Historia
+  historia      String
+  fechaIngreso  DateTime
+  procedencia   String?
+  
+  // Salud
+  vacunas       Boolean  @default(false)
+  esterilizado  Boolean  @default(false)
+  desparasitado Boolean  @default(false)
+  saludNotas    String?
+  
+  // Temperamento
+  energia       String   // baja, media, alta
+  aptoNinos     Boolean  @default(false)
+  aptoPerros    Boolean  @default(false)
+  aptoGatos     Boolean  @default(false)
+  caracter      String   // JSON string de array de características
+  
+  // Estado
+  estado        String   @default("disponible") // disponible, proceso, adoptado
+  destacado     Boolean  @default(false)
+  vistas        Int      @default(0)
+  
+  solicitudes   Solicitud[]
+  notas         NotaPerrito[]
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Solicitud {
+  id            String   @id @default(cuid())
+  codigo        String   @unique // ADPX-0001
+  
+  perritoId     String
+  perrito       Perrito  @relation(fields: [perritoId], references: [id])
+  
+  // Datos solicitante
+  nombre        String
+  edad          Int
+  telefono      String
+  email         String
+  direccion     String
+  ciudad        String
+  codigoPostal  String
+  
+  // Información adicional
+  tipoVivienda  String   // casa, departamento
+  tienePatio    Boolean
+  experiencia   String
+  otrasMascotas String?
+  motivoAdopcion String
+  
+  // Documentos
+  ineUrl        String?
+  comprobanteUrl String?
+  
+  // Estado del proceso
+  estado        String   @default("nueva") // nueva, revision, entrevista, prueba, aprobada, rechazada
+  
+  // Fechas de seguimiento
+  fechaEntrevista DateTime?
+  inicioPrueba    DateTime?
+  finPrueba       DateTime?
+  fechaAdopcion   DateTime?
+  
+  // Notas y seguimiento
+  notas         NotaSolicitud[]
+  motivoRechazo String?
+  
+  // QR tracking
+  origenQR      String?  // código del comercio
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Comercio {
+  id            String   @id @default(cuid())
+  codigo        String   @unique // Para QR
+  nombre        String
+  slug          String   @unique
+  categoria     String   // restaurant, hotel, cafe, tienda
+  logo          String?
+  
+  // Información
+  descripcion   String
+  direccion     String
+  telefono      String
+  email         String?
+  website       String?
+  horarios      String
+  
+  // Pet friendly
+  servicios     String   // JSON string de array de servicios
+  restricciones String?
+  certificado   Boolean  @default(false)
+  fechaCert     DateTime?
+  
+  // Ubicación
+  latitud       Float?
+  longitud      Float?
+  
+  // Métricas
+  qrEscaneos    Int      @default(0)
+  conversiones  Int      @default(0)
+  
+  activo        Boolean  @default(true)
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Usuario {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  nombre        String
+  password      String
+  rol           String   @default("admin")
+  activo        Boolean  @default(true)
+  
+  accounts      Account[]
+  sessions      Session[]
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model NotaPerrito {
+  id          String   @id @default(cuid())
+  perritoId   String
+  perrito     Perrito  @relation(fields: [perritoId], references: [id])
+  contenido   String
+  autor       String
+  tipo        String   // salud, comportamiento, general
+  createdAt   DateTime @default(now())
+}
+
+model NotaSolicitud {
+  id          String    @id @default(cuid())
+  solicitudId String
+  solicitud   Solicitud @relation(fields: [solicitudId], references: [id])
+  contenido   String
+  autor       String
+  tipo        String    // interna, seguimiento, entrevista
+  createdAt   DateTime  @default(now())
+}
+
+// Modelo para NextAuth
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user Usuario @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         Usuario  @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}

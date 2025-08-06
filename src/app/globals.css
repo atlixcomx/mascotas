@@ -1,6 +1,9 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Reset CSS y configuraciones base */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
 :root {
   --background: #ffffff;
@@ -20,28 +23,24 @@
   }
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
 html {
   scroll-behavior: smooth;
+  font-size: 16px;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
 }
 
 /* Estilos para botones */
 .btn-primary {
-  background-color: #af1731;
+  background-color: var(--puebla-primary);
   color: white;
   font-weight: 600;
   padding: 14px 28px;
@@ -54,17 +53,18 @@ body {
   justify-content: center;
   text-decoration: none;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  font-size: 16px;
 }
 
 .btn-primary:hover {
-  background-color: #840f31;
+  background-color: var(--puebla-secondary);
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
 .btn-secondary {
-  border: 2px solid #c79b66;
-  color: #840f31;
+  border: 2px solid var(--accent-gold);
+  color: var(--puebla-secondary);
   background-color: transparent;
   font-weight: 600;
   padding: 12px 26px;
@@ -75,16 +75,17 @@ body {
   align-items: center;
   justify-content: center;
   text-decoration: none;
+  font-size: 16px;
 }
 
 .btn-secondary:hover {
-  background-color: #c79b66;
+  background-color: var(--accent-gold);
   color: white;
-  border-color: #c79b66;
+  border-color: var(--accent-gold);
 }
 
 .btn-gobierno {
-  background-color: #246257;
+  background-color: var(--gobierno-green);
   color: white;
   font-weight: 600;
   padding: 14px 28px;
@@ -97,10 +98,11 @@ body {
   justify-content: center;
   text-decoration: none;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  font-size: 16px;
 }
 
 .btn-gobierno:hover {
-  background-color: #0e312d;
+  background-color: var(--foreground);
   box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
@@ -126,10 +128,11 @@ body {
   transition: all 0.2s ease;
   outline: none;
   background-color: #fafafa;
+  font-family: inherit;
 }
 
 .input:focus {
-  border-color: #c79b66;
+  border-color: var(--accent-gold);
   background-color: white;
   box-shadow: 0 0 0 3px rgba(199, 155, 102, 0.1);
 }
@@ -143,7 +146,7 @@ body {
   font-size: 12px;
   font-weight: 500;
   background-color: rgba(61, 155, 132, 0.1);
-  color: #246257;
+  color: var(--gobierno-green);
   border: 1px solid rgba(61, 155, 132, 0.3);
 }
 
@@ -171,9 +174,33 @@ body {
   border: 1px solid rgba(178, 178, 177, 0.3);
 }
 
-/* Animaciones suaves */
+/* Animaciones */
+@keyframes slideUp {
+  0% { 
+    transform: translateY(10px); 
+    opacity: 0; 
+  }
+  100% { 
+    transform: translateY(0); 
+    opacity: 1; 
+  }
+}
+
 .animate-in {
   animation: slideUp 0.3s ease-out;
+}
+
+@keyframes pulse {
+  0%, 100% { 
+    opacity: 1; 
+  }
+  50% { 
+    opacity: 0.5; 
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s infinite;
 }
 
 /* Scroll personalizado */
@@ -192,4 +219,57 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--puebla-secondary);
+}
+
+/* Utilidades responsivas */
+@media (max-width: 768px) {
+  .btn-primary, .btn-secondary, .btn-gobierno {
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+}
+
+/* Estilos para links */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  opacity: 0.8;
+}
+
+/* Estilos para formularios */
+select, input[type="text"], input[type="email"], input[type="tel"], textarea {
+  font-family: inherit;
+  font-size: 16px;
+}
+
+label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+/* Contenedores base */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Estados de carga */
+.loading-spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid #f3f3f3;
+  border-radius: 50%;
+  border-top-color: var(--puebla-primary);
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }

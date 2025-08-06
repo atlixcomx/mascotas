@@ -1,17 +1,7 @@
-import { Suspense } from 'react'
-import { Metadata } from 'next'
-import CatalogoPerritos from '../../components/CatalogoPerritos'
+'use client'
 
-export const metadata: Metadata = {
-  title: 'Perritos en Adopción | Centro de Adopción Atlixco',
-  description: 'Encuentra tu compañero perfecto entre nuestros perritos disponibles para adopción en Atlixco, Puebla.',
-  keywords: 'adopción, perros, mascotas, Atlixco, Puebla, rescate animal',
-  openGraph: {
-    title: 'Perritos en Adopción - Atlixco',
-    description: 'Encuentra tu compañero perfecto entre nuestros perritos disponibles para adopción.',
-    images: ['/og-perritos.jpg'],
-  },
-}
+import { Suspense } from 'react'
+import CatalogoPerritos from '../../components/CatalogoPerritos'
 
 export default function PerritosPage() {
   return (

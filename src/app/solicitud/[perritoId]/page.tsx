@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import FormularioAdopcion from '../../../../components/FormularioAdopcion'
+import FormularioAdopcion from '@/components/FormularioAdopcion'
 
 interface PageProps {
   params: { perritoId: string }

@@ -1,0 +1,102 @@
+[
+  {
+    "name": "Homepage",
+    "path": "/",
+    "status": 500,
+    "hasContent": true,
+    "hasStyles": true,
+    "hasScripts": true,
+    "issues": [
+      "Error 500 - Error interno del servidor",
+      "Falta: Tiene header/nav"
+    ]
+  },
+  {
+    "name": "UI Test Page",
+    "path": "/ui-test",
+    "status": 200,
+    "hasContent": true,
+    "hasStyles": true,
+    "hasScripts": true,
+    "issues": [
+      "Falta: Tiene header/nav"
+    ]
+  },
+  {
+    "name": "Diagnostics",
+    "path": "/diagnostics",
+    "status": 200,
+    "hasContent": true,
+    "hasStyles": true,
+    "hasScripts": true,
+    "issues": [
+      "Falta: Tiene header/nav"
+    ]
+  },
+  {
+    "name": "Catálogo de Perritos",
+    "path": "/perritos",
+    "status": 200,
+    "hasContent": true,
+    "hasStyles": true,
+    "hasScripts": true,
+    "issues": [
+      "Falta: Tiene header/nav"
+    ]
+  },
+  {
+    "name": "Perrito Max",
+    "path": "/perritos/max-labrador",
+    "status": 200,
+    "hasContent": true,
+    "hasStyles": true,
+    "hasScripts": true,
+    "issues": [
+      "Falta: Tiene header/nav"
+    ]
+  },
+  {
+    "name": "Perrito Luna",
+    "path": "/perritos/luna-mestiza",
+    "status": 200,
+    "hasContent": true,
+    "hasStyles": true,
+    "hasScripts": true,
+    "issues": [
+      "Falta: Tiene header/nav"
+    ]
+  },
+  {
+    "name": "Formulario de Adopción",
+    "path": "/solicitud/test-id",
+    "status": 200,
+    "hasContent": true,
+    "hasStyles": true,
+    "hasScripts": true,
+    "issues": [
+      "Falta: Tiene header/nav"
+    ]
+  },
+  {
+    "name": "Admin Login",
+    "path": "/admin/login",
+    "status": 200,
+    "hasContent": true,
+    "hasStyles": true,
+    "hasScripts": true,
+    "issues": [
+      "Falta: Tiene header/nav"
+    ]
+  },
+  {
+    "name": "Admin Dashboard",
+    "path": "/admin",
+    "status": 200,
+    "hasContent": true,
+    "hasStyles": true,
+    "hasScripts": true,
+    "issues": [
+      "Falta: Tiene header/nav"
+    ]
+  }
+]

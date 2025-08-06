@@ -32,12 +32,11 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Temporalmente deshabilitado AuthProvider para diagnosticar error 500
   return (
     <html lang="es">
       <body className={`${montserrat.variable} font-montserrat antialiased`}>
-        <AuthProvider>
-          {children}
-        </AuthProvider>
+        {children}
       </body>
     </html>
   );

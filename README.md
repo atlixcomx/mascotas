@@ -5,6 +5,7 @@
 Sistema web para gestionar adopciones de mascotas del Centro Municipal de Adopción y Bienestar Animal de Atlixco, Puebla.
 
 **Última actualización**: Diciembre 2024 - Conversión a Client Components
+**Build**: Forzando nuevo deployment con optimizaciones
 
 ## 🚀 Stack Tecnológico
 - **Framework**: Next.js 14 (App Router)

@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
@@ -12,9 +14,9 @@ export default function Home() {
               <span className="font-bold text-xl text-gobierno-800">Centro de Adopción Atlixco</span>
             </div>
             <nav className="hidden md:flex space-x-8">
-              <a href="/" className="text-slate-700 hover:text-atlixco-600 font-medium">Inicio</a>
-              <a href="/perritos" className="text-slate-700 hover:text-atlixco-600 font-medium">Perritos</a>
-              <a href="/perritos" className="text-slate-700 hover:text-atlixco-600 font-medium">Adoptar</a>
+              <Link href="/" className="text-slate-700 hover:text-atlixco-600 font-medium">Inicio</Link>
+              <Link href="/perritos" className="text-slate-700 hover:text-atlixco-600 font-medium">Perritos</Link>
+              <Link href="/perritos" className="text-slate-700 hover:text-atlixco-600 font-medium">Adoptar</Link>
               <a href="#contacto" className="text-slate-700 hover:text-atlixco-600 font-medium">Contacto</a>
             </nav>
           </div>
@@ -32,12 +34,12 @@ export default function Home() {
             En el Centro de Adopción de Atlixco, conectamos corazones con perritos que buscan un hogar lleno de amor y cuidado.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="/perritos" className="btn-primary">
+            <Link href="/perritos" className="btn-primary">
               Ver Perritos Disponibles
-            </a>
-            <a href="/perritos" className="btn-secondary">
+            </Link>
+            <Link href="/perritos" className="btn-secondary">
               Proceso de Adopción
-            </a>
+            </Link>
           </div>
         </div>
       </section>
@@ -103,9 +105,9 @@ export default function Home() {
           <p className="text-xl text-atlixco-100 mb-8">
             Explora nuestros perritos disponibles y comienza el proceso de adopción hoy mismo.
           </p>
-          <a href="/perritos" className="bg-white text-atlixco-600 hover:bg-slate-100 px-8 py-3 rounded-lg font-semibold transition-colors inline-block">
+          <Link href="/perritos" className="bg-white text-atlixco-600 hover:bg-slate-100 px-8 py-3 rounded-lg font-semibold transition-colors inline-block">
             Comenzar Adopción
-          </a>
+          </Link>
         </div>
       </section>
 

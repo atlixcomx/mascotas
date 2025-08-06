@@ -128,7 +128,11 @@ export async function GET(request: NextRequest) {
     const estado = searchParams.get('estado') || ''
     const tamano = searchParams.get('tamano') || ''
 
-    const where: any = {}
+    const where: {
+      OR?: Array<{ nombre?: { contains: string; mode: 'insensitive' }; raza?: { contains: string; mode: 'insensitive' } }>
+      estado?: string
+      tamano?: string
+    } = {}
 
     if (search) {
       where.OR = [

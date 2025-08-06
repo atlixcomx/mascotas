@@ -100,7 +100,7 @@ export default function FormularioAdopcion({ perrito }: FormularioAdopcionProps)
 
   const validateCurrentStep = async () => {
     const currentStepFields = steps[currentStep - 1].fields
-    const isStepValid = await trigger(currentStepFields as any[])
+    const isStepValid = await trigger(currentStepFields as (keyof SolicitudData)[])
     return isStepValid
   }
 
@@ -146,8 +146,8 @@ export default function FormularioAdopcion({ perrito }: FormularioAdopcionProps)
       
       setSuccess({ codigo: result.solicitud.codigo })
 
-    } catch (err: any) {
-      setError(err.message || 'Error al enviar la solicitud')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al enviar la solicitud')
     } finally {
       setLoading(false)
     }

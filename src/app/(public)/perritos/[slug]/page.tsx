@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Calendar, Heart, MapPin, User, Shield, Zap, Users } from 'lucide-react'
+import { Calendar, Heart, MapPin, User, Shield, Zap, Eye } from 'lucide-react'
 import { prisma } from '../../../../../lib/db'
 
 interface PageProps {

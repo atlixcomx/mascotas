@@ -128,7 +128,18 @@ function StatCard({
   )
 }
 
-function SolicitudesRecientes({ solicitudes }: { solicitudes: any[] }) {
+interface SolicitudReciente {
+  id: string
+  nombre: string
+  createdAt: Date
+  estado: string
+  perrito: {
+    nombre: string
+    fotoPrincipal: string
+  }
+}
+
+function SolicitudesRecientes({ solicitudes }: { solicitudes: SolicitudReciente[] }) {
   if (solicitudes.length === 0) {
     return (
       <div className="text-center py-8">

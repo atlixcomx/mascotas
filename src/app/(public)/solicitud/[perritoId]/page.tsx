@@ -1,7 +1,8 @@
 import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
+import Link from 'next/link'
 import { prisma } from '../../../../../lib/db'
-import FormularioAdopcion from '@/components/FormularioAdopcion'
+import FormularioAdopcion from '../../../../components/FormularioAdopcion'
 
 interface PageProps {
   params: { perritoId: string }
@@ -67,9 +68,9 @@ export default async function SolicitudAdopcionPage({ params }: PageProps) {
           <p className="text-slate-600 mb-6">
             Este perrito ya encontró su hogar para siempre. Te invitamos a conocer otros perritos disponibles.
           </p>
-          <a href="/perritos" className="btn-primary">
+          <Link href="/perritos" className="btn-primary">
             Ver Otros Perritos
-          </a>
+          </Link>
         </div>
       </div>
     )

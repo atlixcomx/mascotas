@@ -8,53 +8,66 @@ const config: Config = {
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   safelist: [
-    // Colores Atlixco
-    'bg-atlixco-50', 'bg-atlixco-100', 'bg-atlixco-200', 'bg-atlixco-300', 'bg-atlixco-400', 
-    'bg-atlixco-500', 'bg-atlixco-600', 'bg-atlixco-700', 'bg-atlixco-800', 'bg-atlixco-900',
-    'text-atlixco-50', 'text-atlixco-100', 'text-atlixco-200', 'text-atlixco-300', 'text-atlixco-400', 
-    'text-atlixco-500', 'text-atlixco-600', 'text-atlixco-700', 'text-atlixco-800', 'text-atlixco-900',
-    'border-atlixco-50', 'border-atlixco-100', 'border-atlixco-200', 'border-atlixco-300', 'border-atlixco-400', 
-    'border-atlixco-500', 'border-atlixco-600', 'border-atlixco-700', 'border-atlixco-800', 'border-atlixco-900',
-    'hover:bg-atlixco-500', 'hover:bg-atlixco-600', 'hover:bg-atlixco-700', 'hover:text-atlixco-700',
+    // Colores Puebla
+    'bg-puebla-50', 'bg-puebla-100', 'bg-puebla-200', 'bg-puebla-300', 'bg-puebla-400', 
+    'bg-puebla-500', 'bg-puebla-600', 'bg-puebla-700', 'bg-puebla-800', 'bg-puebla-900',
+    'text-puebla-50', 'text-puebla-100', 'text-puebla-200', 'text-puebla-300', 'text-puebla-400', 
+    'text-puebla-500', 'text-puebla-600', 'text-puebla-700', 'text-puebla-800', 'text-puebla-900',
+    'border-puebla-50', 'border-puebla-100', 'border-puebla-200', 'border-puebla-300', 'border-puebla-400', 
+    'border-puebla-500', 'border-puebla-600', 'border-puebla-700', 'border-puebla-800', 'border-puebla-900',
+    'hover:bg-puebla-700', 'hover:bg-puebla-800', 'hover:text-puebla-700',
+    // Colores Accent
+    'bg-accent-gold', 'bg-accent-lightBeige', 'bg-accent-beige',
+    'text-accent-gold', 'text-accent-lightBeige', 'text-accent-beige',
     // Colores Gobierno
-    'bg-gobierno-800', 'bg-gobierno-900', 'text-gobierno-800', 'text-gobierno-900',
-    'border-gobierno-800', 'border-gobierno-900',
+    'bg-gobierno-teal', 'bg-gobierno-mutedGreen', 'bg-gobierno-brightTeal', 'bg-gobierno-gray',
+    'text-gobierno-teal', 'text-gobierno-mutedGreen', 'text-gobierno-brightTeal', 'text-gobierno-gray',
+    // Colores Adoption
+    'bg-adoption-available', 'bg-adoption-process', 'bg-adoption-adopted',
+    'text-adoption-available', 'text-adoption-process', 'text-adoption-adopted',
   ],
   theme: {
     extend: {
       colors: {
-        // Colores inspirados en Atlixco y gobierno de Puebla
-        atlixco: {
-          50: '#fef7f0',
-          100: '#feede0',
-          200: '#fcd8c0',
-          300: '#f9bc95',
-          400: '#f59568',
-          500: '#f27448', // Color principal naranja
-          600: '#e3572f',
-          700: '#be4426',
-          800: '#973b25',
-          900: '#7a3322',
+        // Colores oficiales del Gobierno de Puebla
+        puebla: {
+          // Burgundy/Maroon principal
+          50: '#fdf2f4',
+          100: '#fce4e9',
+          200: '#f9c9d3',
+          300: '#f5a3b5',
+          400: '#ee708e',
+          500: '#e44b6f',
+          600: '#d13159',
+          700: '#af1731', // Color principal burgundy
+          800: '#931a2f',
+          900: '#7a1b2b',
+          950: '#450a13',
+          burgundy: '#840f31',
+          maroon: '#861e34',
         },
-        // Colores gubernamentales (burgundy/maroon)
+        // Colores de acento del gobierno
+        accent: {
+          gold: '#c79b66',
+          lightBeige: '#e2be96',
+          beige: '#f5e6d3',
+        },
+        // Colores neutros gubernamentales
         gobierno: {
-          50: '#fdf2f2',
-          100: '#fce7e7',
-          200: '#fbd4d4',
-          300: '#f8b4b4',
-          400: '#f38888',
-          500: '#ec5962',
-          600: '#d73f47',
-          700: '#b91c1c',
-          800: '#991b1b',
-          900: '#7f1d1d',
-          950: '#450a0a',
+          teal: '#0e312d',
+          mutedGreen: '#246257',
+          brightTeal: '#3d9b84',
+          gray: '#b2b2b1',
+          lightGray: '#f8f8f8',
+          darkGray: '#4a4a4a',
         },
-        // Colores de estado para adopciones
+        // Colores para el sistema de adopción
         adoption: {
-          available: '#10b981', // verde
-          process: '#f59e0b',    // amarillo
-          adopted: '#6b7280',    // gris
+          available: '#3d9b84', // verde teal
+          process: '#c79b66',   // dorado
+          adopted: '#b2b2b1',   // gris
+          danger: '#af1731',    // burgundy
+          success: '#246257',   // verde oscuro
         }
       },
       fontFamily: {

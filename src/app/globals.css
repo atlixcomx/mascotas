@@ -3,11 +3,13 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
-  --atlixco-primary: #f27448;
-  --atlixco-secondary: #e3572f;
-  --gobierno-primary: #7f1d1d;
-  --gobierno-secondary: #991b1b;
+  --foreground: #0e312d;
+  --puebla-primary: #af1731;
+  --puebla-secondary: #840f31;
+  --accent-gold: #c79b66;
+  --accent-beige: #e2be96;
+  --gobierno-teal: #3d9b84;
+  --gobierno-green: #246257;
 }
 
 @theme inline {
@@ -44,11 +46,11 @@ body {
 
 /* Estilos para botones */
 .btn-primary {
-  background-color: #f27448;
+  background-color: #af1731;
   color: white;
   font-weight: 600;
-  padding: 12px 24px;
-  border-radius: 8px;
+  padding: 14px 28px;
+  border-radius: 6px;
   transition: all 0.2s ease;
   border: none;
   cursor: pointer;
@@ -56,20 +58,22 @@ body {
   align-items: center;
   justify-content: center;
   text-decoration: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .btn-primary:hover {
-  background-color: #e3572f;
+  background-color: #840f31;
   transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
 .btn-secondary {
-  border: 2px solid #f27448;
-  color: #f27448;
+  border: 2px solid #c79b66;
+  color: #840f31;
   background-color: transparent;
   font-weight: 600;
-  padding: 10px 22px;
-  border-radius: 8px;
+  padding: 12px 26px;
+  border-radius: 6px;
   transition: all 0.2s ease;
   cursor: pointer;
   display: inline-flex;
@@ -79,16 +83,17 @@ body {
 }
 
 .btn-secondary:hover {
-  background-color: #f27448;
+  background-color: #c79b66;
   color: white;
+  border-color: #c79b66;
 }
 
 .btn-gobierno {
-  background-color: #991b1b;
+  background-color: #246257;
   color: white;
   font-weight: 600;
-  padding: 12px 24px;
-  border-radius: 8px;
+  padding: 14px 28px;
+  border-radius: 6px;
   transition: all 0.2s ease;
   border: none;
   cursor: pointer;
@@ -96,10 +101,12 @@ body {
   align-items: center;
   justify-content: center;
   text-decoration: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .btn-gobierno:hover {
-  background-color: #7f1d1d;
+  background-color: #0e312d;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
 /* Estilos para cards */
@@ -118,50 +125,55 @@ body {
 .input {
   width: 100%;
   padding: 12px 16px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
+  border: 1px solid #b2b2b1;
+  border-radius: 6px;
   font-size: 16px;
   transition: all 0.2s ease;
   outline: none;
+  background-color: #fafafa;
 }
 
 .input:focus {
-  border-color: #f27448;
-  box-shadow: 0 0 0 3px rgba(242, 116, 72, 0.1);
+  border-color: #c79b66;
+  background-color: white;
+  box-shadow: 0 0 0 3px rgba(199, 155, 102, 0.1);
 }
 
 /* Badges de estado */
 .badge-disponible {
   display: inline-flex;
   align-items: center;
-  padding: 2px 10px;
-  border-radius: 9999px;
+  padding: 4px 12px;
+  border-radius: 20px;
   font-size: 12px;
   font-weight: 500;
-  background-color: #dcfce7;
-  color: #166534;
+  background-color: rgba(61, 155, 132, 0.1);
+  color: #246257;
+  border: 1px solid rgba(61, 155, 132, 0.3);
 }
 
 .badge-proceso {
   display: inline-flex;
   align-items: center;
-  padding: 2px 10px;
-  border-radius: 9999px;
+  padding: 4px 12px;
+  border-radius: 20px;
   font-size: 12px;
   font-weight: 500;
-  background-color: #fef3c7;
-  color: #92400e;
+  background-color: rgba(199, 155, 102, 0.1);
+  color: #8b6638;
+  border: 1px solid rgba(199, 155, 102, 0.3);
 }
 
 .badge-adoptado {
   display: inline-flex;
   align-items: center;
-  padding: 2px 10px;
-  border-radius: 9999px;
+  padding: 4px 12px;
+  border-radius: 20px;
   font-size: 12px;
   font-weight: 500;
-  background-color: #f3f4f6;
-  color: #374151;
+  background-color: rgba(178, 178, 177, 0.1);
+  color: #4a4a4a;
+  border: 1px solid rgba(178, 178, 177, 0.3);
 }
 
 /* Animaciones suaves */
@@ -179,10 +191,10 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--atlixco-primary);
+  background: var(--puebla-primary);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--atlixco-secondary);
+  background: var(--puebla-secondary);
 }

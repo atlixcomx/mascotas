@@ -14,6 +14,26 @@
   --accent-beige: #e2be96;
   --gobierno-teal: #3d9b84;
   --gobierno-green: #246257;
+  
+  /* Colores oficiales del Manual de Identidad Visual de Puebla */
+  --pantone-216c: #7d2447;
+  --puebla-burgundy: #7d2447;
+  --puebla-gray: #828386;
+  --puebla-dark-gray: #4a5350;
+  --puebla-gold: #bfb591;
+  --puebla-light-gold: #d4c9a8;
+  --puebla-cream: #f5f3ee;
+  
+  /* Gradientes oficiales */
+  --gradient-principal: linear-gradient(135deg, #7d2447 0%, #af1731 100%);
+  --gradient-gold: linear-gradient(135deg, #bfb591 0%, #d4c9a8 100%);
+  --gradient-gray: linear-gradient(135deg, #828386 0%, #4a5350 100%);
+  --gradient-ceremonial: linear-gradient(135deg, #7d2447 0%, #bfb591 50%, #7d2447 100%);
+  
+  /* Sombras oficiales */
+  --shadow-government: 0 4px 20px rgba(125, 36, 71, 0.15);
+  --shadow-gold: 0 2px 10px rgba(191, 181, 145, 0.2);
+  --shadow-ceremonial: 0 8px 32px rgba(125, 36, 71, 0.25);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -770,6 +790,1382 @@ input[type="range"]::-moz-range-thumb {
   cursor: pointer;
   border: none;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* ========================================
+   ESTILOS ADMINISTRATIVOS GUBERNAMENTALES
+   Manual de Identidad Visual de Puebla
+   ======================================== */
+
+/* Importar fuentes oficiales */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+/* PÁGINA DE LOGIN ADMINISTRATIVA */
+.admin-login-container {
+  min-height: 100vh;
+  position: relative;
+  background: var(--gradient-principal);
+  overflow: hidden;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Patrones decorativos de fondo */
+.admin-background-patterns {
+  position: absolute;
+  inset: 0;
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.pattern-diamond {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  background: var(--puebla-cream);
+  transform: rotate(45deg);
+  border: 2px solid var(--puebla-gold);
+}
+
+.pattern-1 { top: 10%; left: 15%; animation: float 6s ease-in-out infinite; }
+.pattern-2 { top: 25%; right: 20%; animation: float 8s ease-in-out infinite reverse; }
+.pattern-3 { bottom: 30%; left: 10%; animation: float 7s ease-in-out infinite; }
+
+.pattern-cross {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+}
+
+.pattern-cross::before,
+.pattern-cross::after {
+  content: '';
+  position: absolute;
+  background: var(--puebla-gold);
+}
+
+.pattern-cross::before {
+  width: 100%;
+  height: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.pattern-cross::after {
+  height: 100%;
+  width: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.pattern-4 { top: 60%; right: 25%; animation: pulse-gentle 4s ease-in-out infinite; }
+.pattern-5 { top: 15%; left: 70%; animation: pulse-gentle 5s ease-in-out infinite reverse; }
+
+.floral-pattern {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border-radius: 50% 20% 50% 20%;
+  background: var(--puebla-light-gold);
+  border: 3px solid var(--puebla-gold);
+}
+
+.floral-1 { bottom: 15%; right: 15%; animation: rotate-gentle 12s linear infinite; }
+.floral-2 { top: 40%; left: 5%; animation: rotate-gentle 15s linear infinite reverse; }
+
+/* Gradiente principal */
+.admin-gradient-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 0%, rgba(125, 36, 71, 0.1) 100%);
+  z-index: 2;
+}
+
+/* Contenedor del formulario */
+.admin-login-wrapper {
+  position: relative;
+  z-index: 10;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.admin-login-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(191, 181, 145, 0.3);
+  border-radius: 24px;
+  padding: 3rem 2.5rem;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: var(--shadow-ceremonial);
+  position: relative;
+  animation: slide-up 0.8s ease-out;
+}
+
+.admin-login-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--gradient-ceremonial);
+  border-radius: 24px 24px 0 0;
+}
+
+/* Header gubernamental */
+.admin-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.admin-logo-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.admin-logo-shield {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  background: var(--gradient-principal);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-government);
+  border: 3px solid var(--puebla-gold);
+}
+
+.shield-icon {
+  width: 32px;
+  height: 32px;
+  color: white;
+  z-index: 2;
+}
+
+.crown-icon {
+  position: absolute;
+  top: -8px;
+  width: 20px;
+  height: 20px;
+  color: var(--puebla-gold);
+  z-index: 3;
+}
+
+.admin-sparkle {
+  position: absolute;
+  animation: sparkle 2s ease-in-out infinite;
+}
+
+.admin-sparkle-1 {
+  top: 10px;
+  right: 10px;
+  animation-delay: 0s;
+}
+
+.admin-sparkle-2 {
+  bottom: 10px;
+  left: 10px;
+  animation-delay: 1s;
+}
+
+.sparkle-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--puebla-gold);
+}
+
+.admin-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--pantone-216c);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 1rem 0;
+  text-shadow: 0 2px 4px rgba(125, 36, 71, 0.1);
+}
+
+.admin-subtitle-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1rem 0 1.5rem 0;
+  position: relative;
+}
+
+.admin-subtitle {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--puebla-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin: 0 1rem;
+  text-shadow: 0 1px 2px rgba(191, 181, 145, 0.3);
+}
+
+.admin-wings-left,
+.admin-wings-right {
+  width: 30px;
+  height: 2px;
+  background: var(--gradient-gold);
+  position: relative;
+}
+
+.admin-wings-left::before,
+.admin-wings-right::before {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+
+.admin-wings-left::before {
+  left: -8px;
+  top: -3px;
+  border-left: 8px solid transparent;
+  border-right: 8px solid var(--puebla-gold);
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+}
+
+.admin-wings-right::before {
+  right: -8px;
+  top: -3px;
+  border-left: 8px solid var(--puebla-gold);
+  border-right: 8px solid transparent;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+}
+
+.admin-department {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--puebla-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+/* Formulario */
+.admin-form {
+  space-y: 1.5rem;
+}
+
+.admin-form-group {
+  margin-bottom: 1.5rem;
+}
+
+.admin-label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--pantone-216c);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.admin-input-wrapper {
+  position: relative;
+}
+
+.admin-input {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  border: 2px solid rgba(191, 181, 145, 0.3);
+  border-radius: 12px;
+  font-size: 1rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  color: var(--pantone-216c);
+  background: rgba(245, 243, 238, 0.5);
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.admin-input:focus {
+  border-color: var(--puebla-gold);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(191, 181, 145, 0.1);
+  transform: translateY(-1px);
+}
+
+.admin-input-password {
+  padding-right: 3rem;
+}
+
+.admin-input-border {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--gradient-gold);
+  border-radius: 0 0 12px 12px;
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+  transform-origin: center;
+}
+
+.admin-input:focus + .admin-input-border {
+  transform: scaleX(1);
+}
+
+.admin-password-toggle {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.admin-password-toggle:hover {
+  background: rgba(191, 181, 145, 0.1);
+}
+
+.password-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--puebla-gray);
+}
+
+/* Mensaje de error */
+.admin-error-message {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: rgba(220, 38, 127, 0.1);
+  border: 1px solid rgba(220, 38, 127, 0.2);
+  border-radius: 12px;
+  margin: 1rem 0;
+  animation: shake 0.5s ease-in-out;
+}
+
+.admin-error-icon {
+  font-size: 1.25rem;
+  color: #dc2626;
+  font-weight: bold;
+}
+
+.admin-error-text {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #dc2626;
+  margin: 0;
+}
+
+/* Botón de envío */
+.admin-submit-button {
+  position: relative;
+  width: 100%;
+  padding: 1.25rem 2rem;
+  background: var(--gradient-principal);
+  border: none;
+  border-radius: 16px;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-government);
+  margin-top: 2rem;
+  overflow: hidden;
+}
+
+.admin-submit-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-ceremonial);
+}
+
+.admin-submit-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.admin-submit-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.admin-button-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  position: relative;
+  z-index: 2;
+}
+
+.admin-button-glow {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  animation: button-shine 3s ease-in-out infinite;
+}
+
+.admin-submit-button:hover .admin-button-glow {
+  opacity: 1;
+}
+
+.button-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.admin-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 0.8s linear infinite;
+}
+
+/* Footer */
+.admin-footer {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  position: relative;
+}
+
+.admin-footer-decoration {
+  width: 60px;
+  height: 2px;
+  background: var(--gradient-gold);
+  margin: 0 auto 1rem auto;
+  border-radius: 2px;
+}
+
+.admin-footer-text {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--puebla-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 0.5rem 0;
+}
+
+.admin-footer-support {
+  font-size: 0.75rem;
+  color: var(--puebla-dark-gray);
+  margin: 0;
+}
+
+.admin-support-link {
+  color: var(--pantone-216c);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.admin-support-link:hover {
+  color: var(--puebla-gold);
+}
+
+/* Información de desarrollo */
+.admin-dev-info {
+  margin-top: 2rem;
+  background: rgba(74, 83, 80, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(74, 83, 80, 0.2);
+  border-radius: 16px;
+  padding: 1.5rem;
+  animation: slide-up 1s ease-out 0.2s both;
+}
+
+.dev-info-header {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.dev-info-badge {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background: var(--gradient-gray);
+  color: white;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.dev-credentials {
+  space-y: 0.75rem;
+}
+
+.dev-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--puebla-dark-gray);
+  text-align: center;
+  margin: 0 0 1rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.dev-credential-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(74, 83, 80, 0.1);
+}
+
+.dev-credential-row:last-child {
+  border-bottom: none;
+}
+
+.dev-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--puebla-dark-gray);
+  text-transform: uppercase;
+}
+
+.dev-value {
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--pantone-216c);
+  background: rgba(125, 36, 71, 0.1);
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid rgba(125, 36, 71, 0.2);
+}
+
+/* ANIMACIONES GUBERNAMENTALES */
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(45deg); }
+  50% { transform: translateY(-10px) rotate(45deg); }
+}
+
+@keyframes pulse-gentle {
+  0%, 100% { opacity: 0.03; transform: scale(1); }
+  50% { opacity: 0.07; transform: scale(1.05); }
+}
+
+@keyframes rotate-gentle {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+@keyframes button-shine {
+  0% { transform: translateX(-100%); }
+  50% { transform: translateX(100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+/* RESPONSIVE DESIGN ADMINISTRATIVO */
+@media (max-width: 640px) {
+  .admin-login-wrapper {
+    padding: 1rem;
+  }
+  
+  .admin-login-card {
+    padding: 2rem 1.5rem;
+    border-radius: 20px;
+  }
+  
+  .admin-title {
+    font-size: 1.5rem;
+  }
+  
+  .admin-subtitle {
+    font-size: 0.8rem;
+  }
+  
+  .admin-input {
+    padding: 0.875rem 1rem;
+    font-size: 0.95rem;
+  }
+  
+  .admin-submit-button {
+    padding: 1rem 1.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .pattern-diamond {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .floral-pattern {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-login-card {
+    padding: 1.5rem 1rem;
+    margin: 1rem;
+  }
+  
+  .admin-title {
+    font-size: 1.25rem;
+  }
+  
+  .admin-logo-shield {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .shield-icon {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+/* ========================================
+   LAYOUT ADMINISTRATIVO GUBERNAMENTAL
+   ======================================== */
+
+/* Pantalla de carga */
+.admin-loading-screen {
+  min-height: 100vh;
+  background: var(--gradient-principal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Poppins', sans-serif;
+}
+
+.admin-loading-content {
+  text-align: center;
+  animation: fade-in 0.8s ease-out;
+}
+
+.admin-loading-logo {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 2rem auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  backdrop-filter: blur(10px);
+  border: 2px solid var(--puebla-gold);
+}
+
+.loading-shield-icon {
+  width: 36px;
+  height: 36px;
+  color: white;
+  z-index: 2;
+}
+
+.loading-crown-icon {
+  position: absolute;
+  top: -8px;
+  width: 20px;
+  height: 20px;
+  color: var(--puebla-gold);
+  z-index: 3;
+  animation: float 2s ease-in-out infinite;
+}
+
+.admin-loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1.5rem auto;
+}
+
+.admin-loading-text {
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Container principal del dashboard */
+.admin-dashboard-container {
+  min-height: 100vh;
+  background: var(--puebla-cream);
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+}
+
+/* Overlay móvil */
+.admin-mobile-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: block;
+}
+
+.admin-overlay-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(125, 36, 71, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+/* Sidebar gubernamental */
+.admin-sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 50;
+  width: 280px;
+  background: white;
+  box-shadow: var(--shadow-government);
+  transform: translateX(-100%);
+  transition: transform 300ms ease-in-out;
+  border-right: 1px solid rgba(191, 181, 145, 0.2);
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-sidebar-open {
+  transform: translateX(0);
+}
+
+/* Header del sidebar */
+.admin-sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-bottom: 2px solid var(--puebla-gold);
+  background: linear-gradient(135deg, rgba(125, 36, 71, 0.05) 0%, rgba(191, 181, 145, 0.05) 100%);
+}
+
+.admin-sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.admin-sidebar-shield {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  background: var(--gradient-principal);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-gold);
+  border: 2px solid var(--puebla-gold);
+}
+
+.sidebar-shield-icon {
+  width: 22px;
+  height: 22px;
+  color: white;
+  z-index: 2;
+}
+
+.sidebar-crown-icon {
+  position: absolute;
+  top: -6px;
+  width: 14px;
+  height: 14px;
+  color: var(--puebla-gold);
+  z-index: 3;
+}
+
+.admin-sidebar-title {
+  flex: 1;
+}
+
+.sidebar-main-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--pantone-216c);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.sidebar-subtitle {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--puebla-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.admin-sidebar-close {
+  padding: 0.5rem;
+  border-radius: 8px;
+  background: none;
+  border: none;
+  color: var(--puebla-gray);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-sidebar-close:hover {
+  background: rgba(191, 181, 145, 0.1);
+  color: var(--pantone-216c);
+}
+
+.close-icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* Navegación */
+.admin-navigation {
+  flex: 1;
+  padding: 2rem 1rem;
+  overflow-y: auto;
+}
+
+.admin-nav-section {
+  margin-bottom: 2rem;
+}
+
+.admin-nav-header {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--puebla-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0 0 1rem 0;
+  padding: 0 1rem;
+}
+
+.admin-nav-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.admin-nav-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0.875rem 1rem;
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--puebla-dark-gray);
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.admin-nav-item:hover {
+  background: rgba(125, 36, 71, 0.05);
+  color: var(--pantone-216c);
+  transform: translateX(4px);
+}
+
+.admin-nav-item-active {
+  background: var(--gradient-principal);
+  color: white;
+  box-shadow: var(--shadow-gold);
+  border: 1px solid rgba(191, 181, 145, 0.3);
+}
+
+.admin-nav-item-active:hover {
+  transform: translateX(2px);
+  background: var(--gradient-principal);
+}
+
+.admin-nav-icon {
+  margin-right: 0.875rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.admin-nav-text {
+  flex: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.admin-nav-arrow {
+  width: 16px;
+  height: 16px;
+  opacity: 0.8;
+}
+
+.admin-nav-glow {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.admin-nav-item-active .admin-nav-glow {
+  animation: nav-shine 2s ease-in-out infinite;
+}
+
+/* Sección de usuario */
+.admin-user-section {
+  padding: 1.5rem;
+  border-top: 2px solid var(--puebla-gold);
+  background: linear-gradient(135deg, rgba(125, 36, 71, 0.02) 0%, rgba(191, 181, 145, 0.02) 100%);
+}
+
+.admin-user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+.admin-user-avatar {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  background: var(--gradient-gold);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-gold);
+  border: 2px solid var(--puebla-gold);
+}
+
+.user-initial {
+  color: var(--pantone-216c);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.admin-user-status {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 12px;
+  height: 12px;
+  background: #22c55e;
+  border-radius: 50%;
+  border: 2px solid white;
+  animation: pulse-status 2s ease-in-out infinite;
+}
+
+.admin-user-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-user-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--pantone-216c);
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-user-email {
+  font-size: 0.75rem;
+  color: var(--puebla-gray);
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-user-role {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--puebla-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.admin-logout-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1rem;
+  background: rgba(125, 36, 71, 0.1);
+  border: 1px solid rgba(125, 36, 71, 0.2);
+  border-radius: 10px;
+  color: var(--pantone-216c);
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.admin-logout-button:hover {
+  background: var(--gradient-principal);
+  color: white;
+  border-color: var(--puebla-gold);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-gold);
+}
+
+.logout-icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Contenido principal */
+.admin-main-content {
+  flex: 1;
+  margin-left: 280px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  transition: margin-left 300ms ease-in-out;
+}
+
+/* Barra superior */
+.admin-top-bar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: white;
+  border-bottom: 2px solid var(--puebla-gold);
+  padding: 1rem 2rem;
+  box-shadow: var(--shadow-gold);
+}
+
+.admin-top-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.admin-menu-button {
+  display: none;
+  padding: 0.5rem;
+  background: rgba(125, 36, 71, 0.1);
+  border: 1px solid rgba(125, 36, 71, 0.2);
+  border-radius: 8px;
+  color: var(--pantone-216c);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-menu-button:hover {
+  background: var(--gradient-principal);
+  color: white;
+  border-color: var(--puebla-gold);
+}
+
+.menu-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.admin-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.breadcrumb-shield {
+  width: 32px;
+  height: 32px;
+  background: var(--gradient-principal);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-government);
+  border: 1px solid var(--puebla-gold);
+}
+
+.breadcrumb-icon {
+  width: 16px;
+  height: 16px;
+  color: white;
+}
+
+.admin-page-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--pantone-216c);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+
+.admin-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.admin-top-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.admin-system-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  border-radius: 20px;
+}
+
+.system-status-indicator {
+  width: 8px;
+  height: 8px;
+  background: #22c55e;
+  border-radius: 50%;
+  animation: pulse-status 2s ease-in-out infinite;
+}
+
+.system-status-text {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #16a34a;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.admin-notifications {
+  position: relative;
+  padding: 0.5rem;
+  background: rgba(125, 36, 71, 0.1);
+  border: 1px solid rgba(125, 36, 71, 0.2);
+  border-radius: 8px;
+  color: var(--pantone-216c);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-notifications:hover {
+  background: var(--gradient-principal);
+  color: white;
+  border-color: var(--puebla-gold);
+}
+
+.notification-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 18px;
+  height: 18px;
+  background: #ef4444;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: white;
+  border: 2px solid white;
+  animation: bounce-notification 2s ease-in-out infinite;
+}
+
+.admin-user-avatar-small {
+  width: 36px;
+  height: 36px;
+  background: var(--gradient-gold);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-gold);
+  border: 2px solid var(--puebla-gold);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-user-avatar-small:hover {
+  transform: scale(1.05);
+  box-shadow: var(--shadow-ceremonial);
+}
+
+.user-initial-small {
+  color: var(--pantone-216c);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+/* Contenido de la página */
+.admin-page-content {
+  flex: 1;
+  background: var(--puebla-cream);
+  min-height: calc(100vh - 80px);
+}
+
+.admin-content-wrapper {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* ANIMACIONES ADMINISTRATIVAS */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes nav-shine {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes pulse-status {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(0.95); }
+}
+
+@keyframes bounce-notification {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+/* RESPONSIVE DESIGN ADMINISTRATIVO */
+@media (max-width: 1024px) {
+  .admin-sidebar {
+    width: 260px;
+  }
+  
+  .admin-main-content {
+    margin-left: 0;
+  }
+  
+  .admin-menu-button {
+    display: flex;
+  }
+  
+  .admin-content-wrapper {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-sidebar-header {
+    padding: 1rem;
+  }
+  
+  .admin-navigation {
+    padding: 1.5rem 0.75rem;
+  }
+  
+  .admin-user-section {
+    padding: 1rem;
+  }
+  
+  .admin-top-bar {
+    padding: 1rem;
+  }
+  
+  .admin-page-title {
+    font-size: 1rem;
+  }
+  
+  .admin-content-wrapper {
+    padding: 1rem;
+  }
+  
+  .admin-top-bar-right {
+    gap: 1rem;
+  }
+  
+  .admin-system-status {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-sidebar {
+    width: 100%;
+    max-width: 280px;
+  }
+  
+  .admin-breadcrumb {
+    gap: 0.5rem;
+  }
+  
+  .breadcrumb-shield {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .breadcrumb-icon {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .admin-page-title {
+    font-size: 0.9rem;
+  }
+  
+  .admin-nav-text {
+    font-size: 0.85rem;
+  }
 }
 
 /* Estilos para links */

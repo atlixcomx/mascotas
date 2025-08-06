@@ -13,15 +13,19 @@ import {
   LogOut,
   Menu,
   X,
-  Bell
+  Bell,
+  Shield,
+  Crown,
+  Sparkles,
+  ChevronRight
 } from 'lucide-react'
 
 const navigation = [
-  { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
-  { name: 'Perritos', href: '/admin/perritos', icon: Dog },
-  { name: 'Solicitudes', href: '/admin/solicitudes', icon: FileText },
-  { name: 'Comercios', href: '/admin/comercios', icon: Building2 },
-  { name: 'Configuración', href: '/admin/configuracion', icon: Settings },
+  { name: 'Panel Principal', href: '/admin', icon: LayoutDashboard },
+  { name: 'Gestión de Mascotas', href: '/admin/perritos', icon: Dog },
+  { name: 'Solicitudes de Adopción', href: '/admin/solicitudes', icon: FileText },
+  { name: 'Comercios Aliados', href: '/admin/comercios', icon: Building2 },
+  { name: 'Configuración del Sistema', href: '/admin/configuracion', icon: Settings },
 ]
 
 export default function AdminLayout({
@@ -55,21 +59,14 @@ export default function AdminLayout({
 
   if (status === 'loading') {
     return (
-      <div style={{
-        minHeight: '100vh',
-        backgroundColor: '#f8fafc',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-      }}>
-        <div style={{ opacity: 0.6 }}>
-          <div style={{
-            width: '32px',
-            height: '32px',
-            backgroundColor: '#af1731',
-            borderRadius: '50%',
-            animation: 'pulse 2s infinite'
-          }}></div>
+      <div className="admin-loading-screen">
+        <div className="admin-loading-content">
+          <div className="admin-loading-logo">
+            <Shield className="loading-shield-icon" />
+            <Crown className="loading-crown-icon" />
+          </div>
+          <div className="admin-loading-spinner"></div>
+          <p className="admin-loading-text">INICIALIZANDO SISTEMA GUBERNAMENTAL</p>
         </div>
       </div>
     )
@@ -80,244 +77,131 @@ export default function AdminLayout({
   }
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f1f5f9' }}>
+    <div className="admin-dashboard-container">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
-        <div style={{
-          position: 'fixed',
-          inset: 0,
-          zIndex: 40,
-          display: 'block'
-        }}>
-          <div style={{
-            position: 'absolute',
-            inset: 0,
-            backgroundColor: 'rgba(71, 85, 105, 0.5)'
-          }} onClick={() => setSidebarOpen(false)} />
+        <div className="admin-mobile-overlay" onClick={() => setSidebarOpen(false)}>
+          <div className="admin-overlay-backdrop" />
         </div>
       )}
 
-      {/* Sidebar */}
-      <div style={{
-        position: 'fixed',
-        top: 0,
-        bottom: 0,
-        left: 0,
-        zIndex: 50,
-        width: '256px',
-        backgroundColor: 'white',
-        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-        transform: sidebarOpen ? 'translateX(0)' : 'translateX(-100%)',
-        transition: 'transform 200ms ease-in-out'
-      }}>
-        
-        {/* Sidebar header */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          height: '64px',
-          padding: '0 24px',
-          borderBottom: '1px solid #e2e8f0'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <div style={{
-              width: '32px',
-              height: '32px',
-              background: 'linear-gradient(135deg, #af1731, #840f31)',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-              <span style={{ color: 'white', fontWeight: 'bold', fontSize: '14px' }}>A</span>
+      {/* Sidebar Gubernamental */}
+      <div className={`admin-sidebar ${sidebarOpen ? 'admin-sidebar-open' : ''}`}>
+        {/* Header gubernamental del sidebar */}
+        <div className="admin-sidebar-header">
+          <div className="admin-sidebar-logo">
+            <div className="admin-sidebar-shield">
+              <Shield className="sidebar-shield-icon" />
+              <Crown className="sidebar-crown-icon" />
             </div>
-            <span style={{ fontWeight: '600', color: '#0e312d' }}>Admin</span>
+            <div className="admin-sidebar-title">
+              <h2 className="sidebar-main-title">GOBIERNO</h2>
+              <p className="sidebar-subtitle">Centro de Adopción</p>
+            </div>
           </div>
           <button
             onClick={() => setSidebarOpen(false)}
-            style={{
-              display: 'block',
-              padding: '4px',
-              borderRadius: '6px',
-              color: '#94a3b8',
-              backgroundColor: 'transparent',
-              border: 'none',
-              cursor: 'pointer'
-            }}
+            className="admin-sidebar-close"
           >
-            <X style={{ width: '20px', height: '20px' }} />
+            <X className="close-icon" />
           </button>
         </div>
 
-        {/* Navigation */}
-        <nav style={{ flex: 1, padding: '24px 16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          {navigation.map((item) => {
-            const isActive = pathname === item.href
-            return (
-              <Link
-                key={item.name}
-                href={item.href}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  padding: '12px 16px',
-                  fontSize: '14px',
-                  fontWeight: '500',
-                  borderRadius: '8px',
-                  textDecoration: 'none',
-                  transition: 'all 0.2s',
-                  backgroundColor: isActive ? 'rgba(175, 23, 49, 0.1)' : 'transparent',
-                  color: isActive ? '#af1731' : '#475569',
-                  borderRight: isActive ? '2px solid #af1731' : 'none'
-                }}
-                onClick={() => setSidebarOpen(false)}
-              >
-                <item.icon style={{ marginRight: '12px', width: '20px', height: '20px' }} />
-                {item.name}
-              </Link>
-            )
-          })}
+        {/* Navegación principal */}
+        <nav className="admin-navigation">
+          <div className="admin-nav-section">
+            <h3 className="admin-nav-header">GESTIÓN ADMINISTRATIVA</h3>
+            <div className="admin-nav-items">
+              {navigation.map((item) => {
+                const isActive = pathname === item.href
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    className={`admin-nav-item ${isActive ? 'admin-nav-item-active' : ''}`}
+                    onClick={() => setSidebarOpen(false)}
+                  >
+                    <div className="admin-nav-icon">
+                      <item.icon className="nav-icon" />
+                    </div>
+                    <span className="admin-nav-text">{item.name}</span>
+                    {isActive && <ChevronRight className="admin-nav-arrow" />}
+                    <div className="admin-nav-glow"></div>
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
         </nav>
 
-        {/* User section */}
-        <div style={{ padding: '16px', borderTop: '1px solid #e2e8f0' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-            <div style={{
-              width: '32px',
-              height: '32px',
-              backgroundColor: '#cbd5e1',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-              <span style={{ color: '#64748b', fontSize: '14px', fontWeight: '500' }}>
+        {/* Sección de usuario */}
+        <div className="admin-user-section">
+          <div className="admin-user-info">
+            <div className="admin-user-avatar">
+              <span className="user-initial">
                 {session.user.name?.charAt(0) || 'A'}
               </span>
+              <div className="admin-user-status"></div>
             </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <p style={{
-                fontSize: '14px',
-                fontWeight: '500',
-                color: '#0e312d',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-                margin: 0
-              }}>
-                {session.user.name}
-              </p>
-              <p style={{
-                fontSize: '12px',
-                color: '#64748b',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-                margin: 0
-              }}>
-                {session.user.email}
-              </p>
+            <div className="admin-user-details">
+              <p className="admin-user-name">{session.user.name}</p>
+              <p className="admin-user-email">{session.user.email}</p>
+              <p className="admin-user-role">ADMINISTRADOR DEL SISTEMA</p>
             </div>
           </div>
           <button
             onClick={() => signOut({ callbackUrl: '/admin/login' })}
-            style={{
-              width: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              padding: '12px 16px',
-              fontSize: '14px',
-              fontWeight: '500',
-              color: '#475569',
-              backgroundColor: 'transparent',
-              border: 'none',
-              borderRadius: '8px',
-              cursor: 'pointer',
-              transition: 'background-color 0.2s'
-            }}
+            className="admin-logout-button"
           >
-            <LogOut style={{ marginRight: '12px', width: '16px', height: '16px' }} />
-            Cerrar Sesión
+            <LogOut className="logout-icon" />
+            <span>CERRAR SESIÓN SEGURA</span>
           </button>
         </div>
       </div>
 
-      {/* Main content */}
-      <div style={{ 
-        marginLeft: '256px',
-        transition: 'margin-left 200ms ease-in-out'
-      }}>
-        {/* Top bar */}
-        <div style={{
-          position: 'sticky',
-          top: 0,
-          zIndex: 10,
-          backgroundColor: 'white',
-          borderBottom: '1px solid #e2e8f0',
-          padding: '16px 24px'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <button
-                onClick={() => setSidebarOpen(true)}
-                style={{
-                  display: 'flex',
-                  padding: '8px',
-                  borderRadius: '6px',
-                  color: '#94a3b8',
-                  backgroundColor: 'transparent',
-                  border: 'none',
-                  cursor: 'pointer',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-              >
-                <Menu style={{ width: '20px', height: '20px' }} />
-              </button>
-              <h1 style={{
-                marginLeft: '0',
-                fontSize: '18px',
-                fontWeight: '600',
-                color: '#0e312d',
-                margin: 0
-              }}>
-                {navigation.find(item => item.href === pathname)?.name || 'Admin'}
+      {/* Contenido principal */}
+      <div className="admin-main-content">
+        {/* Barra superior gubernamental */}
+        <header className="admin-top-bar">
+          <div className="admin-top-bar-left">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="admin-menu-button"
+            >
+              <Menu className="menu-icon" />
+            </button>
+            <div className="admin-breadcrumb">
+              <div className="breadcrumb-shield">
+                <Shield className="breadcrumb-icon" />
+              </div>
+              <h1 className="admin-page-title">
+                {navigation.find(item => item.href === pathname)?.name || 'Panel Administrativo'}
               </h1>
             </div>
-            
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-              <button style={{
-                padding: '8px',
-                color: '#94a3b8',
-                backgroundColor: 'transparent',
-                border: 'none',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                transition: 'all 0.2s'
-              }}>
-                <Bell style={{ width: '20px', height: '20px' }} />
-              </button>
-              <div style={{
-                width: '32px',
-                height: '32px',
-                backgroundColor: '#cbd5e1',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}>
-                <span style={{ color: '#64748b', fontSize: '14px', fontWeight: '500' }}>
-                  {session.user.name?.charAt(0) || 'A'}
-                </span>
-              </div>
+          </div>
+          
+          <div className="admin-top-bar-right">
+            <div className="admin-system-status">
+              <div className="system-status-indicator"></div>
+              <span className="system-status-text">SISTEMA OPERATIVO</span>
+            </div>
+            <button className="admin-notifications">
+              <Bell className="notification-icon" />
+              <div className="notification-badge">3</div>
+            </button>
+            <div className="admin-user-avatar-small">
+              <span className="user-initial-small">
+                {session.user.name?.charAt(0) || 'A'}
+              </span>
             </div>
           </div>
-        </div>
+        </header>
 
-        {/* Page content */}
-        <main style={{ flex: 1 }}>
-          {children}
+        {/* Contenido de la página */}
+        <main className="admin-page-content">
+          <div className="admin-content-wrapper">
+            {children}
+          </div>
         </main>
       </div>
     </div>

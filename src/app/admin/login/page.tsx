@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { signIn, getSession } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Eye, EyeOff, Lock } from 'lucide-react'
+import { Eye, EyeOff, Shield, Crown, Sparkles } from 'lucide-react'
 
 export default function AdminLogin() {
   const router = useRouter()
@@ -48,100 +48,161 @@ export default function AdminLogin() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-      <div className="max-w-md w-full mx-4">
-        <div className="bg-white rounded-lg shadow-sm p-8">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-gradient-to-br from-atlixco-500 to-atlixco-600 rounded-full mx-auto mb-4 flex items-center justify-center">
-              <Lock className="h-8 w-8 text-white" />
+    <div className="admin-login-container">
+      {/* Patrones decorativos de fondo */}
+      <div className="admin-background-patterns">
+        <div className="pattern-diamond pattern-1"></div>
+        <div className="pattern-diamond pattern-2"></div>
+        <div className="pattern-diamond pattern-3"></div>
+        <div className="pattern-cross pattern-4"></div>
+        <div className="pattern-cross pattern-5"></div>
+        <div className="floral-pattern floral-1"></div>
+        <div className="floral-pattern floral-2"></div>
+      </div>
+
+      {/* Gradiente de fondo */}
+      <div className="admin-gradient-overlay"></div>
+
+      <div className="admin-login-wrapper">
+        <div className="admin-login-card">
+          {/* Header gubernamental */}
+          <div className="admin-header">
+            {/* Logo oficial */}
+            <div className="admin-logo-container">
+              <div className="admin-logo-shield">
+                <Shield className="shield-icon" />
+                <Crown className="crown-icon" />
+              </div>
+              <div className="admin-sparkle admin-sparkle-1">
+                <Sparkles className="sparkle-icon" />
+              </div>
+              <div className="admin-sparkle admin-sparkle-2">
+                <Sparkles className="sparkle-icon" />
+              </div>
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 mb-2">
-              Administración
+            
+            <h1 className="admin-title">
+              GOBIERNO DE LA CIUDAD
             </h1>
-            <p className="text-slate-600">
-              Centro de Adopción Atlixco
+            <div className="admin-subtitle-container">
+              <div className="admin-wings-left"></div>
+              <p className="admin-subtitle">LA CAPITAL IMPARABLE</p>
+              <div className="admin-wings-right"></div>
+            </div>
+            <p className="admin-department">
+              Portal Administrativo • Centro de Adopción Atlixco
             </p>
           </div>
 
-          {/* Login Form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Email
+          {/* Formulario de login */}
+          <form onSubmit={handleSubmit} className="admin-form">
+            <div className="admin-form-group">
+              <label className="admin-label">
+                Correo Institucional
               </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="input"
-                placeholder="admin@atlixco.gob.mx"
-                required
-                autoComplete="email"
-              />
+              <div className="admin-input-wrapper">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="admin-input"
+                  placeholder="administrador@atlixco.gob.mx"
+                  required
+                  autoComplete="email"
+                />
+                <div className="admin-input-border"></div>
+              </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Contraseña
+            <div className="admin-form-group">
+              <label className="admin-label">
+                Contraseña de Acceso
               </label>
-              <div className="relative">
+              <div className="admin-input-wrapper">
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="input pr-10"
-                  placeholder="••••••••"
+                  className="admin-input admin-input-password"
+                  placeholder="••••••••••••"
                   required
                   autoComplete="current-password"
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  className="admin-password-toggle"
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? (
-                    <EyeOff className="h-4 w-4 text-slate-400" />
+                    <EyeOff className="password-icon" />
                   ) : (
-                    <Eye className="h-4 w-4 text-slate-400" />
+                    <Eye className="password-icon" />
                   )}
                 </button>
+                <div className="admin-input-border"></div>
               </div>
             </div>
 
             {error && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                <p className="text-red-800 text-sm">{error}</p>
+              <div className="admin-error-message">
+                <div className="admin-error-icon">⚠</div>
+                <p className="admin-error-text">{error}</p>
               </div>
             )}
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full btn-governo disabled:opacity-50 disabled:cursor-not-allowed"
+              className="admin-submit-button"
             >
-              {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
+              <div className="admin-button-content">
+                {loading ? (
+                  <>
+                    <div className="admin-spinner"></div>
+                    <span>Verificando credenciales...</span>
+                  </>
+                ) : (
+                  <>
+                    <Shield className="button-icon" />
+                    <span>ACCEDER AL SISTEMA</span>
+                  </>
+                )}
+              </div>
+              <div className="admin-button-glow"></div>
             </button>
           </form>
 
-          {/* Footer */}
-          <div className="mt-8 pt-6 border-t border-slate-200 text-center">
-            <p className="text-sm text-slate-500">
-              ¿Problemas para acceder?{' '}
-              <a href="mailto:soporte@atlixco.gob.mx" className="text-atlixco-600 hover:text-atlixco-700">
-                Contactar soporte
+          {/* Footer institucional */}
+          <div className="admin-footer">
+            <div className="admin-footer-decoration"></div>
+            <p className="admin-footer-text">
+              Sistema de Administración Gubernamental
+            </p>
+            <p className="admin-footer-support">
+              ¿Necesita asistencia técnica?{' '}
+              <a href="mailto:soporte.ti@atlixco.gob.mx" className="admin-support-link">
+                Contacte al Departamento de TI
               </a>
             </p>
           </div>
         </div>
 
-        {/* Demo credentials */}
-        <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <p className="text-sm text-blue-800 font-medium mb-2">Credenciales de prueba:</p>
-          <p className="text-sm text-blue-700">
-            Email: admin@atlixco.gob.mx<br />
-            Contraseña: Atlixco2024!
-          </p>
+        {/* Información de acceso de desarrollo */}
+        <div className="admin-dev-info">
+          <div className="dev-info-header">
+            <div className="dev-info-badge">ENTORNO DE DESARROLLO</div>
+          </div>
+          <div className="dev-credentials">
+            <p className="dev-title">Credenciales de Prueba:</p>
+            <div className="dev-credential-row">
+              <span className="dev-label">Usuario:</span>
+              <code className="dev-value">admin@atlixco.gob.mx</code>
+            </div>
+            <div className="dev-credential-row">
+              <span className="dev-label">Contraseña:</span>
+              <code className="dev-value">Atlixco2024!</code>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -9,7 +9,9 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     optimizePackageImports: ['lucide-react']
-  }
+  },
+  // Forzar modo standalone para evitar generación estática
+  output: 'standalone'
 };
 
 export default nextConfig;

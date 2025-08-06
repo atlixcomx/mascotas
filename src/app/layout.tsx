@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
-import AuthProvider from "@/components/providers/AuthProvider";
+import AuthProvider from "../components/providers/AuthProvider";
 import "./globals.css";
 
 const montserrat = Montserrat({

@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 import { Metadata } from 'next'
-import CatalogoPerritos from '@/components/CatalogoPerritos'
+import CatalogoPerritos from '../../components/CatalogoPerritos'
 
 export const metadata: Metadata = {
   title: 'Perritos en Adopción | Centro de Adopción Atlixco',

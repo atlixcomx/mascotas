@@ -5,35 +5,109 @@ import { Heart, Shield, Home, Users, PawPrint, Phone } from 'lucide-react'
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gobierno-lightGray">
+    <div style={{ 
+      minHeight: '100vh', 
+      backgroundColor: '#f8f8f8',
+      fontFamily: 'system-ui, -apple-system, sans-serif' 
+    }}>
       {/* Header Oficial */}
-      <header className="bg-white shadow-md">
-        <div className="bg-puebla-700 h-2"></div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
-            <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-puebla-700 to-puebla-800 rounded-lg flex items-center justify-center shadow-sm">
-                <PawPrint className="text-white h-7 w-7" />
+      <header style={{
+        backgroundColor: 'white',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+      }}>
+        <div style={{
+          height: '8px',
+          backgroundColor: '#af1731'
+        }}></div>
+        <div style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          padding: '0 20px'
+        }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            height: '80px'
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '16px'
+            }}>
+              <div style={{
+                width: '48px',
+                height: '48px',
+                background: 'linear-gradient(135deg, #af1731, #840f31)',
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+              }}>
+                <PawPrint style={{ color: 'white', width: '28px', height: '28px' }} />
               </div>
               <div>
-                <h1 className="font-bold text-xl text-gobierno-teal">Centro de Adopción Atlixco</h1>
-                <p className="text-xs text-gobierno-gray">Gobierno Municipal de Atlixco | 2024</p>
+                <h1 style={{
+                  fontWeight: 'bold',
+                  fontSize: '20px',
+                  color: '#0e312d',
+                  margin: 0
+                }}>Centro de Adopción Atlixco</h1>
+                <p style={{
+                  fontSize: '12px',
+                  color: '#666',
+                  margin: 0
+                }}>Gobierno Municipal de Atlixco | 2024</p>
               </div>
             </div>
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link href="/" className="text-gobierno-darkGray hover:text-puebla-700 font-medium transition-colors">
+            <nav style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '32px'
+            }}>
+              <Link href="/" style={{
+                color: '#4a4a4a',
+                textDecoration: 'none',
+                fontWeight: '500',
+                transition: 'color 0.2s'
+              }}>
                 Inicio
               </Link>
-              <Link href="/perritos" className="text-gobierno-darkGray hover:text-puebla-700 font-medium transition-colors">
+              <Link href="/perritos" style={{
+                color: '#4a4a4a',
+                textDecoration: 'none',
+                fontWeight: '500',
+                transition: 'color 0.2s'
+              }}>
                 Perritos
               </Link>
-              <Link href="/perritos" className="text-gobierno-darkGray hover:text-puebla-700 font-medium transition-colors">
+              <Link href="/perritos" style={{
+                color: '#4a4a4a',
+                textDecoration: 'none',
+                fontWeight: '500',
+                transition: 'color 0.2s'
+              }}>
                 Adoptar
               </Link>
-              <a href="#contacto" className="text-gobierno-darkGray hover:text-puebla-700 font-medium transition-colors">
+              <a href="#contacto" style={{
+                color: '#4a4a4a',
+                textDecoration: 'none',
+                fontWeight: '500',
+                transition: 'color 0.2s'
+              }}>
                 Contacto
               </a>
-              <Link href="/admin" className="btn-primary text-sm">
+              <Link href="/admin" style={{
+                backgroundColor: '#af1731',
+                color: 'white',
+                padding: '10px 20px',
+                borderRadius: '6px',
+                textDecoration: 'none',
+                fontSize: '14px',
+                fontWeight: '600',
+                transition: 'all 0.2s'
+              }}>
                 Portal Administrativo
               </Link>
             </nav>
@@ -41,46 +115,126 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Hero Section con diseño gubernamental */}
-      <section className="relative bg-gradient-to-br from-gobierno-teal via-gobierno-mutedGreen to-gobierno-teal py-24 px-4 sm:px-6 lg:px-8">
-        <div className="absolute inset-0 bg-black opacity-10"></div>
-        <div className="relative max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+      {/* Hero Section */}
+      <section style={{
+        background: 'linear-gradient(135deg, #0e312d, #246257, #3d9b84)',
+        padding: '96px 20px',
+        position: 'relative'
+      }}>
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.1)'
+        }}></div>
+        <div style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          position: 'relative'
+        }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))',
+            gap: '48px',
+            alignItems: 'center'
+          }}>
             <div>
-              <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
+              <h1 style={{
+                fontSize: '56px',
+                fontWeight: 'bold',
+                color: 'white',
+                marginBottom: '24px',
+                lineHeight: '1.1',
+                margin: 0
+              }}>
                 Dale una Segunda
-                <span className="block text-accent-lightBeige">Oportunidad</span>
+                <span style={{ 
+                  display: 'block', 
+                  color: '#e2be96' 
+                }}>Oportunidad</span>
               </h1>
-              <p className="text-xl text-white/90 mb-8 leading-relaxed">
+              <p style={{
+                fontSize: '20px',
+                color: 'rgba(255,255,255,0.9)',
+                marginBottom: '32px',
+                lineHeight: '1.6'
+              }}>
                 En el Centro de Adopción de Atlixco, conectamos corazones con perritos que buscan un hogar lleno de amor y cuidado. Forma parte de nuestra misión social.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link href="/perritos" className="btn-primary text-lg py-4 px-8 text-center">
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '16px'
+              }}>
+                <Link href="/perritos" style={{
+                  backgroundColor: '#af1731',
+                  color: 'white',
+                  padding: '16px 32px',
+                  borderRadius: '8px',
+                  textDecoration: 'none',
+                  fontSize: '18px',
+                  fontWeight: '600',
+                  textAlign: 'center',
+                  transition: 'all 0.2s',
+                  display: 'inline-block'
+                }}>
                   Ver Perritos Disponibles
-                </Link>
-                <Link href="#proceso" className="bg-white/10 backdrop-blur-md text-white hover:bg-white/20 rounded-lg px-8 py-4 text-lg font-semibold transition-all text-center border border-white/30">
-                  Proceso de Adopción
                 </Link>
               </div>
             </div>
-            <div className="relative">
-              <div className="bg-gradient-to-br from-accent-gold to-accent-lightBeige rounded-3xl p-8 shadow-2xl">
-                <div className="bg-white rounded-2xl p-6">
-                  <h3 className="text-3xl font-bold text-gobierno-teal mb-4">¿Por qué adoptar?</h3>
-                  <ul className="space-y-3 text-gobierno-darkGray">
-                    <li className="flex items-start">
-                      <Heart className="h-6 w-6 text-puebla-700 mr-3 mt-1 flex-shrink-0" />
-                      <span>Salvas una vida y ganas un compañero leal</span>
-                    </li>
-                    <li className="flex items-start">
-                      <Shield className="h-6 w-6 text-puebla-700 mr-3 mt-1 flex-shrink-0" />
-                      <span>Todos nuestros perritos están vacunados y esterilizados</span>
-                    </li>
-                    <li className="flex items-start">
-                      <Home className="h-6 w-6 text-puebla-700 mr-3 mt-1 flex-shrink-0" />
-                      <span>Apoyo continuo durante el proceso de adaptación</span>
-                    </li>
-                  </ul>
+            <div style={{ position: 'relative' }}>
+              <div style={{
+                background: 'linear-gradient(135deg, #c79b66, #e2be96)',
+                borderRadius: '24px',
+                padding: '32px',
+                boxShadow: '0 20px 40px rgba(0,0,0,0.2)'
+              }}>
+                <div style={{
+                  backgroundColor: 'white',
+                  borderRadius: '16px',
+                  padding: '24px'
+                }}>
+                  <h3 style={{
+                    fontSize: '28px',
+                    fontWeight: 'bold',
+                    color: '#0e312d',
+                    marginBottom: '16px',
+                    margin: 0
+                  }}>¿Por qué adoptar?</h3>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                      <Heart style={{ 
+                        width: '24px', 
+                        height: '24px', 
+                        color: '#af1731',
+                        marginTop: '4px',
+                        flexShrink: 0
+                      }} />
+                      <span style={{ color: '#4a4a4a' }}>Salvas una vida y ganas un compañero leal</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                      <Shield style={{ 
+                        width: '24px', 
+                        height: '24px', 
+                        color: '#af1731',
+                        marginTop: '4px',
+                        flexShrink: 0
+                      }} />
+                      <span style={{ color: '#4a4a4a' }}>Todos nuestros perritos están vacunados y esterilizados</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                      <Home style={{ 
+                        width: '24px', 
+                        height: '24px', 
+                        color: '#af1731',
+                        marginTop: '4px',
+                        flexShrink: 0
+                      }} />
+                      <span style={{ color: '#4a4a4a' }}>Apoyo continuo durante el proceso de adaptación</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -89,67 +243,174 @@ export default function Home() {
       </section>
 
       {/* Stats Section */}
-      <section className="bg-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-gobierno-brightTeal/10 rounded-full mb-4">
-                <Heart className="h-8 w-8 text-gobierno-brightTeal" />
+      <section style={{
+        backgroundColor: 'white',
+        padding: '64px 20px'
+      }}>
+        <div style={{
+          maxWidth: '1200px',
+          margin: '0 auto'
+        }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+            gap: '32px'
+          }}>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '64px',
+                height: '64px',
+                backgroundColor: 'rgba(61, 155, 132, 0.1)',
+                borderRadius: '50%',
+                marginBottom: '16px'
+              }}>
+                <Heart style={{ width: '32px', height: '32px', color: '#3d9b84' }} />
               </div>
-              <div className="text-4xl font-bold text-gobierno-teal mb-2">100+</div>
-              <div className="text-gobierno-gray">Perritos Rescatados</div>
+              <div style={{
+                fontSize: '36px',
+                fontWeight: 'bold',
+                color: '#0e312d',
+                marginBottom: '8px'
+              }}>100+</div>
+              <div style={{ color: '#666' }}>Perritos Rescatados</div>
             </div>
-            <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-puebla-700/10 rounded-full mb-4">
-                <Home className="h-8 w-8 text-puebla-700" />
+            <div style={{ textAlign: 'center' }}>
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '64px',
+                height: '64px',
+                backgroundColor: 'rgba(175, 23, 49, 0.1)',
+                borderRadius: '50%',
+                marginBottom: '16px'
+              }}>
+                <Home style={{ width: '32px', height: '32px', color: '#af1731' }} />
               </div>
-              <div className="text-4xl font-bold text-gobierno-teal mb-2">98%</div>
-              <div className="text-gobierno-gray">Tasa de Adopción Exitosa</div>
+              <div style={{
+                fontSize: '36px',
+                fontWeight: 'bold',
+                color: '#0e312d',
+                marginBottom: '8px'
+              }}>98%</div>
+              <div style={{ color: '#666' }}>Tasa de Adopción Exitosa</div>
             </div>
-            <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-accent-gold/20 rounded-full mb-4">
-                <Users className="h-8 w-8 text-accent-gold" />
+            <div style={{ textAlign: 'center' }}>
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '64px',
+                height: '64px',
+                backgroundColor: 'rgba(199, 155, 102, 0.2)',
+                borderRadius: '50%',
+                marginBottom: '16px'
+              }}>
+                <Users style={{ width: '32px', height: '32px', color: '#c79b66' }} />
               </div>
-              <div className="text-4xl font-bold text-gobierno-teal mb-2">140+</div>
-              <div className="text-gobierno-gray">Comercios Pet-Friendly</div>
+              <div style={{
+                fontSize: '36px',
+                fontWeight: 'bold',
+                color: '#0e312d',
+                marginBottom: '8px'
+              }}>140+</div>
+              <div style={{ color: '#666' }}>Comercios Pet-Friendly</div>
             </div>
-            <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-gobierno-mutedGreen/10 rounded-full mb-4">
-                <Shield className="h-8 w-8 text-gobierno-mutedGreen" />
+            <div style={{ textAlign: 'center' }}>
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '64px',
+                height: '64px',
+                backgroundColor: 'rgba(36, 98, 87, 0.1)',
+                borderRadius: '50%',
+                marginBottom: '16px'
+              }}>
+                <Shield style={{ width: '32px', height: '32px', color: '#246257' }} />
               </div>
-              <div className="text-4xl font-bold text-gobierno-teal mb-2">100%</div>
-              <div className="text-gobierno-gray">Seguimiento Post-Adopción</div>
+              <div style={{
+                fontSize: '36px',
+                fontWeight: 'bold',
+                color: '#0e312d',
+                marginBottom: '8px'
+              }}>100%</div>
+              <div style={{ color: '#666' }}>Seguimiento Post-Adopción</div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Contact Section */}
-      <section id="contacto" className="bg-gobierno-lightGray py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12">
-            <h2 className="text-3xl font-bold text-gobierno-teal mb-8 text-center">
+      <section id="contacto" style={{
+        backgroundColor: '#f8f8f8',
+        padding: '64px 20px'
+      }}>
+        <div style={{
+          maxWidth: '1200px',
+          margin: '0 auto'
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '16px',
+            boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
+            padding: '48px'
+          }}>
+            <h2 style={{
+              fontSize: '32px',
+              fontWeight: 'bold',
+              color: '#0e312d',
+              marginBottom: '32px',
+              textAlign: 'center',
+              margin: '0 0 32px 0'
+            }}>
               ¿Listo para cambiar una vida?
             </h2>
-            <div className="grid md:grid-cols-2 gap-8">
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+              gap: '32px'
+            }}>
               <div>
-                <h3 className="text-xl font-semibold text-gobierno-teal mb-4">Información de Contacto</h3>
-                <div className="space-y-4">
-                  <div className="flex items-center">
-                    <Phone className="h-5 w-5 text-puebla-700 mr-3" />
-                    <span className="text-gobierno-darkGray">(244) 445-0000</span>
+                <h3 style={{
+                  fontSize: '20px',
+                  fontWeight: '600',
+                  color: '#0e312d',
+                  marginBottom: '16px',
+                  margin: '0 0 16px 0'
+                }}>Información de Contacto</h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <Phone style={{ width: '20px', height: '20px', color: '#af1731' }} />
+                    <span style={{ color: '#4a4a4a' }}>(244) 445-0000</span>
                   </div>
-                  <div className="flex items-center">
-                    <Home className="h-5 w-5 text-puebla-700 mr-3" />
-                    <span className="text-gobierno-darkGray">Av. Hidalgo 123, Centro, Atlixco, Puebla</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <Home style={{ width: '20px', height: '20px', color: '#af1731' }} />
+                    <span style={{ color: '#4a4a4a' }}>Av. Hidalgo 123, Centro, Atlixco, Puebla</span>
                   </div>
                 </div>
               </div>
-              <div className="text-center md:text-right">
-                <p className="text-gobierno-darkGray mb-6">
+              <div style={{ textAlign: 'center' }}>
+                <p style={{
+                  color: '#4a4a4a',
+                  marginBottom: '24px',
+                  fontSize: '16px'
+                }}>
                   Visita nuestro centro y conoce a tu nuevo mejor amigo
                 </p>
-                <Link href="/perritos" className="btn-primary inline-block">
+                <Link href="/perritos" style={{
+                  backgroundColor: '#af1731',
+                  color: 'white',
+                  padding: '16px 32px',
+                  borderRadius: '8px',
+                  textDecoration: 'none',
+                  fontWeight: '600',
+                  display: 'inline-block',
+                  transition: 'all 0.2s'
+                }}>
                   Ver Perritos Disponibles
                 </Link>
               </div>

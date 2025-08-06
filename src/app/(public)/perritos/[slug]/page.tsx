@@ -1,105 +1,100 @@
+'use client'
+
+import { useState, useEffect } from 'react'
 import { notFound } from 'next/navigation'
-import { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Calendar, Heart, MapPin, User, Shield, Zap, Eye } from 'lucide-react'
-import { prisma } from '../../../../../lib/db'
-
-// Force dynamic rendering to prevent build-time database calls
-export const dynamic = 'force-dynamic'
-export const revalidate = 0
 
 interface PageProps {
   params: { slug: string }
 }
 
-async function getPerrito(slug: string) {
-  try {
-    const perrito = await prisma.perrito.findUnique({
-      where: { slug },
-      include: {
-        notas: {
-          orderBy: { createdAt: 'desc' },
-          take: 5
+interface Perrito {
+  id: string
+  nombre: string
+  slug: string
+  fotoPrincipal: string
+  fotos: string[]
+  raza: string
+  edad: string
+  sexo: string
+  tamano: string
+  energia: string
+  peso: number | null
+  caracter: string[]
+  historia: string
+  estado: string
+  destacado: boolean
+  esNuevo: boolean
+  vistas: number
+  fechaIngreso: string
+  procedencia: string | null
+  aptoNinos: boolean
+  aptoPerros: boolean
+  aptoGatos: boolean
+  vacunas: boolean
+  esterilizado: boolean
+  desparasitado: boolean
+  saludNotas: string | null
+  similares: any[]
+}
+
+export default function PerritoDetailPage({ params }: PageProps) {
+  const [perrito, setPerrito] = useState<Perrito | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchPerrito() {
+      try {
+        const response = await fetch(`/api/perritos/${params.slug}`)
+        
+        if (!response.ok) {
+          setPerrito(null)
+        } else {
+          const data = await response.json()
+          setPerrito(data)
         }
+      } catch (error) {
+        console.error('Error fetching perrito:', error)
+        setPerrito(null)
+      } finally {
+        setLoading(false)
       }
-    })
-
-    if (!perrito) return null
-
-    // Incrementar vistas
-    await prisma.perrito.update({
-      where: { id: perrito.id },
-      data: { vistas: { increment: 1 } }
-    })
-
-    return {
-      ...perrito,
-      fotos: perrito.fotos ? JSON.parse(perrito.fotos) : [perrito.fotoPrincipal],
-      caracter: perrito.caracter ? JSON.parse(perrito.caracter) : [],
-      esNuevo: new Date().getTime() - perrito.fechaIngreso.getTime() < 7 * 24 * 60 * 60 * 1000
     }
-  } catch (error) {
-    console.error('Error fetching perrito:', error)
-    return null
+
+    fetchPerrito()
+  }, [params.slug])
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-50">
+        <div className="animate-pulse">
+          <div className="bg-white border-b p-4">
+            <div className="h-4 bg-slate-200 rounded w-1/4"></div>
+          </div>
+          <div className="max-w-7xl mx-auto px-4 py-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="h-96 bg-slate-200 rounded-lg"></div>
+              <div className="space-y-4">
+                <div className="h-8 bg-slate-200 rounded w-3/4"></div>
+                <div className="h-4 bg-slate-200 rounded w-1/2"></div>
+                <div className="grid grid-cols-2 gap-4">
+                  {[...Array(4)].map((_, i) => (
+                    <div key={i} className="h-16 bg-slate-200 rounded"></div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
   }
-}
-
-async function getPerritosSimilares(currentPerritoId: string, tamano: string, energia: string) {
-  try {
-    return await prisma.perrito.findMany({
-      where: {
-        id: { not: currentPerritoId },
-        estado: 'disponible',
-        OR: [
-          { tamano },
-          { energia }
-        ]
-      },
-      select: {
-        id: true,
-        nombre: true,
-        slug: true,
-        fotoPrincipal: true,
-        edad: true,
-        raza: true,
-        tamano: true
-      },
-      take: 3
-    })
-  } catch (error) {
-    return []
-  }
-}
-
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const perrito = await getPerrito(params.slug)
-
-  if (!perrito) {
-    return {
-      title: 'Perrito no encontrado | Centro de Adopción Atlixco'
-    }
-  }
-
-  return {
-    title: `${perrito.nombre} - Adopción | Centro de Adopción Atlixco`,
-    description: `Conoce a ${perrito.nombre}, un ${perrito.raza} de ${perrito.edad} en busca de un hogar lleno de amor. ${perrito.historia.slice(0, 160)}...`,
-    openGraph: {
-      title: `${perrito.nombre} busca hogar`,
-      description: `${perrito.raza} • ${perrito.edad} • ${perrito.tamano}`,
-      images: [perrito.fotoPrincipal],
-    },
-  }
-}
-
-export default async function PerritoDetailPage({ params }: PageProps) {
-  const perrito = await getPerrito(params.slug)
 
   if (!perrito) {
     notFound()
   }
-
-  const similares = await getPerritosSimilares(perrito.id, perrito.tamano, perrito.energia)
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -313,11 +308,11 @@ export default async function PerritoDetailPage({ params }: PageProps) {
         </div>
 
         {/* Perritos similares */}
-        {similares.length > 0 && (
+        {perrito.similares && perrito.similares.length > 0 && (
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-slate-900 mb-6">Otros perritos que te pueden interesar</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {similares.map((similar) => (
+              {perrito.similares.map((similar) => (
                 <Link
                   key={similar.id}
                   href={`/perritos/${similar.slug}`}

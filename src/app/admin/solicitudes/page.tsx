@@ -1,34 +1,21 @@
-import { Suspense } from 'react'
-import { prisma } from '../../../../lib/db'
+'use client'
+
+import { useState, useEffect } from 'react'
 import { FileText, Clock, CheckCircle, XCircle, Eye, Phone, Mail } from 'lucide-react'
 
-// Force dynamic rendering to prevent build-time database calls
-export const dynamic = 'force-dynamic'
-export const revalidate = 0
-
-async function getSolicitudes() {
-  try {
-    const solicitudes = await prisma.solicitud.findMany({
-      include: {
-        perrito: {
-          select: {
-            nombre: true,
-            fotoPrincipal: true,
-            raza: true,
-            slug: true
-          }
-        }
-      },
-      orderBy: {
-        createdAt: 'desc'
-      },
-      take: 50
-    })
-
-    return solicitudes
-  } catch (error) {
-    console.error('Error fetching solicitudes:', error)
-    return []
+interface Solicitud {
+  id: string
+  codigo: string
+  nombre: string
+  email: string
+  telefono: string
+  estado: string
+  createdAt: string
+  perrito: {
+    nombre: string
+    fotoPrincipal: string
+    raza: string
+    slug: string
   }
 }
 
@@ -52,7 +39,7 @@ function EstadoSolicitud({ estado }: { estado: string }) {
   )
 }
 
-function SolicitudCard({ solicitud }: { solicitud: any }) {
+function SolicitudCard({ solicitud }: { solicitud: Solicitud }) {
   const fechaCreacion = new Date(solicitud.createdAt)
   const diasPendiente = Math.floor((Date.now() - fechaCreacion.getTime()) / (1000 * 60 * 60 * 24))
 
@@ -108,8 +95,45 @@ function SolicitudCard({ solicitud }: { solicitud: any }) {
   )
 }
 
-export default async function AdminSolicitudes() {
-  const solicitudes = await getSolicitudes()
+export default function AdminSolicitudes() {
+  const [solicitudes, setSolicitudes] = useState<Solicitud[]>([])
+  const [loading, setLoading] = useState(true)
+  const [estadoFilter, setEstadoFilter] = useState('')
+  const [searchTerm, setSearchTerm] = useState('')
+  const [diasFilter, setDiasFilter] = useState('')
+
+  useEffect(() => {
+    fetchSolicitudes()
+  }, [])
+
+  async function fetchSolicitudes() {
+    try {
+      const response = await fetch('/api/admin/solicitudes')
+      if (response.ok) {
+        const data = await response.json()
+        setSolicitudes(data.solicitudes || [])
+      }
+    } catch (error) {
+      console.error('Error fetching solicitudes:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Filtrar solicitudes
+  const filteredSolicitudes = solicitudes.filter(solicitud => {
+    const matchesSearch = solicitud.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         solicitud.codigo.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesEstado = !estadoFilter || solicitud.estado === estadoFilter
+    
+    let matchesDias = true
+    if (diasFilter) {
+      const diasDesdeCreacion = Math.floor((Date.now() - new Date(solicitud.createdAt).getTime()) / (1000 * 60 * 60 * 24))
+      matchesDias = diasDesdeCreacion <= parseInt(diasFilter)
+    }
+    
+    return matchesSearch && matchesEstado && matchesDias
+  })
 
   const stats = {
     total: solicitudes.length,
@@ -117,6 +141,27 @@ export default async function AdminSolicitudes() {
     revision: solicitudes.filter(s => s.estado === 'revision').length,
     pendientes: solicitudes.filter(s => ['nueva', 'revision'].includes(s.estado)).length,
     aprobadas: solicitudes.filter(s => s.estado === 'aprobada').length
+  }
+
+  if (loading) {
+    return (
+      <div className="p-6">
+        <div className="animate-pulse">
+          <div className="h-8 bg-slate-200 rounded w-1/4 mb-8"></div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="bg-white rounded-lg shadow-sm border">
+                <div className="p-6">
+                  <div className="h-4 bg-slate-200 rounded w-3/4 mb-4"></div>
+                  <div className="h-3 bg-slate-200 rounded w-1/2 mb-2"></div>
+                  <div className="h-3 bg-slate-200 rounded w-2/3"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -156,7 +201,11 @@ export default async function AdminSolicitudes() {
       {/* Filters */}
       <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-4 mb-6">
         <div className="flex items-center space-x-4">
-          <select className="input min-w-[150px]">
+          <select 
+            className="input min-w-[150px]"
+            value={estadoFilter}
+            onChange={(e) => setEstadoFilter(e.target.value)}
+          >
             <option value="">Todos los estados</option>
             <option value="nueva">Nuevas</option>
             <option value="revision">En Revisión</option>
@@ -170,9 +219,15 @@ export default async function AdminSolicitudes() {
             type="text"
             placeholder="Buscar por nombre o código..."
             className="input flex-1"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
           
-          <select className="input min-w-[120px]">
+          <select 
+            className="input min-w-[120px]"
+            value={diasFilter}
+            onChange={(e) => setDiasFilter(e.target.value)}
+          >
             <option value="">Todos los días</option>
             <option value="1">Hoy</option>
             <option value="7">Última semana</option>
@@ -182,50 +237,27 @@ export default async function AdminSolicitudes() {
       </div>
 
       {/* Solicitudes */}
-      <Suspense fallback={
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {[...Array(6)].map((_, i) => (
-            <div key={i} className="bg-white rounded-lg shadow-sm border animate-pulse">
-              <div className="p-6">
-                <div className="h-4 bg-slate-200 rounded w-3/4 mb-4"></div>
-                <div className="h-3 bg-slate-200 rounded w-1/2 mb-2"></div>
-                <div className="h-3 bg-slate-200 rounded w-2/3"></div>
-              </div>
-            </div>
-          ))}
-        </div>
-      }>
-        {solicitudes.length > 0 ? (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {solicitudes.map((solicitud) => (
-                <SolicitudCard key={solicitud.id} solicitud={solicitud} />
-              ))}
-            </div>
-
-            {/* Paginación placeholder */}
-            {solicitudes.length >= 50 && (
-              <div className="mt-8 text-center">
-                <button className="px-4 py-2 border border-slate-300 rounded-lg hover:bg-slate-50">
-                  Cargar más solicitudes
-                </button>
-              </div>
-            )}
-          </>
-        ) : (
-          <div className="text-center py-12">
-            <div className="w-24 h-24 bg-slate-100 rounded-full mx-auto mb-4 flex items-center justify-center">
-              <FileText className="h-12 w-12 text-slate-400" />
-            </div>
-            <h3 className="text-lg font-medium text-slate-900 mb-2">
-              No hay solicitudes
-            </h3>
-            <p className="text-slate-600">
-              Las solicitudes de adopción aparecerán aquí cuando lleguen
-            </p>
+      {filteredSolicitudes.length > 0 ? (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {filteredSolicitudes.map((solicitud) => (
+              <SolicitudCard key={solicitud.id} solicitud={solicitud} />
+            ))}
           </div>
-        )}
-      </Suspense>
+        </>
+      ) : (
+        <div className="text-center py-12">
+          <div className="w-24 h-24 bg-slate-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+            <FileText className="h-12 w-12 text-slate-400" />
+          </div>
+          <h3 className="text-lg font-medium text-slate-900 mb-2">
+            {solicitudes.length === 0 ? 'No hay solicitudes' : 'No se encontraron solicitudes'}
+          </h3>
+          <p className="text-slate-600">
+            {solicitudes.length === 0 ? 'Las solicitudes de adopción aparecerán aquí cuando lleguen' : 'Intenta con otros filtros'}
+          </p>
+        </div>
+      )}
 
       {/* Alerta de solicitudes pendientes */}
       {stats.pendientes > 0 && (

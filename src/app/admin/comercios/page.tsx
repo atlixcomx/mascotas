@@ -1,3 +1,5 @@
+'use client'
+
 import { Building2, MapPin, QrCode, TrendingUp } from 'lucide-react'
 import Link from 'next/link'
 

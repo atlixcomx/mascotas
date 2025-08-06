@@ -1,5 +1,6 @@
-import { Suspense } from 'react'
-import { prisma } from '../../../lib/db'
+'use client'
+
+import { useState, useEffect } from 'react'
 import { 
   Dog, 
   FileText, 
@@ -11,85 +12,18 @@ import {
   Calendar
 } from 'lucide-react'
 
-// Force dynamic rendering to prevent build-time database calls
-export const dynamic = 'force-dynamic'
-export const revalidate = 0
-
-async function getDashboardStats() {
-  try {
-    const [
-      totalPerritos,
-      perritosDisponibles,
-      perritosEnProceso,
-      perritosAdoptados,
-      totalSolicitudes,
-      solicitudesPendientes,
-      solicitudesRecientes,
-      adopcionesEsteMes
-    ] = await Promise.all([
-      // Conteos de perritos
-      prisma.perrito.count(),
-      prisma.perrito.count({ where: { estado: 'disponible' } }),
-      prisma.perrito.count({ where: { estado: 'proceso' } }),
-      prisma.perrito.count({ where: { estado: 'adoptado' } }),
-      
-      // Conteos de solicitudes
-      prisma.solicitud.count(),
-      prisma.solicitud.count({ where: { estado: { in: ['nueva', 'revision'] } } }),
-      
-      // Solicitudes recientes (últimos 7 días)
-      prisma.solicitud.findMany({
-        where: {
-          createdAt: {
-            gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-          }
-        },
-        include: {
-          perrito: {
-            select: {
-              nombre: true,
-              fotoPrincipal: true,
-              raza: true
-            }
-          }
-        },
-        orderBy: {
-          createdAt: 'desc'
-        },
-        take: 10
-      }),
-      
-      // Adopciones este mes
-      prisma.solicitud.count({
-        where: {
-          estado: 'aprobada',
-          updatedAt: {
-            gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1)
-          }
-        }
-      })
-    ])
-
-    return {
-      perritos: {
-        total: totalPerritos,
-        disponibles: perritosDisponibles,
-        enProceso: perritosEnProceso,
-        adoptados: perritosAdoptados
-      },
-      solicitudes: {
-        total: totalSolicitudes,
-        pendientes: solicitudesPendientes,
-        recientes: solicitudesRecientes,
-        adopcionesEsteMes
-      }
-    }
-  } catch (error) {
-    console.error('Error fetching dashboard stats:', error)
-    return {
-      perritos: { total: 0, disponibles: 0, enProceso: 0, adoptados: 0 },
-      solicitudes: { total: 0, pendientes: 0, recientes: [], adopcionesEsteMes: 0 }
-    }
+interface DashboardStats {
+  perritos: {
+    total: number
+    disponibles: number
+    enProceso: number
+    adoptados: number
+  }
+  solicitudes: {
+    total: number
+    pendientes: number
+    recientes: any[]
+    adopcionesEsteMes: number
   }
 }
 
@@ -132,18 +66,7 @@ function StatCard({
   )
 }
 
-interface SolicitudReciente {
-  id: string
-  nombre: string
-  createdAt: Date
-  estado: string
-  perrito: {
-    nombre: string
-    fotoPrincipal: string
-  }
-}
-
-function SolicitudesRecientes({ solicitudes }: { solicitudes: SolicitudReciente[] }) {
+function SolicitudesRecientes({ solicitudes }: { solicitudes: any[] }) {
   if (solicitudes.length === 0) {
     return (
       <div className="text-center py-8">
@@ -193,8 +116,48 @@ function SolicitudesRecientes({ solicitudes }: { solicitudes: SolicitudReciente[
   )
 }
 
-export default async function AdminDashboard() {
-  const stats = await getDashboardStats()
+export default function AdminDashboard() {
+  const [stats, setStats] = useState<DashboardStats>({
+    perritos: { total: 0, disponibles: 0, enProceso: 0, adoptados: 0 },
+    solicitudes: { total: 0, pendientes: 0, recientes: [], adopcionesEsteMes: 0 }
+  })
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchStats() {
+      try {
+        const response = await fetch('/api/admin/dashboard')
+        if (response.ok) {
+          const data = await response.json()
+          setStats(data)
+        }
+      } catch (error) {
+        console.error('Error fetching stats:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchStats()
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="p-6">
+        <div className="animate-pulse">
+          <div className="h-8 bg-slate-200 rounded w-1/4 mb-8"></div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
+                <div className="h-4 bg-slate-200 rounded w-1/2 mb-2"></div>
+                <div className="h-8 bg-slate-200 rounded w-3/4"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="p-6">
@@ -264,14 +227,12 @@ export default async function AdminDashboard() {
             </h2>
             <a 
               href="/admin/solicitudes"
-              className="text-sm text-atlixco-600 hover:text-atlixco-700 font-medium"
+              className="text-sm text-puebla-700 hover:text-puebla-800 font-medium"
             >
               Ver todas →
             </a>
           </div>
-          <Suspense fallback={<div className="animate-pulse h-32 bg-slate-100 rounded"></div>}>
-            <SolicitudesRecientes solicitudes={stats.solicitudes.recientes} />
-          </Suspense>
+          <SolicitudesRecientes solicitudes={stats.solicitudes.recientes} />
         </div>
 
         {/* Acciones Rápidas */}

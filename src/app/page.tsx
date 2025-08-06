@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link'
 import { Heart, Shield, Home, Users, PawPrint, Phone } from 'lucide-react'
 

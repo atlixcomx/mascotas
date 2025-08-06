@@ -1,35 +1,61 @@
-import { notFound } from 'next/navigation'
+'use client'
+
+import { useState, useEffect } from 'react'
+import { notFound, useRouter } from 'next/navigation'
 import FormularioPerrito from '../../../../components/admin/FormularioPerrito'
 import { ArrowLeft, Eye, FileText } from 'lucide-react'
 import Link from 'next/link'
-
-// Force dynamic rendering to prevent build-time database calls
-export const dynamic = 'force-dynamic'
-export const revalidate = 0
 
 interface PageProps {
   params: { id: string }
 }
 
-async function getPerrito(id: string) {
-  try {
-    const response = await fetch(`${process.env.NEXTAUTH_URL}/api/admin/perritos/${id}`, {
-      cache: 'no-store'
-    })
-    
-    if (!response.ok) {
-      return null
-    }
-    
-    return await response.json()
-  } catch (error) {
-    console.error('Error fetching perrito:', error)
-    return null
-  }
-}
+export default function EditarPerrito({ params }: PageProps) {
+  const [perrito, setPerrito] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+  const router = useRouter()
 
-export default async function EditarPerrito({ params }: PageProps) {
-  const perrito = await getPerrito(params.id)
+  useEffect(() => {
+    async function fetchPerrito() {
+      try {
+        const response = await fetch(`/api/admin/perritos/${params.id}`)
+        
+        if (!response.ok) {
+          setPerrito(null)
+        } else {
+          const data = await response.json()
+          setPerrito(data)
+        }
+      } catch (error) {
+        console.error('Error fetching perrito:', error)
+        setPerrito(null)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchPerrito()
+  }, [params.id])
+
+  if (loading) {
+    return (
+      <div className="p-6">
+        <div className="animate-pulse">
+          <div className="h-8 bg-slate-200 rounded w-1/4 mb-8"></div>
+          <div className="bg-white rounded-lg shadow-sm border p-6">
+            <div className="space-y-4">
+              {[...Array(6)].map((_, i) => (
+                <div key={i}>
+                  <div className="h-4 bg-slate-200 rounded w-1/4 mb-2"></div>
+                  <div className="h-10 bg-slate-200 rounded"></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   if (!perrito) {
     notFound()

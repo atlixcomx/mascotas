@@ -3,6 +3,7 @@
   "framework": "nextjs",
   "installCommand": "npm install --legacy-peer-deps",
   "env": {
-    "PRISMA_HIDE_UPDATE_MESSAGE": "true"
+    "PRISMA_HIDE_UPDATE_MESSAGE": "true",
+    "NODE_ENV": "production"
   }
 }

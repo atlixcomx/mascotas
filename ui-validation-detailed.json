@@ -2,12 +2,11 @@
   {
     "name": "Homepage",
     "path": "/",
-    "status": 500,
+    "status": 200,
     "hasContent": true,
     "hasStyles": true,
     "hasScripts": true,
     "issues": [
-      "Error 500 - Error interno del servidor",
       "Falta: Tiene header/nav"
     ]
   },
@@ -80,22 +79,24 @@
   {
     "name": "Admin Login",
     "path": "/admin/login",
-    "status": 200,
+    "status": 500,
     "hasContent": true,
     "hasStyles": true,
     "hasScripts": true,
     "issues": [
+      "Error 500 - Error interno del servidor",
       "Falta: Tiene header/nav"
     ]
   },
   {
     "name": "Admin Dashboard",
     "path": "/admin",
-    "status": 200,
+    "status": 500,
     "hasContent": true,
     "hasStyles": true,
     "hasScripts": true,
     "issues": [
+      "Error 500 - Error interno del servidor",
       "Falta: Tiene header/nav"
     ]
   }

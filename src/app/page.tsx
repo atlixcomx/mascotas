@@ -421,4 +421,4 @@ export default function Home() {
     </div>
   )
 }
-// Force redeploy Wed Aug  6 15:33:21 CST 2025
+// Updated: August 6, 2025 - Full homepage restored

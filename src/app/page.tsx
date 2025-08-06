@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { Heart, Shield, Home, Users, PawPrint, Phone } from 'lucide-react'
+import { useEffect } from 'react'
 
 export default function Home() {
   return (

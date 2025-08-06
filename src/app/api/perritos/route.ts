@@ -11,6 +11,7 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get('search') || ''
     const tamano = searchParams.get('tamano') || ''
     const edad = searchParams.get('edad') || ''
+    const genero = searchParams.get('genero') || ''
     const energia = searchParams.get('energia') || ''
     const aptoNinos = searchParams.get('aptoNinos') === 'true'
     const orderBy = searchParams.get('orderBy') || 'createdAt'
@@ -34,7 +35,27 @@ export async function GET(request: NextRequest) {
     }
 
     if (edad) {
-      where.edad = { contains: edad }
+      // Mapear filtros de edad más específicos
+      switch (edad) {
+        case 'cachorro':
+          where.edad = { contains: 'cachorro', mode: 'insensitive' }
+          break
+        case 'joven':
+          where.edad = { contains: 'joven', mode: 'insensitive' }
+          break
+        case 'adulto':
+          where.edad = { contains: 'adulto', mode: 'insensitive' }
+          break
+        case 'senior':
+          where.edad = { contains: 'senior', mode: 'insensitive' }
+          break
+        default:
+          where.edad = { contains: edad, mode: 'insensitive' }
+      }
+    }
+
+    if (genero) {
+      where.sexo = { contains: genero, mode: 'insensitive' }
     }
 
     if (energia) {
@@ -74,9 +95,9 @@ export async function GET(request: NextRequest) {
           estado: true,
           caracter: true,
         },
-        orderBy: {
-          [orderBy]: order
-        },
+        orderBy: orderBy === 'edad' ? 
+          { fechaIngreso: order } : // Para edad usamos fechaIngreso como proxy
+          { [orderBy]: order },
         skip,
         take: limit,
       }),
@@ -106,9 +127,11 @@ export async function GET(request: NextRequest) {
         search,
         tamano,
         edad,
+        genero,
         energia,
         aptoNinos,
-        destacados
+        destacados,
+        orderBy
       }
     })
 

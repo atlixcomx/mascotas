@@ -40,6 +40,7 @@ export interface PerritoFilters {
   search?: string
   tamano?: string
   edad?: string
+  genero?: string
   energia?: string
   aptoNinos?: boolean
   orderBy?: string

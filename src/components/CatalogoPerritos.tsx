@@ -1,11 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Search, Filter, Heart, Eye, Calendar } from 'lucide-react'
+import { Heart, Eye } from 'lucide-react'
 import { usePerritos } from '../hooks/usePerritos'
+import { SearchBar, FilterPanel, FilterOptions } from './search'
 import LoadingSpinner from './ui/LoadingSpinner'
 import ErrorMessage from './ui/ErrorMessage'
 import EmptyState from './ui/EmptyState'
@@ -19,15 +20,18 @@ export default function CatalogoPerritos() {
   const [favorites, setFavorites] = useState<string[]>([])
 
   // Estados de filtros
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<FilterOptions>({
     search: searchParams.get('search') || '',
     tamano: searchParams.get('tamano') || '',
     edad: searchParams.get('edad') || '',
+    genero: searchParams.get('genero') || '',
     energia: searchParams.get('energia') || '',
     aptoNinos: searchParams.get('aptoNinos') === 'true',
-    orderBy: searchParams.get('orderBy') || 'createdAt',
-    page: parseInt(searchParams.get('page') || '1')
+    orderBy: searchParams.get('orderBy') || 'createdAt'
   })
+
+  // Estado de paginación separado
+  const [page, setPage] = useState(parseInt(searchParams.get('page') || '1'))
 
   // Usar el hook personalizado
   const {
@@ -39,7 +43,7 @@ export default function CatalogoPerritos() {
     retryCount,
     isRetrying,
     retry
-  } = usePerritos(filters)
+  } = usePerritos({ ...filters, page })
 
   // Cargar favoritos del localStorage
   useEffect(() => {
@@ -50,25 +54,51 @@ export default function CatalogoPerritos() {
   }, [])
 
   // Función para actualizar URL con filtros
-  const updateURL = (newFilters: typeof filters) => {
+  const updateURL = useCallback((newFilters: FilterOptions, newPage: number = 1) => {
     const params = new URLSearchParams()
     
     Object.entries(newFilters).forEach(([key, value]) => {
-      if (value && value !== '' && value !== false && value !== 1) {
+      if (value && value !== '' && value !== false) {
         params.set(key, value.toString())
       }
     })
 
+    if (newPage > 1) {
+      params.set('page', newPage.toString())
+    }
+
     router.push(`${pathname}?${params.toString()}`)
-  }
+  }, [router, pathname])
 
 
   // Manejar cambios en filtros
-  const handleFilterChange = (key: string, value: any) => {
-    const newFilters = { ...filters, [key]: value, page: 1 }
+  const handleFilterChange = useCallback((key: keyof FilterOptions, value: any) => {
+    const newFilters = { ...filters, [key]: value }
     setFilters(newFilters)
-    updateURL(newFilters)
-  }
+    setPage(1) // Reset página cuando cambian los filtros
+    updateURL(newFilters, 1)
+  }, [filters, updateURL])
+
+  // Manejar cambios en búsqueda (con debounce ya integrado en SearchBar)
+  const handleSearch = useCallback((query: string) => {
+    handleFilterChange('search', query)
+  }, [handleFilterChange])
+
+  // Limpiar todos los filtros
+  const handleClearFilters = useCallback(() => {
+    const clearedFilters: FilterOptions = {
+      search: '',
+      tamano: '',
+      edad: '',
+      genero: '',
+      energia: '',
+      aptoNinos: false,
+      orderBy: 'createdAt'
+    }
+    setFilters(clearedFilters)
+    setPage(1)
+    updateURL(clearedFilters, 1)
+  }, [updateURL])
 
   // Manejar favoritos
   const toggleFavorite = (perritoId: string) => {
@@ -81,12 +111,11 @@ export default function CatalogoPerritos() {
   }
 
   // Manejar paginación
-  const handlePageChange = (newPage: number) => {
-    const newFilters = { ...filters, page: newPage }
-    setFilters(newFilters)
-    updateURL(newFilters)
+  const handlePageChange = useCallback((newPage: number) => {
+    setPage(newPage)
+    updateURL(filters, newPage)
     window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
+  }, [filters, updateURL])
 
   // Estados de carga y error
   if (loading) {
@@ -125,187 +154,33 @@ export default function CatalogoPerritos() {
       margin: '0 auto', 
       padding: '32px 20px'
     }}>
+      {/* Búsqueda y filtros */}
+      <div style={{ marginBottom: '32px' }}>
+        <SearchBar 
+          value={filters.search}
+          onSearch={handleSearch}
+          placeholder="Buscar perritos por nombre o raza..."
+          style={{ marginBottom: '24px' }}
+        />
+      </div>
+
       <div style={{ 
         display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
-        gap: '32px'
+        gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', 
+        gap: '32px',
+        alignItems: 'start'
       }}>
         
         {/* Sidebar de Filtros */}
-        <div>
-          <div style={{ 
-            backgroundColor: 'white', 
-            padding: '24px', 
-            borderRadius: '8px', 
-            boxShadow: '0 1px 3px rgba(0,0,0,0.1)', 
-            position: 'sticky', 
-            top: '16px'
-          }}>
-            
-            {/* Búsqueda */}
-            <div style={{ marginBottom: '24px' }}>
-              <label style={{ 
-                display: 'block', 
-                fontSize: '14px', 
-                fontWeight: '500', 
-                color: '#4a4a4a', 
-                marginBottom: '8px'
-              }}>
-                Buscar
-              </label>
-              <div style={{ position: 'relative' }}>
-                <Search style={{ 
-                  position: 'absolute', 
-                  left: '12px', 
-                  top: '50%', 
-                  transform: 'translateY(-50%)', 
-                  width: '16px', 
-                  height: '16px', 
-                  color: '#9ca3af'
-                }} />
-                <input
-                  type="text"
-                  placeholder="Nombre o raza..."
-                  value={filters.search}
-                  onChange={(e) => handleFilterChange('search', e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '12px 16px 12px 40px',
-                    border: '1px solid #d1d5db',
-                    borderRadius: '6px',
-                    fontSize: '16px',
-                    backgroundColor: '#fafafa',
-                    outline: 'none'
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* Tamaño */}
-            <div style={{ marginBottom: '24px' }}>
-              <label style={{ 
-                display: 'block', 
-                fontSize: '14px', 
-                fontWeight: '500', 
-                color: '#4a4a4a', 
-                marginBottom: '8px'
-              }}>
-                Tamaño
-              </label>
-              <select
-                value={filters.tamano}
-                onChange={(e) => handleFilterChange('tamano', e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '12px 16px',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '6px',
-                  fontSize: '16px',
-                  backgroundColor: '#fafafa',
-                  outline: 'none'
-                }}
-              >
-                <option value="">Todos</option>
-                <option value="chico">Chico</option>
-                <option value="mediano">Mediano</option>
-                <option value="grande">Grande</option>
-              </select>
-            </div>
-
-            {/* Energía */}
-            <div style={{ marginBottom: '24px' }}>
-              <label style={{ 
-                display: 'block', 
-                fontSize: '14px', 
-                fontWeight: '500', 
-                color: '#4a4a4a', 
-                marginBottom: '8px'
-              }}>
-                Nivel de Energía
-              </label>
-              <select
-                value={filters.energia}
-                onChange={(e) => handleFilterChange('energia', e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '12px 16px',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '6px',
-                  fontSize: '16px',
-                  backgroundColor: '#fafafa',
-                  outline: 'none'
-                }}
-              >
-                <option value="">Todos</option>
-                <option value="baja">Baja</option>
-                <option value="media">Media</option>
-                <option value="alta">Alta</option>
-              </select>
-            </div>
-
-            {/* Apto para niños */}
-            <div style={{ marginBottom: '24px' }}>
-              <label style={{ 
-                display: 'flex', 
-                alignItems: 'center',
-                cursor: 'pointer'
-              }}>
-                <input
-                  type="checkbox"
-                  checked={filters.aptoNinos}
-                  onChange={(e) => handleFilterChange('aptoNinos', e.target.checked)}
-                  style={{
-                    width: '16px',
-                    height: '16px',
-                    marginRight: '8px',
-                    accentColor: '#af1731'
-                  }}
-                />
-                <span style={{ fontSize: '14px', color: '#4a4a4a' }}>Apto para niños</span>
-              </label>
-            </div>
-
-            {/* Ordenar */}
-            <div style={{ marginBottom: '24px' }}>
-              <label style={{ 
-                display: 'block', 
-                fontSize: '14px', 
-                fontWeight: '500', 
-                color: '#4a4a4a', 
-                marginBottom: '8px'
-              }}>
-                Ordenar por
-              </label>
-              <select
-                value={filters.orderBy}
-                onChange={(e) => handleFilterChange('orderBy', e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '12px 16px',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '6px',
-                  fontSize: '16px',
-                  backgroundColor: '#fafafa',
-                  outline: 'none'
-                }}
-              >
-                <option value="createdAt">Más recientes</option>
-                <option value="nombre">Nombre</option>
-                <option value="edad">Edad</option>
-                <option value="fechaIngreso">Fecha de ingreso</option>
-              </select>
-            </div>
-
-            {/* Stats */}
-            <div style={{ 
-              fontSize: '14px', 
-              color: '#666',
-              textAlign: 'center',
-              padding: '16px 0'
-            }}>
-              Mostrando {perritos.length} de {pagination.total} perritos
-            </div>
-          </div>
+        <div style={{ position: 'sticky', top: '16px' }}>
+          <FilterPanel
+            filters={filters}
+            onFilterChange={handleFilterChange}
+            onClearFilters={handleClearFilters}
+            resultCount={perritos.length}
+            totalCount={pagination.total}
+            showHeader={true}
+          />
         </div>
 
         {/* Grid de Perritos */}
@@ -565,18 +440,7 @@ export default function CatalogoPerritos() {
               title="No se encontraron perritos"
               message="No hay perritos que coincidan con los filtros seleccionados. Intenta ajustar tus criterios de búsqueda."
               actionText="Limpiar Filtros"
-              onAction={() => {
-                setFilters({
-                  search: '',
-                  tamano: '',
-                  edad: '',
-                  energia: '',
-                  aptoNinos: false,
-                  orderBy: 'createdAt',
-                  page: 1
-                })
-                router.push('/perritos')
-              }}
+              onAction={handleClearFilters}
             />
           )}
         </div>

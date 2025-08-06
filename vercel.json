@@ -1,5 +1,6 @@
 {
   "framework": "nextjs",
+  "buildCommand": "bash vercel-build.sh",
   "functions": {
     "src/app/**/*.tsx": {
       "maxDuration": 30

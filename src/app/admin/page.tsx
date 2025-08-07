@@ -31,6 +31,7 @@ import {
   Megaphone,
   AlertTriangle
 } from 'lucide-react'
+import styles from './dashboard.module.css'
 
 interface DashboardMetrics {
   perritos: {

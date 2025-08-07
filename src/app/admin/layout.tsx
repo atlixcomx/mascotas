@@ -35,7 +35,9 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode
 }) {
-  const { data: session, status } = useSession()
+  const sessionResult = useSession()
+  const session = sessionResult?.data || null
+  const status = sessionResult?.status || 'loading'
   const router = useRouter()
   const pathname = usePathname()
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -53,7 +55,7 @@ export default function AdminLayout({
       return
     }
 
-    if (session.user.role !== 'admin') {
+    if (session?.user?.role !== 'admin') {
       signOut({ callbackUrl: '/admin/login' })
       return
     }
@@ -74,7 +76,7 @@ export default function AdminLayout({
     )
   }
 
-  if (!session || session.user.role !== 'admin') {
+  if (!session || session?.user?.role !== 'admin') {
     return null
   }
 
@@ -141,13 +143,13 @@ export default function AdminLayout({
           <div className="admin-user-info">
             <div className="admin-user-avatar">
               <span className="user-initial">
-                {session.user.name?.charAt(0) || 'A'}
+                {session?.user?.name?.charAt(0) || 'A'}
               </span>
               <div className="admin-user-status"></div>
             </div>
             <div className="admin-user-details">
-              <p className="admin-user-name">{session.user.name}</p>
-              <p className="admin-user-email">{session.user.email}</p>
+              <p className="admin-user-name">{session?.user?.name}</p>
+              <p className="admin-user-email">{session?.user?.email}</p>
               <p className="admin-user-role">ADMINISTRADOR DEL SISTEMA</p>
             </div>
           </div>
@@ -193,7 +195,7 @@ export default function AdminLayout({
             </button>
             <div className="admin-user-avatar-small">
               <span className="user-initial-small">
-                {session.user.name?.charAt(0) || 'A'}
+                {session?.user?.name?.charAt(0) || 'A'}
               </span>
             </div>
           </div>

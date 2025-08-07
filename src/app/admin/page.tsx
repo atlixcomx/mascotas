@@ -125,45 +125,137 @@ function MetricCard({
   subtitle?: string
   onClick?: () => void
 }) {
-  const colorClasses = {
-    blue: 'bg-blue-50 text-blue-600 border-blue-200',
-    green: 'bg-green-50 text-green-600 border-green-200',
-    yellow: 'bg-yellow-50 text-yellow-600 border-yellow-200',
-    red: 'bg-red-50 text-red-600 border-red-200',
-    purple: 'bg-purple-50 text-purple-600 border-purple-200',
-    orange: 'bg-orange-50 text-orange-600 border-orange-200'
+  const colorStyles = {
+    blue: {
+      backgroundColor: '#eff6ff',
+      color: '#2563eb',
+      borderColor: '#bfdbfe'
+    },
+    green: {
+      backgroundColor: '#f0fdf4',
+      color: '#16a34a',
+      borderColor: '#bbf7d0'
+    },
+    yellow: {
+      backgroundColor: '#fefce8',
+      color: '#ca8a04',
+      borderColor: '#fef08a'
+    },
+    red: {
+      backgroundColor: '#fef2f2',
+      color: '#dc2626',
+      borderColor: '#fecaca'
+    },
+    purple: {
+      backgroundColor: '#faf5ff',
+      color: '#9333ea',
+      borderColor: '#e9d5ff'
+    },
+    orange: {
+      backgroundColor: '#fff7ed',
+      color: '#ea580c',
+      borderColor: '#fed7aa'
+    }
   }
+
+  const [isHovered, setIsHovered] = useState(false)
+  const iconStyle = colorStyles[color as keyof typeof colorStyles] || colorStyles.blue
 
   return (
     <div 
-      className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-all cursor-pointer"
       onClick={onClick}
-      style={{ backgroundColor: 'white' }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      style={{ 
+        backgroundColor: '#ffffff',
+        borderRadius: '16px',
+        padding: '24px',
+        boxShadow: isHovered 
+          ? '0 8px 24px rgba(125, 36, 71, 0.12)' 
+          : '0 2px 8px rgba(0, 0, 0, 0.08)',
+        border: `1px solid ${isHovered ? '#bfb591' : 'rgba(0, 0, 0, 0.05)'}`,
+        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        cursor: 'pointer',
+        transform: isHovered ? 'translateY(-4px)' : 'none',
+        position: 'relative',
+        overflow: 'hidden'
+      }}
     >
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
-          <p className="text-sm font-medium text-gray-600">{title}</p>
-          <p className="text-2xl font-bold text-gray-900 mt-2">{value}</p>
+      {/* Top gradient line */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        height: '4px',
+        background: 'linear-gradient(135deg, #7d2447 0%, #af1731 100%)',
+        opacity: isHovered ? 1 : 0,
+        transition: 'opacity 0.3s ease'
+      }} />
+      
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+        <div style={{ flex: 1 }}>
+          <p style={{ 
+            fontSize: '0.875rem', 
+            fontWeight: '500', 
+            color: '#4b5563',
+            margin: '0 0 8px 0',
+            fontFamily: 'Poppins, sans-serif'
+          }}>
+            {title}
+          </p>
+          <p style={{ 
+            fontSize: '1.5rem', 
+            fontWeight: '700', 
+            color: '#0f172a',
+            margin: '0 0 4px 0',
+            fontFamily: 'Albert Sans, sans-serif',
+            letterSpacing: '-0.02em'
+          }}>
+            {value}
+          </p>
           {subtitle && (
-            <p className="text-xs text-gray-500 mt-1">{subtitle}</p>
+            <p style={{ 
+              fontSize: '0.75rem', 
+              color: '#6b7280',
+              margin: '4px 0 0 0',
+              fontFamily: 'Poppins, sans-serif'
+            }}>
+              {subtitle}
+            </p>
           )}
           {change !== undefined && (
-            <div className="flex items-center mt-3">
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              marginTop: '12px' 
+            }}>
               {change > 0 ? (
-                <ArrowUp className="w-4 h-4 text-green-500 mr-1" />
+                <ArrowUp style={{ width: '16px', height: '16px', color: '#22c55e', marginRight: '4px' }} />
               ) : change < 0 ? (
-                <ArrowDown className="w-4 h-4 text-red-500 mr-1" />
+                <ArrowDown style={{ width: '16px', height: '16px', color: '#ef4444', marginRight: '4px' }} />
               ) : null}
-              <span className={`text-sm font-medium ${
-                change > 0 ? 'text-green-600' : change < 0 ? 'text-red-600' : 'text-gray-600'
-              }`}>
+              <span style={{
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                color: change > 0 ? '#16a34a' : change < 0 ? '#dc2626' : '#4b5563',
+                fontFamily: 'Poppins, sans-serif'
+              }}>
                 {change > 0 && '+'}{change}% vs mes anterior
               </span>
             </div>
           )}
         </div>
-        <div className={`p-3 rounded-lg ${colorClasses[color]}`}>
-          <Icon className="w-6 h-6" />
+        <div style={{
+          padding: '12px',
+          borderRadius: '12px',
+          backgroundColor: iconStyle.backgroundColor,
+          color: iconStyle.color,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
+          <Icon style={{ width: '24px', height: '24px' }} />
         </div>
       </div>
     </div>
@@ -185,33 +277,122 @@ function QuickActionCard({
   color?: string
   badge?: number
 }) {
-  const colorClasses = {
-    blue: 'text-blue-600 bg-blue-50',
-    green: 'text-green-600 bg-green-50',
-    purple: 'text-purple-600 bg-purple-50',
-    orange: 'text-orange-600 bg-orange-50',
-    red: 'text-red-600 bg-red-50'
+  const colorStyles = {
+    blue: {
+      color: '#2563eb',
+      backgroundColor: '#eff6ff'
+    },
+    green: {
+      color: '#16a34a',
+      backgroundColor: '#f0fdf4'
+    },
+    purple: {
+      color: '#9333ea',
+      backgroundColor: '#faf5ff'
+    },
+    orange: {
+      color: '#ea580c',
+      backgroundColor: '#fff7ed'
+    },
+    red: {
+      color: '#dc2626',
+      backgroundColor: '#fef2f2'
+    }
   }
+
+  const [isHovered, setIsHovered] = useState(false)
+  const iconStyle = colorStyles[color as keyof typeof colorStyles] || colorStyles.blue
 
   return (
     <Link 
       href={href}
-      className="block bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-all hover:border-gray-300 relative"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      style={{
+        display: 'block',
+        backgroundColor: 'white',
+        borderRadius: '12px',
+        padding: '20px',
+        border: `2px solid ${isHovered ? '#bfb591' : 'transparent'}`,
+        transition: 'all 0.3s ease',
+        position: 'relative',
+        overflow: 'hidden',
+        textDecoration: 'none',
+        boxShadow: isHovered ? '0 8px 24px rgba(125, 36, 71, 0.12)' : '0 2px 8px rgba(0, 0, 0, 0.06)',
+        transform: isHovered ? 'translateY(-2px)' : 'none'
+      }}
     >
+      {/* Decorative gradient overlay */}
+      <div style={{
+        position: 'absolute',
+        top: '-50%',
+        right: '-50%',
+        width: '200%',
+        height: '200%',
+        background: 'linear-gradient(135deg, #bfb591 0%, #d4c9a8 100%)',
+        opacity: isHovered ? 0.08 : 0.03,
+        transform: 'rotate(45deg)',
+        transition: 'opacity 0.3s ease',
+        pointerEvents: 'none'
+      }} />
+      
       {badge !== undefined && badge > 0 && (
-        <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+        <div style={{
+          position: 'absolute',
+          top: '-8px',
+          right: '-8px',
+          backgroundColor: '#dc2626',
+          color: 'white',
+          fontSize: '0.75rem',
+          fontWeight: '700',
+          padding: '4px 8px',
+          borderRadius: '9999px',
+          minWidth: '24px',
+          textAlign: 'center',
+          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
+        }}>
           {badge}
         </div>
       )}
-      <div className="flex items-center">
-        <div className={`p-2 rounded-lg ${colorClasses[color]} mr-4`}>
-          <Icon className="w-5 h-5" />
+      <div style={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
+        <div style={{
+          padding: '8px',
+          borderRadius: '12px',
+          backgroundColor: iconStyle.backgroundColor,
+          color: iconStyle.color,
+          marginRight: '16px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
+          <Icon style={{ width: '20px', height: '20px' }} />
         </div>
-        <div className="flex-1">
-          <h3 className="font-semibold text-gray-900">{title}</h3>
-          <p className="text-sm text-gray-600 mt-1">{description}</p>
+        <div style={{ flex: 1 }}>
+          <h3 style={{ 
+            fontWeight: '600', 
+            color: '#0f172a',
+            margin: '0 0 4px 0',
+            fontSize: '1rem',
+            fontFamily: 'Albert Sans, sans-serif'
+          }}>
+            {title}
+          </h3>
+          <p style={{ 
+            fontSize: '0.875rem', 
+            color: '#64748b',
+            margin: 0,
+            fontFamily: 'Poppins, sans-serif'
+          }}>
+            {description}
+          </p>
         </div>
-        <ChevronRight className="w-5 h-5 text-gray-400" />
+        <ChevronRight style={{ 
+          width: '20px', 
+          height: '20px', 
+          color: '#94a3b8',
+          transition: 'transform 0.3s ease',
+          transform: isHovered ? 'translateX(4px)' : 'none'
+        }} />
       </div>
     </Link>
   )
@@ -375,22 +556,45 @@ export default function AdminDashboard() {
 
       {/* Alertas Importantes */}
       {alertas.length > 0 && (
-        <div className="mb-6 space-y-3">
+        <div style={{ marginBottom: '24px' }}>
           {alertas.map((alerta) => (
-            <div key={alerta.id} className={`
-              p-4 rounded-lg border flex items-start
-              ${alerta.prioridad === 'alta' 
-                ? 'bg-red-50 border-red-200 text-red-800' 
-                : 'bg-yellow-50 border-yellow-200 text-yellow-800'
-              }
-            `}>
-              <AlertCircle className="w-5 h-5 mr-3 flex-shrink-0 mt-0.5" />
-              <div className="flex-1 flex items-center justify-between">
-                <p className="font-medium">{alerta.mensaje}</p>
+            <div key={alerta.id} style={{
+              padding: '16px',
+              borderRadius: '12px',
+              border: `1px solid ${alerta.prioridad === 'alta' ? '#fecaca' : '#fef08a'}`,
+              display: 'flex',
+              alignItems: 'flex-start',
+              marginBottom: '12px',
+              backgroundColor: alerta.prioridad === 'alta' ? '#fef2f2' : '#fefce8',
+              color: alerta.prioridad === 'alta' ? '#991b1b' : '#854d0e',
+              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)'
+            }}>
+              <AlertCircle style={{ 
+                width: '20px', 
+                height: '20px', 
+                marginRight: '12px', 
+                flexShrink: 0, 
+                marginTop: '2px' 
+              }} />
+              <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <p style={{ 
+                  fontWeight: '500', 
+                  margin: 0,
+                  fontFamily: 'Poppins, sans-serif' 
+                }}>{alerta.mensaje}</p>
                 {alerta.link && (
                   <Link 
                     href={alerta.link}
-                    className="ml-4 text-sm font-semibold hover:underline"
+                    style={{
+                      marginLeft: '16px',
+                      fontSize: '0.875rem',
+                      fontWeight: '600',
+                      textDecoration: 'none',
+                      color: alerta.prioridad === 'alta' ? '#991b1b' : '#854d0e',
+                      fontFamily: 'Albert Sans, sans-serif'
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.textDecoration = 'underline'}
+                    onMouseLeave={(e) => e.currentTarget.style.textDecoration = 'none'}
                   >
                     Resolver →
                   </Link>
@@ -470,105 +674,285 @@ export default function AdminDashboard() {
       {/* Gráficas y estadísticas */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         {/* Estadísticas de Adopción */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-semibold text-gray-900">Estadísticas de Adopción</h2>
-            <BarChart3 className="w-5 h-5 text-gray-400" />
+        <div style={{
+          backgroundColor: 'white',
+          borderRadius: '16px',
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
+          border: '1px solid rgba(0, 0, 0, 0.05)',
+          padding: '24px',
+          transition: 'all 0.3s ease'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
+            <h2 style={{ 
+              fontSize: '1.125rem', 
+              fontWeight: '600', 
+              color: '#0f172a',
+              margin: 0,
+              fontFamily: 'Albert Sans, sans-serif'
+            }}>Estadísticas de Adopción</h2>
+            <BarChart3 style={{ width: '20px', height: '20px', color: '#94a3b8' }} />
           </div>
-          <div className="space-y-4">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div>
-              <div className="flex justify-between mb-2">
-                <span className="text-sm text-gray-600">Tiempo promedio de adopción</span>
-                <span className="text-sm font-semibold text-gray-900">{data.adopciones.tiempoPromedio} días</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                <span style={{ fontSize: '0.875rem', color: '#4b5563', fontFamily: 'Poppins, sans-serif' }}>Tiempo promedio de adopción</span>
+                <span style={{ fontSize: '0.875rem', fontWeight: '600', color: '#0f172a', fontFamily: 'Albert Sans, sans-serif' }}>{data.adopciones.tiempoPromedio} días</span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div className="bg-blue-600 h-2 rounded-full" style={{ width: '65%' }}></div>
+              <div style={{ width: '100%', backgroundColor: '#e5e7eb', borderRadius: '9999px', height: '8px' }}>
+                <div style={{ 
+                  backgroundColor: '#2563eb', 
+                  height: '8px', 
+                  borderRadius: '9999px', 
+                  width: '65%',
+                  transition: 'width 0.5s ease'
+                }}></div>
               </div>
             </div>
             <div>
-              <div className="flex justify-between mb-2">
-                <span className="text-sm text-gray-600">Tasa de éxito en seguimientos</span>
-                <span className="text-sm font-semibold text-gray-900">{data.seguimientos.tasaExito}%</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                <span style={{ fontSize: '0.875rem', color: '#4b5563', fontFamily: 'Poppins, sans-serif' }}>Tasa de éxito en seguimientos</span>
+                <span style={{ fontSize: '0.875rem', fontWeight: '600', color: '#0f172a', fontFamily: 'Albert Sans, sans-serif' }}>{data.seguimientos.tasaExito}%</span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div className="bg-green-600 h-2 rounded-full" style={{ width: `${data.seguimientos.tasaExito}%` }}></div>
+              <div style={{ width: '100%', backgroundColor: '#e5e7eb', borderRadius: '9999px', height: '8px' }}>
+                <div style={{ 
+                  backgroundColor: '#16a34a', 
+                  height: '8px', 
+                  borderRadius: '9999px', 
+                  width: `${data.seguimientos.tasaExito}%`,
+                  transition: 'width 0.5s ease'
+                }}></div>
               </div>
             </div>
             <div>
-              <div className="flex justify-between mb-2">
-                <span className="text-sm text-gray-600">Ocupación del refugio</span>
-                <span className="text-sm font-semibold text-gray-900">
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                <span style={{ fontSize: '0.875rem', color: '#4b5563', fontFamily: 'Poppins, sans-serif' }}>Ocupación del refugio</span>
+                <span style={{ fontSize: '0.875rem', fontWeight: '600', color: '#0f172a', fontFamily: 'Albert Sans, sans-serif' }}>
                   {Math.round((data.perritos.disponibles / data.perritos.total) * 100)}%
                 </span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div 
-                  className="bg-yellow-600 h-2 rounded-full" 
-                  style={{ width: `${Math.round((data.perritos.disponibles / data.perritos.total) * 100)}%` }}
-                ></div>
+              <div style={{ width: '100%', backgroundColor: '#e5e7eb', borderRadius: '9999px', height: '8px' }}>
+                <div style={{ 
+                  backgroundColor: '#ca8a04', 
+                  height: '8px', 
+                  borderRadius: '9999px', 
+                  width: `${Math.round((data.perritos.disponibles / data.perritos.total) * 100)}%`,
+                  transition: 'width 0.5s ease'
+                }}></div>
               </div>
             </div>
           </div>
         </div>
 
         {/* Origen de Mascotas */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-semibold text-gray-900">Origen de Mascotas</h2>
-            <PieChart className="w-5 h-5 text-gray-400" />
+        <div style={{
+          backgroundColor: 'white',
+          borderRadius: '16px',
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
+          border: '1px solid rgba(0, 0, 0, 0.05)',
+          padding: '24px',
+          transition: 'all 0.3s ease'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
+            <h2 style={{ 
+              fontSize: '1.125rem', 
+              fontWeight: '600', 
+              color: '#0f172a',
+              margin: 0,
+              fontFamily: 'Albert Sans, sans-serif'
+            }}>Origen de Mascotas</h2>
+            <PieChart style={{ width: '20px', height: '20px', color: '#94a3b8' }} />
           </div>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-              <div className="flex items-center">
-                <div className="w-3 h-3 bg-blue-500 rounded-full mr-3"></div>
-                <span className="text-sm font-medium text-gray-700">Entrega Voluntaria</span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '12px',
+              backgroundColor: '#eff6ff',
+              borderRadius: '12px',
+              border: '1px solid #dbeafe'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div style={{
+                  width: '12px',
+                  height: '12px',
+                  backgroundColor: '#3b82f6',
+                  borderRadius: '50%',
+                  marginRight: '12px'
+                }}></div>
+                <span style={{
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  color: '#374151',
+                  fontFamily: 'Poppins, sans-serif'
+                }}>Entrega Voluntaria</span>
               </div>
-              <span className="text-lg font-semibold text-gray-900">{data.perritos.porTipoIngreso.entregaVoluntaria}</span>
+              <span style={{
+                fontSize: '1.125rem',
+                fontWeight: '600',
+                color: '#0f172a',
+                fontFamily: 'Albert Sans, sans-serif'
+              }}>{data.perritos.porTipoIngreso.entregaVoluntaria}</span>
             </div>
-            <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-              <div className="flex items-center">
-                <div className="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
-                <span className="text-sm font-medium text-gray-700">Rescate</span>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '12px',
+              backgroundColor: '#f0fdf4',
+              borderRadius: '12px',
+              border: '1px solid #d1fae5'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div style={{
+                  width: '12px',
+                  height: '12px',
+                  backgroundColor: '#22c55e',
+                  borderRadius: '50%',
+                  marginRight: '12px'
+                }}></div>
+                <span style={{
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  color: '#374151',
+                  fontFamily: 'Poppins, sans-serif'
+                }}>Rescate</span>
               </div>
-              <span className="text-lg font-semibold text-gray-900">{data.perritos.porTipoIngreso.rescate}</span>
+              <span style={{
+                fontSize: '1.125rem',
+                fontWeight: '600',
+                color: '#0f172a',
+                fontFamily: 'Albert Sans, sans-serif'
+              }}>{data.perritos.porTipoIngreso.rescate}</span>
             </div>
-            <div className="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
-              <div className="flex items-center">
-                <div className="w-3 h-3 bg-orange-500 rounded-full mr-3"></div>
-                <span className="text-sm font-medium text-gray-700">Decomiso</span>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '12px',
+              backgroundColor: '#fff7ed',
+              borderRadius: '12px',
+              border: '1px solid #fed7aa'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div style={{
+                  width: '12px',
+                  height: '12px',
+                  backgroundColor: '#f97316',
+                  borderRadius: '50%',
+                  marginRight: '12px'
+                }}></div>
+                <span style={{
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  color: '#374151',
+                  fontFamily: 'Poppins, sans-serif'
+                }}>Decomiso</span>
               </div>
-              <span className="text-lg font-semibold text-gray-900">{data.perritos.porTipoIngreso.decomiso}</span>
+              <span style={{
+                fontSize: '1.125rem',
+                fontWeight: '600',
+                color: '#0f172a',
+                fontFamily: 'Albert Sans, sans-serif'
+              }}>{data.perritos.porTipoIngreso.decomiso}</span>
             </div>
           </div>
         </div>
 
         {/* Gastos por Categoría */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-semibold text-gray-900">Gastos del Mes</h2>
-            <BarChart3 className="w-5 h-5 text-gray-400" />
+        <div style={{
+          backgroundColor: 'white',
+          borderRadius: '16px',
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
+          border: '1px solid rgba(0, 0, 0, 0.05)',
+          padding: '24px',
+          transition: 'all 0.3s ease'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
+            <h2 style={{ 
+              fontSize: '1.125rem', 
+              fontWeight: '600', 
+              color: '#0f172a',
+              margin: 0,
+              fontFamily: 'Albert Sans, sans-serif'
+            }}>Gastos del Mes</h2>
+            <BarChart3 style={{ width: '20px', height: '20px', color: '#94a3b8' }} />
           </div>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between p-3 bg-purple-50 rounded-lg">
-              <div className="flex items-center">
-                <Package className="w-4 h-4 text-purple-600 mr-3" />
-                <span className="text-sm font-medium text-gray-700">Alimento</span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '12px',
+              backgroundColor: '#faf5ff',
+              borderRadius: '12px',
+              border: '1px solid #e9d5ff'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Package style={{ width: '16px', height: '16px', color: '#9333ea', marginRight: '12px' }} />
+                <span style={{
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  color: '#374151',
+                  fontFamily: 'Poppins, sans-serif'
+                }}>Alimento</span>
               </div>
-              <span className="text-lg font-semibold text-gray-900">${data.insumos.categorias.alimento.toLocaleString()}</span>
+              <span style={{
+                fontSize: '1.125rem',
+                fontWeight: '600',
+                color: '#0f172a',
+                fontFamily: 'Albert Sans, sans-serif'
+              }}>${data.insumos.categorias.alimento.toLocaleString()}</span>
             </div>
-            <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg">
-              <div className="flex items-center">
-                <Syringe className="w-4 h-4 text-red-600 mr-3" />
-                <span className="text-sm font-medium text-gray-700">Medicamentos</span>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '12px',
+              backgroundColor: '#fef2f2',
+              borderRadius: '12px',
+              border: '1px solid #fecaca'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Syringe style={{ width: '16px', height: '16px', color: '#dc2626', marginRight: '12px' }} />
+                <span style={{
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  color: '#374151',
+                  fontFamily: 'Poppins, sans-serif'
+                }}>Medicamentos</span>
               </div>
-              <span className="text-lg font-semibold text-gray-900">${data.insumos.categorias.medicamento.toLocaleString()}</span>
+              <span style={{
+                fontSize: '1.125rem',
+                fontWeight: '600',
+                color: '#0f172a',
+                fontFamily: 'Albert Sans, sans-serif'
+              }}>${data.insumos.categorias.medicamento.toLocaleString()}</span>
             </div>
-            <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-              <div className="flex items-center">
-                <Activity className="w-4 h-4 text-blue-600 mr-3" />
-                <span className="text-sm font-medium text-gray-700">Limpieza</span>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '12px',
+              backgroundColor: '#eff6ff',
+              borderRadius: '12px',
+              border: '1px solid #dbeafe'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Activity style={{ width: '16px', height: '16px', color: '#2563eb', marginRight: '12px' }} />
+                <span style={{
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  color: '#374151',
+                  fontFamily: 'Poppins, sans-serif'
+                }}>Limpieza</span>
               </div>
-              <span className="text-lg font-semibold text-gray-900">${data.insumos.categorias.limpieza.toLocaleString()}</span>
+              <span style={{
+                fontSize: '1.125rem',
+                fontWeight: '600',
+                color: '#0f172a',
+                fontFamily: 'Albert Sans, sans-serif'
+              }}>${data.insumos.categorias.limpieza.toLocaleString()}</span>
             </div>
           </div>
         </div>

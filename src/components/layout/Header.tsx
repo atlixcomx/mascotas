@@ -63,11 +63,13 @@ export default function Header() {
           height: '80px'
         }}>
           {/* Logo y título */}
-          <div style={{
+          <a href="/" style={{
             display: 'flex',
             alignItems: 'center',
             gap: '16px',
-            flex: 1
+            flex: 1,
+            textDecoration: 'none',
+            cursor: 'pointer'
           }}>
             <div style={{
               width: '60px',
@@ -76,7 +78,8 @@ export default function Header() {
               alignItems: 'center',
               justifyContent: 'center',
               minWidth: '60px',
-              position: 'relative'
+              position: 'relative',
+              transition: 'transform 0.2s ease'
             }}>
               <CentroAdopcionLogo size={60} />
             </div>
@@ -97,41 +100,14 @@ export default function Header() {
                 fontWeight: '500'
               }}>H. Ayuntamiento de Atlixco</p>
             </div>
-          </div>
+          </a>
 
           {/* Navegación desktop */}
           <nav className="desktop-nav" style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '32px'
+            gap: '16px'
           }}>
-            <a href="#adoptar" style={{
-              color: '#4a4a4a',
-              textDecoration: 'none',
-              fontWeight: '500',
-              padding: '8px 0',
-              transition: 'color 0.2s'
-            }}>
-              Adoptar
-            </a>
-            <a href="#proceso" style={{
-              color: '#4a4a4a',
-              textDecoration: 'none',
-              fontWeight: '500',
-              padding: '8px 0',
-              transition: 'color 0.2s'
-            }}>
-              Nuestro Proceso
-            </a>
-            <a href="#voluntariado" style={{
-              color: '#4a4a4a',
-              textDecoration: 'none',
-              fontWeight: '500',
-              padding: '8px 0',
-              transition: 'color 0.2s'
-            }}>
-              Voluntariado
-            </a>
             <a href="/perritos" style={{
               backgroundColor: '#0e312d',
               color: 'white',
@@ -256,7 +232,7 @@ export default function Header() {
 
         <nav style={{ padding: '20px 0' }}>
           <a
-            href="#adoptar"
+            href="/"
             onClick={closeMobileMenu}
             style={{
               display: 'block',
@@ -269,39 +245,7 @@ export default function Header() {
               transition: 'background-color 0.2s'
             }}
           >
-            <HomeIcon size={18} color="#1a1a1a" /> Adoptar
-          </a>
-          <a
-            href="#proceso"
-            onClick={closeMobileMenu}
-            style={{
-              display: 'block',
-              padding: '16px 20px',
-              color: '#1a1a1a',
-              textDecoration: 'none',
-              fontWeight: '500',
-              fontSize: '16px',
-              borderBottom: '1px solid #f3f4f6',
-              transition: 'background-color 0.2s'
-            }}
-          >
-            <FormIcon size={18} color="#1a1a1a" /> Nuestro Proceso
-          </a>
-          <a
-            href="#voluntariado"
-            onClick={closeMobileMenu}
-            style={{
-              display: 'block',
-              padding: '16px 20px',
-              color: '#1a1a1a',
-              textDecoration: 'none',
-              fontWeight: '500',
-              fontSize: '16px',
-              borderBottom: '1px solid #f3f4f6',
-              transition: 'background-color 0.2s'
-            }}
-          >
-            <HandshakeIcon size={18} color="#1a1a1a" /> Voluntariado
+            <HomeIcon size={18} color="#1a1a1a" /> Inicio
           </a>
           <a
             href="/perritos"
@@ -361,6 +305,10 @@ export default function Header() {
         
         .mobile-menu-button:hover {
           background-color: #f3f4f6;
+        }
+        
+        a:hover div[style*="transition"] {
+          transform: scale(1.05) !important;
         }
       `}</style>
     </header>

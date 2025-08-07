@@ -15,6 +15,12 @@ export default function Home() {
     exito: 0,
     dias: 0
   })
+  const [isVisible, setIsVisible] = useState(false)
+
+  // Animación de entrada
+  useEffect(() => {
+    setIsVisible(true)
+  }, [])
 
   // Animación de contadores
   useEffect(() => {
@@ -51,7 +57,11 @@ export default function Home() {
   }, []);
 
   return (
-    <div>
+    <div style={{ 
+      opacity: isVisible ? 1 : 0, 
+      transform: isVisible ? 'translateY(0)' : 'translateY(20px)', 
+      transition: 'all 0.8s ease-out' 
+    }}>
       {/* Hero Section */}
       <section style={{
         minHeight: '85vh',
@@ -97,7 +107,9 @@ export default function Home() {
           gap: '60px',
           alignItems: 'center'
         }}>
-          <div>
+          <div style={{
+            animation: 'slideInLeft 1s ease-out 0.2s both'
+          }}>
             <h1 style={{
               fontSize: 'clamp(42px, 5vw, 72px)',
               fontWeight: '800',
@@ -166,6 +178,7 @@ export default function Home() {
 
           {/* Ecosistema visual */}
           <div style={{
+            animation: 'slideInRight 1s ease-out 0.4s both',
             display: 'grid',
             gridTemplateColumns: 'repeat(2, 1fr)',
             gap: '24px'
@@ -786,6 +799,102 @@ export default function Home() {
           </a>
         </div>
       </section>
+      
+      {/* Animaciones CSS */}
+      <style jsx>{`
+        @keyframes slideInLeft {
+          from {
+            opacity: 0;
+            transform: translateX(-50px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+        
+        @keyframes slideInRight {
+          from {
+            opacity: 0;
+            transform: translateX(50px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+        
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        @keyframes scaleIn {
+          from {
+            opacity: 0;
+            transform: scale(0.8);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+        
+        @keyframes float {
+          0%, 100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-10px);
+          }
+        }
+        
+        /* Animaciones para elementos */
+        section:nth-child(2) > div {
+          animation: fadeInUp 0.8s ease-out 0.8s both;
+        }
+        
+        section:nth-child(3) > div > div:nth-child(2) > div {
+          animation: scaleIn 0.6s ease-out calc(1s + var(--delay, 0s)) both;
+        }
+        
+        section:nth-child(3) > div > div:nth-child(2) > div:nth-child(1) { --delay: 0s; }
+        section:nth-child(3) > div > div:nth-child(2) > div:nth-child(2) { --delay: 0.1s; }
+        section:nth-child(3) > div > div:nth-child(2) > div:nth-child(3) { --delay: 0.2s; }
+        section:nth-child(3) > div > div:nth-child(2) > div:nth-child(4) { --delay: 0.3s; }
+        
+        section:nth-child(4) > div > div:nth-child(2) > div {
+          animation: fadeInUp 0.6s ease-out calc(1.2s + var(--step-delay, 0s)) both;
+        }
+        
+        section:nth-child(4) > div > div:nth-child(2) > div:nth-child(1) { --step-delay: 0s; }
+        section:nth-child(4) > div > div:nth-child(2) > div:nth-child(2) { --step-delay: 0.1s; }
+        section:nth-child(4) > div > div:nth-child(2) > div:nth-child(3) { --step-delay: 0.2s; }
+        section:nth-child(4) > div > div:nth-child(2) > div:nth-child(4) { --step-delay: 0.3s; }
+        
+        /* Hover animations */
+        div[style*="cursor: default"]:hover {
+          animation: float 2s ease-in-out infinite;
+        }
+        
+        button:hover, a[style*="backgroundColor"]:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+        }
+        
+        /* Parallax effect on scroll */
+        @media (prefers-reduced-motion: no-preference) {
+          section:first-child {
+            will-change: transform;
+          }
+        }
+      `}</style>
     </div>
   );
 }

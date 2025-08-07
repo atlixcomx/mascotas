@@ -1,5 +1,12 @@
 /* Dashboard Module Styles */
 
+/* Fix para contraste de texto en el contenido */
+.p-6 {
+  padding: 1.5rem !important;
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
 /* Estilos específicos para corregir colores de fondo */
 .bg-blue-50 { background-color: #eff6ff !important; }
 .bg-green-50 { background-color: #f0fdf4 !important; }
@@ -24,6 +31,9 @@
 .text-gray-600 { color: #4b5563 !important; }
 .text-gray-700 { color: #374151 !important; }
 .text-gray-900 { color: #111827 !important; }
+.text-slate-300 { color: #cbd5e1 !important; }
+.text-slate-400 { color: #94a3b8 !important; }
+.text-slate-500 { color: #64748b !important; }
 .text-slate-600 { color: #475569 !important; }
 .text-slate-700 { color: #334155 !important; }
 .text-slate-900 { color: #0f172a !important; }
@@ -228,6 +238,37 @@
 /* Additional background colors */
 .bg-white { background-color: #ffffff !important; }
 .bg-atlixco-50 { background-color: #f0fdfa !important; }
+
+/* Contenedor principal del contenido */
+.admin-content-wrapper {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+  min-height: 100vh;
+}
+
+/* Asegurar que todos los elementos tengan el color correcto */
+.admin-content-wrapper * {
+  color: inherit;
+}
+
+/* Títulos específicos */
+h1, h2, h3, h4, h5, h6 {
+  color: #0f172a !important;
+}
+
+/* Párrafos y texto normal */
+p, span, div {
+  color: inherit;
+}
+
+/* Links en el admin */
+.admin-content-wrapper a {
+  color: #2563eb !important;
+}
+
+.admin-content-wrapper a:hover {
+  color: #1d4ed8 !important;
+}
 
 /* Fix for color classes in template literals */
 .bg-blue-100 { background-color: #dbeafe !important; }

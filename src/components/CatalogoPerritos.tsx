@@ -14,21 +14,8 @@ import {
   CheckCircleIcon, ArrowRightIcon, ClockIcon
 } from './icons/Icons'
 
-// URLs de imágenes de perros de internet para previsualización
-const dogImages = [
-  'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&auto=format&fit=crop&q=60',
-  'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=800&auto=format&fit=crop&q=60',
-  'https://images.unsplash.com/photo-1601979031925-424e53b6caaa?w=800&auto=format&fit=crop&q=60',
-  'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=800&auto=format&fit=crop&q=60',
-  'https://images.unsplash.com/photo-1555325753-94dc8248d7e7?w=800&auto=format&fit=crop&q=60',
-  'https://images.unsplash.com/photo-1517849845537-4d257902454a?w=800&auto=format&fit=crop&q=60',
-  'https://images.unsplash.com/photo-1596492784531-6e6eb5ea9993?w=800&auto=format&fit=crop&q=60',
-  'https://images.unsplash.com/photo-1561037404-61cd46aa615b?w=800&auto=format&fit=crop&q=60',
-  'https://images.unsplash.com/photo-1574158622682-e40e69881006?w=800&auto=format&fit=crop&q=60',
-  'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=800&auto=format&fit=crop&q=60',
-  'https://images.unsplash.com/photo-1537151625747-768eb6cf92b2?w=800&auto=format&fit=crop&q=60',
-  'https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?w=800&auto=format&fit=crop&q=60'
-]
+// URL de imagen estándar para todos los perritos
+const defaultDogImage = 'https://somosmaka.com/cdn/shop/articles/perro_mestizo.jpg?v=1697855331'
 
 export default function CatalogoPerritos() {
   const searchParams = useSearchParams()
@@ -269,7 +256,7 @@ export default function CatalogoPerritos() {
                   overflow: 'hidden'
                 }}>
                   <Image
-                    src={perrito.fotoPrincipal || dogImages[index % dogImages.length]}
+                    src={perrito.fotoPrincipal || defaultDogImage}
                     alt={perrito.nombre}
                     width={400}
                     height={280}

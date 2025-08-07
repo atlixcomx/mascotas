@@ -18,13 +18,8 @@ interface PageProps {
   params: { slug: string }
 }
 
-// URLs de imágenes de perros de internet para previsualización
-const dogImages = [
-  'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&auto=format&fit=crop&q=60',
-  'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=800&auto=format&fit=crop&q=60',
-  'https://images.unsplash.com/photo-1601979031925-424e53b6caaa?w=800&auto=format&fit=crop&q=60',
-  'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=800&auto=format&fit=crop&q=60'
-]
+// URL de imagen estándar para todos los perritos
+const defaultDogImage = 'https://somosmaka.com/cdn/shop/articles/perro_mestizo.jpg?v=1697855331'
 
 export default function PerritoDetailPage({ params }: PageProps) {
   const [selectedImage, setSelectedImage] = useState(0)
@@ -68,7 +63,7 @@ export default function PerritoDetailPage({ params }: PageProps) {
     notFound()
   }
 
-  const allImages = [perrito.fotoPrincipal, ...(perrito.fotos || [])].filter(Boolean).concat(dogImages).slice(0, 5)
+  const allImages = [perrito.fotoPrincipal || defaultDogImage, ...(perrito.fotos || [])].filter(Boolean)
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f8f9fa' }}>
@@ -81,7 +76,7 @@ export default function PerritoDetailPage({ params }: PageProps) {
         overflow: 'hidden'
       }}>
         <Image
-          src={allImages[selectedImage] || dogImages[0]}
+          src={allImages[selectedImage] || defaultDogImage}
           alt={perrito.nombre}
           fill
           style={{
@@ -230,7 +225,7 @@ export default function PerritoDetailPage({ params }: PageProps) {
                     }}
                   >
                     <Image
-                      src={img || dogImages[index % dogImages.length]}
+                      src={img || defaultDogImage}
                       alt={`${perrito.nombre} ${index + 1}`}
                       width={80}
                       height={80}
@@ -305,7 +300,7 @@ export default function PerritoDetailPage({ params }: PageProps) {
                 <div>
                   <p style={{ fontSize: '14px', color: '#666', marginBottom: '4px' }}>Ingreso</p>
                   <p style={{ fontSize: '18px', fontWeight: '600', color: '#0e312d' }}>
-                    {new Date(perrito.fechaIngreso).toLocaleDateString('es-MX', { month: 'short', year: 'numeric' })}
+                    {perrito.fechaIngreso ? new Date(perrito.fechaIngreso).toLocaleDateString('es-MX', { month: 'short', year: 'numeric' }) : 'No especificado'}
                   </p>
                 </div>
               </div>
@@ -639,7 +634,7 @@ export default function PerritoDetailPage({ params }: PageProps) {
                     overflow: 'hidden'
                   }}>
                     <Image
-                      src={similar.fotoPrincipal || dogImages[index % dogImages.length]}
+                      src={similar.fotoPrincipal || defaultDogImage}
                       alt={similar.nombre}
                       fill
                       style={{

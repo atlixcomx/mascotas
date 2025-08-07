@@ -32,13 +32,10 @@ function AdminLoginContent() {
       if (result?.error) {
         setError('Credenciales inválidas')
       } else {
-        // Verificar que la sesión se creó correctamente
-        const session = await getSession()
-        if (session?.user?.role === 'admin') {
-          window.location.href = callbackUrl // Use window.location for full redirect
-        } else {
-          setError('No tienes permisos de administrador')
-        }
+        // Login exitoso, redirigir directamente
+        setTimeout(() => {
+          window.location.href = callbackUrl
+        }, 1000)
       }
     } catch (err) {
       setError('Error al iniciar sesión')

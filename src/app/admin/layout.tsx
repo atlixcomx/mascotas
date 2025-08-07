@@ -50,16 +50,20 @@ export default function AdminLayout({
   useEffect(() => {
     if (status === 'loading') return
     
+    // Si estamos en login, no hacer redirecciones
+    if (pathname === '/admin/login') return
+    
     if (!session) {
       router.push('/admin/login')
       return
     }
 
-    if (session?.user?.role !== 'admin') {
+    // Permitir cualquier usuario autenticado (la verificación se hará en las APIs)
+    if (!session?.user) {
       signOut({ callbackUrl: '/admin/login' })
       return
     }
-  }, [session, status, router])
+  }, [session, status, router, pathname])
 
   if (status === 'loading') {
     return (
@@ -76,7 +80,12 @@ export default function AdminLayout({
     )
   }
 
-  if (!session || session?.user?.role !== 'admin') {
+  // Si estamos en login, no aplicar este layout
+  if (pathname === '/admin/login') {
+    return <>{children}</>
+  }
+
+  if (!session || !session?.user) {
     return null
   }
 

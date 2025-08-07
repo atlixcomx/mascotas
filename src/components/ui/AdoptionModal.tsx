@@ -111,7 +111,7 @@ export default function AdoptionModal({ isOpen, onClose, dogName = "Rocky", dogI
       zIndex: 9999,
       padding: '20px'
     }}>
-      <div style={{
+      <div className="modal-content" style={{
         background: 'white',
         borderRadius: '24px',
         width: '100%',
@@ -123,7 +123,7 @@ export default function AdoptionModal({ isOpen, onClose, dogName = "Rocky", dogI
         animation: 'modalSlideIn 0.3s ease-out'
       }}>
         {/* Header */}
-        <div style={{
+        <div className="modal-header" style={{
           background: 'linear-gradient(135deg, #6b3838 0%, #8b4848 100%)',
           color: 'white',
           padding: '24px 32px',
@@ -193,76 +193,93 @@ export default function AdoptionModal({ isOpen, onClose, dogName = "Rocky", dogI
         </div>
 
         {/* Progress */}
-        <div style={{
-          display: 'flex',
-          padding: '0 32px',
-          background: '#f8f9fa'
+        <div className="progress-container" style={{
+          padding: '24px 32px',
+          background: '#f8f9fa',
+          borderBottom: '1px solid #e5e7eb'
         }}>
-          {steps.map((step, index) => (
-            <div 
-              key={index}
-              style={{
-                flex: 1,
-                display: 'flex',
-                alignItems: 'center',
-                padding: '20px 0',
-                position: 'relative'
-              }}
-            >
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                position: 'relative',
-                zIndex: 2
-              }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            maxWidth: '500px',
+            margin: '0 auto',
+            position: 'relative'
+          }}>
+            {/* Progress bar background */}
+            <div style={{
+              position: 'absolute',
+              top: '20px',
+              left: '20px',
+              right: '20px',
+              height: '3px',
+              background: '#e5e7eb',
+              borderRadius: '2px',
+              zIndex: 1
+            }} />
+            
+            {/* Progress bar fill */}
+            <div style={{
+              position: 'absolute',
+              top: '20px',
+              left: '20px',
+              width: `calc(${(currentStep / (steps.length - 1)) * 100}% - 20px + ${20 * currentStep / (steps.length - 1)}px)`,
+              height: '3px',
+              background: '#6b3838',
+              borderRadius: '2px',
+              zIndex: 2,
+              transition: 'width 0.3s ease'
+            }} />
+
+            {steps.map((step, index) => (
+              <div 
+                key={index}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  position: 'relative',
+                  zIndex: 3
+                }}
+              >
                 <div style={{
                   width: '40px',
                   height: '40px',
                   borderRadius: '50%',
-                  background: index <= currentStep ? '#6b3838' : '#e5e7eb',
+                  background: index <= currentStep ? '#6b3838' : 'white',
+                  border: `3px solid ${index <= currentStep ? '#6b3838' : '#e5e7eb'}`,
                   color: index <= currentStep ? 'white' : '#9ca3af',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  transition: 'all 0.3s'
+                  fontSize: '14px',
+                  fontWeight: '700',
+                  transition: 'all 0.3s',
+                  marginBottom: '8px'
                 }}>
                   {index < currentStep ? (
-                    <CheckCircleIcon size={20} color="white" />
+                    <CheckCircleIcon size={18} color="white" />
                   ) : (
                     index + 1
                   )}
                 </div>
-                <span style={{
-                  fontSize: '14px',
+                <span className="step-title" style={{
+                  fontSize: '12px',
                   fontWeight: '600',
-                  color: index <= currentStep ? '#6b3838' : '#9ca3af'
+                  color: index <= currentStep ? '#6b3838' : '#9ca3af',
+                  textAlign: 'center',
+                  maxWidth: '80px',
+                  lineHeight: '1.2'
                 }}>
                   {step.title}
                 </span>
               </div>
-              
-              {/* Connector line */}
-              {index < steps.length - 1 && (
-                <div style={{
-                  position: 'absolute',
-                  top: '40px',
-                  left: 'calc(50% + 60px)',
-                  right: 'calc(-50% + 60px)',
-                  height: '2px',
-                  background: index < currentStep ? '#6b3838' : '#e5e7eb',
-                  transition: 'background 0.3s',
-                  zIndex: 1
-                }} />
-              )}
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
         {/* Content */}
-        <div style={{
+        <div className="modal-body" style={{
           padding: '32px',
           maxHeight: '60vh',
           overflowY: 'auto'
@@ -543,56 +560,84 @@ export default function AdoptionModal({ isOpen, onClose, dogName = "Rocky", dogI
                   <option value="todo-el-dia">Todo el día</option>
                 </select>
               </div>
-              <div style={{ marginBottom: '20px' }}>
-                <label style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '12px',
-                  fontSize: '16px',
-                  fontWeight: '500',
-                  cursor: 'pointer'
+              <div style={{
+                background: '#f8f9fa',
+                padding: '20px',
+                borderRadius: '12px',
+                border: '2px solid #e5e7eb',
+                marginBottom: '20px'
+              }}>
+                <h4 style={{
+                  fontSize: '18px',
+                  fontWeight: '600',
+                  color: '#374151',
+                  marginBottom: '16px'
                 }}>
-                  <input
-                    type="checkbox"
-                    checked={formData.comprometimiento}
-                    onChange={(e) => handleInputChange('comprometimiento', e.target.checked)}
-                    style={{
-                      width: '18px',
-                      height: '18px',
-                      accentColor: '#6b3838'
-                    }}
-                  />
-                  Me comprometo a cuidar a {dogName} de por vida *
-                </label>
-              </div>
-              <div>
-                <label style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '12px',
-                  fontSize: '16px',
-                  fontWeight: '500',
-                  cursor: 'pointer'
-                }}>
-                  <input
-                    type="checkbox"
-                    checked={formData.visitasVeterinario}
-                    onChange={(e) => handleInputChange('visitasVeterinario', e.target.checked)}
-                    style={{
-                      width: '18px',
-                      height: '18px',
-                      accentColor: '#6b3838'
-                    }}
-                  />
-                  Me comprometo a llevarlo al veterinario cuando sea necesario *
-                </label>
+                  Compromisos de Adopción
+                </h4>
+                <div style={{ marginBottom: '16px' }}>
+                  <label style={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: '12px',
+                    fontSize: '16px',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    color: '#374151',
+                    lineHeight: '1.5'
+                  }}>
+                    <input
+                      type="checkbox"
+                      checked={formData.comprometimiento}
+                      onChange={(e) => handleInputChange('comprometimiento', e.target.checked)}
+                      style={{
+                        width: '20px',
+                        height: '20px',
+                        accentColor: '#6b3838',
+                        marginTop: '2px',
+                        flexShrink: 0
+                      }}
+                    />
+                    <span style={{ flex: 1 }}>
+                      Me comprometo a cuidar a <strong>{dogName}</strong> de por vida, proporcionándole amor, cuidados y un hogar estable. *
+                    </span>
+                  </label>
+                </div>
+                <div>
+                  <label style={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: '12px',
+                    fontSize: '16px',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    color: '#374151',
+                    lineHeight: '1.5'
+                  }}>
+                    <input
+                      type="checkbox"
+                      checked={formData.visitasVeterinario}
+                      onChange={(e) => handleInputChange('visitasVeterinario', e.target.checked)}
+                      style={{
+                        width: '20px',
+                        height: '20px',
+                        accentColor: '#6b3838',
+                        marginTop: '2px',
+                        flexShrink: 0
+                      }}
+                    />
+                    <span style={{ flex: 1 }}>
+                      Me comprometo a llevarlo al veterinario cuando sea necesario y mantener su salud al día. *
+                    </span>
+                  </label>
+                </div>
               </div>
             </div>
           )}
         </div>
 
         {/* Footer */}
-        <div style={{
+        <div className="modal-footer" style={{
           padding: '24px 32px',
           borderTop: '1px solid #e5e7eb',
           display: 'flex',
@@ -683,6 +728,46 @@ export default function AdoptionModal({ isOpen, onClose, dogName = "Rocky", dogI
             outline: none;
             border-color: #6b3838 !important;
             box-shadow: 0 0 0 3px rgba(107, 56, 56, 0.1);
+          }
+          
+          @media (max-width: 768px) {
+            .modal-container {
+              margin: 10px !important;
+              max-height: 95vh !important;
+            }
+            
+            .modal-content {
+              border-radius: 16px !important;
+              max-width: 95vw !important;
+            }
+            
+            .progress-container {
+              padding: 16px 20px !important;
+            }
+            
+            .step-title {
+              font-size: 10px !important;
+              max-width: 60px !important;
+            }
+            
+            .modal-header {
+              padding: 20px 24px !important;
+            }
+            
+            .modal-body {
+              padding: 24px 20px !important;
+            }
+            
+            .modal-footer {
+              padding: 20px 24px !important;
+              flex-direction: column !important;
+              gap: 16px !important;
+            }
+            
+            .modal-footer button {
+              width: 100% !important;
+              justify-content: center !important;
+            }
           }
         `}</style>
       </div>

@@ -56,7 +56,9 @@ export default function AdminLogin() {
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
-      padding: '20px'
+      padding: '20px',
+      colorScheme: 'light',
+      color: '#374151'
     }}>
       {/* Header */}
       <div style={{
@@ -279,7 +281,19 @@ export default function AdminLogin() {
       </div>
 
       {/* CSS Animations */}
-      <style jsx>{`
+      <style jsx global>{`
+        html, body {
+          background-color: #f3f4f6 !important;
+          color: #374151 !important;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+          html, body {
+            background-color: #f3f4f6 !important;
+            color: #374151 !important;
+          }
+        }
+        
         @keyframes spin {
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }

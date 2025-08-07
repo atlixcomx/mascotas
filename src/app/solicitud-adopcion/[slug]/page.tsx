@@ -90,8 +90,10 @@ export default function SolicitudAdopcionPage({ params }: PageProps) {
   const handleSubmit = () => {
     // Aquí se enviaría la solicitud
     console.log('Solicitud enviada:', formData)
-    alert('¡Solicitud enviada exitosamente! Te contactaremos pronto.')
-    router.push(`/perritos/${params.slug}`)
+    
+    // Redirigir a página de agradecimiento con datos del perrito
+    const thankYouUrl = `/solicitud-adopcion/gracias?dog=${encodeURIComponent(perrito.nombre)}&image=${encodeURIComponent(perrito.fotoPrincipal || defaultDogImage)}`
+    router.push(thankYouUrl)
   }
 
   if (loading) {

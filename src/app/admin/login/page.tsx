@@ -48,7 +48,16 @@ export default function AdminLogin() {
   }
 
   return (
-    <div className="admin-login-container">
+    <div className="admin-login-container" style={{
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: 'linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%)',
+      position: 'relative',
+      overflow: 'hidden',
+      padding: '20px'
+    }}>
       {/* Patrones decorativos de fondo */}
       <div className="admin-background-patterns">
         <div className="pattern-diamond pattern-1"></div>
@@ -63,8 +72,20 @@ export default function AdminLogin() {
       {/* Gradiente de fondo */}
       <div className="admin-gradient-overlay"></div>
 
-      <div className="admin-login-wrapper">
-        <div className="admin-login-card">
+      <div className="admin-login-wrapper" style={{
+        position: 'relative',
+        zIndex: 10,
+        width: '100%',
+        maxWidth: '480px'
+      }}>
+        <div className="admin-login-card" style={{
+          background: 'white',
+          borderRadius: '24px',
+          boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)',
+          padding: '48px',
+          position: 'relative',
+          overflow: 'hidden'
+        }}>
           {/* Header gubernamental */}
           <div className="admin-header">
             {/* Logo oficial */}
@@ -95,12 +116,17 @@ export default function AdminLogin() {
           </div>
 
           {/* Formulario de login */}
-          <form onSubmit={handleSubmit} className="admin-form">
+          <form onSubmit={handleSubmit} className="admin-form" style={{
+            marginTop: '48px'
+          }}>
             <div className="admin-form-group">
               <label className="admin-label">
                 Correo Institucional
               </label>
-              <div className="admin-input-wrapper">
+              <div className="admin-input-wrapper" style={{
+                position: 'relative',
+                marginTop: '8px'
+              }}>
                 <input
                   type="email"
                   value={email}
@@ -109,6 +135,16 @@ export default function AdminLogin() {
                   placeholder="administrador@atlixco.gob.mx"
                   required
                   autoComplete="email"
+                  style={{
+                    width: '100%',
+                    padding: '16px 20px',
+                    fontSize: '16px',
+                    border: '2px solid #e5e7eb',
+                    borderRadius: '12px',
+                    background: '#fafafa',
+                    outline: 'none',
+                    transition: 'all 0.3s ease'
+                  }}
                 />
                 <div className="admin-input-border"></div>
               </div>
@@ -118,7 +154,10 @@ export default function AdminLogin() {
               <label className="admin-label">
                 Contraseña de Acceso
               </label>
-              <div className="admin-input-wrapper">
+              <div className="admin-input-wrapper" style={{
+                position: 'relative',
+                marginTop: '8px'
+              }}>
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
@@ -127,11 +166,32 @@ export default function AdminLogin() {
                   placeholder="••••••••••••"
                   required
                   autoComplete="current-password"
+                  style={{
+                    width: '100%',
+                    padding: '16px 50px 16px 20px',
+                    fontSize: '16px',
+                    border: '2px solid #e5e7eb',
+                    borderRadius: '12px',
+                    background: '#fafafa',
+                    outline: 'none',
+                    transition: 'all 0.3s ease'
+                  }}
                 />
                 <button
                   type="button"
                   className="admin-password-toggle"
                   onClick={() => setShowPassword(!showPassword)}
+                  style={{
+                    position: 'absolute',
+                    right: '16px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    color: '#6b7280',
+                    padding: '8px'
+                  }}
                 >
                   {showPassword ? (
                     <EyeOff className="password-icon" />
@@ -154,6 +214,24 @@ export default function AdminLogin() {
               type="submit"
               disabled={loading}
               className="admin-submit-button"
+              style={{
+                width: '100%',
+                padding: '18px',
+                marginTop: '32px',
+                background: 'linear-gradient(135deg, #7d2447 0%, #9b2758 100%)',
+                color: 'white',
+                border: 'none',
+                borderRadius: '12px',
+                fontSize: '16px',
+                fontWeight: '600',
+                cursor: loading ? 'not-allowed' : 'pointer',
+                opacity: loading ? 0.7 : 1,
+                transition: 'all 0.3s ease',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px'
+              }}
             >
               <div className="admin-button-content">
                 {loading ? (

@@ -68,7 +68,7 @@ export default function PerritoDetailPage({ params }: PageProps) {
     notFound()
   }
 
-  const allImages = [perrito.fotoPrincipal, ...(perrito.fotos || dogImages)]
+  const allImages = [perrito.fotoPrincipal, ...(perrito.fotos || [])].filter(Boolean).concat(dogImages).slice(0, 5)
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f8f9fa' }}>
@@ -204,7 +204,7 @@ export default function PerritoDetailPage({ params }: PageProps) {
               opacity: 0.9,
               marginBottom: '24px'
             }}>
-              {perrito.raza} • {perrito.edad} • {perrito.sexo}
+              {(perrito.raza || 'Mestizo')} • {(perrito.edad || 'Sin especificar')} • {(perrito.sexo || 'Sin especificar')}
             </p>
 
             {/* Image thumbnails */}
@@ -290,16 +290,16 @@ export default function PerritoDetailPage({ params }: PageProps) {
               }}>
                 <div>
                   <p style={{ fontSize: '14px', color: '#666', marginBottom: '4px' }}>Tamaño</p>
-                  <p style={{ fontSize: '18px', fontWeight: '600', color: '#0e312d' }}>{perrito.tamano}</p>
+                  <p style={{ fontSize: '18px', fontWeight: '600', color: '#0e312d' }}>{perrito.tamano || 'No especificado'}</p>
                 </div>
                 <div>
                   <p style={{ fontSize: '14px', color: '#666', marginBottom: '4px' }}>Energía</p>
-                  <p style={{ fontSize: '18px', fontWeight: '600', color: '#0e312d' }}>{perrito.energia}</p>
+                  <p style={{ fontSize: '18px', fontWeight: '600', color: '#0e312d' }}>{perrito.energia || 'No especificado'}</p>
                 </div>
                 {perrito.peso && (
                   <div>
                     <p style={{ fontSize: '14px', color: '#666', marginBottom: '4px' }}>Peso</p>
-                    <p style={{ fontSize: '18px', fontWeight: '600', color: '#0e312d' }}>{perrito.peso} kg</p>
+                    <p style={{ fontSize: '18px', fontWeight: '600', color: '#0e312d' }}>{perrito.peso || 0} kg</p>
                   </div>
                 )}
                 <div>
@@ -320,7 +320,7 @@ export default function PerritoDetailPage({ params }: PageProps) {
                   flexWrap: 'wrap',
                   gap: '8px'
                 }}>
-                  {perrito.caracter.map((trait, index) => (
+                  {(perrito.caracter || []).map((trait, index) => (
                     <span
                       key={index}
                       style={{

@@ -359,11 +359,11 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto" style={{ backgroundColor: '#f8fafc', minHeight: '100vh' }}>
+    <div className="p-6 max-w-7xl mx-auto animate-fadeIn" style={{ backgroundColor: '#f8fafc', minHeight: '100vh' }}>
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Centro de Control</h1>
-        <p className="text-gray-600 mt-2">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Centro de Control</h1>
+        <p className="text-gray-600">
           Sistema de Adopción Municipal de Atlixco - {new Date().toLocaleDateString('es-MX', { 
             weekday: 'long', 
             year: 'numeric', 
@@ -625,19 +625,19 @@ export default function AdminDashboard() {
           {data.solicitudes.recientes.length > 0 ? (
             <div className="space-y-3">
               {data.solicitudes.recientes.slice(0, 5).map((solicitud) => (
-                <div key={solicitud.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div key={solicitud.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
                   <div className="flex items-center">
                     <img
                       src={solicitud.perrito?.fotoPrincipal || '/placeholder-dog.jpg'}
                       alt={solicitud.perrito?.nombre || 'Perrito'}
-                      className="w-10 h-10 rounded-full object-cover mr-3"
+                      className="w-12 h-12 rounded-full object-cover mr-3 border-2 border-white shadow-sm"
                     />
                     <div>
-                      <p className="font-medium text-gray-900">{solicitud.nombre}</p>
+                      <p className="font-semibold text-gray-900">{solicitud.nombre}</p>
                       <p className="text-sm text-gray-600">Para {solicitud.perrito?.nombre || 'Sin asignar'}</p>
                     </div>
                   </div>
-                  <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                  <span className={`px-3 py-1.5 text-xs font-semibold rounded-full ${
                     solicitud.estado === 'nueva' 
                       ? 'bg-blue-100 text-blue-700'
                       : solicitud.estado === 'revision'

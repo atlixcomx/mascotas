@@ -102,37 +102,61 @@ export default function AdminLogin() {
               </div>
             </div>
             
-            <h1 className="admin-title">
-              GOBIERNO DE LA CIUDAD
+            <h1 style={{
+              fontSize: '24px',
+              fontWeight: '800',
+              color: '#7d2447',
+              textAlign: 'center',
+              margin: '24px 0 8px 0',
+              letterSpacing: '1px'
+            }}>
+              GOBIERNO DE ATLIXCO
             </h1>
-            <div className="admin-subtitle-container">
-              <div className="admin-wings-left"></div>
-              <p className="admin-subtitle">LA CAPITAL IMPARABLE</p>
-              <div className="admin-wings-right"></div>
+            <div style={{
+              textAlign: 'center',
+              marginBottom: '8px'
+            }}>
+              <p style={{
+                fontSize: '14px',
+                fontWeight: '600',
+                color: '#9b2758',
+                margin: 0,
+                letterSpacing: '0.5px'
+              }}>LA CAPITAL IMPARABLE</p>
             </div>
-            <p className="admin-department">
-              Portal Administrativo • Centro de Adopción Atlixco
+            <p style={{
+              textAlign: 'center',
+              fontSize: '13px',
+              color: '#6b7280',
+              margin: 0,
+              fontWeight: '500'
+            }}>
+              Portal Administrativo • Centro de Adopción y Bienestar Animal
             </p>
           </div>
 
           {/* Formulario de login */}
-          <form onSubmit={handleSubmit} className="admin-form" style={{
+          <form onSubmit={handleSubmit} style={{
             marginTop: '48px'
           }}>
-            <div className="admin-form-group">
-              <label className="admin-label">
+            <div style={{ marginBottom: '24px' }}>
+              <label style={{
+                display: 'block',
+                fontSize: '14px',
+                fontWeight: '600',
+                color: '#374151',
+                marginBottom: '8px'
+              }}>
                 Correo Institucional
               </label>
-              <div className="admin-input-wrapper" style={{
-                position: 'relative',
-                marginTop: '8px'
+              <div style={{
+                position: 'relative'
               }}>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="admin-input"
-                  placeholder="administrador@atlixco.gob.mx"
+                  placeholder="admin@atlixco.gob.mx"
                   required
                   autoComplete="email"
                   style={{
@@ -143,26 +167,30 @@ export default function AdminLogin() {
                     borderRadius: '12px',
                     background: '#fafafa',
                     outline: 'none',
-                    transition: 'all 0.3s ease'
+                    transition: 'all 0.3s ease',
+                    boxSizing: 'border-box'
                   }}
                 />
-                <div className="admin-input-border"></div>
               </div>
             </div>
 
-            <div className="admin-form-group">
-              <label className="admin-label">
+            <div style={{ marginBottom: '24px' }}>
+              <label style={{
+                display: 'block',
+                fontSize: '14px',
+                fontWeight: '600',
+                color: '#374151',
+                marginBottom: '8px'
+              }}>
                 Contraseña de Acceso
               </label>
-              <div className="admin-input-wrapper" style={{
-                position: 'relative',
-                marginTop: '8px'
+              <div style={{
+                position: 'relative'
               }}>
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="admin-input admin-input-password"
                   placeholder="••••••••••••"
                   required
                   autoComplete="current-password"
@@ -174,12 +202,12 @@ export default function AdminLogin() {
                     borderRadius: '12px',
                     background: '#fafafa',
                     outline: 'none',
-                    transition: 'all 0.3s ease'
+                    transition: 'all 0.3s ease',
+                    boxSizing: 'border-box'
                   }}
                 />
                 <button
                   type="button"
-                  className="admin-password-toggle"
                   onClick={() => setShowPassword(!showPassword)}
                   style={{
                     position: 'absolute',
@@ -190,23 +218,44 @@ export default function AdminLogin() {
                     border: 'none',
                     cursor: 'pointer',
                     color: '#6b7280',
-                    padding: '8px'
+                    padding: '8px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '32px',
+                    height: '32px'
                   }}
                 >
                   {showPassword ? (
-                    <EyeOff className="password-icon" />
+                    <EyeOff style={{ width: '18px', height: '18px' }} />
                   ) : (
-                    <Eye className="password-icon" />
+                    <Eye style={{ width: '18px', height: '18px' }} />
                   )}
                 </button>
-                <div className="admin-input-border"></div>
               </div>
             </div>
 
             {error && (
-              <div className="admin-error-message">
-                <div className="admin-error-icon">⚠</div>
-                <p className="admin-error-text">{error}</p>
+              <div style={{
+                padding: '16px',
+                backgroundColor: '#fef2f2',
+                border: '1px solid #fecaca',
+                borderRadius: '8px',
+                marginBottom: '24px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px'
+              }}>
+                <div style={{
+                  fontSize: '20px',
+                  color: '#dc2626'
+                }}>⚠</div>
+                <p style={{
+                  color: '#dc2626',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  margin: 0
+                }}>{error}</p>
               </div>
             )}
 
@@ -233,32 +282,53 @@ export default function AdminLogin() {
                 gap: '8px'
               }}
             >
-              <div className="admin-button-content">
-                {loading ? (
-                  <>
-                    <div className="admin-spinner"></div>
-                    <span>Verificando credenciales...</span>
-                  </>
-                ) : (
-                  <>
-                    <Shield className="button-icon" />
-                    <span>ACCEDER AL SISTEMA</span>
-                  </>
-                )}
-              </div>
-              <div className="admin-button-glow"></div>
+              {loading ? (
+                <>
+                  <div style={{
+                    width: '16px',
+                    height: '16px',
+                    border: '2px solid rgba(255,255,255,0.3)',
+                    borderTopColor: 'white',
+                    borderRadius: '50%',
+                    animation: 'spin 1s linear infinite'
+                  }}></div>
+                  <span>Verificando credenciales...</span>
+                </>
+              ) : (
+                <>
+                  <Shield style={{ width: '18px', height: '18px' }} />
+                  <span>ACCEDER AL SISTEMA</span>
+                </>
+              )}
             </button>
           </form>
 
           {/* Footer institucional */}
-          <div className="admin-footer">
-            <div className="admin-footer-decoration"></div>
-            <p className="admin-footer-text">
+          <div style={{
+            marginTop: '40px',
+            textAlign: 'center',
+            borderTop: '1px solid #e5e7eb',
+            paddingTop: '24px'
+          }}>
+            <p style={{
+              fontSize: '12px',
+              color: '#6b7280',
+              margin: '0 0 8px 0',
+              fontWeight: '500'
+            }}>
               Sistema de Administración Gubernamental
             </p>
-            <p className="admin-footer-support">
+            <p style={{
+              fontSize: '11px',
+              color: '#9ca3af',
+              margin: 0
+            }}>
               ¿Necesita asistencia técnica?{' '}
-              <a href="mailto:soporte.ti@atlixco.gob.mx" className="admin-support-link">
+              <a href="mailto:soporte.ti@atlixco.gob.mx" style={{
+                color: '#7d2447',
+                textDecoration: 'none',
+                fontWeight: '500'
+              }}>
                 Contacte al Departamento de TI
               </a>
             </p>
@@ -266,23 +336,281 @@ export default function AdminLogin() {
         </div>
 
         {/* Información de acceso de desarrollo */}
-        <div className="admin-dev-info">
-          <div className="dev-info-header">
-            <div className="dev-info-badge">ENTORNO DE DESARROLLO</div>
+        <div style={{
+          marginTop: '24px',
+          padding: '20px',
+          backgroundColor: '#f0fdf4',
+          border: '1px solid #bbf7d0',
+          borderRadius: '12px',
+          textAlign: 'center'
+        }}>
+          <div style={{
+            marginBottom: '16px'
+          }}>
+            <div style={{
+              display: 'inline-block',
+              padding: '4px 12px',
+              backgroundColor: '#22c55e',
+              color: 'white',
+              borderRadius: '6px',
+              fontSize: '12px',
+              fontWeight: '600'
+            }}>ENTORNO DE DESARROLLO</div>
           </div>
-          <div className="dev-credentials">
-            <p className="dev-title">Credenciales de Prueba:</p>
-            <div className="dev-credential-row">
-              <span className="dev-label">Usuario:</span>
-              <code className="dev-value">admin@atlixco.gob.mx</code>
+          <div>
+            <p style={{
+              fontSize: '14px',
+              fontWeight: '600',
+              color: '#374151',
+              margin: '0 0 12px 0'
+            }}>Credenciales de Prueba:</p>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '8px'
+            }}>
+              <span style={{
+                fontSize: '13px',
+                color: '#6b7280',
+                fontWeight: '500'
+              }}>Usuario:</span>
+              <code style={{
+                padding: '4px 8px',
+                backgroundColor: '#e5e7eb',
+                borderRadius: '4px',
+                fontSize: '12px',
+                color: '#374151',
+                fontFamily: 'monospace'
+              }}>admin@atlixco.gob.mx</code>
             </div>
-            <div className="dev-credential-row">
-              <span className="dev-label">Contraseña:</span>
-              <code className="dev-value">Atlixco2024!</code>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}>
+              <span style={{
+                fontSize: '13px',
+                color: '#6b7280',
+                fontWeight: '500'
+              }}>Contraseña:</span>
+              <code style={{
+                padding: '4px 8px',
+                backgroundColor: '#e5e7eb',
+                borderRadius: '4px',
+                fontSize: '12px',
+                color: '#374151',
+                fontFamily: 'monospace'
+              }}>Atlixco2024!</code>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Estilos CSS globales */}
+      <style jsx global>{`
+        @keyframes spin {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
+
+        .admin-logo-container {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+          margin-bottom: 24px;
+        }
+
+        .admin-logo-shield {
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 80px;
+          height: 80px;
+          background: linear-gradient(135deg, #7d2447 0%, #9b2758 100%);
+          border-radius: 50%;
+          box-shadow: 0 8px 32px rgba(125, 36, 71, 0.3);
+        }
+
+        .shield-icon {
+          width: 32px;
+          height: 32px;
+          color: white;
+          position: relative;
+          z-index: 2;
+        }
+
+        .crown-icon {
+          width: 20px;
+          height: 20px;
+          color: #bfb591;
+          position: absolute;
+          top: -8px;
+          z-index: 3;
+        }
+
+        .admin-sparkle {
+          position: absolute;
+          animation: sparkle 2s ease-in-out infinite;
+        }
+
+        .admin-sparkle-1 {
+          top: -10px;
+          left: -10px;
+          animation-delay: 0s;
+        }
+
+        .admin-sparkle-2 {
+          bottom: -10px;
+          right: -10px;
+          animation-delay: 1s;
+        }
+
+        .sparkle-icon {
+          width: 16px;
+          height: 16px;
+          color: #bfb591;
+        }
+
+        @keyframes sparkle {
+          0%, 100% {
+            opacity: 0;
+            transform: scale(0.8);
+          }
+          50% {
+            opacity: 1;
+            transform: scale(1.2);
+          }
+        }
+
+        /* Patrones decorativos de fondo */
+        .admin-background-patterns {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          opacity: 0.03;
+          pointer-events: none;
+        }
+
+        .pattern-diamond {
+          position: absolute;
+          width: 40px;
+          height: 40px;
+          background: #7d2447;
+          transform: rotate(45deg);
+        }
+
+        .pattern-1 {
+          top: 10%;
+          left: 5%;
+        }
+
+        .pattern-2 {
+          top: 60%;
+          right: 15%;
+        }
+
+        .pattern-3 {
+          bottom: 20%;
+          left: 20%;
+        }
+
+        .pattern-cross {
+          position: absolute;
+          width: 30px;
+          height: 30px;
+        }
+
+        .pattern-cross::before,
+        .pattern-cross::after {
+          content: '';
+          position: absolute;
+          background: #9b2758;
+        }
+
+        .pattern-cross::before {
+          top: 0;
+          left: 50%;
+          width: 2px;
+          height: 100%;
+          transform: translateX(-50%);
+        }
+
+        .pattern-cross::after {
+          top: 50%;
+          left: 0;
+          width: 100%;
+          height: 2px;
+          transform: translateY(-50%);
+        }
+
+        .pattern-4 {
+          top: 30%;
+          right: 8%;
+        }
+
+        .pattern-5 {
+          bottom: 40%;
+          left: 8%;
+        }
+
+        .floral-pattern {
+          position: absolute;
+          width: 60px;
+          height: 60px;
+          border: 3px solid #bfb591;
+          border-radius: 50%;
+        }
+
+        .floral-1 {
+          top: 15%;
+          right: 25%;
+        }
+
+        .floral-2 {
+          bottom: 25%;
+          left: 30%;
+        }
+
+        .admin-gradient-overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: radial-gradient(circle at 30% 40%, rgba(125, 36, 71, 0.05) 0%, transparent 50%);
+          pointer-events: none;
+        }
+
+        /* Inputs focus effects */
+        input:focus {
+          border-color: #7d2447 !important;
+          box-shadow: 0 0 0 3px rgba(125, 36, 71, 0.1) !important;
+        }
+
+        /* Button hover effects */
+        button[type="submit"]:hover:not(:disabled) {
+          background: linear-gradient(135deg, #8b2750 0%, #a52d60 100%) !important;
+          transform: translateY(-2px);
+          box-shadow: 0 8px 25px rgba(125, 36, 71, 0.3) !important;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 640px) {
+          .admin-login-card {
+            padding: 32px 24px !important;
+            border-radius: 16px !important;
+          }
+        }
+      `}</style>
     </div>
   )
 }

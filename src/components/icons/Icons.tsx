@@ -131,14 +131,15 @@ export const MountainIcon = ({ size = 24, color = "currentColor" }) => (
   </svg>
 );
 
-export const BirdIcon = ({ size = 24, color = "currentColor" }) => (
+export const BirdIcon = ({ size = 24, color = "#6b3838" }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M16 7C16 9.21 14.21 11 12 11C9.79 11 8 9.21 8 7C8 4.79 9.79 3 12 3C14.21 3 16 4.79 16 7Z" 
-          stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M12 11V16L8 20" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M12 16L16 20" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M7 7C3 7 3 11 3 11" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-    <circle cx="13" cy="7" r="1" fill={color}/>
+          fill="#6b3838" stroke="#6b3838" strokeWidth="1" opacity="0.2"/>
+    <path d="M12 11V16L8 20" stroke="#6b3838" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M12 16L16 20" stroke="#6b3838" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M7 7C3 7 3 11 3 11" stroke="#6b3838" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <circle cx="13" cy="7" r="1" fill="#6b3838"/>
+    <path d="M8 7C8 7 10 5 12 3" stroke="#6b3838" strokeWidth="1.5" strokeLinecap="round" opacity="0.6"/>
   </svg>
 );
 

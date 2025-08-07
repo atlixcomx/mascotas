@@ -300,57 +300,65 @@ export default function Home() {
 
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: '32px'
+            gridTemplateColumns: 'repeat(4, 1fr)',
+            gap: '24px',
+            '@media (max-width: 1200px)': {
+              gridTemplateColumns: 'repeat(2, 1fr)'
+            },
+            '@media (max-width: 768px)': {
+              gridTemplateColumns: '1fr'
+            }
           }}>
             {[
               {
                 Icon: SearchIcon,
                 title: 'EXPLORA',
-                subtitle: 'Navega el Catálogo',
-                desc: 'Navega nuestro catálogo digital con filtros inteligentes. Conoce la historia, personalidad y necesidades de cada uno de nuestros rescatados.'
+                subtitle: 'Navega',
+                desc: 'Explora nuestro catálogo con filtros inteligentes.'
               },
               {
                 Icon: FormIcon,
                 title: 'SOLICITA',
-                subtitle: 'Inicia tu Adopción',
-                desc: 'Completa nuestra solicitud de adopción. Nuestro equipo evaluará tu perfil para encontrar el match perfecto entre tu familia y tu nuevo compañero.'
+                subtitle: 'Inicia',
+                desc: 'Completa la solicitud para encontrar el match perfecto.'
               },
               {
                 Icon: HomeIcon,
                 title: 'VISITA',
-                subtitle: 'Conoce en Persona',
-                desc: 'Ven a nuestras instalaciones para conocer a tu elegido. Interactúa en un ambiente seguro y recibe orientación de nuestros especialistas.'
+                subtitle: 'Conoce',
+                desc: 'Ven a conocer a tu elegido en persona.'
               },
               {
                 Icon: HeartIcon,
-                title: 'ACOMPAÑA',
-                subtitle: 'Seguimiento Continuo',
-                desc: 'Recibe seguimiento veterinario gratuito, apoyo en la adaptación y acceso a nuestra comunidad de adoptantes responsables.'
+                title: 'ADOPTA',
+                subtitle: 'Llévalo',
+                desc: 'Recibe apoyo continuo post-adopción.'
               }
             ].map((step, idx) => (
               <div key={idx} style={{
                 position: 'relative',
-                padding: '32px',
+                padding: '24px 20px',
                 background: '#f8f9fa',
-                borderRadius: '20px',
+                borderRadius: '16px',
                 border: '2px solid #e9ecef',
-                transition: 'all 0.3s'
+                transition: 'all 0.3s',
+                textAlign: 'center'
               }}>
                 <div style={{
                   position: 'absolute',
-                  top: '-20px',
-                  left: '32px',
-                  width: '40px',
-                  height: '40px',
-                  background: '#0e312d',
+                  top: '-15px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: '36px',
+                  height: '36px',
+                  background: '#6b3838',
                   borderRadius: '50%',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   color: 'white',
                   fontWeight: '700',
-                  fontSize: '18px'
+                  fontSize: '16px'
                 }}>{idx + 1}</div>
                 <div style={{ marginBottom: '16px' }}>
                   <step.Icon size={40} color="#bfb591" />
@@ -415,7 +423,10 @@ export default function Home() {
             background: 'white',
             borderRadius: '24px',
             padding: '48px',
-            boxShadow: '0 10px 40px rgba(0,0,0,0.05)'
+            boxShadow: '0 10px 40px rgba(0,0,0,0.05)',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(2, 1fr)',
+            gap: '32px'
           }}>
             {[
               {
@@ -447,21 +458,22 @@ export default function Home() {
               <div key={idx} style={{
                 display: 'flex',
                 alignItems: 'flex-start',
-                gap: '24px',
+                gap: '20px',
                 padding: '24px',
-                borderBottom: idx < 4 ? '1px solid #e9ecef' : 'none'
+                background: '#f8f9fa',
+                borderRadius: '16px',
+                border: '1px solid #e9ecef'
               }}>
                 <div style={{
-                  minWidth: '64px',
-                  height: '64px',
-                  background: 'linear-gradient(135deg, #e8f5f2 0%, #d4ede7 100%)',
-                  borderRadius: '16px',
+                  minWidth: '56px',
+                  height: '56px',
+                  background: 'linear-gradient(135deg, #fef5f5 0%, #fde7e7 100%)',
+                  borderRadius: '12px',
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '28px'
+                  justifyContent: 'center'
                 }}>
-                  <step.Icon size={32} color="#0e312d" />
+                  <step.Icon size={28} color="#6b3838" />
                 </div>
                 <div style={{ flex: 1 }}>
                   <h3 style={{
@@ -474,15 +486,15 @@ export default function Home() {
                     gap: '16px'
                   }}>
                     <span style={{
-                      background: '#bfb591',
+                      background: '#6b3838',
                       color: 'white',
-                      width: '32px',
-                      height: '32px',
+                      width: '28px',
+                      height: '28px',
                       borderRadius: '50%',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontSize: '16px',
+                      fontSize: '14px',
                       fontWeight: '700'
                     }}>{idx + 1}</span>
                     {step.title}
@@ -497,23 +509,31 @@ export default function Home() {
             ))}
 
             <div style={{
-              marginTop: '48px',
+              gridColumn: '1 / -1',
+              marginTop: '16px',
               padding: '32px',
-              background: 'linear-gradient(135deg, #0e312d 0%, #1a4a45 100%)',
+              background: 'linear-gradient(135deg, #6b3838 0%, #8b4848 100%)',
               borderRadius: '16px',
               textAlign: 'center',
-              color: 'white'
+              color: 'white',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '24px'
             }}>
               <CheckCircleIcon size={48} color="white" />
-              <h3 style={{
-                fontSize: '24px',
-                fontWeight: '700',
-                marginBottom: '8px'
-              }}>✓ Protocolo Veterinario Certificado</h3>
-              <p style={{
-                fontSize: '18px',
-                opacity: 0.9
-              }}>Cada adoptado sale con cartilla de vacunación completa</p>
+              <div>
+                <h3 style={{
+                  fontSize: '24px',
+                  fontWeight: '700',
+                  marginBottom: '4px'
+                }}>Protocolo Veterinario Certificado</h3>
+                <p style={{
+                  fontSize: '16px',
+                  opacity: 0.9,
+                  margin: 0
+                }}>Cada adoptado sale con cartilla de vacunación completa</p>
+              </div>
             </div>
           </div>
         </div>

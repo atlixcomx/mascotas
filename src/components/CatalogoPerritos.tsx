@@ -4,12 +4,31 @@ import { useState, useEffect, useCallback } from 'react'
 import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Heart, Eye } from 'lucide-react'
 import { usePerritos } from '../hooks/usePerritos'
 import { SearchBar, FilterPanel, FilterOptions } from './search'
 import LoadingSpinner from './ui/LoadingSpinner'
 import ErrorMessage from './ui/ErrorMessage'
 import EmptyState from './ui/EmptyState'
+import { 
+  HeartIcon, LocationIcon, DogIcon, SearchIcon,
+  CheckCircleIcon, ArrowRightIcon, ClockIcon
+} from './icons/Icons'
+
+// URLs de imágenes de perros de internet para previsualización
+const dogImages = [
+  'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&auto=format&fit=crop&q=60',
+  'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=800&auto=format&fit=crop&q=60',
+  'https://images.unsplash.com/photo-1601979031925-424e53b6caaa?w=800&auto=format&fit=crop&q=60',
+  'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=800&auto=format&fit=crop&q=60',
+  'https://images.unsplash.com/photo-1555325753-94dc8248d7e7?w=800&auto=format&fit=crop&q=60',
+  'https://images.unsplash.com/photo-1517849845537-4d257902454a?w=800&auto=format&fit=crop&q=60',
+  'https://images.unsplash.com/photo-1596492784531-6e6eb5ea9993?w=800&auto=format&fit=crop&q=60',
+  'https://images.unsplash.com/photo-1561037404-61cd46aa615b?w=800&auto=format&fit=crop&q=60',
+  'https://images.unsplash.com/photo-1574158622682-e40e69881006?w=800&auto=format&fit=crop&q=60',
+  'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=800&auto=format&fit=crop&q=60',
+  'https://images.unsplash.com/photo-1537151625747-768eb6cf92b2?w=800&auto=format&fit=crop&q=60',
+  'https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?w=800&auto=format&fit=crop&q=60'
+]
 
 export default function CatalogoPerritos() {
   const searchParams = useSearchParams()
@@ -18,6 +37,7 @@ export default function CatalogoPerritos() {
   
   const [showFilters, setShowFilters] = useState(false)
   const [favorites, setFavorites] = useState<string[]>([])
+  const [hoveredCard, setHoveredCard] = useState<string | null>(null)
 
   // Estados de filtros
   const [filters, setFilters] = useState<FilterOptions>({
@@ -123,7 +143,7 @@ export default function CatalogoPerritos() {
       <div style={{ 
         maxWidth: '1200px', 
         margin: '0 auto', 
-        padding: '32px 20px',
+        padding: '48px 20px',
         textAlign: 'center'
       }}>
         <LoadingSpinner size="lg" text="Cargando perritos..." />
@@ -136,7 +156,7 @@ export default function CatalogoPerritos() {
       <div style={{ 
         maxWidth: '1200px', 
         margin: '0 auto', 
-        padding: '32px 20px'
+        padding: '48px 20px'
       }}>
         <ErrorMessage 
           error={error}
@@ -152,418 +172,372 @@ export default function CatalogoPerritos() {
     <div style={{ 
       maxWidth: '1200px', 
       margin: '0 auto', 
-      padding: '32px 20px'
+      padding: '48px 20px'
     }}>
-      {/* Búsqueda y filtros */}
-      <div style={{ marginBottom: '32px' }}>
+      {/* Búsqueda con filtros integrados */}
+      <div style={{ 
+        marginBottom: '48px',
+        background: 'white',
+        borderRadius: '20px',
+        padding: '32px',
+        boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
+      }}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '16px',
+          marginBottom: '24px'
+        }}>
+          <SearchIcon size={24} color="#6b3838" />
+          <h2 style={{
+            fontSize: '24px',
+            fontWeight: '700',
+            color: '#0e312d',
+            margin: 0
+          }}>Buscar tu compañero ideal</h2>
+        </div>
+        
         <SearchBar 
           value={filters.search}
           onSearch={handleSearch}
-          placeholder="Buscar perritos por nombre o raza..."
-          style={{ marginBottom: '24px' }}
+          placeholder="Buscar por nombre, raza o características..."
+          style={{ marginBottom: '20px' }}
         />
+        
+        {/* Filtros rápidos */}
+        <div style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '12px'
+        }}>
+          {['Cachorro', 'Pequeño', 'Mediano', 'Grande', 'Tranquilo', 'Apto niños'].map((filter) => (
+            <button
+              key={filter}
+              style={{
+                padding: '8px 16px',
+                borderRadius: '20px',
+                border: '2px solid #e9ecef',
+                background: 'white',
+                color: '#4a4a4a',
+                fontSize: '14px',
+                fontWeight: '500',
+                cursor: 'pointer',
+                transition: 'all 0.2s'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = '#6b3838'
+                e.currentTarget.style.color = '#6b3838'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = '#e9ecef'
+                e.currentTarget.style.color = '#4a4a4a'
+              }}
+            >
+              {filter}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* Layout responsive */}
-      <div className="catalog-layout">
-        
-        {/* Sidebar de Filtros - Oculto en móvil */}
-        <div className="filter-sidebar">
-          <FilterPanel
-            filters={filters}
-            onFilterChange={handleFilterChange}
-            onClearFilters={handleClearFilters}
-            resultCount={perritos.length}
-            totalCount={pagination.total}
-            showHeader={true}
-          />
-        </div>
+      {/* Grid de Perritos */}
+      {!isEmpty ? (
+        <>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))',
+            gap: '28px',
+            marginBottom: '48px'
+          }}>
+            {perritos.map((perrito, index) => (
+              <div 
+                key={perrito.id} 
+                style={{
+                  background: 'white',
+                  borderRadius: '20px',
+                  overflow: 'hidden',
+                  boxShadow: hoveredCard === perrito.id ? '0 12px 40px rgba(0,0,0,0.1)' : '0 4px 20px rgba(0,0,0,0.05)',
+                  transition: 'all 0.3s ease',
+                  transform: hoveredCard === perrito.id ? 'translateY(-8px)' : 'translateY(0)',
+                  cursor: 'pointer'
+                }}
+                onMouseEnter={() => setHoveredCard(perrito.id)}
+                onMouseLeave={() => setHoveredCard(null)}
+              >
+                <div style={{
+                  position: 'relative',
+                  height: '280px',
+                  overflow: 'hidden'
+                }}>
+                  <Image
+                    src={perrito.fotoPrincipal || dogImages[index % dogImages.length]}
+                    alt={perrito.nombre}
+                    width={400}
+                    height={280}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      transition: 'transform 0.5s ease',
+                      transform: hoveredCard === perrito.id ? 'scale(1.1)' : 'scale(1)'
+                    }}
+                  />
+                  
+                  {/* Gradient overlay */}
+                  <div style={{
+                    position: 'absolute',
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    height: '120px',
+                    background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%)'
+                  }} />
+                  
+                  {/* Badge estado */}
+                  <div style={{
+                    position: 'absolute',
+                    top: '16px',
+                    left: '16px'
+                  }}>
+                    {perrito.estado === 'disponible' && (
+                      <span style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                        padding: '6px 12px',
+                        background: 'rgba(255,255,255,0.95)',
+                        borderRadius: '12px',
+                        fontSize: '13px',
+                        fontWeight: '600',
+                        color: '#15803d',
+                        backdropFilter: 'blur(8px)'
+                      }}>
+                        <div style={{
+                          width: '8px',
+                          height: '8px',
+                          borderRadius: '50%',
+                          background: '#22c55e'
+                        }} />
+                        Disponible
+                      </span>
+                    )}
+                  </div>
 
-        {/* Filtros móviles */}
-        <div className="mobile-filters">
-          <FilterPanel
-            filters={filters}
-            onFilterChange={handleFilterChange}
-            onClearFilters={handleClearFilters}
-            resultCount={perritos.length}
-            totalCount={pagination.total}
-            showHeader={false}
-            isMobile={true}
-          />
-        </div>
+                  {/* Botón favorito */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      toggleFavorite(perrito.id)
+                    }}
+                    style={{
+                      position: 'absolute',
+                      top: '16px',
+                      right: '16px',
+                      width: '40px',
+                      height: '40px',
+                      borderRadius: '50%',
+                      background: 'rgba(255,255,255,0.95)',
+                      border: 'none',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backdropFilter: 'blur(8px)',
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    <HeartIcon 
+                      size={20} 
+                      color={favorites.includes(perrito.id) ? '#ef4444' : '#666'}
+                    />
+                  </button>
 
-        {/* Grid de Perritos */}
-        <div className="perritos-grid">
-          {!isEmpty ? (
-            <>
-              <div className="perritos-cards-grid">
-                {perritos.map((perrito) => (
-                  <div key={perrito.id} className="perrito-card">
-                    <div className="perrito-image-container">
-                      <Image
-                        src={perrito.fotoPrincipal}
-                        alt={perrito.nombre}
-                        width={400}
-                        height={300}
-                        className="perrito-image"
-                      />
-                      
-                      {/* Badges */}
-                      <div style={{ 
-                        position: 'absolute', 
-                        top: '8px', 
-                        left: '8px', 
-                        display: 'flex', 
-                        flexDirection: 'column', 
+                  {/* Info básica en overlay */}
+                  <div style={{
+                    position: 'absolute',
+                    bottom: '16px',
+                    left: '16px',
+                    right: '16px',
+                    color: 'white'
+                  }}>
+                    <h3 style={{
+                      fontSize: '24px',
+                      fontWeight: '700',
+                      marginBottom: '4px'
+                    }}>{perrito.nombre}</h3>
+                    <p style={{
+                      fontSize: '14px',
+                      opacity: 0.9
+                    }}>{perrito.raza} • {perrito.edad}</p>
+                  </div>
+                </div>
+
+                <div style={{ padding: '24px' }}>
+                  {/* Características */}
+                  <div style={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: '8px',
+                    marginBottom: '20px'
+                  }}>
+                    <span style={{
+                      padding: '6px 12px',
+                      background: '#f3f4f6',
+                      borderRadius: '8px',
+                      fontSize: '13px',
+                      fontWeight: '500',
+                      color: '#4a4a4a'
+                    }}>
+                      {perrito.tamano}
+                    </span>
+                    <span style={{
+                      padding: '6px 12px',
+                      background: '#f3f4f6',
+                      borderRadius: '8px',
+                      fontSize: '13px',
+                      fontWeight: '500',
+                      color: '#4a4a4a'
+                    }}>
+                      {perrito.sexo}
+                    </span>
+                    {perrito.aptoNinos && (
+                      <span style={{
+                        padding: '6px 12px',
+                        background: '#dcfce7',
+                        borderRadius: '8px',
+                        fontSize: '13px',
+                        fontWeight: '500',
+                        color: '#15803d',
+                        display: 'flex',
+                        alignItems: 'center',
                         gap: '4px'
                       }}>
-                        {perrito.esNuevo && (
-                          <span style={{
-                            backgroundColor: '#af1731',
-                            color: 'white',
-                            padding: '4px 8px',
-                            borderRadius: '12px',
-                            fontSize: '12px',
-                            fontWeight: '500'
-                          }}>
-                            Nuevo
-                          </span>
-                        )}
-                        {perrito.destacado && (
-                          <span style={{
-                            backgroundColor: '#eab308',
-                            color: 'white',
-                            padding: '4px 8px',
-                            borderRadius: '12px',
-                            fontSize: '12px',
-                            fontWeight: '500'
-                          }}>
-                            ⭐ Destacado
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Botón favorito */}
-                      <button
-                        onClick={() => toggleFavorite(perrito.id)}
-                        style={{
-                          position: 'absolute',
-                          top: '8px',
-                          right: '8px',
-                          padding: '8px',
-                          backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                          border: 'none',
-                          borderRadius: '50%',
-                          cursor: 'pointer',
-                          transition: 'background-color 0.2s'
-                        }}
-                      >
-                        <Heart
-                          style={{
-                            width: '16px',
-                            height: '16px',
-                            color: favorites.includes(perrito.id) ? '#ef4444' : '#666',
-                            fill: favorites.includes(perrito.id) ? '#ef4444' : 'none'
-                          }}
-                        />
-                      </button>
-                    </div>
-
-                    <div style={{ padding: '16px' }}>
-                      <div style={{ 
-                        display: 'flex', 
-                        justifyContent: 'space-between', 
-                        alignItems: 'flex-start', 
-                        marginBottom: '8px'
-                      }}>
-                        <h3 style={{ 
-                          fontWeight: '600', 
-                          fontSize: '18px', 
-                          color: '#1a1a1a',
-                          margin: 0
-                        }}>
-                          {perrito.nombre}
-                        </h3>
-                        <span style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          padding: '4px 12px',
-                          borderRadius: '20px',
-                          fontSize: '12px',
-                          fontWeight: '500',
-                          backgroundColor: perrito.estado === 'disponible' ? 'rgba(61, 155, 132, 0.1)' : 
-                                           perrito.estado === 'proceso' ? 'rgba(199, 155, 102, 0.1)' : 
-                                           'rgba(178, 178, 177, 0.1)',
-                          color: perrito.estado === 'disponible' ? '#246257' : 
-                                 perrito.estado === 'proceso' ? '#8b6638' : 
-                                 '#4a4a4a',
-                          border: `1px solid ${perrito.estado === 'disponible' ? 'rgba(61, 155, 132, 0.3)' : 
-                                                perrito.estado === 'proceso' ? 'rgba(199, 155, 102, 0.3)' : 
-                                                'rgba(178, 178, 177, 0.3)'}`
-                        }}>
-                          {perrito.estado}
-                        </span>
-                      </div>
-
-                      <p style={{ 
-                        color: '#666', 
-                        fontSize: '14px', 
-                        marginBottom: '12px',
-                        margin: '0 0 12px 0'
-                      }}>
-                        {perrito.raza} • {perrito.sexo} • {perrito.edad}
-                      </p>
-
-                      <div style={{ 
-                        display: 'flex', 
-                        flexWrap: 'wrap', 
-                        gap: '4px', 
-                        marginBottom: '12px'
-                      }}>
-                        <span style={{
-                          padding: '4px 8px',
-                          backgroundColor: '#f1f1f1',
-                          color: '#4a4a4a',
-                          borderRadius: '4px',
-                          fontSize: '12px'
-                        }}>
-                          {perrito.tamano}
-                        </span>
-                        <span style={{
-                          padding: '4px 8px',
-                          backgroundColor: '#f1f1f1',
-                          color: '#4a4a4a',
-                          borderRadius: '4px',
-                          fontSize: '12px'
-                        }}>
-                          Energía {perrito.energia}
-                        </span>
-                        {perrito.aptoNinos && (
-                          <span style={{
-                            padding: '4px 8px',
-                            backgroundColor: 'rgba(34, 197, 94, 0.1)',
-                            color: '#15803d',
-                            borderRadius: '4px',
-                            fontSize: '12px'
-                          }}>
-                            ✓ Niños
-                          </span>
-                        )}
-                      </div>
-
-                      <Link
-                        href={`/perritos/${perrito.slug}`}
-                        style={{
-                          display: 'block',
-                          width: '100%',
-                          textAlign: 'center',
-                          backgroundColor: '#af1731',
-                          color: 'white',
-                          fontWeight: '600',
-                          padding: '12px 16px',
-                          borderRadius: '6px',
-                          textDecoration: 'none',
-                          fontSize: '14px',
-                          transition: 'background-color 0.2s',
-                          border: 'none',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        Ver Detalles
-                      </Link>
-                    </div>
+                        <CheckCircleIcon size={14} color="#15803d" />
+                        Apto niños
+                      </span>
+                    )}
                   </div>
-                ))}
-              </div>
 
-              {/* Paginación */}
-              {pagination.totalPages > 1 && (
-                <div style={{ 
-                  display: 'flex', 
-                  justifyContent: 'center', 
-                  alignItems: 'center', 
-                  gap: '8px'
-                }}>
-                  <button
-                    onClick={() => handlePageChange(pagination.page - 1)}
-                    disabled={!pagination.hasPrev}
-                    style={{
-                      padding: '8px 12px',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '6px',
-                      backgroundColor: 'white',
-                      color: '#4a4a4a',
-                      cursor: pagination.hasPrev ? 'pointer' : 'not-allowed',
-                      opacity: pagination.hasPrev ? 1 : 0.5,
-                      transition: 'background-color 0.2s'
-                    }}
-                  >
-                    Anterior
-                  </button>
-                  
-                  <span style={{ 
-                    padding: '8px 16px', 
-                    fontSize: '14px', 
-                    color: '#666'
+                  {/* Descripción corta */}
+                  <p style={{
+                    fontSize: '14px',
+                    color: '#666',
+                    lineHeight: '1.5',
+                    marginBottom: '20px',
+                    height: '42px',
+                    overflow: 'hidden',
+                    display: '-webkit-box',
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: 'vertical'
                   }}>
-                    Página {pagination.page} de {pagination.totalPages}
-                  </span>
-                  
-                  <button
-                    onClick={() => handlePageChange(pagination.page + 1)}
-                    disabled={!pagination.hasNext}
+                    {perrito.descripcion || 'Un compañero leal esperando encontrar su hogar perfecto.'}
+                  </p>
+
+                  {/* CTA */}
+                  <Link
+                    href={`/perritos/${perrito.slug}`}
                     style={{
-                      padding: '8px 12px',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '6px',
-                      backgroundColor: 'white',
-                      color: '#4a4a4a',
-                      cursor: pagination.hasNext ? 'pointer' : 'not-allowed',
-                      opacity: pagination.hasNext ? 1 : 0.5,
-                      transition: 'background-color 0.2s'
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '8px',
+                      width: '100%',
+                      padding: '14px',
+                      background: '#6b3838',
+                      color: 'white',
+                      borderRadius: '12px',
+                      textDecoration: 'none',
+                      fontSize: '15px',
+                      fontWeight: '600',
+                      transition: 'all 0.2s'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = '#7d4040'
+                      e.currentTarget.style.transform = 'translateY(-2px)'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = '#6b3838'
+                      e.currentTarget.style.transform = 'translateY(0)'
                     }}
                   >
-                    Siguiente
-                  </button>
+                    Conocer más
+                    <ArrowRightIcon size={16} color="white" />
+                  </Link>
                 </div>
-              )}
-            </>
-          ) : (
-            <EmptyState
-              title="No se encontraron perritos"
-              message="No hay perritos que coincidan con los filtros seleccionados. Intenta ajustar tus criterios de búsqueda."
-              actionText="Limpiar Filtros"
-              onAction={handleClearFilters}
-            />
+              </div>
+            ))}
+          </div>
+
+          {/* Paginación */}
+          {pagination.totalPages > 1 && (
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: 'center', 
+              alignItems: 'center', 
+              gap: '16px'
+            }}>
+              <button
+                onClick={() => handlePageChange(pagination.page - 1)}
+                disabled={!pagination.hasPrev}
+                style={{
+                  padding: '12px 24px',
+                  background: pagination.hasPrev ? 'white' : '#f3f4f6',
+                  border: '2px solid #e9ecef',
+                  borderRadius: '12px',
+                  color: pagination.hasPrev ? '#4a4a4a' : '#9ca3af',
+                  fontSize: '15px',
+                  fontWeight: '500',
+                  cursor: pagination.hasPrev ? 'pointer' : 'not-allowed',
+                  transition: 'all 0.2s'
+                }}
+              >
+                ← Anterior
+              </button>
+              
+              <span style={{ 
+                padding: '12px 24px',
+                background: '#f3f4f6',
+                borderRadius: '12px',
+                fontSize: '15px',
+                fontWeight: '600',
+                color: '#0e312d'
+              }}>
+                Página {pagination.page} de {pagination.totalPages}
+              </span>
+              
+              <button
+                onClick={() => handlePageChange(pagination.page + 1)}
+                disabled={!pagination.hasNext}
+                style={{
+                  padding: '12px 24px',
+                  background: pagination.hasNext ? 'white' : '#f3f4f6',
+                  border: '2px solid #e9ecef',
+                  borderRadius: '12px',
+                  color: pagination.hasNext ? '#4a4a4a' : '#9ca3af',
+                  fontSize: '15px',
+                  fontWeight: '500',
+                  cursor: pagination.hasNext ? 'pointer' : 'not-allowed',
+                  transition: 'all 0.2s'
+                }}
+              >
+                Siguiente →
+              </button>
+            </div>
           )}
-        </div>
-      </div>
+        </>
+      ) : (
+        <EmptyState
+          title="No se encontraron perritos"
+          message="No hay perritos que coincidan con los filtros seleccionados. Intenta ajustar tus criterios de búsqueda."
+          actionText="Limpiar Filtros"
+          onAction={handleClearFilters}
+        />
+      )}
 
-      {/* Estilos responsive */}
+      {/* Estilos responsivos */}
       <style jsx>{`
-        .catalog-layout {
-          display: grid;
-          grid-template-columns: 300px 1fr;
-          gap: 32px;
-          align-items: start;
-        }
-
-        .filter-sidebar {
-          position: sticky;
-          top: 16px;
-        }
-
-        .mobile-filters {
-          display: none;
-        }
-
-        .perritos-grid {
-          min-width: 0;
-        }
-
-        .perritos-cards-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-          gap: 24px;
-          margin-bottom: 32px;
-        }
-
-        .perrito-card {
-          background-color: white;
-          border-radius: 12px;
-          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-          overflow: hidden;
-          transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .perrito-card:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-
-        .perrito-image-container {
-          position: relative;
-          overflow: hidden;
-        }
-
-        .perrito-image {
-          width: 100%;
-          height: 192px;
-          object-fit: cover;
-          transition: transform 0.3s;
-        }
-
-        .perrito-card:hover .perrito-image {
-          transform: scale(1.05);
-        }
-
-        /* Tablet */
-        @media (max-width: 1024px) {
-          .catalog-layout {
-            grid-template-columns: 280px 1fr;
-            gap: 24px;
-          }
-
-          .perritos-cards-grid {
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 20px;
-          }
-        }
-
-        /* Móvil */
         @media (max-width: 768px) {
-          .catalog-layout {
-            display: block;
-          }
-
-          .filter-sidebar {
-            display: none;
-          }
-
-          .mobile-filters {
-            display: block;
-          }
-
-          .perritos-cards-grid {
-            grid-template-columns: 1fr;
-            gap: 16px;
-            margin-bottom: 24px;
-          }
-
-          .perrito-card {
-            border-radius: 8px;
-          }
-
-          .perrito-image {
-            height: 200px;
-          }
-        }
-
-        /* Móvil pequeño */
-        @media (max-width: 480px) {
-          .perritos-cards-grid {
-            gap: 12px;
-          }
-
-          .perrito-card {
-            margin: 0 -4px;
-          }
-
-          .perrito-image {
-            height: 180px;
-          }
-        }
-
-        /* Pantallas grandes */
-        @media (min-width: 1200px) {
-          .catalog-layout {
-            grid-template-columns: 320px 1fr;
-            gap: 40px;
-          }
-
-          .perritos-cards-grid {
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 28px;
+          .catalog-container {
+            padding: 24px 16px !important;
           }
         }
       `}</style>

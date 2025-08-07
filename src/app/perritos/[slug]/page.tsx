@@ -1,20 +1,35 @@
 'use client'
 
+import { useState } from 'react'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Calendar, Heart, MapPin, User, Shield, Zap, Eye } from 'lucide-react'
 import { usePerrito } from '../../../hooks/usePerritos'
 import LoadingSpinner from '../../../components/ui/LoadingSpinner'
 import ErrorMessage from '../../../components/ui/ErrorMessage'
 import PerritoDetailSkeleton from '../../../components/ui/PerritoDetailSkeleton'
+import { 
+  HeartIcon, HomeIcon, CalendarIcon, LocationIcon, 
+  CheckCircleIcon, ArrowRightIcon, DogIcon, ShieldIcon,
+  VaccineIcon, ScissorsIcon, StethoscopeIcon
+} from '../../../components/icons/Icons'
 
 interface PageProps {
   params: { slug: string }
 }
 
+// URLs de imágenes de perros de internet para previsualización
+const dogImages = [
+  'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&auto=format&fit=crop&q=60',
+  'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=800&auto=format&fit=crop&q=60',
+  'https://images.unsplash.com/photo-1601979031925-424e53b6caaa?w=800&auto=format&fit=crop&q=60',
+  'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=800&auto=format&fit=crop&q=60'
+]
 
 export default function PerritoDetailPage({ params }: PageProps) {
+  const [selectedImage, setSelectedImage] = useState(0)
+  const [isLiked, setIsLiked] = useState(false)
+
   const {
     perrito,
     loading,
@@ -33,7 +48,7 @@ export default function PerritoDetailPage({ params }: PageProps) {
     return (
       <div style={{ 
         minHeight: '100vh',
-        backgroundColor: '#f8fafc',
+        backgroundColor: '#f8f9fa',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -53,309 +68,596 @@ export default function PerritoDetailPage({ params }: PageProps) {
     notFound()
   }
 
+  const allImages = [perrito.fotoPrincipal, ...(perrito.fotos || dogImages)]
+
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
-      {/* Breadcrumb */}
-      <div style={{ backgroundColor: 'white', borderBottom: '1px solid #e2e8f0' }}>
-        <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '16px 20px' }}>
-          <nav style={{ fontSize: '14px' }}>
-            <Link href="/" style={{ color: '#af1731', textDecoration: 'none' }}>Inicio</Link>
-            <span style={{ margin: '0 8px', color: '#94a3b8' }}>/</span>
-            <Link href="/perritos" style={{ color: '#af1731', textDecoration: 'none' }}>Perritos</Link>
-            <span style={{ margin: '0 8px', color: '#94a3b8' }}>/</span>
-            <span style={{ color: '#64748b' }}>{perrito.nombre}</span>
-          </nav>
-        </div>
-      </div>
-
-      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '32px 20px' }}>
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
-          gap: '32px',
-          marginBottom: '48px'
+    <div style={{ minHeight: '100vh', backgroundColor: '#f8f9fa' }}>
+      {/* Hero Image Section */}
+      <div style={{
+        position: 'relative',
+        height: '60vh',
+        minHeight: '500px',
+        background: 'linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.6) 100%)',
+        overflow: 'hidden'
+      }}>
+        <Image
+          src={allImages[selectedImage] || dogImages[0]}
+          alt={perrito.nombre}
+          fill
+          style={{
+            objectFit: 'cover',
+            zIndex: -1
+          }}
+          priority
+        />
+        
+        {/* Navigation */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          padding: '24px',
+          zIndex: 10
         }}>
-          
-          {/* Galería de fotos */}
-          <div>
-            <div style={{ position: 'relative', marginBottom: '16px' }}>
-              <Image
-                src={perrito.fotoPrincipal}
-                alt={perrito.nombre}
-                width={600}
-                height={400}
-                style={{
-                  width: '100%',
-                  height: '384px',
-                  objectFit: 'cover',
-                  borderRadius: '8px',
-                  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
-                }}
-                priority
-              />
-              
-              {/* Badges */}
-              <div style={{
-                position: 'absolute',
-                top: '16px',
-                left: '16px',
+          <div style={{
+            maxWidth: '1200px',
+            margin: '0 auto',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}>
+            <Link
+              href="/perritos"
+              style={{
                 display: 'flex',
-                flexDirection: 'column',
-                gap: '8px'
-              }}>
-                {perrito.esNuevo && (
-                  <span style={{
-                    backgroundColor: '#af1731',
-                    color: 'white',
-                    padding: '4px 12px',
-                    borderRadius: '9999px',
-                    fontSize: '14px',
-                    fontWeight: '500'
-                  }}>
-                    ✨ Nuevo
-                  </span>
-                )}
-                {perrito.destacado && (
-                  <span style={{
-                    backgroundColor: '#eab308',
-                    color: 'white',
-                    padding: '4px 12px',
-                    borderRadius: '9999px',
-                    fontSize: '14px',
-                    fontWeight: '500'
-                  }}>
-                    ⭐ Destacado
-                  </span>
-                )}
-                <span style={{
-                  backgroundColor: perrito.estado === 'disponible' ? '#10b981' : '#f59e0b',
-                  color: 'white',
-                  padding: '4px 12px',
-                  borderRadius: '9999px',
-                  fontSize: '14px',
-                  fontWeight: '500'
-                }}>
-                  {perrito.estado}
-                </span>
-              </div>
-
-              {/* Stats en imagen */}
-              <div style={{
-                position: 'absolute',
-                bottom: '16px',
-                right: '16px',
-                backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '10px 20px',
+                background: 'rgba(255,255,255,0.2)',
+                backdropFilter: 'blur(10px)',
+                borderRadius: '12px',
+                textDecoration: 'none',
                 color: 'white',
-                padding: '8px 12px',
-                borderRadius: '8px'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px' }}>
-                  <Eye style={{ width: '16px', height: '16px' }} />
-                  {perrito.vistas} vistas
-                </div>
-              </div>
-            </div>
+                fontSize: '15px',
+                fontWeight: '500',
+                border: '1px solid rgba(255,255,255,0.3)',
+                transition: 'all 0.2s'
+              }}
+            >
+              ← Volver al catálogo
+            </Link>
+            
+            <button
+              onClick={() => setIsLiked(!isLiked)}
+              style={{
+                width: '48px',
+                height: '48px',
+                borderRadius: '50%',
+                background: 'rgba(255,255,255,0.2)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255,255,255,0.3)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                transition: 'all 0.2s'
+              }}
+            >
+              <HeartIcon size={24} color={isLiked ? '#ef4444' : 'white'} />
+            </button>
+          </div>
+        </div>
 
-            {/* Thumbnails de fotos adicionales */}
-            {perrito.fotos.length > 1 && (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px' }}>
-                {perrito.fotos.slice(1, 5).map((foto: string, index: number) => (
-                  <Image
+        {/* Info overlay */}
+        <div style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          padding: '48px 24px 24px',
+          background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%)'
+        }}>
+          <div style={{
+            maxWidth: '1200px',
+            margin: '0 auto',
+            color: 'white'
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'flex-end',
+              gap: '24px',
+              marginBottom: '16px'
+            }}>
+              <h1 style={{
+                fontSize: 'clamp(36px, 5vw, 56px)',
+                fontWeight: '800',
+                margin: 0,
+                letterSpacing: '-1px'
+              }}>{perrito.nombre}</h1>
+              
+              {perrito.estado === 'disponible' && (
+                <span style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '8px 16px',
+                  background: 'rgba(34, 197, 94, 0.2)',
+                  border: '2px solid #22c55e',
+                  borderRadius: '12px',
+                  fontSize: '14px',
+                  fontWeight: '600'
+                }}>
+                  <div style={{
+                    width: '8px',
+                    height: '8px',
+                    borderRadius: '50%',
+                    background: '#22c55e'
+                  }} />
+                  Disponible
+                </span>
+              )}
+            </div>
+            
+            <p style={{
+              fontSize: '20px',
+              opacity: 0.9,
+              marginBottom: '24px'
+            }}>
+              {perrito.raza} • {perrito.edad} • {perrito.sexo}
+            </p>
+
+            {/* Image thumbnails */}
+            {allImages.length > 1 && (
+              <div style={{
+                display: 'flex',
+                gap: '12px',
+                overflowX: 'auto',
+                paddingBottom: '8px'
+              }}>
+                {allImages.slice(0, 5).map((img, index) => (
+                  <button
                     key={index}
-                    src={foto}
-                    alt={`${perrito.nombre} foto ${index + 2}`}
-                    width={150}
-                    height={100}
+                    onClick={() => setSelectedImage(index)}
                     style={{
-                      width: '100%',
+                      minWidth: '80px',
                       height: '80px',
-                      objectFit: 'cover',
-                      borderRadius: '6px',
+                      borderRadius: '12px',
+                      overflow: 'hidden',
+                      border: selectedImage === index ? '3px solid white' : '3px solid transparent',
                       cursor: 'pointer',
-                      transition: 'opacity 0.2s'
+                      transition: 'all 0.2s'
                     }}
-                    onMouseOver={(e) => e.currentTarget.style.opacity = '0.8'}
-                    onMouseOut={(e) => e.currentTarget.style.opacity = '1'}
-                  />
+                  >
+                    <Image
+                      src={img || dogImages[index % dogImages.length]}
+                      alt={`${perrito.nombre} ${index + 1}`}
+                      width={80}
+                      height={80}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover'
+                      }}
+                    />
+                  </button>
                 ))}
               </div>
             )}
           </div>
+        </div>
+      </div>
 
-          {/* Información del perrito */}
+      {/* Main Content */}
+      <div style={{
+        maxWidth: '1200px',
+        margin: '0 auto',
+        padding: '0 24px',
+        transform: 'translateY(-40px)'
+      }}>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
+          gap: '32px'
+        }}>
+          {/* Left Column - Details */}
           <div>
+            {/* Características principales */}
             <div style={{
-              backgroundColor: 'white',
-              borderRadius: '8px',
-              boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-              padding: '24px',
-              marginBottom: '24px'
+              background: 'white',
+              borderRadius: '20px',
+              padding: '32px',
+              marginBottom: '24px',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
             }}>
-              <h1 style={{
-                fontSize: '30px',
-                fontWeight: 'bold',
-                color: '#0f172a',
-                marginBottom: '8px'
-              }}>{perrito.nombre}</h1>
-              <p style={{
-                fontSize: '18px',
-                color: '#64748b',
-                marginBottom: '16px'
-              }}>{perrito.raza}</p>
-
-              {/* Información básica */}
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <div className="flex items-center gap-2">
-                  <Calendar className="h-5 w-5 text-atlixco-500" />
-                  <div>
-                    <div className="text-sm text-slate-500">Edad</div>
-                    <div className="font-medium">{perrito.edad}</div>
-                  </div>
+              <h2 style={{
+                fontSize: '24px',
+                fontWeight: '700',
+                color: '#0e312d',
+                marginBottom: '24px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px'
+              }}>
+                <DogIcon size={28} color="#6b3838" />
+                Características
+              </h2>
+              
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(2, 1fr)',
+                gap: '20px'
+              }}>
+                <div>
+                  <p style={{ fontSize: '14px', color: '#666', marginBottom: '4px' }}>Tamaño</p>
+                  <p style={{ fontSize: '18px', fontWeight: '600', color: '#0e312d' }}>{perrito.tamano}</p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <User className="h-5 w-5 text-atlixco-500" />
-                  <div>
-                    <div className="text-sm text-slate-500">Sexo</div>
-                    <div className="font-medium">{perrito.sexo}</div>
-                  </div>
+                <div>
+                  <p style={{ fontSize: '14px', color: '#666', marginBottom: '4px' }}>Energía</p>
+                  <p style={{ fontSize: '18px', fontWeight: '600', color: '#0e312d' }}>{perrito.energia}</p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-5 w-5 text-atlixco-500" />
+                {perrito.peso && (
                   <div>
-                    <div className="text-sm text-slate-500">Tamaño</div>
-                    <div className="font-medium capitalize">{perrito.tamano}</div>
+                    <p style={{ fontSize: '14px', color: '#666', marginBottom: '4px' }}>Peso</p>
+                    <p style={{ fontSize: '18px', fontWeight: '600', color: '#0e312d' }}>{perrito.peso} kg</p>
                   </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Zap className="h-5 w-5 text-atlixco-500" />
-                  <div>
-                    <div className="text-sm text-slate-500">Energía</div>
-                    <div className="font-medium capitalize">{perrito.energia}</div>
-                  </div>
+                )}
+                <div>
+                  <p style={{ fontSize: '14px', color: '#666', marginBottom: '4px' }}>Ingreso</p>
+                  <p style={{ fontSize: '18px', fontWeight: '600', color: '#0e312d' }}>
+                    {new Date(perrito.fechaIngreso).toLocaleDateString('es-MX', { month: 'short', year: 'numeric' })}
+                  </p>
                 </div>
               </div>
 
-              {/* Peso */}
-              {perrito.peso && (
-                <div className="mb-6">
-                  <div className="text-sm text-slate-500">Peso aproximado</div>
-                  <div className="font-medium">{perrito.peso} kg</div>
-                </div>
-              )}
-
-              {/* Características */}
-              <div className="mb-6">
-                <h3 className="font-medium text-slate-900 mb-2">Características</h3>
-                <div className="flex flex-wrap gap-2">
-                  {perrito.caracter.map((caracteristica: string, index: number) => (
+              {/* Personalidad */}
+              <div style={{ marginTop: '32px' }}>
+                <p style={{ fontSize: '16px', fontWeight: '600', color: '#0e312d', marginBottom: '12px' }}>
+                  Personalidad
+                </p>
+                <div style={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: '8px'
+                }}>
+                  {perrito.caracter.map((trait, index) => (
                     <span
                       key={index}
-                      className="px-3 py-1 bg-atlixco-100 text-atlixco-700 rounded-full text-sm"
+                      style={{
+                        padding: '8px 16px',
+                        background: '#f3f4f6',
+                        borderRadius: '20px',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        color: '#4a4a4a'
+                      }}
                     >
-                      {caracteristica}
+                      {trait}
                     </span>
                   ))}
                 </div>
               </div>
-
-              {/* Compatibilidad */}
-              <div className="mb-6">
-                <h3 className="font-medium text-slate-900 mb-2">Compatibilidad</h3>
-                <div className="grid grid-cols-3 gap-2 text-sm">
-                  <div className={`p-2 rounded text-center ${perrito.aptoNinos ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-500'}`}>
-                    {perrito.aptoNinos ? '✓' : '✗'} Niños
-                  </div>
-                  <div className={`p-2 rounded text-center ${perrito.aptoPerros ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-500'}`}>
-                    {perrito.aptoPerros ? '✓' : '✗'} Perros
-                  </div>
-                  <div className={`p-2 rounded text-center ${perrito.aptoGatos ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-500'}`}>
-                    {perrito.aptoGatos ? '✓' : '✗'} Gatos
-                  </div>
-                </div>
-              </div>
-
-              {/* CTA Principal */}
-              <div className="space-y-3">
-                {perrito.estado === 'disponible' ? (
-                  <Link
-                    href={`/solicitud/${perrito.id}`}
-                    className="block w-full text-center btn-primary py-3"
-                  >
-                    🏠 ¡Quiero Adoptarlo!
-                  </Link>
-                ) : (
-                  <div className="block w-full text-center bg-gray-400 text-white py-3 rounded-lg">
-                    {perrito.estado === 'proceso' ? 'En proceso de adopción' : 'No disponible'}
-                  </div>
-                )}
-                <button className="w-full btn-secondary py-3">
-                  <Heart className="h-4 w-4 mr-2" />
-                  Agregar a Favoritos
-                </button>
-              </div>
             </div>
 
-            {/* Información de salud */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h3 className="font-medium text-slate-900 mb-4 flex items-center gap-2">
-                <Shield className="h-5 w-5 text-green-500" />
-                Estado de Salud
-              </h3>
-              <div className="grid grid-cols-3 gap-4 text-sm">
-                <div className={`text-center p-2 rounded ${perrito.vacunas ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                  {perrito.vacunas ? '✓' : '✗'} Vacunado
-                </div>
-                <div className={`text-center p-2 rounded ${perrito.esterilizado ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                  {perrito.esterilizado ? '✓' : '✗'} Esterilizado
-                </div>
-                <div className={`text-center p-2 rounded ${perrito.desparasitado ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                  {perrito.desparasitado ? '✓' : '✗'} Desparasitado
-                </div>
-              </div>
-              {perrito.saludNotas && (
-                <p className="mt-4 text-sm text-slate-600">{perrito.saludNotas}</p>
+            {/* Historia */}
+            <div style={{
+              background: 'white',
+              borderRadius: '20px',
+              padding: '32px',
+              marginBottom: '24px',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
+            }}>
+              <h2 style={{
+                fontSize: '24px',
+                fontWeight: '700',
+                color: '#0e312d',
+                marginBottom: '16px'
+              }}>
+                Mi historia
+              </h2>
+              <p style={{
+                fontSize: '16px',
+                lineHeight: '1.8',
+                color: '#4a4a4a'
+              }}>
+                {perrito.historia || 'Este hermoso perrito fue rescatado y está buscando un hogar lleno de amor. Es un compañero leal que está listo para llenar tu vida de alegría y momentos inolvidables.'}
+              </p>
+              {perrito.procedencia && (
+                <p style={{
+                  fontSize: '14px',
+                  color: '#666',
+                  marginTop: '16px',
+                  fontStyle: 'italic'
+                }}>
+                  Procedencia: {perrito.procedencia}
+                </p>
               )}
             </div>
           </div>
-        </div>
 
-        {/* Historia del perrito */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-          <h2 className="text-2xl font-bold text-slate-900 mb-4">La historia de {perrito.nombre}</h2>
-          <p className="text-slate-700 leading-relaxed mb-4">{perrito.historia}</p>
-          
-          <div className="flex items-center gap-4 text-sm text-slate-500">
-            <div>Ingresó el {new Date(perrito.fechaIngreso).toLocaleDateString()}</div>
-            {perrito.procedencia && (
-              <>
-                <span>•</span>
-                <div>Procedencia: {perrito.procedencia}</div>
-              </>
+          {/* Right Column - Adoption & Health */}
+          <div>
+            {/* Estado de salud */}
+            <div style={{
+              background: 'white',
+              borderRadius: '20px',
+              padding: '32px',
+              marginBottom: '24px',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
+            }}>
+              <h2 style={{
+                fontSize: '24px',
+                fontWeight: '700',
+                color: '#0e312d',
+                marginBottom: '24px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px'
+              }}>
+                <ShieldIcon size={28} color="#6b3838" />
+                Estado de Salud
+              </h2>
+
+              <div style={{
+                display: 'grid',
+                gap: '16px'
+              }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '16px',
+                  padding: '16px',
+                  background: perrito.vacunas ? '#dcfce7' : '#fee2e2',
+                  borderRadius: '12px'
+                }}>
+                  <VaccineIcon size={24} color={perrito.vacunas ? '#15803d' : '#dc2626'} />
+                  <div style={{ flex: 1 }}>
+                    <p style={{ fontWeight: '600', color: '#0e312d' }}>Vacunas</p>
+                    <p style={{ fontSize: '14px', color: '#666' }}>
+                      {perrito.vacunas ? 'Esquema completo' : 'Pendiente'}
+                    </p>
+                  </div>
+                  {perrito.vacunas && <CheckCircleIcon size={20} color="#15803d" />}
+                </div>
+
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '16px',
+                  padding: '16px',
+                  background: perrito.esterilizado ? '#dcfce7' : '#fee2e2',
+                  borderRadius: '12px'
+                }}>
+                  <ScissorsIcon size={24} color={perrito.esterilizado ? '#15803d' : '#dc2626'} />
+                  <div style={{ flex: 1 }}>
+                    <p style={{ fontWeight: '600', color: '#0e312d' }}>Esterilización</p>
+                    <p style={{ fontSize: '14px', color: '#666' }}>
+                      {perrito.esterilizado ? 'Realizada' : 'Pendiente'}
+                    </p>
+                  </div>
+                  {perrito.esterilizado && <CheckCircleIcon size={20} color="#15803d" />}
+                </div>
+
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '16px',
+                  padding: '16px',
+                  background: perrito.desparasitado ? '#dcfce7' : '#fee2e2',
+                  borderRadius: '12px'
+                }}>
+                  <StethoscopeIcon size={24} color={perrito.desparasitado ? '#15803d' : '#dc2626'} />
+                  <div style={{ flex: 1 }}>
+                    <p style={{ fontWeight: '600', color: '#0e312d' }}>Desparasitación</p>
+                    <p style={{ fontSize: '14px', color: '#666' }}>
+                      {perrito.desparasitado ? 'Al día' : 'Pendiente'}
+                    </p>
+                  </div>
+                  {perrito.desparasitado && <CheckCircleIcon size={20} color="#15803d" />}
+                </div>
+              </div>
+
+              {perrito.saludNotas && (
+                <p style={{
+                  marginTop: '20px',
+                  padding: '16px',
+                  background: '#f3f4f6',
+                  borderRadius: '12px',
+                  fontSize: '14px',
+                  color: '#666',
+                  lineHeight: '1.6'
+                }}>
+                  {perrito.saludNotas}
+                </p>
+              )}
+            </div>
+
+            {/* Compatibilidad */}
+            <div style={{
+              background: 'white',
+              borderRadius: '20px',
+              padding: '32px',
+              marginBottom: '24px',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
+            }}>
+              <h2 style={{
+                fontSize: '24px',
+                fontWeight: '700',
+                color: '#0e312d',
+                marginBottom: '24px'
+              }}>
+                Compatibilidad
+              </h2>
+
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(3, 1fr)',
+                gap: '12px'
+              }}>
+                <div style={{
+                  textAlign: 'center',
+                  padding: '20px',
+                  background: perrito.aptoNinos ? '#dcfce7' : '#f3f4f6',
+                  borderRadius: '12px'
+                }}>
+                  <p style={{ fontSize: '24px', marginBottom: '8px' }}>👶</p>
+                  <p style={{
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    color: perrito.aptoNinos ? '#15803d' : '#9ca3af'
+                  }}>
+                    {perrito.aptoNinos ? 'Apto' : 'No apto'}
+                  </p>
+                  <p style={{ fontSize: '12px', color: '#666' }}>Niños</p>
+                </div>
+
+                <div style={{
+                  textAlign: 'center',
+                  padding: '20px',
+                  background: perrito.aptoPerros ? '#dcfce7' : '#f3f4f6',
+                  borderRadius: '12px'
+                }}>
+                  <p style={{ fontSize: '24px', marginBottom: '8px' }}>🐕</p>
+                  <p style={{
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    color: perrito.aptoPerros ? '#15803d' : '#9ca3af'
+                  }}>
+                    {perrito.aptoPerros ? 'Apto' : 'No apto'}
+                  </p>
+                  <p style={{ fontSize: '12px', color: '#666' }}>Perros</p>
+                </div>
+
+                <div style={{
+                  textAlign: 'center',
+                  padding: '20px',
+                  background: perrito.aptoGatos ? '#dcfce7' : '#f3f4f6',
+                  borderRadius: '12px'
+                }}>
+                  <p style={{ fontSize: '24px', marginBottom: '8px' }}>🐱</p>
+                  <p style={{
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    color: perrito.aptoGatos ? '#15803d' : '#9ca3af'
+                  }}>
+                    {perrito.aptoGatos ? 'Apto' : 'No apto'}
+                  </p>
+                  <p style={{ fontSize: '12px', color: '#666' }}>Gatos</p>
+                </div>
+              </div>
+            </div>
+
+            {/* CTA */}
+            {perrito.estado === 'disponible' && (
+              <div style={{
+                background: 'linear-gradient(135deg, #6b3838 0%, #8b4848 100%)',
+                borderRadius: '20px',
+                padding: '32px',
+                boxShadow: '0 4px 20px rgba(107, 56, 56, 0.2)'
+              }}>
+                <h3 style={{
+                  fontSize: '24px',
+                  fontWeight: '700',
+                  color: 'white',
+                  marginBottom: '12px'
+                }}>
+                  ¿Listo para adoptar?
+                </h3>
+                <p style={{
+                  fontSize: '16px',
+                  color: 'rgba(255,255,255,0.9)',
+                  marginBottom: '24px',
+                  lineHeight: '1.6'
+                }}>
+                  {perrito.nombre} está esperando conocerte. Inicia el proceso de adopción 
+                  y dale la oportunidad de ser parte de tu familia.
+                </p>
+                <Link
+                  href={`/solicitud/${perrito.id}`}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '12px',
+                    width: '100%',
+                    padding: '16px',
+                    background: 'white',
+                    color: '#6b3838',
+                    borderRadius: '12px',
+                    textDecoration: 'none',
+                    fontSize: '16px',
+                    fontWeight: '700',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  <HomeIcon size={20} color="#6b3838" />
+                  Iniciar Solicitud de Adopción
+                  <ArrowRightIcon size={20} color="#6b3838" />
+                </Link>
+              </div>
             )}
           </div>
         </div>
 
         {/* Perritos similares */}
         {perrito.similares && perrito.similares.length > 0 && (
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold text-slate-900 mb-6">Otros perritos que te pueden interesar</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {perrito.similares.map((similar) => (
+          <div style={{
+            marginTop: '80px',
+            marginBottom: '80px'
+          }}>
+            <h2 style={{
+              fontSize: '32px',
+              fontWeight: '700',
+              color: '#0e312d',
+              marginBottom: '32px',
+              textAlign: 'center'
+            }}>
+              También te pueden interesar
+            </h2>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+              gap: '24px'
+            }}>
+              {perrito.similares.slice(0, 3).map((similar, index) => (
                 <Link
                   key={similar.id}
                   href={`/perritos/${similar.slug}`}
-                  className="card overflow-hidden group"
+                  style={{
+                    display: 'block',
+                    background: 'white',
+                    borderRadius: '20px',
+                    overflow: 'hidden',
+                    textDecoration: 'none',
+                    transition: 'all 0.3s',
+                    boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
+                  }}
                 >
-                  <Image
-                    src={similar.fotoPrincipal}
-                    alt={similar.nombre}
-                    width={300}
-                    height={200}
-                    className="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="p-4">
-                    <h3 className="font-semibold text-slate-900">{similar.nombre}</h3>
-                    <p className="text-sm text-slate-600">{similar.raza} • {similar.edad}</p>
+                  <div style={{
+                    position: 'relative',
+                    height: '200px',
+                    overflow: 'hidden'
+                  }}>
+                    <Image
+                      src={similar.fotoPrincipal || dogImages[index % dogImages.length]}
+                      alt={similar.nombre}
+                      fill
+                      style={{
+                        objectFit: 'cover'
+                      }}
+                    />
+                  </div>
+                  <div style={{ padding: '24px' }}>
+                    <h3 style={{
+                      fontSize: '20px',
+                      fontWeight: '700',
+                      color: '#0e312d',
+                      marginBottom: '8px'
+                    }}>{similar.nombre}</h3>
+                    <p style={{
+                      fontSize: '14px',
+                      color: '#666'
+                    }}>{similar.raza} • {similar.edad}</p>
                   </div>
                 </Link>
               ))}

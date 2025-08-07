@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import FormularioPerrito from '../../../../components/admin/FormularioPerrito'
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'

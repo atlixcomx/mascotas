@@ -546,11 +546,11 @@ export default function AdminDashboard() {
 
   return (
     <div style={{ 
-      padding: '16px 24px', 
-      maxWidth: '1600px', 
-      margin: '0 auto', 
+      padding: '16px', 
+      width: '100%', 
       backgroundColor: '#f8fafc', 
-      minHeight: '100vh'
+      minHeight: '100vh',
+      overflowX: 'hidden'
     }}>
       {/* Header Compacto */}
       <div style={{ marginBottom: '16px' }}>
@@ -631,9 +631,10 @@ export default function AdminDashboard() {
       {/* Métricas Principales - Grid Optimizado */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
         gap: '12px',
-        marginBottom: '16px'
+        marginBottom: '16px',
+        width: '100%'
       }}>
         <MetricCard
           title="Perritos Disponibles"
@@ -670,9 +671,10 @@ export default function AdminDashboard() {
       {/* Métricas Secundarias - Continuación */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
         gap: '12px',
-        marginBottom: '20px'
+        marginBottom: '20px',
+        width: '100%'
       }}>
         <MetricCard
           title="Vacunaciones Pendientes"

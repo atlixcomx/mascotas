@@ -118,16 +118,17 @@ export function usePerrito(slug: string | null) {
     retry,
     isRetrying
   } = useFetch<Perrito & { 
-    fotos: string[]
-    historia: string
-    similares: Perrito[]
-    vistas: number
+    fotos?: string[]
+    historia?: string
+    similares?: Perrito[]
+    vistas?: number
     peso?: number
     procedencia?: string
-    vacunas: boolean
-    esterilizado: boolean
-    desparasitado: boolean
+    vacunas?: boolean
+    esterilizado?: boolean
+    desparasitado?: boolean
     saludNotas?: string
+    descripcion?: string
   }>(url, {
     retryAttempts: 3,
     retryDelay: 1000

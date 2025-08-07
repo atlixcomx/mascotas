@@ -2,12 +2,33 @@
 
 export const DogIcon = ({ size = 24, color = "currentColor" }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M4.5 10.5C4.5 8.5 5.5 6.5 7.5 6.5C9.5 6.5 10.5 8.5 10.5 10.5V14.5C10.5 16.5 8.5 18.5 6.5 18.5C4.5 18.5 4.5 16.5 4.5 14.5V10.5Z" stroke={color} strokeWidth="2" strokeLinecap="round"/>
-    <path d="M19.5 10.5C19.5 8.5 18.5 6.5 16.5 6.5C14.5 6.5 13.5 8.5 13.5 10.5V14.5C13.5 16.5 15.5 18.5 17.5 18.5C19.5 18.5 19.5 16.5 19.5 14.5V10.5Z" stroke={color} strokeWidth="2" strokeLinecap="round"/>
-    <path d="M10.5 11C10.5 8.5 11 5.5 12 5.5C13 5.5 13.5 8.5 13.5 11" stroke={color} strokeWidth="2" strokeLinecap="round"/>
-    <circle cx="9" cy="9" r="1" fill={color}/>
-    <circle cx="15" cy="9" r="1" fill={color}/>
-    <path d="M12 12V13" stroke={color} strokeWidth="2" strokeLinecap="round"/>
+    {/* Cabeza del perro */}
+    <circle cx="12" cy="12" r="6" fill={color} opacity="0.1"/>
+    <path d="M7 12C7 8.5 9.5 6 12 6C14.5 6 17 8.5 17 12C17 13.5 16.5 14.8 15.5 15.8" 
+          stroke={color} strokeWidth="2" strokeLinecap="round"/>
+    
+    {/* Orejas caídas características */}
+    <path d="M8 9C6 8 5 9 5 11C5 12 6 13 7 12.5" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M16 9C18 8 19 9 19 11C19 12 18 13 17 12.5" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    
+    {/* Hocico */}
+    <ellipse cx="12" cy="15" rx="2.5" ry="1.5" stroke={color} strokeWidth="2" strokeLinecap="round"/>
+    
+    {/* Nariz */}
+    <ellipse cx="12" cy="14" rx="0.8" ry="0.5" fill={color}/>
+    
+    {/* Ojos expresivos */}
+    <circle cx="10" cy="11" r="1.2" fill={color}/>
+    <circle cx="14" cy="11" r="1.2" fill={color}/>
+    <circle cx="10" cy="10.5" r="0.4" fill="white"/>
+    <circle cx="14" cy="10.5" r="0.4" fill="white"/>
+    
+    {/* Boca sonriente */}
+    <path d="M10 16C10.5 17 11.5 17.5 12 17.5C12.5 17.5 13.5 17 14 16" 
+          stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    
+    {/* Lengua */}
+    <path d="M12 17.5C12 18.5 12 19 12 19.5" stroke={color} strokeWidth="2" strokeLinecap="round"/>
   </svg>
 );
 
@@ -131,15 +152,31 @@ export const MountainIcon = ({ size = 24, color = "currentColor" }) => (
   </svg>
 );
 
-export const BirdIcon = ({ size = 24, color = "#6b3838" }) => (
+export const BirdIcon = ({ size = 24, color = "currentColor" }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M16 7C16 9.21 14.21 11 12 11C9.79 11 8 9.21 8 7C8 4.79 9.79 3 12 3C14.21 3 16 4.79 16 7Z" 
-          fill="#6b3838" stroke="#6b3838" strokeWidth="1" opacity="0.2"/>
-    <path d="M12 11V16L8 20" stroke="#6b3838" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M12 16L16 20" stroke="#6b3838" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M7 7C3 7 3 11 3 11" stroke="#6b3838" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-    <circle cx="13" cy="7" r="1" fill="#6b3838"/>
-    <path d="M8 7C8 7 10 5 12 3" stroke="#6b3838" strokeWidth="1.5" strokeLinecap="round" opacity="0.6"/>
+    {/* Cuerpo del colibrí */}
+    <ellipse cx="12" cy="12" rx="3" ry="6" fill={color} opacity="0.1"/>
+    <path d="M12 6C12.8 6 13.5 6.5 14 7.2C14.5 8 14.5 9 14 10L12 18L10 10C9.5 9 9.5 8 10 7.2C10.5 6.5 11.2 6 12 6Z" 
+          stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    
+    {/* Pico largo característico */}
+    <path d="M12 6L12 3" stroke={color} strokeWidth="2" strokeLinecap="round"/>
+    <path d="M12 3L11.5 2.5" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    
+    {/* Alas en movimiento rápido */}
+    <path d="M10 8C7 6 5 7 4 9C5 8 7 8.5 10 9" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M14 8C17 6 19 7 20 9C19 8 17 8.5 14 9" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    
+    {/* Cola en forma de V */}
+    <path d="M12 18L10 20" stroke={color} strokeWidth="2" strokeLinecap="round"/>
+    <path d="M12 18L14 20" stroke={color} strokeWidth="2" strokeLinecap="round"/>
+    
+    {/* Ojo */}
+    <circle cx="12.5" cy="8" r="0.8" fill={color}/>
+    
+    {/* Líneas de movimiento para mostrar velocidad */}
+    <path d="M6 10L4 11" stroke={color} strokeWidth="1" strokeLinecap="round" opacity="0.5"/>
+    <path d="M18 10L20 11" stroke={color} strokeWidth="1" strokeLinecap="round" opacity="0.5"/>
   </svg>
 );
 

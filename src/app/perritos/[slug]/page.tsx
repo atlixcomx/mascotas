@@ -407,17 +407,17 @@ export default function PerritoDetailPage({ params }: PageProps) {
                   alignItems: 'center',
                   gap: '16px',
                   padding: '16px',
-                  background: perrito.vacunas ? '#dcfce7' : '#fee2e2',
+                  background: (perrito.vacunas ?? false) ? '#dcfce7' : '#fee2e2',
                   borderRadius: '12px'
                 }}>
-                  <VaccineIcon size={24} color={perrito.vacunas ? '#15803d' : '#dc2626'} />
+                  <VaccineIcon size={24} color={(perrito.vacunas ?? false) ? '#15803d' : '#dc2626'} />
                   <div style={{ flex: 1 }}>
                     <p style={{ fontWeight: '600', color: '#0e312d' }}>Vacunas</p>
                     <p style={{ fontSize: '14px', color: '#666' }}>
-                      {perrito.vacunas ? 'Esquema completo' : 'Pendiente'}
+                      {(perrito.vacunas ?? false) ? 'Esquema completo' : 'Pendiente'}
                     </p>
                   </div>
-                  {perrito.vacunas && <CheckCircleIcon size={20} color="#15803d" />}
+                  {(perrito.vacunas ?? false) && <CheckCircleIcon size={20} color="#15803d" />}
                 </div>
 
                 <div style={{
@@ -425,17 +425,17 @@ export default function PerritoDetailPage({ params }: PageProps) {
                   alignItems: 'center',
                   gap: '16px',
                   padding: '16px',
-                  background: perrito.esterilizado ? '#dcfce7' : '#fee2e2',
+                  background: (perrito.esterilizado ?? false) ? '#dcfce7' : '#fee2e2',
                   borderRadius: '12px'
                 }}>
-                  <ScissorsIcon size={24} color={perrito.esterilizado ? '#15803d' : '#dc2626'} />
+                  <ScissorsIcon size={24} color={(perrito.esterilizado ?? false) ? '#15803d' : '#dc2626'} />
                   <div style={{ flex: 1 }}>
                     <p style={{ fontWeight: '600', color: '#0e312d' }}>Esterilización</p>
                     <p style={{ fontSize: '14px', color: '#666' }}>
-                      {perrito.esterilizado ? 'Realizada' : 'Pendiente'}
+                      {(perrito.esterilizado ?? false) ? 'Realizada' : 'Pendiente'}
                     </p>
                   </div>
-                  {perrito.esterilizado && <CheckCircleIcon size={20} color="#15803d" />}
+                  {(perrito.esterilizado ?? false) && <CheckCircleIcon size={20} color="#15803d" />}
                 </div>
 
                 <div style={{
@@ -443,17 +443,17 @@ export default function PerritoDetailPage({ params }: PageProps) {
                   alignItems: 'center',
                   gap: '16px',
                   padding: '16px',
-                  background: perrito.desparasitado ? '#dcfce7' : '#fee2e2',
+                  background: (perrito.desparasitado ?? false) ? '#dcfce7' : '#fee2e2',
                   borderRadius: '12px'
                 }}>
-                  <StethoscopeIcon size={24} color={perrito.desparasitado ? '#15803d' : '#dc2626'} />
+                  <StethoscopeIcon size={24} color={(perrito.desparasitado ?? false) ? '#15803d' : '#dc2626'} />
                   <div style={{ flex: 1 }}>
                     <p style={{ fontWeight: '600', color: '#0e312d' }}>Desparasitación</p>
                     <p style={{ fontSize: '14px', color: '#666' }}>
-                      {perrito.desparasitado ? 'Al día' : 'Pendiente'}
+                      {(perrito.desparasitado ?? false) ? 'Al día' : 'Pendiente'}
                     </p>
                   </div>
-                  {perrito.desparasitado && <CheckCircleIcon size={20} color="#15803d" />}
+                  {(perrito.desparasitado ?? false) && <CheckCircleIcon size={20} color="#15803d" />}
                 </div>
               </div>
 

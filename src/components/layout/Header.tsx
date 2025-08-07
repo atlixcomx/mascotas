@@ -70,34 +70,41 @@ export default function Header() {
             flex: 1
           }}>
             <div style={{
-              width: '48px',
-              height: '48px',
-              background: 'linear-gradient(135deg, #af1731, #840f31)',
-              borderRadius: '8px',
+              width: '52px',
+              height: '52px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-              minWidth: '48px'
+              minWidth: '52px',
+              position: 'relative'
             }}>
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2L3 7V11C3 16.5 6.8 21.7 12 23C17.2 21.7 21 16.5 21 11V7L12 2Z" />
+              {/* Logo del Centro con corazón y perrito */}
+              <svg width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M26 48C37.5 48 45 38 45 26C45 18 41 12 36 8C33.5 6 30 5 26 5C14.5 5 7 14.5 7 26C7 38 14.5 48 26 48Z" 
+                      fill="#f8f8f8" stroke="#b5a47e" strokeWidth="2"/>
+                <path d="M26 12C20 12 15 17 15 23C15 25 15.5 27 16.5 28.5L26 38L35.5 28.5C36.5 27 37 25 37 23C37 17 32 12 26 12Z" 
+                      fill="none" stroke="#b5a47e" strokeWidth="2.5"/>
+                <circle cx="22" cy="22" r="1.5" fill="#b5a47e"/>
+                <circle cx="30" cy="22" r="1.5" fill="#b5a47e"/>
+                <path d="M24 25Q26 27 28 25" stroke="#b5a47e" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
               </svg>
             </div>
             <div className="header-title">
               <h1 style={{
-                fontWeight: 'bold',
-                fontSize: '20px',
+                fontWeight: '700',
+                fontSize: '18px',
                 color: '#0e312d',
                 margin: 0,
-                lineHeight: '1.2'
-              }}>Centro de Adopción Atlixco</h1>
+                lineHeight: '1.2',
+                letterSpacing: '-0.5px'
+              }}>Centro de Adopción y Bienestar Animal</h1>
               <p style={{
-                fontSize: '12px',
+                fontSize: '13px',
                 color: '#666',
                 margin: 0,
-                lineHeight: '1.2'
-              }}>Gobierno Municipal de Atlixco | 2024</p>
+                lineHeight: '1.2',
+                fontWeight: '500'
+              }}>H. Ayuntamiento de Atlixco</p>
             </div>
           </div>
 
@@ -107,44 +114,48 @@ export default function Header() {
             alignItems: 'center',
             gap: '32px'
           }}>
-            <a href="/" style={{
+            <a href="#adoptar" style={{
               color: '#4a4a4a',
               textDecoration: 'none',
               fontWeight: '500',
               padding: '8px 0',
               transition: 'color 0.2s'
             }}>
-              Inicio
+              Adoptar
+            </a>
+            <a href="#proceso" style={{
+              color: '#4a4a4a',
+              textDecoration: 'none',
+              fontWeight: '500',
+              padding: '8px 0',
+              transition: 'color 0.2s'
+            }}>
+              Nuestro Proceso
+            </a>
+            <a href="#voluntariado" style={{
+              color: '#4a4a4a',
+              textDecoration: 'none',
+              fontWeight: '500',
+              padding: '8px 0',
+              transition: 'color 0.2s'
+            }}>
+              Voluntariado
             </a>
             <a href="/perritos" style={{
-              color: '#4a4a4a',
-              textDecoration: 'none',
-              fontWeight: '500',
-              padding: '8px 0',
-              transition: 'color 0.2s'
-            }}>
-              Perritos
-            </a>
-            <a href="#contacto" style={{
-              color: '#4a4a4a',
-              textDecoration: 'none',
-              fontWeight: '500',
-              padding: '8px 0',
-              transition: 'color 0.2s'
-            }}>
-              Contacto
-            </a>
-            <a href="/admin" style={{
-              backgroundColor: '#af1731',
+              backgroundColor: '#0e312d',
               color: 'white',
-              padding: '10px 20px',
-              borderRadius: '6px',
+              padding: '12px 24px',
+              borderRadius: '8px',
               textDecoration: 'none',
-              fontSize: '14px',
+              fontSize: '15px',
               fontWeight: '600',
-              transition: 'background-color 0.2s'
+              transition: 'all 0.3s',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
             }}>
-              Portal Administrativo
+              🐕 Ver Catálogo
             </a>
           </nav>
 
@@ -254,7 +265,7 @@ export default function Header() {
 
         <nav style={{ padding: '20px 0' }}>
           <a
-            href="/"
+            href="#adoptar"
             onClick={closeMobileMenu}
             style={{
               display: 'block',
@@ -267,58 +278,59 @@ export default function Header() {
               transition: 'background-color 0.2s'
             }}
           >
-            🏠 Inicio
+            🏠 Adoptar
+          </a>
+          <a
+            href="#proceso"
+            onClick={closeMobileMenu}
+            style={{
+              display: 'block',
+              padding: '16px 20px',
+              color: '#1a1a1a',
+              textDecoration: 'none',
+              fontWeight: '500',
+              fontSize: '16px',
+              borderBottom: '1px solid #f3f4f6',
+              transition: 'background-color 0.2s'
+            }}
+          >
+            📋 Nuestro Proceso
+          </a>
+          <a
+            href="#voluntariado"
+            onClick={closeMobileMenu}
+            style={{
+              display: 'block',
+              padding: '16px 20px',
+              color: '#1a1a1a',
+              textDecoration: 'none',
+              fontWeight: '500',
+              fontSize: '16px',
+              borderBottom: '1px solid #f3f4f6',
+              transition: 'background-color 0.2s'
+            }}
+          >
+            🤝 Voluntariado
           </a>
           <a
             href="/perritos"
             onClick={closeMobileMenu}
             style={{
               display: 'block',
-              padding: '16px 20px',
-              color: '#1a1a1a',
-              textDecoration: 'none',
-              fontWeight: '500',
-              fontSize: '16px',
-              borderBottom: '1px solid #f3f4f6',
-              transition: 'background-color 0.2s'
-            }}
-          >
-            🐕 Perritos
-          </a>
-          <a
-            href="#contacto"
-            onClick={closeMobileMenu}
-            style={{
-              display: 'block',
-              padding: '16px 20px',
-              color: '#1a1a1a',
-              textDecoration: 'none',
-              fontWeight: '500',
-              fontSize: '16px',
-              borderBottom: '1px solid #f3f4f6',
-              transition: 'background-color 0.2s'
-            }}
-          >
-            📞 Contacto
-          </a>
-          <a
-            href="/admin"
-            onClick={closeMobileMenu}
-            style={{
-              display: 'block',
               margin: '20px',
-              padding: '12px 16px',
-              backgroundColor: '#af1731',
+              padding: '14px 16px',
+              backgroundColor: '#0e312d',
               color: 'white',
               textDecoration: 'none',
               fontWeight: '600',
-              fontSize: '14px',
+              fontSize: '15px',
               borderRadius: '8px',
               textAlign: 'center',
-              transition: 'background-color 0.2s'
+              transition: 'background-color 0.2s',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
             }}
           >
-            ⚙️ Portal Administrativo
+            🐕 Ver Catálogo
           </a>
         </nav>
       </div>

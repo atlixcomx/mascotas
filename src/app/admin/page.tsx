@@ -168,17 +168,18 @@ function MetricCard({
       onMouseLeave={() => setIsHovered(false)}
       style={{ 
         backgroundColor: '#ffffff',
-        borderRadius: '16px',
-        padding: '24px',
+        borderRadius: '10px',
+        padding: '12px',
         boxShadow: isHovered 
-          ? '0 8px 24px rgba(125, 36, 71, 0.12)' 
-          : '0 2px 8px rgba(0, 0, 0, 0.08)',
+          ? '0 4px 12px rgba(125, 36, 71, 0.1)' 
+          : '0 1px 3px rgba(0, 0, 0, 0.05)',
         border: `1px solid ${isHovered ? '#bfb591' : 'rgba(0, 0, 0, 0.05)'}`,
-        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        transition: 'all 0.2s ease',
         cursor: 'pointer',
-        transform: isHovered ? 'translateY(-4px)' : 'none',
+        transform: isHovered ? 'translateY(-2px)' : 'none',
         position: 'relative',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        minWidth: '180px'
       }}
     >
       {/* Top gradient line */}
@@ -187,28 +188,31 @@ function MetricCard({
         top: 0,
         left: 0,
         right: 0,
-        height: '4px',
+        height: '3px',
         background: 'linear-gradient(135deg, #7d2447 0%, #af1731 100%)',
         opacity: isHovered ? 1 : 0,
-        transition: 'opacity 0.3s ease'
+        transition: 'opacity 0.2s ease'
       }} />
       
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
         <div style={{ flex: 1 }}>
           <p style={{ 
-            fontSize: '0.875rem', 
+            fontSize: '0.75rem', 
             fontWeight: '500', 
-            color: '#4b5563',
-            margin: '0 0 8px 0',
-            fontFamily: 'Poppins, sans-serif'
+            color: '#64748b',
+            margin: '0 0 4px 0',
+            fontFamily: 'Poppins, sans-serif',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis'
           }}>
             {title}
           </p>
           <p style={{ 
-            fontSize: '1.5rem', 
+            fontSize: '1.25rem', 
             fontWeight: '700', 
             color: '#0f172a',
-            margin: '0 0 4px 0',
+            margin: '0',
             fontFamily: 'Albert Sans, sans-serif',
             letterSpacing: '-0.02em'
           }}>
@@ -216,9 +220,9 @@ function MetricCard({
           </p>
           {subtitle && (
             <p style={{ 
-              fontSize: '0.75rem', 
-              color: '#6b7280',
-              margin: '4px 0 0 0',
+              fontSize: '0.625rem', 
+              color: '#94a3b8',
+              margin: '2px 0 0 0',
               fontFamily: 'Poppins, sans-serif'
             }}>
               {subtitle}
@@ -228,34 +232,35 @@ function MetricCard({
             <div style={{ 
               display: 'flex', 
               alignItems: 'center', 
-              marginTop: '12px' 
+              marginTop: '6px' 
             }}>
               {change > 0 ? (
-                <ArrowUp style={{ width: '16px', height: '16px', color: '#22c55e', marginRight: '4px' }} />
+                <ArrowUp style={{ width: '12px', height: '12px', color: '#22c55e', marginRight: '2px' }} />
               ) : change < 0 ? (
-                <ArrowDown style={{ width: '16px', height: '16px', color: '#ef4444', marginRight: '4px' }} />
+                <ArrowDown style={{ width: '12px', height: '12px', color: '#ef4444', marginRight: '2px' }} />
               ) : null}
               <span style={{
-                fontSize: '0.875rem',
+                fontSize: '0.625rem',
                 fontWeight: '500',
-                color: change > 0 ? '#16a34a' : change < 0 ? '#dc2626' : '#4b5563',
+                color: change > 0 ? '#16a34a' : change < 0 ? '#dc2626' : '#64748b',
                 fontFamily: 'Poppins, sans-serif'
               }}>
-                {change > 0 && '+'}{change}% vs mes anterior
+                {change > 0 && '+'}{change}%
               </span>
             </div>
           )}
         </div>
         <div style={{
-          padding: '12px',
-          borderRadius: '12px',
+          padding: '8px',
+          borderRadius: '8px',
           backgroundColor: iconStyle.backgroundColor,
           color: iconStyle.color,
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center',
+          flexShrink: 0
         }}>
-          <Icon style={{ width: '24px', height: '24px' }} />
+          <Icon style={{ width: '18px', height: '18px' }} />
         </div>
       </div>
     </div>
@@ -311,15 +316,15 @@ function QuickActionCard({
       style={{
         display: 'block',
         backgroundColor: 'white',
-        borderRadius: '12px',
-        padding: '20px',
-        border: `2px solid ${isHovered ? '#bfb591' : 'transparent'}`,
-        transition: 'all 0.3s ease',
+        borderRadius: '8px',
+        padding: '12px',
+        border: `1px solid ${isHovered ? '#bfb591' : '#e5e7eb'}`,
+        transition: 'all 0.2s ease',
         position: 'relative',
         overflow: 'hidden',
         textDecoration: 'none',
-        boxShadow: isHovered ? '0 8px 24px rgba(125, 36, 71, 0.12)' : '0 2px 8px rgba(0, 0, 0, 0.06)',
-        transform: isHovered ? 'translateY(-2px)' : 'none'
+        boxShadow: isHovered ? '0 4px 12px rgba(125, 36, 71, 0.1)' : '0 1px 3px rgba(0, 0, 0, 0.05)',
+        transform: isHovered ? 'translateY(-1px)' : 'none'
       }}
     >
       {/* Decorative gradient overlay */}
@@ -371,14 +376,14 @@ function QuickActionCard({
           <h3 style={{ 
             fontWeight: '600', 
             color: '#0f172a',
-            margin: '0 0 4px 0',
-            fontSize: '1rem',
+            margin: '0 0 2px 0',
+            fontSize: '0.875rem',
             fontFamily: 'Albert Sans, sans-serif'
           }}>
             {title}
           </h3>
           <p style={{ 
-            fontSize: '0.875rem', 
+            fontSize: '0.75rem', 
             color: '#64748b',
             margin: 0,
             fontFamily: 'Poppins, sans-serif'
@@ -540,11 +545,28 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto animate-fadeIn" style={{ backgroundColor: '#f8fafc', minHeight: '100vh' }}>
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Centro de Control</h1>
-        <p className="text-gray-600">
+    <div style={{ 
+      padding: '16px 24px', 
+      maxWidth: '1600px', 
+      margin: '0 auto', 
+      backgroundColor: '#f8fafc', 
+      minHeight: '100vh'
+    }}>
+      {/* Header Compacto */}
+      <div style={{ marginBottom: '16px' }}>
+        <h1 style={{ 
+          fontSize: '1.75rem', 
+          fontWeight: '700', 
+          color: '#0f172a', 
+          margin: '0 0 4px 0',
+          fontFamily: 'Albert Sans, sans-serif'
+        }}>Centro de Control</h1>
+        <p style={{ 
+          fontSize: '0.875rem',
+          color: '#64748b', 
+          margin: 0,
+          fontFamily: 'Poppins, sans-serif'
+        }}>
           Sistema de Adopción Municipal de Atlixco - {new Date().toLocaleDateString('es-MX', { 
             weekday: 'long', 
             year: 'numeric', 
@@ -554,30 +576,30 @@ export default function AdminDashboard() {
         </p>
       </div>
 
-      {/* Alertas Importantes */}
+      {/* Alertas Importantes Compactas */}
       {alertas.length > 0 && (
-        <div style={{ marginBottom: '24px' }}>
+        <div style={{ marginBottom: '12px' }}>
           {alertas.map((alerta) => (
             <div key={alerta.id} style={{
-              padding: '16px',
-              borderRadius: '12px',
+              padding: '10px 14px',
+              borderRadius: '8px',
               border: `1px solid ${alerta.prioridad === 'alta' ? '#fecaca' : '#fef08a'}`,
               display: 'flex',
-              alignItems: 'flex-start',
-              marginBottom: '12px',
+              alignItems: 'center',
+              marginBottom: '8px',
               backgroundColor: alerta.prioridad === 'alta' ? '#fef2f2' : '#fefce8',
               color: alerta.prioridad === 'alta' ? '#991b1b' : '#854d0e',
-              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)'
+              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
             }}>
               <AlertCircle style={{ 
-                width: '20px', 
-                height: '20px', 
-                marginRight: '12px', 
-                flexShrink: 0, 
-                marginTop: '2px' 
+                width: '16px', 
+                height: '16px', 
+                marginRight: '8px', 
+                flexShrink: 0
               }} />
               <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <p style={{ 
+                  fontSize: '0.875rem',
                   fontWeight: '500', 
                   margin: 0,
                   fontFamily: 'Poppins, sans-serif' 
@@ -586,12 +608,13 @@ export default function AdminDashboard() {
                   <Link 
                     href={alerta.link}
                     style={{
-                      marginLeft: '16px',
-                      fontSize: '0.875rem',
+                      marginLeft: '12px',
+                      fontSize: '0.75rem',
                       fontWeight: '600',
                       textDecoration: 'none',
                       color: alerta.prioridad === 'alta' ? '#991b1b' : '#854d0e',
-                      fontFamily: 'Albert Sans, sans-serif'
+                      fontFamily: 'Albert Sans, sans-serif',
+                      whiteSpace: 'nowrap'
                     }}
                     onMouseEnter={(e) => e.currentTarget.style.textDecoration = 'underline'}
                     onMouseLeave={(e) => e.currentTarget.style.textDecoration = 'none'}
@@ -605,8 +628,13 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      {/* Métricas Principales - Primera Fila */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+      {/* Métricas Principales - Grid Optimizado */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+        gap: '12px',
+        marginBottom: '16px'
+      }}>
         <MetricCard
           title="Perritos Disponibles"
           value={data.perritos.disponibles}
@@ -639,8 +667,13 @@ export default function AdminDashboard() {
         />
       </div>
 
-      {/* Métricas Secundarias - Segunda Fila */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      {/* Métricas Secundarias - Continuación */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+        gap: '12px',
+        marginBottom: '20px'
+      }}>
         <MetricCard
           title="Vacunaciones Pendientes"
           value={data.salud.vacunacionesPendientes}
@@ -671,26 +704,31 @@ export default function AdminDashboard() {
         />
       </div>
 
-      {/* Gráficas y estadísticas */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+      {/* Gráficas y estadísticas - Vista Compacta */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+        gap: '16px',
+        marginBottom: '20px'
+      }}>
         {/* Estadísticas de Adopción */}
         <div style={{
           backgroundColor: 'white',
-          borderRadius: '16px',
+          borderRadius: '12px',
           boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
           border: '1px solid rgba(0, 0, 0, 0.05)',
-          padding: '24px',
+          padding: '16px',
           transition: 'all 0.3s ease'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
             <h2 style={{ 
-              fontSize: '1.125rem', 
+              fontSize: '1rem', 
               fontWeight: '600', 
               color: '#0f172a',
               margin: 0,
               fontFamily: 'Albert Sans, sans-serif'
             }}>Estadísticas de Adopción</h2>
-            <BarChart3 style={{ width: '20px', height: '20px', color: '#94a3b8' }} />
+            <BarChart3 style={{ width: '18px', height: '18px', color: '#94a3b8' }} />
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div>
@@ -746,21 +784,21 @@ export default function AdminDashboard() {
         {/* Origen de Mascotas */}
         <div style={{
           backgroundColor: 'white',
-          borderRadius: '16px',
+          borderRadius: '12px',
           boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
           border: '1px solid rgba(0, 0, 0, 0.05)',
-          padding: '24px',
+          padding: '16px',
           transition: 'all 0.3s ease'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
             <h2 style={{ 
-              fontSize: '1.125rem', 
+              fontSize: '1rem', 
               fontWeight: '600', 
               color: '#0f172a',
               margin: 0,
               fontFamily: 'Albert Sans, sans-serif'
             }}>Origen de Mascotas</h2>
-            <PieChart style={{ width: '20px', height: '20px', color: '#94a3b8' }} />
+            <PieChart style={{ width: '18px', height: '18px', color: '#94a3b8' }} />
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             <div style={{
@@ -862,21 +900,21 @@ export default function AdminDashboard() {
         {/* Gastos por Categoría */}
         <div style={{
           backgroundColor: 'white',
-          borderRadius: '16px',
+          borderRadius: '12px',
           boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
           border: '1px solid rgba(0, 0, 0, 0.05)',
-          padding: '24px',
+          padding: '16px',
           transition: 'all 0.3s ease'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
             <h2 style={{ 
-              fontSize: '1.125rem', 
+              fontSize: '1rem', 
               fontWeight: '600', 
               color: '#0f172a',
               margin: 0,
               fontFamily: 'Albert Sans, sans-serif'
             }}>Gastos del Mes</h2>
-            <BarChart3 style={{ width: '20px', height: '20px', color: '#94a3b8' }} />
+            <BarChart3 style={{ width: '18px', height: '18px', color: '#94a3b8' }} />
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             <div style={{
@@ -958,51 +996,101 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* Acciones Rápidas */}
-      <div className="mb-8">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Acciones Rápidas</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <QuickActionCard
-            title="Registrar Mascota"
-            description="Añadir nuevo perrito al sistema"
-            href="/admin/perritos/nuevo"
-            icon={Dog}
-            color="blue"
-          />
-          <QuickActionCard
-            title="Ver Solicitudes"
-            description={`${data.solicitudes.pendientes} pendientes de revisar`}
-            href="/admin/solicitudes"
-            icon={FileText}
-            color="green"
-            badge={data.solicitudes.pendientes}
-          />
-          <QuickActionCard
-            title="Expedientes Médicos"
-            description="Gestionar salud de mascotas"
-            href="/admin/expedientes"
-            icon={Syringe}
-            color="red"
-            badge={data.salud.vacunacionesPendientes}
-          />
-          <QuickActionCard
-            title="Programar Seguimiento"
-            description="Llamadas de monitoreo"
-            href="/admin/seguimientos"
-            icon={Phone}
-            color="purple"
-            badge={data.seguimientos.vencidos}
-          />
+      {/* Acciones Rápidas y Sección Inferior */}
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
+        gap: '20px',
+        marginBottom: '20px'
+      }}>
+        {/* Columna Izquierda: Acciones Rápidas */}
+        <div>
+          <h2 style={{ 
+            fontSize: '1rem', 
+            fontWeight: '600', 
+            color: '#0f172a', 
+            marginBottom: '12px',
+            fontFamily: 'Albert Sans, sans-serif'
+          }}>Acciones Rápidas</h2>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+            gap: '10px'
+          }}>
+            <QuickActionCard
+              title="Registrar Mascota"
+              description="Añadir nuevo perrito"
+              href="/admin/perritos/nuevo"
+              icon={Dog}
+              color="blue"
+            />
+            <QuickActionCard
+              title="Ver Solicitudes"
+              description={`${data.solicitudes.pendientes} pendientes`}
+              href="/admin/solicitudes"
+              icon={FileText}
+              color="green"
+              badge={data.solicitudes.pendientes}
+            />
+            <QuickActionCard
+              title="Expedientes"
+              description="Salud de mascotas"
+              href="/admin/expedientes"
+              icon={Syringe}
+              color="red"
+              badge={data.salud.vacunacionesPendientes}
+            />
+            <QuickActionCard
+              title="Seguimientos"
+              description="Monitoreo"
+              href="/admin/seguimientos"
+              icon={Phone}
+              color="purple"
+              badge={data.seguimientos.vencidos}
+            />
+          </div>
         </div>
-      </div>
-
-      {/* Sección inferior con múltiples widgets */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Solicitudes Recientes */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">Solicitudes Recientes</h2>
-            <Link href="/admin/solicitudes" className="text-sm text-blue-600 hover:text-blue-700">
+        {/* Columna Derecha: Solicitudes Recientes */}
+        <div style={{
+          backgroundColor: 'white',
+          borderRadius: '12px',
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
+          border: '1px solid rgba(0, 0, 0, 0.05)',
+          padding: '16px',
+          height: 'fit-content'
+        }}>
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'space-between', 
+            marginBottom: '12px' 
+          }}>
+            <h2 style={{ 
+              fontSize: '1rem', 
+              fontWeight: '600', 
+              color: '#0f172a',
+              margin: 0,
+              fontFamily: 'Albert Sans, sans-serif'
+            }}>Solicitudes Recientes</h2>
+            <Link 
+              href="/admin/solicitudes" 
+              style={{
+                fontSize: '0.75rem',
+                color: '#af1731',
+                textDecoration: 'none',
+                fontWeight: '600',
+                fontFamily: 'Albert Sans, sans-serif',
+                transition: 'color 0.2s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = '#7d2447'
+                e.currentTarget.style.textDecoration = 'underline'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = '#af1731'
+                e.currentTarget.style.textDecoration = 'none'
+              }}
+            >
               Ver todas →
             </Link>
           </div>
@@ -1034,21 +1122,74 @@ export default function AdminDashboard() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-8">
-              <FileText className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-              <p className="text-gray-500">No hay solicitudes recientes</p>
+            <div style={{ 
+              textAlign: 'center', 
+              padding: '32px 16px',
+              backgroundColor: '#fafbfc',
+              borderRadius: '8px',
+              border: '1px dashed #e2e8f0'
+            }}>
+              <FileText style={{ 
+                width: '40px', 
+                height: '40px', 
+                color: '#cbd5e1', 
+                margin: '0 auto 12px' 
+              }} />
+              <p style={{ 
+                color: '#64748b', 
+                margin: 0,
+                fontSize: '0.875rem',
+                fontFamily: 'Poppins, sans-serif'
+              }}>No hay solicitudes recientes</p>
             </div>
           )}
         </div>
+      </div>
 
-        {/* Próximos Eventos */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">Próximos Eventos</h2>
-            <Link href="/admin/eventos" className="text-sm text-blue-600 hover:text-blue-700">
-              Ver todos →
-            </Link>
-          </div>
+      {/* Próximos Eventos */}
+      <div style={{
+        backgroundColor: 'white',
+        borderRadius: '12px',
+        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
+        border: '1px solid rgba(0, 0, 0, 0.05)',
+        padding: '16px',
+        marginBottom: '20px'
+      }}>
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'space-between', 
+          marginBottom: '12px' 
+        }}>
+          <h2 style={{ 
+            fontSize: '1rem', 
+            fontWeight: '600', 
+            color: '#0f172a',
+            margin: 0,
+            fontFamily: 'Albert Sans, sans-serif'
+          }}>Próximos Eventos</h2>
+          <Link 
+            href="/admin/eventos" 
+            style={{
+              fontSize: '0.75rem',
+              color: '#af1731',
+              textDecoration: 'none',
+              fontWeight: '600',
+              fontFamily: 'Albert Sans, sans-serif',
+              transition: 'color 0.2s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = '#7d2447'
+              e.currentTarget.style.textDecoration = 'underline'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = '#af1731'
+              e.currentTarget.style.textDecoration = 'none'
+            }}
+          >
+            Ver todos →
+          </Link>
+        </div>
           {proximosEventos.length > 0 ? (
             <div className="space-y-3">
               {proximosEventos.map((evento) => (
@@ -1069,19 +1210,53 @@ export default function AdminDashboard() {
                 </div>
               ))}
             </div>
-          ) : (
-            <div className="text-center py-8">
-              <Calendar className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-              <p className="text-gray-500">No hay eventos programados</p>
-              <Link 
-                href="/admin/eventos/nuevo"
-                className="text-sm text-blue-600 hover:text-blue-700 mt-2 inline-block"
-              >
-                Programar evento
-              </Link>
-            </div>
-          )}
-        </div>
+        ) : (
+          <div style={{ 
+            textAlign: 'center', 
+            padding: '32px 16px',
+            backgroundColor: '#fafbfc',
+            borderRadius: '8px',
+            border: '1px dashed #e2e8f0'
+          }}>
+            <Calendar style={{ 
+              width: '40px', 
+              height: '40px', 
+              color: '#cbd5e1', 
+              margin: '0 auto 12px' 
+            }} />
+            <p style={{ 
+              color: '#64748b', 
+              margin: '0 0 8px 0',
+              fontSize: '0.875rem',
+              fontFamily: 'Poppins, sans-serif'
+            }}>No hay eventos programados</p>
+            <Link 
+              href="/admin/eventos/nuevo"
+              style={{
+                fontSize: '0.875rem',
+                color: '#af1731',
+                textDecoration: 'none',
+                fontWeight: '600',
+                display: 'inline-block',
+                padding: '6px 12px',
+                borderRadius: '6px',
+                border: '1px solid #af1731',
+                fontFamily: 'Albert Sans, sans-serif',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#af1731'
+                e.currentTarget.style.color = 'white'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent'
+                e.currentTarget.style.color = '#af1731'
+              }}
+            >
+              Programar evento
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   )

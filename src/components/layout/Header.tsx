@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Menu, X } from 'lucide-react'
+import { CentroAdopcionLogo, MenuIcon, CloseIcon, DogIcon, HomeIcon, FormIcon, HandshakeIcon } from '../icons/Icons'
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -70,24 +70,15 @@ export default function Header() {
             flex: 1
           }}>
             <div style={{
-              width: '52px',
-              height: '52px',
+              width: '60px',
+              height: '60px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              minWidth: '52px',
+              minWidth: '60px',
               position: 'relative'
             }}>
-              {/* Logo del Centro con corazón y perrito */}
-              <svg width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M26 48C37.5 48 45 38 45 26C45 18 41 12 36 8C33.5 6 30 5 26 5C14.5 5 7 14.5 7 26C7 38 14.5 48 26 48Z" 
-                      fill="#f8f8f8" stroke="#b5a47e" strokeWidth="2"/>
-                <path d="M26 12C20 12 15 17 15 23C15 25 15.5 27 16.5 28.5L26 38L35.5 28.5C36.5 27 37 25 37 23C37 17 32 12 26 12Z" 
-                      fill="none" stroke="#b5a47e" strokeWidth="2.5"/>
-                <circle cx="22" cy="22" r="1.5" fill="#b5a47e"/>
-                <circle cx="30" cy="22" r="1.5" fill="#b5a47e"/>
-                <path d="M24 25Q26 27 28 25" stroke="#b5a47e" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
-              </svg>
+              <CentroAdopcionLogo size={60} />
             </div>
             <div className="header-title">
               <h1 style={{
@@ -155,7 +146,7 @@ export default function Header() {
               gap: '8px',
               boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
             }}>
-              🐕 Ver Catálogo
+              <DogIcon size={18} color="white" /> Ver Catálogo
             </a>
           </nav>
 
@@ -174,7 +165,7 @@ export default function Header() {
             }}
             aria-label="Abrir menú de navegación"
           >
-            <Menu style={{ width: '24px', height: '24px', color: '#4a4a4a' }} />
+            <MenuIcon size={24} color="#4a4a4a" />
           </button>
         </div>
       </div>
@@ -258,7 +249,7 @@ export default function Header() {
               }}
               aria-label="Cerrar menú"
             >
-              <X style={{ width: '20px', height: '20px', color: '#4a4a4a' }} />
+              <CloseIcon size={20} color="#4a4a4a" />
             </button>
           </div>
         </div>
@@ -278,7 +269,7 @@ export default function Header() {
               transition: 'background-color 0.2s'
             }}
           >
-            🏠 Adoptar
+            <HomeIcon size={18} color="#1a1a1a" /> Adoptar
           </a>
           <a
             href="#proceso"
@@ -294,7 +285,7 @@ export default function Header() {
               transition: 'background-color 0.2s'
             }}
           >
-            📋 Nuestro Proceso
+            <FormIcon size={18} color="#1a1a1a" /> Nuestro Proceso
           </a>
           <a
             href="#voluntariado"
@@ -310,7 +301,7 @@ export default function Header() {
               transition: 'background-color 0.2s'
             }}
           >
-            🤝 Voluntariado
+            <HandshakeIcon size={18} color="#1a1a1a" /> Voluntariado
           </a>
           <a
             href="/perritos"
@@ -330,7 +321,7 @@ export default function Header() {
               boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
             }}
           >
-            🐕 Ver Catálogo
+            <DogIcon size={18} color="white" /> Ver Catálogo
           </a>
         </nav>
       </div>

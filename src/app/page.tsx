@@ -1,7 +1,12 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Heart, Shield, Users, Calendar, CheckCircle, Activity, Home, FileText, UserCheck, Stethoscope, Syringe, Scissors, Brain, HousePlus } from 'lucide-react'
+import { 
+  DogIcon, HeartIcon, SearchIcon, FormIcon, HomeIcon, HandshakeIcon,
+  HospitalIcon, VaccineIcon, ScissorsIcon, StethoscopeIcon, DoctorIcon,
+  ClipboardIcon, CheckCircleIcon, MountainIcon, BirdIcon, FlowerIcon, WaveIcon,
+  LocationIcon, PhoneIcon, MailIcon, ClockIcon
+} from '../components/icons/Icons'
 
 export default function Home() {
   const [stats, setStats] = useState({
@@ -138,7 +143,7 @@ export default function Home() {
                 transition: 'all 0.3s',
                 boxShadow: '0 4px 14px rgba(191, 181, 145, 0.3)'
               }}>
-                🐕 Conoce a Tu Nuevo Mejor Amigo
+                <DogIcon size={20} color="#0e312d" /> Conoce a Tu Nuevo Mejor Amigo
               </a>
               <a href="#proceso-veterinario" style={{
                 backgroundColor: 'transparent',
@@ -154,7 +159,7 @@ export default function Home() {
                 border: '2px solid rgba(255,255,255,0.3)',
                 transition: 'all 0.3s'
               }}>
-                💚 Nuestro Proceso de Cuidado
+                <HeartIcon size={20} color="white" /> Nuestro Proceso de Cuidado
               </a>
             </div>
           </div>
@@ -166,10 +171,10 @@ export default function Home() {
             gap: '24px'
           }}>
             {[
-              { icon: '🏔️', title: 'Fortaleza', desc: 'Popocatépetl representa nuestra solidez institucional' },
-              { icon: '🦜', title: 'Vida', desc: 'El colibrí simboliza la delicadeza del cuidado' },
-              { icon: '🌺', title: 'Renacimiento', desc: 'La flor de cinco pétalos, nueva oportunidad' },
-              { icon: '〰️', title: 'Abundancia', desc: 'El agua, flujo constante de amor y cuidado' }
+              { Icon: MountainIcon, title: 'Fortaleza', desc: 'Popocatépetl representa nuestra solidez institucional' },
+              { Icon: BirdIcon, title: 'Vida', desc: 'El colibrí simboliza la delicadeza del cuidado' },
+              { Icon: FlowerIcon, title: 'Renacimiento', desc: 'La flor de cinco pétalos, nueva oportunidad' },
+              { Icon: WaveIcon, title: 'Abundancia', desc: 'El agua, flujo constante de amor y cuidado' }
             ].map((item, idx) => (
               <div key={idx} style={{
                 background: 'rgba(255,255,255,0.05)',
@@ -179,7 +184,9 @@ export default function Home() {
                 border: '1px solid rgba(255,255,255,0.1)',
                 transition: 'all 0.3s'
               }}>
-                <div style={{ fontSize: '32px', marginBottom: '12px' }}>{item.icon}</div>
+                <div style={{ marginBottom: '12px' }}>
+                  <item.Icon size={36} color="#bfb591" />
+                </div>
                 <h3 style={{
                   color: '#bfb591',
                   fontSize: '18px',
@@ -298,25 +305,25 @@ export default function Home() {
           }}>
             {[
               {
-                icon: '🔍',
+                Icon: SearchIcon,
                 title: 'EXPLORA',
                 subtitle: 'Navega el Catálogo',
                 desc: 'Navega nuestro catálogo digital con filtros inteligentes. Conoce la historia, personalidad y necesidades de cada uno de nuestros rescatados.'
               },
               {
-                icon: '📝',
+                Icon: FormIcon,
                 title: 'SOLICITA',
                 subtitle: 'Inicia tu Adopción',
                 desc: 'Completa nuestra solicitud de adopción. Nuestro equipo evaluará tu perfil para encontrar el match perfecto entre tu familia y tu nuevo compañero.'
               },
               {
-                icon: '🏠',
+                Icon: HomeIcon,
                 title: 'VISITA',
                 subtitle: 'Conoce en Persona',
                 desc: 'Ven a nuestras instalaciones para conocer a tu elegido. Interactúa en un ambiente seguro y recibe orientación de nuestros especialistas.'
               },
               {
-                icon: '💝',
+                Icon: HeartIcon,
                 title: 'ACOMPAÑA',
                 subtitle: 'Seguimiento Continuo',
                 desc: 'Recibe seguimiento veterinario gratuito, apoyo en la adaptación y acceso a nuestra comunidad de adoptantes responsables.'
@@ -345,7 +352,9 @@ export default function Home() {
                   fontWeight: '700',
                   fontSize: '18px'
                 }}>{idx + 1}</div>
-                <div style={{ fontSize: '36px', marginBottom: '16px' }}>{step.icon}</div>
+                <div style={{ marginBottom: '16px' }}>
+                  <step.Icon size={40} color="#bfb591" />
+                </div>
                 <h3 style={{
                   fontSize: '24px',
                   fontWeight: '800',
@@ -410,27 +419,27 @@ export default function Home() {
           }}>
             {[
               {
-                icon: '🏥',
+                Icon: HospitalIcon,
                 title: 'RECEPCIÓN Y EVALUACIÓN',
                 desc: 'Cada rescatado recibe una evaluación veterinaria completa al momento de su llegada. Documentamos su estado de salud y creamos un plan de atención personalizado.'
               },
               {
-                icon: '💉',
+                Icon: VaccineIcon,
                 title: 'PROTOCOLO DE VACUNACIÓN',
                 desc: 'Aplicamos esquema completo: vacuna séxtuple (moquillo, parvovirus, hepatitis, parainfluenza, leptospirosis) y antirrábica. Incluye desparasitación integral.'
               },
               {
-                icon: '✂️',
+                Icon: ScissorsIcon,
                 title: 'ESTERILIZACIÓN RESPONSABLE',
                 desc: 'Todos nuestros animales son esterilizados por nuestro equipo veterinario, contribuyendo al control poblacional y mejorando su calidad de vida.'
               },
               {
-                icon: '🩺',
+                Icon: StethoscopeIcon,
                 title: 'TRATAMIENTOS ESPECIALIZADOS',
                 desc: 'Atendemos condiciones específicas: sarna, TVT, ehrlichia, problemas dermatológicos o cualquier padecimiento. No descansamos hasta verlos sanos.'
               },
               {
-                icon: '🏡',
+                Icon: HomeIcon,
                 title: 'REHABILITACIÓN Y SOCIALIZACIÓN',
                 desc: 'Trabajamos el comportamiento y socialización. Cada animal recibe atención personalizada para superar traumas y prepararse para su nueva vida.'
               }
@@ -451,7 +460,9 @@ export default function Home() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontSize: '28px'
-                }}>{step.icon}</div>
+                }}>
+                  <step.Icon size={32} color="#0e312d" />
+                </div>
                 <div style={{ flex: 1 }}>
                   <h3 style={{
                     fontSize: '22px',
@@ -493,7 +504,7 @@ export default function Home() {
               textAlign: 'center',
               color: 'white'
             }}>
-              <CheckCircle style={{ width: '48px', height: '48px', marginBottom: '16px' }} />
+              <CheckCircleIcon size={48} color="white" />
               <h3 style={{
                 fontSize: '24px',
                 fontWeight: '700',
@@ -535,17 +546,17 @@ export default function Home() {
           }}>
             {[
               {
-                icon: '👨‍⚕️',
+                Icon: DoctorIcon,
                 title: 'Veterinarios de Planta',
                 desc: 'Equipo médico profesional disponible todos los días para garantizar el bienestar de nuestros rescatados.'
               },
               {
-                icon: '💉',
+                Icon: VaccineIcon,
                 title: 'Vacunas Gratuitas Post-Adopción',
                 desc: 'Continuamos con el esquema de vacunación sin costo durante el primer año de adopción.'
               },
               {
-                icon: '📋',
+                Icon: ClipboardIcon,
                 title: 'Seguimiento Continuo',
                 desc: 'Acompañamiento permanente con visitas de seguimiento y asesoría conductual cuando lo necesites.'
               }
@@ -567,7 +578,9 @@ export default function Home() {
                   background: 'rgba(191, 181, 145, 0.1)',
                   borderRadius: '50%'
                 }} />
-                <div style={{ fontSize: '48px', marginBottom: '24px' }}>{item.icon}</div>
+                <div style={{ marginBottom: '24px' }}>
+                  <item.Icon size={48} color="#bfb591" />
+                </div>
                 <h3 style={{
                   fontSize: '24px',
                   fontWeight: '700',
@@ -637,19 +650,19 @@ export default function Home() {
           }}>
             {[
               {
-                icon: '🏠',
+                Icon: HomeIcon,
                 title: 'ADOPTA',
                 desc: 'Dale una segunda oportunidad a quien más lo necesita',
                 link: '/perritos'
               },
               {
-                icon: '🤝',
+                Icon: HandshakeIcon,
                 title: 'SÉ VOLUNTARIO',
                 desc: 'Dona tu tiempo y amor a nuestros rescatados',
                 link: '#contacto'
               },
               {
-                icon: '💝',
+                Icon: HeartIcon,
                 title: 'APADRINA',
                 desc: 'Apoya el cuidado mensual de un rescatado',
                 link: '#contacto'
@@ -665,7 +678,9 @@ export default function Home() {
                 display: 'block',
                 backdropFilter: 'blur(10px)'
               }}>
-                <div style={{ fontSize: '48px', marginBottom: '24px' }}>{action.icon}</div>
+                <div style={{ marginBottom: '24px' }}>
+                  <action.Icon size={48} color="#bfb591" />
+                </div>
                 <h3 style={{
                   fontSize: '24px',
                   fontWeight: '700',
@@ -720,17 +735,17 @@ export default function Home() {
             gap: '16px',
             alignItems: 'center'
           }}>
-            <p style={{ color: '#666', margin: 0, fontSize: '16px' }}>
-              📍 [Dirección del centro]
+            <p style={{ color: '#666', margin: 0, fontSize: '16px', display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
+              <LocationIcon size={18} color="#666" /> [Dirección del centro]
             </p>
-            <p style={{ color: '#666', margin: 0, fontSize: '16px' }}>
-              📞 Tel: 244-XXX-XXXX
+            <p style={{ color: '#666', margin: 0, fontSize: '16px', display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
+              <PhoneIcon size={18} color="#666" /> Tel: 244-XXX-XXXX
             </p>
-            <p style={{ color: '#666', margin: 0, fontSize: '16px' }}>
-              📧 adopciones@atlixco.gob.mx
+            <p style={{ color: '#666', margin: 0, fontSize: '16px', display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
+              <MailIcon size={18} color="#666" /> adopciones@atlixco.gob.mx
             </p>
-            <p style={{ color: '#666', margin: 0, fontSize: '16px' }}>
-              ⏰ Lun-Dom: 9:00 - 17:00
+            <p style={{ color: '#666', margin: 0, fontSize: '16px', display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
+              <ClockIcon size={18} color="#666" /> Lun-Dom: 9:00 - 17:00
             </p>
           </div>
           <a href="/perritos" style={{
@@ -747,7 +762,7 @@ export default function Home() {
             transition: 'all 0.3s',
             boxShadow: '0 4px 14px rgba(14, 49, 45, 0.2)'
           }}>
-            🐕 Ver Catálogo de Adopción
+            <DogIcon size={20} color="white" /> Ver Catálogo de Adopción
           </a>
         </div>
       </section>

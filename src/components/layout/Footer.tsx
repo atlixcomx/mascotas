@@ -1,3 +1,8 @@
+import { 
+  CentroAdopcionLogo, LocationIcon, PhoneIcon, MailIcon, ClockIcon,
+  ArrowRightIcon, FacebookIcon, InstagramIcon, WhatsAppIcon
+} from '../icons/Icons'
+
 export default function Footer() {
   return (
     <footer style={{
@@ -99,7 +104,7 @@ export default function Footer() {
                 alignItems: 'center',
                 gap: '8px'
               }}>
-                → Catálogo de Adopción
+                <ArrowRightIcon size={16} color="rgba(255,255,255,0.8)" /> Catálogo de Adopción
               </a>
               <a href="#adoptar" style={{
                 color: 'rgba(255,255,255,0.8)',
@@ -110,7 +115,7 @@ export default function Footer() {
                 alignItems: 'center',
                 gap: '8px'
               }}>
-                → Proceso de Adopción
+                <ArrowRightIcon size={16} color="rgba(255,255,255,0.8)" /> Proceso de Adopción
               </a>
               <a href="#voluntariado" style={{
                 color: 'rgba(255,255,255,0.8)',
@@ -121,7 +126,7 @@ export default function Footer() {
                 alignItems: 'center',
                 gap: '8px'
               }}>
-                → Voluntariado
+                <ArrowRightIcon size={16} color="rgba(255,255,255,0.8)" /> Voluntariado
               </a>
               <a href="#contacto" style={{
                 color: 'rgba(255,255,255,0.8)',
@@ -132,7 +137,7 @@ export default function Footer() {
                 alignItems: 'center',
                 gap: '8px'
               }}>
-                → Donaciones
+                <ArrowRightIcon size={16} color="rgba(255,255,255,0.8)" /> Donaciones
               </a>
             </div>
           </div>
@@ -155,7 +160,7 @@ export default function Footer() {
                 alignItems: 'center',
                 gap: '8px'
               }}>
-                📍 [Dirección del centro]
+                <LocationIcon size={18} color="rgba(255,255,255,0.8)" /> [Dirección del centro]
               </p>
               <p style={{
                 color: 'rgba(255,255,255,0.8)',
@@ -165,7 +170,7 @@ export default function Footer() {
                 alignItems: 'center',
                 gap: '8px'
               }}>
-                📞 Tel: 244-XXX-XXXX
+                <PhoneIcon size={18} color="rgba(255,255,255,0.8)" /> Tel: 244-XXX-XXXX
               </p>
               <p style={{
                 color: 'rgba(255,255,255,0.8)',
@@ -175,7 +180,7 @@ export default function Footer() {
                 alignItems: 'center',
                 gap: '8px'
               }}>
-                📧 adopciones@atlixco.gob.mx
+                <MailIcon size={18} color="rgba(255,255,255,0.8)" /> adopciones@atlixco.gob.mx
               </p>
               <p style={{
                 color: 'rgba(255,255,255,0.8)',
@@ -185,7 +190,7 @@ export default function Footer() {
                 alignItems: 'center',
                 gap: '8px'
               }}>
-                ⏰ Lun-Dom: 9:00 - 17:00
+                <ClockIcon size={18} color="rgba(255,255,255,0.8)" /> Lun-Dom: 9:00 - 17:00
               </p>
             </div>
           </div>
@@ -220,7 +225,7 @@ export default function Footer() {
                 transition: 'all 0.3s',
                 border: '1px solid rgba(255,255,255,0.2)'
               }}>
-                <span style={{ fontSize: '20px' }}>f</span>
+                <FacebookIcon size={20} color="rgba(255,255,255,0.8)" />
               </a>
               <a href="#" style={{
                 width: '40px',
@@ -234,7 +239,7 @@ export default function Footer() {
                 transition: 'all 0.3s',
                 border: '1px solid rgba(255,255,255,0.2)'
               }}>
-                <span style={{ fontSize: '18px' }}>📷</span>
+                <InstagramIcon size={20} color="rgba(255,255,255,0.8)" />
               </a>
               <a href="#" style={{
                 width: '40px',
@@ -248,7 +253,7 @@ export default function Footer() {
                 transition: 'all 0.3s',
                 border: '1px solid rgba(255,255,255,0.2)'
               }}>
-                <span style={{ fontSize: '18px' }}>💬</span>
+                <WhatsAppIcon size={20} color="rgba(255,255,255,0.8)" />
               </a>
             </div>
           </div>

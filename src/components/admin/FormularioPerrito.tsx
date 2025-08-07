@@ -5,10 +5,25 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
-import { Upload, X, Plus, Save, AlertCircle } from 'lucide-react'
+import { 
+  Upload, 
+  X, 
+  Plus, 
+  Save, 
+  AlertCircle,
+  Dog,
+  MapPin,
+  Heart,
+  Syringe,
+  FileText,
+  Calendar,
+  User,
+  Camera
+} from 'lucide-react'
 
 interface PerritoData {
   id?: string
+  codigo?: string
   nombre: string
   raza: string
   edad: string
@@ -16,7 +31,9 @@ interface PerritoData {
   tamano: string
   peso?: number
   historia: string
+  tipoIngreso?: string
   procedencia?: string
+  responsableIngreso?: string
   vacunas: boolean
   esterilizado: boolean
   desparasitado: boolean
@@ -38,13 +55,18 @@ interface FormularioPerritoProps {
 
 const perritoSchema = z.object({
   nombre: z.string().min(2, 'El nombre debe tener al menos 2 caracteres'),
+  codigo: z.string().optional(),
   raza: z.string().min(2, 'La raza es requerida'),
   edad: z.string().min(1, 'La edad es requerida'),
   sexo: z.enum(['macho', 'hembra'], { errorMap: () => ({ message: 'Selecciona el sexo' }) }),
   tamano: z.enum(['chico', 'mediano', 'grande'], { errorMap: () => ({ message: 'Selecciona el tamaño' }) }),
-  peso: z.number().positive().optional(),
+  peso: z.number().positive().optional().or(z.literal('')),
   historia: z.string().min(20, 'La historia debe tener al menos 20 caracteres'),
+  tipoIngreso: z.enum(['entrega_voluntaria', 'rescate', 'decomiso'], { 
+    errorMap: () => ({ message: 'Selecciona el tipo de ingreso' }) 
+  }),
   procedencia: z.string().optional(),
+  responsableIngreso: z.string().optional(),
   vacunas: z.boolean(),
   esterilizado: z.boolean(),
   desparasitado: z.boolean(),
@@ -64,7 +86,8 @@ type PerritoFormData = z.infer<typeof perritoSchema>
 
 const caracteristicasSugeridas = [
   'Cariñoso', 'Juguetón', 'Tranquilo', 'Energético', 'Protector', 'Sociable',
-  'Inteligente', 'Obediente', 'Independiente', 'Curioso', 'Leal', 'Amigable'
+  'Inteligente', 'Obediente', 'Independiente', 'Curioso', 'Leal', 'Amigable',
+  'Tímido', 'Valiente', 'Dormilón', 'Activo', 'Guardian', 'Territorial'
 ]
 
 export default function FormularioPerrito({ perrito }: FormularioPerritoProps) {
@@ -88,13 +111,16 @@ export default function FormularioPerrito({ perrito }: FormularioPerritoProps) {
     resolver: zodResolver(perritoSchema),
     defaultValues: {
       nombre: perrito?.nombre || '',
+      codigo: perrito?.codigo || '',
       raza: perrito?.raza || '',
       edad: perrito?.edad || '',
       sexo: perrito?.sexo || 'macho',
       tamano: perrito?.tamano || 'mediano',
       peso: perrito?.peso || undefined,
       historia: perrito?.historia || '',
+      tipoIngreso: perrito?.tipoIngreso || 'entrega_voluntaria',
       procedencia: perrito?.procedencia || '',
+      responsableIngreso: perrito?.responsableIngreso || '',
       vacunas: perrito?.vacunas || false,
       esterilizado: perrito?.esterilizado || false,
       desparasitado: perrito?.desparasitado || false,
@@ -104,8 +130,8 @@ export default function FormularioPerrito({ perrito }: FormularioPerritoProps) {
       aptoPerros: perrito?.aptoPerros || false,
       aptoGatos: perrito?.aptoGatos || false,
       caracter: perrito?.caracter || [],
-      fotoPrincipal: perrito?.fotoPrincipal || 'https://images.unsplash.com/photo-1551717743-49959800b1f6?w=400',
-      fotos: perrito?.fotos || ['https://images.unsplash.com/photo-1551717743-49959800b1f6?w=400'],
+      fotoPrincipal: perrito?.fotoPrincipal || '',
+      fotos: perrito?.fotos || [],
       destacado: perrito?.destacado || false,
       estado: perrito?.estado || 'disponible'
     }
@@ -113,6 +139,16 @@ export default function FormularioPerrito({ perrito }: FormularioPerritoProps) {
 
   const watchedCaracter = watch('caracter')
   const watchedFotos = watch('fotos')
+
+  // Generar código automático al crear nuevo
+  useEffect(() => {
+    if (!isEditing && !getValues('codigo')) {
+      const año = new Date().getFullYear()
+      const mes = String(new Date().getMonth() + 1).padStart(2, '0')
+      const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0')
+      setValue('codigo', `ATL-${año}${mes}-${random}`)
+    }
+  }, [isEditing, setValue, getValues])
 
   const agregarCaracteristica = (caracteristica: string) => {
     const actual = getValues('caracter')
@@ -132,7 +168,7 @@ export default function FormularioPerrito({ perrito }: FormularioPerritoProps) {
       const actual = getValues('fotos')
       setValue('fotos', [...actual, nuevaFoto.trim()])
       // Si es la primera foto, también ponerla como principal
-      if (actual.length === 0) {
+      if (actual.length === 0 && !getValues('fotoPrincipal')) {
         setValue('fotoPrincipal', nuevaFoto.trim())
       }
       setNuevaFoto('')
@@ -156,6 +192,11 @@ export default function FormularioPerrito({ perrito }: FormularioPerritoProps) {
     setError('')
     setSuccess('')
 
+    // Asegurarse de que la foto principal esté en el array de fotos
+    if (data.fotoPrincipal && !data.fotos.includes(data.fotoPrincipal)) {
+      data.fotos = [data.fotoPrincipal, ...data.fotos]
+    }
+
     try {
       const url = isEditing 
         ? `/api/admin/perritos/${perrito.id}`
@@ -177,7 +218,7 @@ export default function FormularioPerrito({ perrito }: FormularioPerritoProps) {
         throw new Error(result.error || 'Error al guardar')
       }
 
-      setSuccess(isEditing ? 'Perrito actualizado exitosamente' : 'Perrito creado exitosamente')
+      setSuccess(isEditing ? 'Mascota actualizada exitosamente' : 'Mascota registrada exitosamente')
       
       if (!isEditing) {
         // Redirigir a la página de edición del perrito recién creado
@@ -194,16 +235,20 @@ export default function FormularioPerrito({ perrito }: FormularioPerritoProps) {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+    <div className="bg-white rounded-lg shadow-sm border border-slate-200">
+      <form onSubmit={handleSubmit(onSubmit)}>
         
         {/* Información Básica */}
-        <div>
-          <h3 className="text-lg font-medium text-slate-900 mb-4">Información Básica</h3>
+        <div className="p-6 border-b border-slate-200">
+          <div className="flex items-center mb-6">
+            <Dog className="w-5 h-5 text-slate-600 mr-3" />
+            <h3 className="text-lg font-semibold text-slate-900">Información Básica</h3>
+          </div>
+          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                Nombre *
+                Nombre <span className="text-red-500">*</span>
               </label>
               <input
                 {...register('nombre')}
@@ -217,7 +262,19 @@ export default function FormularioPerrito({ perrito }: FormularioPerritoProps) {
 
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                Raza *
+                Código Único
+              </label>
+              <input
+                {...register('codigo')}
+                className="input bg-slate-50"
+                placeholder="ATL-202412-001"
+                readOnly={!isEditing}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Raza <span className="text-red-500">*</span>
               </label>
               <input
                 {...register('raza')}
@@ -231,7 +288,7 @@ export default function FormularioPerrito({ perrito }: FormularioPerritoProps) {
 
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                Edad *
+                Edad <span className="text-red-500">*</span>
               </label>
               <input
                 {...register('edad')}
@@ -245,7 +302,7 @@ export default function FormularioPerrito({ perrito }: FormularioPerritoProps) {
 
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                Sexo *
+                Sexo <span className="text-red-500">*</span>
               </label>
               <select {...register('sexo')} className="input">
                 <option value="macho">Macho</option>
@@ -255,12 +312,12 @@ export default function FormularioPerrito({ perrito }: FormularioPerritoProps) {
 
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                Tamaño *
+                Tamaño <span className="text-red-500">*</span>
               </label>
               <select {...register('tamano')} className="input">
-                <option value="chico">Chico</option>
-                <option value="mediano">Mediano</option>
-                <option value="grande">Grande</option>
+                <option value="chico">Chico (hasta 10kg)</option>
+                <option value="mediano">Mediano (10-25kg)</option>
+                <option value="grande">Grande (más de 25kg)</option>
               </select>
             </div>
 
@@ -280,113 +337,171 @@ export default function FormularioPerrito({ perrito }: FormularioPerritoProps) {
 
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                Procedencia
-              </label>
-              <input
-                {...register('procedencia')}
-                className="input"
-                placeholder="Rescate callejero, entrega voluntaria, etc."
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Nivel de Energía *
+                Nivel de Energía <span className="text-red-500">*</span>
               </label>
               <select {...register('energia')} className="input">
-                <option value="baja">Baja</option>
-                <option value="media">Media</option>
-                <option value="alta">Alta</option>
+                <option value="baja">Baja - Tranquilo y relajado</option>
+                <option value="media">Media - Activo pero equilibrado</option>
+                <option value="alta">Alta - Muy activo y juguetón</option>
               </select>
             </div>
           </div>
         </div>
 
-        {/* Historia */}
-        <div>
-          <h3 className="text-lg font-medium text-slate-900 mb-4">Historia</h3>
-          <textarea
-            {...register('historia')}
-            rows={5}
-            className="input"
-            placeholder="Cuenta la historia de este perrito, cómo llegó al centro, su personalidad, etc."
-          />
-          {errors.historia && (
-            <p className="text-red-600 text-sm mt-1">{errors.historia.message}</p>
-          )}
+        {/* Procedencia y Recepción */}
+        <div className="p-6 border-b border-slate-200">
+          <div className="flex items-center mb-6">
+            <MapPin className="w-5 h-5 text-slate-600 mr-3" />
+            <h3 className="text-lg font-semibold text-slate-900">Procedencia y Recepción</h3>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Tipo de Ingreso <span className="text-red-500">*</span>
+              </label>
+              <select {...register('tipoIngreso')} className="input">
+                <option value="entrega_voluntaria">Entrega Voluntaria</option>
+                <option value="rescate">Rescate</option>
+                <option value="decomiso">Decomiso</option>
+              </select>
+              {errors.tipoIngreso && (
+                <p className="text-red-600 text-sm mt-1">{errors.tipoIngreso.message}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Lugar de Procedencia
+              </label>
+              <input
+                {...register('procedencia')}
+                className="input"
+                placeholder="Ej: Calle Principal, Colonia Centro"
+              />
+            </div>
+
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Responsable del Ingreso
+              </label>
+              <input
+                {...register('responsableIngreso')}
+                className="input"
+                placeholder="Nombre de quien trajo o reportó"
+              />
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              Historia / Observaciones <span className="text-red-500">*</span>
+            </label>
+            <textarea
+              {...register('historia')}
+              rows={5}
+              className="input"
+              placeholder="Describe las circunstancias del rescate, estado en que fue encontrado, comportamiento inicial, personalidad, etc."
+            />
+            {errors.historia && (
+              <p className="text-red-600 text-sm mt-1">{errors.historia.message}</p>
+            )}
+          </div>
         </div>
 
         {/* Estado de Salud */}
-        <div>
-          <h3 className="text-lg font-medium text-slate-900 mb-4">Estado de Salud</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-            <label className="flex items-center">
+        <div className="p-6 border-b border-slate-200">
+          <div className="flex items-center mb-6">
+            <Syringe className="w-5 h-5 text-slate-600 mr-3" />
+            <h3 className="text-lg font-semibold text-slate-900">Estado de Salud</h3>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <label className="flex items-center p-4 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-50">
               <input
                 {...register('vacunas')}
                 type="checkbox"
-                className="rounded border-slate-300 text-atlixco-500 focus:ring-atlixco-500"
+                className="rounded border-slate-300 text-atlixco-500 focus:ring-atlixco-500 mr-3"
               />
-              <span className="ml-2 text-sm text-slate-700">Vacunado</span>
+              <div>
+                <span className="font-medium text-slate-900">Vacunado</span>
+                <p className="text-sm text-slate-500">Tiene vacunas al día</p>
+              </div>
             </label>
-            <label className="flex items-center">
+            
+            <label className="flex items-center p-4 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-50">
               <input
                 {...register('esterilizado')}
                 type="checkbox"
-                className="rounded border-slate-300 text-atlixco-500 focus:ring-atlixco-500"
+                className="rounded border-slate-300 text-atlixco-500 focus:ring-atlixco-500 mr-3"
               />
-              <span className="ml-2 text-sm text-slate-700">Esterilizado</span>
+              <div>
+                <span className="font-medium text-slate-900">Esterilizado</span>
+                <p className="text-sm text-slate-500">Ya fue esterilizado</p>
+              </div>
             </label>
-            <label className="flex items-center">
+            
+            <label className="flex items-center p-4 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-50">
               <input
                 {...register('desparasitado')}
                 type="checkbox"
-                className="rounded border-slate-300 text-atlixco-500 focus:ring-atlixco-500"
+                className="rounded border-slate-300 text-atlixco-500 focus:ring-atlixco-500 mr-3"
               />
-              <span className="ml-2 text-sm text-slate-700">Desparasitado</span>
+              <div>
+                <span className="font-medium text-slate-900">Desparasitado</span>
+                <p className="text-sm text-slate-500">Tratamiento reciente</p>
+              </div>
             </label>
           </div>
+          
           <textarea
             {...register('saludNotas')}
             rows={3}
             className="input"
-            placeholder="Notas adicionales sobre la salud del perrito"
+            placeholder="Notas adicionales sobre la salud: alergias, lesiones, tratamientos en curso, etc."
           />
         </div>
 
         {/* Compatibilidad */}
-        <div>
-          <h3 className="text-lg font-medium text-slate-900 mb-4">Compatibilidad</h3>
+        <div className="p-6 border-b border-slate-200">
+          <div className="flex items-center mb-6">
+            <Heart className="w-5 h-5 text-slate-600 mr-3" />
+            <h3 className="text-lg font-semibold text-slate-900">Compatibilidad</h3>
+          </div>
+          
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <label className="flex items-center">
+            <label className="flex items-center p-4 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-50">
               <input
                 {...register('aptoNinos')}
                 type="checkbox"
-                className="rounded border-slate-300 text-atlixco-500 focus:ring-atlixco-500"
+                className="rounded border-slate-300 text-atlixco-500 focus:ring-atlixco-500 mr-3"
               />
-              <span className="ml-2 text-sm text-slate-700">Apto para niños</span>
+              <span className="text-slate-700">Apto para niños</span>
             </label>
-            <label className="flex items-center">
+            
+            <label className="flex items-center p-4 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-50">
               <input
                 {...register('aptoPerros')}
                 type="checkbox"
-                className="rounded border-slate-300 text-atlixco-500 focus:ring-atlixco-500"
+                className="rounded border-slate-300 text-atlixco-500 focus:ring-atlixco-500 mr-3"
               />
-              <span className="ml-2 text-sm text-slate-700">Apto para otros perros</span>
+              <span className="text-slate-700">Se lleva bien con otros perros</span>
             </label>
-            <label className="flex items-center">
+            
+            <label className="flex items-center p-4 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-50">
               <input
                 {...register('aptoGatos')}
                 type="checkbox"
-                className="rounded border-slate-300 text-atlixco-500 focus:ring-atlixco-500"
+                className="rounded border-slate-300 text-atlixco-500 focus:ring-atlixco-500 mr-3"
               />
-              <span className="ml-2 text-sm text-slate-700">Apto para gatos</span>
+              <span className="text-slate-700">Se lleva bien con gatos</span>
             </label>
           </div>
         </div>
 
         {/* Características */}
-        <div>
-          <h3 className="text-lg font-medium text-slate-900 mb-4">Características de Personalidad</h3>
+        <div className="p-6 border-b border-slate-200">
+          <h3 className="text-lg font-semibold text-slate-900 mb-4">Características de Personalidad</h3>
           
           {/* Características actuales */}
           <div className="flex flex-wrap gap-2 mb-4">
@@ -412,6 +527,12 @@ export default function FormularioPerrito({ perrito }: FormularioPerritoProps) {
             <input
               value={nuevaCaracteristica}
               onChange={(e) => setNuevaCaracteristica(e.target.value)}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault()
+                  agregarCaracteristica(nuevaCaracteristica)
+                }
+              }}
               className="input flex-1"
               placeholder="Agregar característica personalizada"
             />
@@ -446,13 +567,16 @@ export default function FormularioPerrito({ perrito }: FormularioPerritoProps) {
         </div>
 
         {/* Fotos */}
-        <div>
-          <h3 className="text-lg font-medium text-slate-900 mb-4">Fotos</h3>
+        <div className="p-6 border-b border-slate-200">
+          <div className="flex items-center mb-6">
+            <Camera className="w-5 h-5 text-slate-600 mr-3" />
+            <h3 className="text-lg font-semibold text-slate-900">Fotos</h3>
+          </div>
           
           {/* Foto principal */}
-          <div className="mb-4">
+          <div className="mb-6">
             <label className="block text-sm font-medium text-slate-700 mb-2">
-              Foto Principal *
+              URL de Foto Principal <span className="text-red-500">*</span>
             </label>
             <input
               {...register('fotoPrincipal')}
@@ -462,35 +586,43 @@ export default function FormularioPerrito({ perrito }: FormularioPerritoProps) {
             {errors.fotoPrincipal && (
               <p className="text-red-600 text-sm mt-1">{errors.fotoPrincipal.message}</p>
             )}
+            {getValues('fotoPrincipal') && (
+              <img 
+                src={getValues('fotoPrincipal')} 
+                alt="Vista previa" 
+                className="mt-2 w-32 h-32 object-cover rounded-lg"
+              />
+            )}
           </div>
 
           {/* Galería de fotos */}
-          <div className="mb-4">
+          <div>
             <label className="block text-sm font-medium text-slate-700 mb-2">
               Galería de Fotos
             </label>
+            
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
               {watchedFotos.map((foto, index) => (
-                <div key={index} className="relative">
+                <div key={index} className="relative group">
                   <img
                     src={foto}
                     alt={`Foto ${index + 1}`}
-                    className="w-full h-24 object-cover rounded-lg border border-slate-300"
+                    className="w-full h-32 object-cover rounded-lg border border-slate-300"
                   />
                   <button
                     type="button"
                     onClick={() => removerFoto(index)}
-                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
                   >
                     <X className="h-3 w-3" />
                   </button>
                   <button
                     type="button"
                     onClick={() => setValue('fotoPrincipal', foto)}
-                    className={`absolute bottom-1 left-1 px-2 py-1 text-xs rounded ${
+                    className={`absolute bottom-1 left-1 px-2 py-1 text-xs rounded transition-all ${
                       getValues('fotoPrincipal') === foto 
                         ? 'bg-green-500 text-white' 
-                        : 'bg-white/80 text-slate-700 hover:bg-white'
+                        : 'bg-white/80 text-slate-700 hover:bg-white opacity-0 group-hover:opacity-100'
                     }`}
                   >
                     {getValues('fotoPrincipal') === foto ? 'Principal' : 'Hacer principal'}
@@ -504,6 +636,12 @@ export default function FormularioPerrito({ perrito }: FormularioPerritoProps) {
               <input
                 value={nuevaFoto}
                 onChange={(e) => setNuevaFoto(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault()
+                    agregarFoto()
+                  }
+                }}
                 className="input flex-1"
                 placeholder="https://ejemplo.com/nueva-foto.jpg"
               />
@@ -522,18 +660,23 @@ export default function FormularioPerrito({ perrito }: FormularioPerritoProps) {
         </div>
 
         {/* Opciones adicionales */}
-        <div>
-          <h3 className="text-lg font-medium text-slate-900 mb-4">Opciones</h3>
+        <div className="p-6 border-b border-slate-200">
+          <div className="flex items-center mb-6">
+            <FileText className="w-5 h-5 text-slate-600 mr-3" />
+            <h3 className="text-lg font-semibold text-slate-900">Configuración</h3>
+          </div>
+          
           <div className="space-y-4">
             <label className="flex items-center">
               <input
                 {...register('destacado')}
                 type="checkbox"
-                className="rounded border-slate-300 text-atlixco-500 focus:ring-atlixco-500"
+                className="rounded border-slate-300 text-atlixco-500 focus:ring-atlixco-500 mr-3"
               />
-              <span className="ml-2 text-sm text-slate-700">
-                Marcar como destacado (aparecerá en la página principal)
-              </span>
+              <div>
+                <span className="font-medium text-slate-900">Destacar en página principal</span>
+                <p className="text-sm text-slate-500">Esta mascota aparecerá en la sección de destacados</p>
+              </div>
             </label>
 
             {isEditing && (
@@ -542,8 +685,8 @@ export default function FormularioPerrito({ perrito }: FormularioPerritoProps) {
                   Estado
                 </label>
                 <select {...register('estado')} className="input">
-                  <option value="disponible">Disponible</option>
-                  <option value="proceso">En Proceso</option>
+                  <option value="disponible">Disponible para adopción</option>
+                  <option value="proceso">En proceso de adopción</option>
                   <option value="adoptado">Adoptado</option>
                 </select>
               </div>
@@ -553,20 +696,20 @@ export default function FormularioPerrito({ perrito }: FormularioPerritoProps) {
 
         {/* Messages */}
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center">
-            <AlertCircle className="h-5 w-5 text-red-500 mr-2" />
+          <div className="mx-6 mt-6 bg-red-50 border border-red-200 rounded-lg p-4 flex items-center">
+            <AlertCircle className="h-5 w-5 text-red-500 mr-2 flex-shrink-0" />
             <p className="text-red-800">{error}</p>
           </div>
         )}
 
         {success && (
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+          <div className="mx-6 mt-6 bg-green-50 border border-green-200 rounded-lg p-4">
             <p className="text-green-800">{success}</p>
           </div>
         )}
 
         {/* Submit */}
-        <div className="flex justify-end space-x-4 pt-6 border-t border-slate-200">
+        <div className="flex justify-end space-x-4 p-6">
           <button
             type="button"
             onClick={() => router.back()}
@@ -580,13 +723,17 @@ export default function FormularioPerrito({ perrito }: FormularioPerritoProps) {
             disabled={loading}
             className="px-6 py-2 bg-atlixco-600 text-white rounded-lg hover:bg-atlixco-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
           >
-            <Save className="h-4 w-4 mr-2" />
-            {loading 
-              ? 'Guardando...' 
-              : isEditing 
-              ? 'Actualizar Perrito' 
-              : 'Crear Perrito'
-            }
+            {loading ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2"></div>
+                Guardando...
+              </>
+            ) : (
+              <>
+                <Save className="h-4 w-4 mr-2" />
+                {isEditing ? 'Actualizar Mascota' : 'Registrar Mascota'}
+              </>
+            )}
           </button>
         </div>
       </form>

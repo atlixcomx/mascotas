@@ -6,6 +6,7 @@ import { useSession, signOut } from 'next-auth/react'
 import { useRouter, usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import './admin-layout.css'
 import { 
   LayoutDashboard, 
   Dog, 
@@ -42,9 +43,11 @@ export default function AdminLayout({
   const pathname = usePathname()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [isClient, setIsClient] = useState(false)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     setIsClient(true)
+    setMounted(true)
   }, [])
 
   useEffect(() => {
@@ -65,7 +68,8 @@ export default function AdminLayout({
     }
   }, [session, status, router, pathname])
 
-  if (status === 'loading') {
+  // Prevent hydration mismatch
+  if (!mounted || status === 'loading') {
     return (
       <div className="admin-loading-screen">
         <div className="admin-loading-content">

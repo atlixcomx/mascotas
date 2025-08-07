@@ -27,13 +27,16 @@ export async function POST(request: NextRequest) {
     
     const {
       nombre,
+      codigo,
       raza,
       edad,
       sexo,
       tamano,
       peso,
       historia,
+      tipoIngreso,
       procedencia,
+      responsableIngreso,
       vacunas,
       esterilizado,
       desparasitado,
@@ -57,9 +60,23 @@ export async function POST(request: NextRequest) {
       slugCounter++
     }
 
+    // Generar código único si no se proporciona
+    let codigoFinal = codigo
+    if (!codigoFinal) {
+      const año = new Date().getFullYear()
+      const mes = String(new Date().getMonth() + 1).padStart(2, '0')
+      let contador = 1
+      
+      do {
+        codigoFinal = `ATL-${año}${mes}-${contador.toString().padStart(3, '0')}`
+        contador++
+      } while (await prisma.perrito.findUnique({ where: { codigo: codigoFinal } }))
+    }
+
     const perrito = await prisma.perrito.create({
       data: {
         nombre,
+        codigo: codigoFinal,
         slug,
         raza,
         edad,
@@ -68,7 +85,9 @@ export async function POST(request: NextRequest) {
         peso: peso ? parseFloat(peso) : null,
         historia,
         fechaIngreso: new Date(),
+        tipoIngreso: tipoIngreso || 'entrega_voluntaria',
         procedencia: procedencia || '',
+        responsableIngreso: responsableIngreso || '',
         vacunas: Boolean(vacunas),
         esterilizado: Boolean(esterilizado),
         desparasitado: Boolean(desparasitado),

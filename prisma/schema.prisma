@@ -12,6 +12,7 @@ datasource db {
 
 model Perrito {
   id            String   @id @default(cuid())
+  codigo        String   @unique // ATL-2024-001
   nombre        String
   slug          String   @unique
   fotos         String   @db.Text // JSON string de array de URLs
@@ -22,16 +23,21 @@ model Perrito {
   sexo          String   // macho, hembra
   peso          Float?
   
-  // Historia
+  // Historia y Procedencia
   historia      String   @db.Text
   fechaIngreso  DateTime
+  tipoIngreso   String   // entrega_voluntaria, rescate, decomiso
   procedencia   String?
+  responsableIngreso String? // Nombre de quien lo trajo/reportó
   
   // Salud
   vacunas       Boolean  @default(false)
   esterilizado  Boolean  @default(false)
   desparasitado Boolean  @default(false)
   saludNotas    String?  @db.Text
+  
+  // Expediente médico
+  expedienteMedico ExpedienteMedico[]
   
   // Temperamento
   energia       String   // baja, media, alta
@@ -45,8 +51,14 @@ model Perrito {
   destacado     Boolean  @default(false)
   vistas        Int      @default(0)
   
+  // Adopción
+  fechaAdopcion DateTime?
+  adoptanteNombre String?
+  adoptanteTelefono String?
+  
   solicitudes   Solicitud[]
   notas         NotaPerrito[]
+  seguimientos  SeguimientoAdopcion[]
   
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -90,6 +102,7 @@ model Solicitud {
   
   // Notas y seguimiento
   notas         NotaSolicitud[]
+  seguimientos  SeguimientoAdopcion[]
   motivoRechazo String?  @db.Text
   
   // QR tracking
@@ -204,4 +217,148 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+// Nuevos modelos para el sistema completo
+
+model ExpedienteMedico {
+  id          String   @id @default(cuid())
+  perritoId   String
+  perrito     Perrito  @relation(fields: [perritoId], references: [id])
+  
+  tipo        String   // vacuna, consulta, cirugia, tratamiento, desparasitacion
+  descripcion String   @db.Text
+  fecha       DateTime
+  veterinario String?
+  veterinariaId String?
+  veterinaria Veterinaria? @relation(fields: [veterinariaId], references: [id])
+  
+  // Para vacunas
+  vacunaTipo  String?  // multiple, rabia, parvovirus, etc
+  proximaDosis DateTime?
+  
+  // Para medicamentos
+  medicamento String?
+  dosis       String?
+  duracion    String?
+  
+  // Archivos adjuntos
+  documentos  String?  @db.Text // JSON array de URLs
+  
+  costo       Float?
+  notas       String?  @db.Text
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Veterinaria {
+  id          String   @id @default(cuid())
+  nombre      String
+  direccion   String
+  telefono    String
+  email       String?
+  contacto    String?  // Nombre del veterinario principal
+  
+  convenio    Boolean  @default(false)
+  descuento   Float?   // Porcentaje de descuento si hay convenio
+  
+  expedientes ExpedienteMedico[]
+  
+  activa      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model SeguimientoAdopcion {
+  id          String   @id @default(cuid())
+  perritoId   String
+  perrito     Perrito  @relation(fields: [perritoId], references: [id])
+  solicitudId String?
+  solicitud   Solicitud? @relation(fields: [solicitudId], references: [id])
+  
+  tipo        String   // llamada_30, llamada_60, llamada_90, visita, reporte
+  fecha       DateTime
+  realizado   Boolean  @default(false)
+  
+  // Resultado del seguimiento
+  contactado  Boolean?
+  respuesta   String?  @db.Text
+  estadoMascota String? // excelente, bueno, regular, preocupante
+  
+  // Evidencia
+  fotos       String?  @db.Text // JSON array de URLs
+  
+  observaciones String? @db.Text
+  responsable String?
+  
+  // Próximo seguimiento
+  proximoContacto DateTime?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Evento {
+  id          String   @id @default(cuid())
+  nombre      String
+  tipo        String   // feria_adopcion, campaña_esterilizacion, colecta, otro
+  descripcion String   @db.Text
+  
+  fecha       DateTime
+  horaInicio  String
+  horaFin     String
+  
+  lugar       String
+  direccion   String
+  
+  // Métricas
+  asistentes  Int?     @default(0)
+  adopciones  Int?     @default(0)
+  
+  // Mascotas participantes
+  perritosIds String?  @db.Text // JSON array de IDs
+  
+  estado      String   @default("programado") // programado, en_curso, finalizado, cancelado
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Insumo {
+  id          String   @id @default(cuid())
+  categoria   String   // alimento, medicamento, limpieza, otro
+  nombre      String
+  descripcion String?
+  unidad      String   // kg, litros, piezas, etc
+  
+  // Control de inventario
+  stockActual Float    @default(0)
+  stockMinimo Float    @default(0)
+  
+  movimientos MovimientoInsumo[]
+  
+  activo      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model MovimientoInsumo {
+  id          String   @id @default(cuid())
+  insumoId    String
+  insumo      Insumo   @relation(fields: [insumoId], references: [id])
+  
+  tipo        String   // entrada, salida
+  cantidad    Float
+  motivo      String   // donacion, compra, uso_medico, uso_general
+  
+  // Para salidas
+  perritoId   String?
+  destinatario String? // Si es para un perrito específico o uso general
+  
+  responsable String
+  notas       String?  @db.Text
+  
+  fecha       DateTime
+  createdAt   DateTime @default(now())
 }

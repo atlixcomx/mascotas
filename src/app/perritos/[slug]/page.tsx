@@ -8,6 +8,7 @@ import { usePerrito } from '../../../hooks/usePerritos'
 import LoadingSpinner from '../../../components/ui/LoadingSpinner'
 import ErrorMessage from '../../../components/ui/ErrorMessage'
 import PerritoDetailSkeleton from '../../../components/ui/PerritoDetailSkeleton'
+import AdoptionModal from '../../../components/ui/AdoptionModal'
 import { 
   HeartIcon, HomeIcon, CalendarIcon, LocationIcon, 
   CheckCircleIcon, ArrowRightIcon, DogIcon, ShieldIcon,
@@ -24,6 +25,7 @@ const defaultDogImage = 'https://somosmaka.com/cdn/shop/articles/perro_mestizo.j
 export default function PerritoDetailPage({ params }: PageProps) {
   const [selectedImage, setSelectedImage] = useState(0)
   const [isLiked, setIsLiked] = useState(false)
+  const [showModal, setShowModal] = useState(false)
 
   const {
     perrito,
@@ -567,8 +569,8 @@ export default function PerritoDetailPage({ params }: PageProps) {
                   {perrito.nombre} está esperando conocerte. Inicia el proceso de adopción 
                   y dale la oportunidad de ser parte de tu familia.
                 </p>
-                <Link
-                  href={`/solicitud/${perrito.id}`}
+                <button
+                  onClick={() => setShowModal(true)}
                   style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -579,7 +581,8 @@ export default function PerritoDetailPage({ params }: PageProps) {
                     background: 'white',
                     color: '#6b3838',
                     borderRadius: '12px',
-                    textDecoration: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
                     fontSize: '16px',
                     fontWeight: '700',
                     transition: 'all 0.2s'
@@ -588,7 +591,7 @@ export default function PerritoDetailPage({ params }: PageProps) {
                   <HomeIcon size={20} color="#6b3838" />
                   Iniciar Solicitud de Adopción
                   <ArrowRightIcon size={20} color="#6b3838" />
-                </Link>
+                </button>
               </div>
             )}
           </div>
@@ -660,6 +663,14 @@ export default function PerritoDetailPage({ params }: PageProps) {
           </div>
         )}
       </div>
+      
+      {/* Modal de solicitud de adopción */}
+      <AdoptionModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        dogName={perrito.nombre}
+        dogImage={perrito.fotoPrincipal || defaultDogImage}
+      />
     </div>
   )
 }

@@ -2,7 +2,50 @@
 
 export const dynamic = 'force-dynamic'
 
-export default function AdminLoginDirect() {
+import { useState, Suspense } from 'react'
+import { signIn, getSession } from 'next-auth/react'
+import { useRouter, useSearchParams } from 'next/navigation'
+
+function AdminLoginContent() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const callbackUrl = searchParams.get('callbackUrl') || '/admin'
+  
+  const [email, setEmail] = useState('admin@atlixco.gob.mx')
+  const [password, setPassword] = useState('Atlixco2024!')
+  const [showPassword, setShowPassword] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+
+    try {
+      const result = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
+      })
+
+      if (result?.error) {
+        setError('Credenciales inválidas')
+      } else {
+        // Verificar que la sesión se creó correctamente
+        const session = await getSession()
+        if (session?.user?.role === 'admin') {
+          window.location.href = callbackUrl // Use window.location for full redirect
+        } else {
+          setError('No tienes permisos de administrador')
+        }
+      }
+    } catch (err) {
+      setError('Error al iniciar sesión')
+    } finally {
+      setLoading(false)
+    }
+  }
   return (
     <>
       <style jsx global>{`
@@ -23,6 +66,14 @@ export default function AdminLoginDirect() {
           justify-content: center !important;
           padding: 20px !important;
           min-height: 100vh !important;
+        }
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        input:focus {
+          border-color: #7d2447 !important;
+          box-shadow: 0 0 0 4px rgba(125, 36, 71, 0.1) !important;
         }
       `}</style>
       
@@ -70,30 +121,30 @@ export default function AdminLoginDirect() {
         </p>
         
         <div style={{
-          background: 'linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%)',
-          border: '2px solid #16a34a',
+          background: loading ? 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)' : 'linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%)',
+          border: `2px solid ${loading ? '#f59e0b' : '#16a34a'}`,
           borderRadius: '12px',
           padding: '20px',
           textAlign: 'center',
           marginBottom: '32px'
         }}>
           <div style={{
-            color: '#15803d',
+            color: loading ? '#d97706' : '#15803d',
             fontWeight: '700',
             fontSize: '18px',
             marginBottom: '4px'
           }}>
-            ✅ SISTEMA OPERATIVO
+            {loading ? '🔄 PROCESANDO...' : '✅ SISTEMA OPERATIVO'}
           </div>
           <div style={{
-            color: '#166534',
+            color: loading ? '#92400e' : '#166534',
             fontSize: '14px'
           }}>
-            Página renderizada correctamente - Layout independiente
+            {loading ? 'Verificando credenciales administrativas' : 'Login funcional con NextAuth integrado'}
           </div>
         </div>
         
-        <form>
+        <form onSubmit={handleSubmit}>
           <div style={{ marginBottom: '24px' }}>
             <label style={{
               display: 'block',
@@ -106,8 +157,10 @@ export default function AdminLoginDirect() {
             </label>
             <input 
               type="email" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
               placeholder="admin@atlixco.gob.mx"
-              defaultValue="admin@atlixco.gob.mx"
               style={{
                 width: '100%',
                 padding: '16px 20px',
@@ -116,8 +169,10 @@ export default function AdminLoginDirect() {
                 fontSize: '16px',
                 background: '#ffffff',
                 color: '#374151',
-                outline: 'none'
+                outline: 'none',
+                opacity: loading ? 0.7 : 1
               }}
+              disabled={loading}
             />
           </div>
           
@@ -131,69 +186,137 @@ export default function AdminLoginDirect() {
             }}>
               Contraseña
             </label>
-            <input 
-              type="password" 
-              placeholder="••••••••••"
-              defaultValue="Atlixco2024!"
-              style={{
-                width: '100%',
-                padding: '16px 20px',
-                border: '2px solid #d1d5db',
-                borderRadius: '10px',
-                fontSize: '16px',
-                background: '#ffffff',
-                color: '#374151',
-                outline: 'none'
-              }}
-            />
+            <div style={{ position: 'relative' }}>
+              <input 
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                placeholder="••••••••••"
+                style={{
+                  width: '100%',
+                  padding: '16px 50px 16px 20px',
+                  border: '2px solid #d1d5db',
+                  borderRadius: '10px',
+                  fontSize: '16px',
+                  background: '#ffffff',
+                  color: '#374151',
+                  outline: 'none',
+                  opacity: loading ? 0.7 : 1
+                }}
+                disabled={loading}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                disabled={loading}
+                style={{
+                  position: 'absolute',
+                  right: '12px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'transparent',
+                  border: 'none',
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                  fontSize: '18px',
+                  color: '#6b7280',
+                  opacity: loading ? 0.5 : 1
+                }}
+              >
+                {showPassword ? '🙈' : '👁️'}
+              </button>
+            </div>
           </div>
           
+          {error && (
+            <div style={{
+              background: 'linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)',
+              border: '2px solid #dc2626',
+              borderRadius: '10px',
+              padding: '16px',
+              marginBottom: '24px',
+              textAlign: 'center'
+            }}>
+              <div style={{
+                color: '#dc2626',
+                fontWeight: '600',
+                fontSize: '16px'
+              }}>
+                ⚠️ {error}
+              </div>
+            </div>
+          )}
+          
           <button 
-            type="button" 
-            onClick={() => alert('✅ Interfaz funcionando correctamente!\n\nEsta página se carga sin problemas, confirmando que Next.js funciona.\n\nEl problema original estaba en conflictos con el layout admin.')}
+            type="submit" 
+            disabled={loading}
             style={{
               width: '100%',
               padding: '18px',
-              background: 'linear-gradient(135deg, #7d2447 0%, #af1731 100%)',
+              background: loading ? 
+                'linear-gradient(135deg, #9ca3af 0%, #6b7280 100%)' : 
+                'linear-gradient(135deg, #7d2447 0%, #af1731 100%)',
               color: 'white',
               border: 'none',
               borderRadius: '10px',
               fontSize: '18px',
               fontWeight: '700',
-              cursor: 'pointer',
+              cursor: loading ? 'not-allowed' : 'pointer',
               textAlign: 'center',
-              boxShadow: '0 8px 16px rgba(125, 36, 71, 0.3)'
+              boxShadow: loading ? 
+                '0 4px 8px rgba(156, 163, 175, 0.3)' :
+                '0 8px 16px rgba(125, 36, 71, 0.3)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px'
             }}
           >
-            🔐 ACCEDER AL SISTEMA GUBERNAMENTAL
+            {loading ? (
+              <>
+                <div style={{
+                  width: '20px',
+                  height: '20px',
+                  border: '2px solid rgba(255,255,255,0.3)',
+                  borderTopColor: 'white',
+                  borderRadius: '50%',
+                  animation: 'spin 1s linear infinite'
+                }} />
+                VERIFICANDO CREDENCIALES...
+              </>
+            ) : (
+              <>
+                🔐 ACCEDER AL SISTEMA GUBERNAMENTAL
+              </>
+            )}
           </button>
         </form>
         
         <div style={{
           marginTop: '32px',
           padding: '20px',
-          background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
-          border: '1px solid #f59e0b',
+          background: 'linear-gradient(135deg, #e0f2fe 0%, #b3e5fc 100%)',
+          border: '1px solid #0288d1',
           borderRadius: '12px',
           textAlign: 'center'
         }}>
           <div style={{
             fontSize: '13px',
-            color: '#92400e',
+            color: '#01579b',
             fontWeight: '700',
             marginBottom: '8px',
             textTransform: 'uppercase',
             letterSpacing: '0.5px'
           }}>
-            Diagnóstico Técnico
+            🔐 Sistema de Autenticación Activo
           </div>
           <div style={{
             fontSize: '15px',
-            color: '#78350f',
+            color: '#0277bd',
             lineHeight: '1.5'
           }}>
-            Esta página usa un layout completamente independiente y demuestra que 
-            el sistema de renderizado funciona correctamente.
+            NextAuth integrado y funcional. Use las credenciales proporcionadas 
+            para acceder al panel administrativo completo.
           </div>
         </div>
         
@@ -210,5 +333,53 @@ export default function AdminLoginDirect() {
         </div>
       </div>
     </>
+  )
+}
+
+export default function AdminLoginDirect() {
+  return (
+    <Suspense fallback={
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        backgroundColor: '#f3f4f6',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontFamily: 'system-ui, -apple-system, sans-serif'
+      }}>
+        <div style={{
+          textAlign: 'center',
+          padding: '40px',
+          backgroundColor: 'white',
+          borderRadius: '16px',
+          boxShadow: '0 10px 25px rgba(0,0,0,0.1)'
+        }}>
+          <div style={{
+            width: '60px',
+            height: '60px',
+            border: '4px solid #e5e7eb',
+            borderTopColor: '#7d2447',
+            borderRadius: '50%',
+            margin: '0 auto 20px',
+            animation: 'spin 1s linear infinite'
+          }} />
+          <p style={{ color: '#6b7280', fontSize: '16px' }}>
+            Cargando sistema de autenticación...
+          </p>
+          <style jsx>{`
+            @keyframes spin {
+              from { transform: rotate(0deg); }
+              to { transform: rotate(360deg); }
+            }
+          `}</style>
+        </div>
+      </div>
+    }>
+      <AdminLoginContent />
+    </Suspense>
   )
 }

@@ -1,8 +1,22 @@
+'use client'
+
 import "./globals.css";
 import Layout from "../components/layout/Layout";
 import AuthProvider from "../components/providers/AuthProvider";
+import { usePathname } from "next/navigation";
 
 export const dynamic = 'force-dynamic';
+
+function LayoutWrapper({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const isAdminRoute = pathname?.startsWith('/admin');
+
+  if (isAdminRoute) {
+    return <>{children}</>;
+  }
+
+  return <Layout>{children}</Layout>;
+}
 
 export default function RootLayout({
   children,
@@ -23,9 +37,9 @@ export default function RootLayout({
       </head>
       <body>
         <AuthProvider>
-          <Layout>
+          <LayoutWrapper>
             {children}
-          </Layout>
+          </LayoutWrapper>
         </AuthProvider>
       </body>
     </html>

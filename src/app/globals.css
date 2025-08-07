@@ -24,6 +24,11 @@
   --puebla-light-gold: #d4c9a8;
   --puebla-cream: #f5f3ee;
   
+  /* Fuentes tipográficas oficiales - Manual de Identidad Puebla */
+  --font-primary: 'Albert Sans', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-secondary: 'Poppins', 'Albert Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-reading: 'Poppins', system-ui, sans-serif;
+  
   /* Gradientes oficiales */
   --gradient-principal: linear-gradient(135deg, #7d2447 0%, #af1731 100%);
   --gradient-gold: linear-gradient(135deg, #bfb591 0%, #d4c9a8 100%);
@@ -51,11 +56,45 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  font-family: var(--font-secondary);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
+}
+
+/* Elementos que usan Albert Sans (fuente principal geométrica) */
+h1, h2, h3, h4, h5, h6,
+.heading,
+.header-title h1,
+.header-title span,
+.admin-title,
+.admin-page-title,
+.sidebar-main-title,
+.admin-nav-text,
+.btn-primary,
+.btn-secondary,
+.btn-gobierno,
+.admin-submit-button,
+.admin-logout-button,
+nav a,
+.mobile-menu nav a,
+.desktop-nav a {
+  font-family: var(--font-primary);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* Elementos que mantienen Poppins para lectura */
+p, span, div, 
+.text-content,
+.admin-label,
+.admin-input,
+.card,
+input, textarea, select,
+.admin-user-name,
+.admin-user-email {
+  font-family: var(--font-reading);
 }
 
 /* Estilos para botones */
@@ -306,12 +345,17 @@ body {
   font-size: 24px;
   line-height: 1.3;
   font-weight: 600;
+  font-family: var(--font-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .subtitle-responsive {
   font-size: 18px;
   line-height: 1.4;
   font-weight: 500;
+  font-family: var(--font-primary);
+  letter-spacing: 0.02em;
 }
 
 /* Botones touch-friendly */
@@ -797,8 +841,7 @@ input[type="range"]::-moz-range-thumb {
    Manual de Identidad Visual de Puebla
    ======================================== */
 
-/* Importar fuentes oficiales */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+/* Las fuentes se cargan desde layout.tsx para optimizar el rendimiento */
 
 /* PÁGINA DE LOGIN ADMINISTRATIVA */
 .admin-login-container {
@@ -806,7 +849,7 @@ input[type="range"]::-moz-range-thumb {
   position: relative;
   background: var(--gradient-principal);
   overflow: hidden;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
 }
 
 /* Patrones decorativos de fondo */
@@ -1083,7 +1126,7 @@ input[type="range"]::-moz-range-thumb {
   border: 2px solid rgba(191, 181, 145, 0.3);
   border-radius: 12px;
   font-size: 1rem;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-reading);
   font-weight: 500;
   color: var(--pantone-216c);
   background: rgba(245, 243, 238, 0.5);
@@ -1177,7 +1220,7 @@ input[type="range"]::-moz-range-thumb {
   border: none;
   border-radius: 16px;
   color: white;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 1rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -1470,7 +1513,7 @@ input[type="range"]::-moz-range-thumb {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
 }
 
 .admin-loading-content {
@@ -1532,7 +1575,7 @@ input[type="range"]::-moz-range-thumb {
 .admin-dashboard-container {
   min-height: 100vh;
   background: var(--puebla-cream);
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   display: flex;
 }
 
@@ -1844,7 +1887,7 @@ input[type="range"]::-moz-range-thumb {
   border: 1px solid rgba(125, 36, 71, 0.2);
   border-radius: 10px;
   color: var(--pantone-216c);
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   font-size: 0.8rem;
   font-weight: 600;
   text-transform: uppercase;

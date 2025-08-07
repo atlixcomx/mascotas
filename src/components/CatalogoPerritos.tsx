@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -9,10 +9,9 @@ import { SearchBar, FilterPanel, FilterOptions } from './search'
 import LoadingSpinner from './ui/LoadingSpinner'
 import ErrorMessage from './ui/ErrorMessage'
 import EmptyState from './ui/EmptyState'
-import AdoptionModal from './ui/AdoptionModal'
 import { 
   HeartIcon, LocationIcon, DogIcon, SearchIcon,
-  CheckCircleIcon, ArrowRightIcon, ClockIcon, HomeIcon
+  CheckCircleIcon, ArrowRightIcon, ClockIcon
 } from './icons/Icons'
 
 // URL de imagen estándar para todos los perritos
@@ -26,8 +25,6 @@ export default function CatalogoPerritos() {
   const [showFilters, setShowFilters] = useState(false)
   const [favorites, setFavorites] = useState<string[]>([])
   const [hoveredCard, setHoveredCard] = useState<string | null>(null)
-  const [showModal, setShowModal] = useState(false)
-  const [selectedDog, setSelectedDog] = useState<{name: string, image: string} | null>(null)
 
   // Estados de filtros
   const [filters, setFilters] = useState<FilterOptions>({
@@ -127,10 +124,6 @@ export default function CatalogoPerritos() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [filters, updateURL])
 
-  const handleAdoptionClick = (dogName: string, dogImage: string) => {
-    setSelectedDog({ name: dogName, image: dogImage })
-    setShowModal(true)
-  }
 
   // Estados de carga y error
   if (loading) {
@@ -243,98 +236,10 @@ export default function CatalogoPerritos() {
             gap: '28px',
             marginBottom: '48px'
           }}>
-            {perritos.map((perrito, index) => {
-              // Insertar CTA después del segundo perrito
-              const shouldInsertCTA = index === 2
-              
-              return (
-                <React.Fragment key={perrito.id}>
-                  {shouldInsertCTA && (
-                    <div style={{
-                      gridColumn: 'span 2',
-                      background: 'linear-gradient(135deg, #6b3838 0%, #8b4848 100%)',
-                      borderRadius: '20px',
-                      padding: '40px',
-                      color: 'white',
-                      textAlign: 'center',
-                      position: 'relative',
-                      overflow: 'hidden',
-                      minHeight: '200px',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      '@media (max-width: 768px)': {
-                        gridColumn: 'span 1'
-                      }
-                    }}>
-                      {/* Patrón decorativo de fondo */}
-                      <div style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        opacity: 0.1,
-                        backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(255,255,255,0.1) 20px, rgba(255,255,255,0.1) 40px)`
-                      }} />
-                      
-                      <div style={{ position: 'relative', zIndex: 1, width: '100%' }}>
-                        <h3 style={{
-                          fontSize: '32px',
-                          fontWeight: '700',
-                          marginBottom: '16px',
-                          letterSpacing: '-0.5px'
-                        }}>
-                          ¿Listo para adoptar?
-                        </h3>
-                        <p style={{
-                          fontSize: '18px',
-                          opacity: 0.9,
-                          marginBottom: '32px',
-                          maxWidth: '500px',
-                          margin: '0 auto 32px',
-                          lineHeight: '1.6'
-                        }}>
-                          Rocky está esperando conocerte. Inicia el proceso de adopción y dale la oportunidad de ser parte de tu familia.
-                        </p>
-                        <button
-                          onClick={() => handleAdoptionClick('Rocky', defaultDogImage)}
-                          style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '12px',
-                            padding: '16px 32px',
-                            background: 'white',
-                            color: '#6b3838',
-                            border: 'none',
-                            borderRadius: '12px',
-                            fontSize: '16px',
-                            fontWeight: '700',
-                            cursor: 'pointer',
-                            transition: 'all 0.3s ease',
-                            boxShadow: '0 4px 14px rgba(0,0,0,0.1)'
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.transform = 'translateY(-2px)'
-                            e.currentTarget.style.boxShadow = '0 6px 20px rgba(0,0,0,0.15)'
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.transform = 'translateY(0)'
-                            e.currentTarget.style.boxShadow = '0 4px 14px rgba(0,0,0,0.1)'
-                          }}
-                        >
-                          <HomeIcon size={20} color="#6b3838" />
-                          Iniciar Solicitud de Adopción
-                          <ArrowRightIcon size={20} color="#6b3838" />
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                  
-                  <div 
-                    style={{
+            {perritos.map((perrito, index) => (
+              <div 
+                key={perrito.id} 
+                style={{
                   background: 'white',
                   borderRadius: '20px',
                   overflow: 'hidden',
@@ -547,9 +452,7 @@ export default function CatalogoPerritos() {
                   </Link>
                 </div>
               </div>
-                </React.Fragment>
-              )
-            })}
+            ))}
           </div>
 
           {/* Paginación */}
@@ -633,13 +536,6 @@ export default function CatalogoPerritos() {
         }
       `}</style>
       
-      {/* Modal de solicitud de adopción */}
-      <AdoptionModal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        dogName={selectedDog?.name || 'Rocky'}
-        dogImage={selectedDog?.image || defaultDogImage}
-      />
     </div>
   )
 }

@@ -543,27 +543,54 @@ export default function PerritoDetailPage({ params }: PageProps) {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
 
-            {/* CTA */}
-            {perrito.estado === 'disponible' && (
+        {/* CTA Banner - ¿Listo para adoptar? */}
+        {perrito.estado === 'disponible' && (
+          <div style={{
+            margin: '64px 0',
+            maxWidth: '1200px',
+            marginLeft: 'auto',
+            marginRight: 'auto',
+            padding: '0 24px'
+          }}>
+            <div style={{
+              background: 'linear-gradient(135deg, #6b3838 0%, #8b4848 100%)',
+              borderRadius: '24px',
+              padding: '48px 40px',
+              color: 'white',
+              textAlign: 'center',
+              position: 'relative',
+              overflow: 'hidden',
+              boxShadow: '0 12px 40px rgba(107, 56, 56, 0.2)'
+            }}>
+              {/* Patrón decorativo de fondo */}
               <div style={{
-                background: 'linear-gradient(135deg, #6b3838 0%, #8b4848 100%)',
-                borderRadius: '20px',
-                padding: '32px',
-                boxShadow: '0 4px 20px rgba(107, 56, 56, 0.2)'
-              }}>
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                opacity: 0.1,
+                backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(255,255,255,0.1) 20px, rgba(255,255,255,0.1) 40px)`
+              }} />
+              
+              <div style={{ position: 'relative', zIndex: 1 }}>
                 <h3 style={{
-                  fontSize: '24px',
+                  fontSize: 'clamp(28px, 4vw, 42px)',
                   fontWeight: '700',
-                  color: 'white',
-                  marginBottom: '12px'
+                  marginBottom: '16px',
+                  letterSpacing: '-1px'
                 }}>
                   ¿Listo para adoptar?
                 </h3>
                 <p style={{
-                  fontSize: '16px',
-                  color: 'rgba(255,255,255,0.9)',
-                  marginBottom: '24px',
+                  fontSize: '20px',
+                  opacity: 0.9,
+                  marginBottom: '32px',
+                  maxWidth: '600px',
+                  margin: '0 auto 32px',
                   lineHeight: '1.6'
                 }}>
                   {perrito.nombre} está esperando conocerte. Inicia el proceso de adopción 
@@ -572,30 +599,38 @@ export default function PerritoDetailPage({ params }: PageProps) {
                 <button
                   onClick={() => setShowModal(true)}
                   style={{
-                    display: 'flex',
+                    display: 'inline-flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     gap: '12px',
-                    width: '100%',
-                    padding: '16px',
+                    padding: '18px 36px',
                     background: 'white',
                     color: '#6b3838',
-                    borderRadius: '12px',
                     border: 'none',
-                    cursor: 'pointer',
-                    fontSize: '16px',
+                    borderRadius: '12px',
+                    fontSize: '18px',
                     fontWeight: '700',
-                    transition: 'all 0.2s'
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    boxShadow: '0 4px 14px rgba(0,0,0,0.15)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-3px)'
+                    e.currentTarget.style.boxShadow = '0 8px 25px rgba(0,0,0,0.2)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)'
+                    e.currentTarget.style.boxShadow = '0 4px 14px rgba(0,0,0,0.15)'
                   }}
                 >
-                  <HomeIcon size={20} color="#6b3838" />
+                  <HomeIcon size={22} color="#6b3838" />
                   Iniciar Solicitud de Adopción
-                  <ArrowRightIcon size={20} color="#6b3838" />
+                  <ArrowRightIcon size={22} color="#6b3838" />
                 </button>
               </div>
-            )}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Perritos similares */}
         {perrito.similares && perrito.similares.length > 0 && (

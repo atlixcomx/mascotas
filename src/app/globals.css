@@ -1,3 +1,6 @@
+/* Import UploadThing styles */
+@import "@uploadthing/react/styles.css";
+
 /* Reset CSS y configuraciones base */
 *, *::before, *::after {
   box-sizing: border-box;

@@ -26,6 +26,7 @@ async function main() {
   // Crear perritos de ejemplo
   const perritosData = [
     {
+      codigo: 'PER001',
       nombre: 'Max',
       slug: 'max',
       fotoPrincipal: 'https://images.unsplash.com/photo-1551717743-49959800b1f6?w=400',
@@ -37,6 +38,7 @@ async function main() {
       peso: 15.5,
       historia: 'Max fue rescatado de las calles de Atlixco. Es un perrito muy cariñoso y juguetón que busca una familia que le dé mucho amor.',
       fechaIngreso: new Date('2024-01-15'),
+      tipoIngreso: 'rescate',
       procedencia: 'Rescate callejero',
       vacunas: true,
       esterilizado: true,
@@ -49,6 +51,7 @@ async function main() {
       destacado: true
     },
     {
+      codigo: 'PER002',
       nombre: 'Luna',
       slug: 'luna',
       fotoPrincipal: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=400',
@@ -60,6 +63,7 @@ async function main() {
       peso: 4.2,
       historia: 'Luna es una perrita muy dulce y tranquila. Le gusta estar en brazos y es perfecta para familias que buscan una compañera tranquila.',
       fechaIngreso: new Date('2024-02-01'),
+      tipoIngreso: 'entrega_voluntaria',
       procedencia: 'Entrega voluntaria',
       vacunas: true,
       esterilizado: true,
@@ -72,6 +76,7 @@ async function main() {
       destacado: true
     },
     {
+      codigo: 'PER003',
       nombre: 'Rocky',
       slug: 'rocky',
       fotoPrincipal: 'https://images.unsplash.com/photo-1561037404-61cd46aa615b?w=400',
@@ -83,6 +88,7 @@ async function main() {
       peso: 28.0,
       historia: 'Rocky es un guardián nato pero muy noble. Necesita una familia con experiencia en perros grandes y con espacio suficiente.',
       fechaIngreso: new Date('2024-01-20'),
+      tipoIngreso: 'rescate',
       procedencia: 'Abandono',
       vacunas: true,
       esterilizado: true,
@@ -95,6 +101,7 @@ async function main() {
       destacado: false
     },
     {
+      codigo: 'PER004',
       nombre: 'Bella',
       slug: 'bella',
       fotoPrincipal: 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=400',
@@ -106,6 +113,7 @@ async function main() {
       peso: 18.3,
       historia: 'Bella es una perra muy equilibrada y perfecta para familias. Es cariñosa, obediente y le encanta jugar con niños.',
       fechaIngreso: new Date('2024-01-10'),
+      tipoIngreso: 'rescate',
       procedencia: 'Rescate',
       vacunas: true,
       esterilizado: true,
@@ -121,7 +129,7 @@ async function main() {
 
   for (const perritoData of perritosData) {
     const perrito = await prisma.perrito.upsert({
-      where: { slug: perritoData.slug },
+      where: { codigo: perritoData.codigo },
       update: {},
       create: perritoData
     })

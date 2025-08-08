@@ -377,7 +377,7 @@ export function CSVImporter({ type, onImport }: CSVImporterProps) {
           marginBottom: '16px',
           padding: '12px',
           backgroundColor: '#f0fdf4',
-          border: '1px solid '#bbf7d0',
+          border: '1px solid #bbf7d0',
           borderRadius: '8px',
           display: 'flex',
           alignItems: 'center',

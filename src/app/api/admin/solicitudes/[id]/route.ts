@@ -55,6 +55,8 @@ export async function PUT(
       fechaRevision,
       fechaEntrevista,
       fechaPrueba,
+      inicioPrueba,
+      finPrueba,
       fechaAdopcion
     } = body
 
@@ -76,6 +78,8 @@ export async function PUT(
       fechaRevision: fechaRevision ? new Date(fechaRevision) : undefined,
       fechaEntrevista: fechaEntrevista ? new Date(fechaEntrevista) : undefined,
       fechaPrueba: fechaPrueba ? new Date(fechaPrueba) : undefined,
+      inicioPrueba: inicioPrueba ? new Date(inicioPrueba) : undefined,
+      finPrueba: finPrueba ? new Date(finPrueba) : undefined,
       fechaAdopcion: fechaAdopcion ? new Date(fechaAdopcion) : undefined
     }
 

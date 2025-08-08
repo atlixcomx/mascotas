@@ -182,6 +182,9 @@ export default function SolicitudDetallePage() {
   const [nuevoComentario, setNuevoComentario] = useState('')
   const [loadingActividades, setLoadingActividades] = useState(true)
   const [enviandoComentario, setEnviandoComentario] = useState(false)
+  const [fechaEntrevista, setFechaEntrevista] = useState('')
+  const [fechaInicioPrueba, setFechaInicioPrueba] = useState('')
+  const [fechaFinPrueba, setFechaFinPrueba] = useState('')
   const [confirmDialog, setConfirmDialog] = useState<{
     show: boolean
     type: 'state' | 'approval' | 'rejection'
@@ -253,22 +256,30 @@ export default function SolicitudDetallePage() {
     }
   }
 
-  async function actualizarEstado(estado: string) {
+  const handleStateChange = (newState: string, fechasAdicionales?: any) => {
+    actualizarEstado(newState, fechasAdicionales)
+  }
+
+  async function actualizarEstado(estado: string, fechasAdicionales?: any) {
     setUpdating(true)
     try {
+      const updateData: any = {
+        estado,
+        notas,
+        fechaRevision: estado === 'revision' ? new Date().toISOString() : solicitud?.fechaRevision,
+        fechaEntrevista: fechasAdicionales?.fechaEntrevista || solicitud?.fechaEntrevista,
+        fechaPrueba: estado === 'prueba' ? new Date().toISOString() : solicitud?.fechaPrueba,
+        inicioPrueba: fechasAdicionales?.inicioPrueba || solicitud?.inicioPrueba,
+        finPrueba: fechasAdicionales?.finPrueba || solicitud?.finPrueba,
+        fechaAdopcion: estado === 'aprobada' ? new Date().toISOString() : solicitud?.fechaAdopcion
+      }
+
       const response = await fetch(`/api/admin/solicitudes/${params.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          estado,
-          notas,
-          fechaRevision: estado === 'revision' ? new Date().toISOString() : solicitud?.fechaRevision,
-          fechaEntrevista: estado === 'entrevista' ? new Date().toISOString() : solicitud?.fechaEntrevista,
-          fechaPrueba: estado === 'prueba' ? new Date().toISOString() : solicitud?.fechaPrueba,
-          fechaAdopcion: estado === 'aprobada' ? new Date().toISOString() : solicitud?.fechaAdopcion
-        })
+        body: JSON.stringify(updateData)
       })
 
       if (response.ok) {
@@ -714,6 +725,516 @@ export default function SolicitudDetallePage() {
         }}>
           {/* Columna izquierda - Información detallada */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            {/* Panel de Gestión del Proceso */}
+            <div style={{
+              backgroundColor: 'white',
+              borderRadius: '12px',
+              padding: '24px',
+              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+              border: '1px solid #e2e8f0'
+            }}>
+              <h2 style={{
+                fontSize: '1.125rem',
+                fontWeight: '600',
+                color: '#0f172a',
+                marginBottom: '20px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px'
+              }}>
+                <Shield style={{ width: '20px', height: '20px', color: '#af1731' }} />
+                Gestión del Proceso
+              </h2>
+
+              {/* Campos de fecha según el estado */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(2, 1fr)',
+                gap: '20px',
+                marginBottom: '24px'
+              }}>
+                {/* Mostrar fecha de revisión si está en estado de revisión o superior */}
+                {['revision', 'entrevista', 'prueba', 'aprobada', 'rechazada'].includes(solicitud.estado) && (
+                  <div>
+                    <label style={{
+                      fontSize: '0.75rem',
+                      color: '#64748b',
+                      marginBottom: '4px',
+                      fontWeight: '600',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.5px',
+                      display: 'block'
+                    }}>Fecha de Revisión</label>
+                    <p style={{
+                      fontSize: '0.875rem',
+                      color: '#0f172a'
+                    }}>
+                      {solicitud.fechaRevision ? new Date(solicitud.fechaRevision).toLocaleDateString('es-MX', {
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      }) : 'No establecida'}
+                    </p>
+                  </div>
+                )}
+
+                {/* Campo de fecha de entrevista */}
+                {['entrevista', 'prueba', 'aprobada', 'rechazada'].includes(solicitud.estado) && (
+                  <div>
+                    <label style={{
+                      fontSize: '0.75rem',
+                      color: '#64748b',
+                      marginBottom: '4px',
+                      fontWeight: '600',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.5px',
+                      display: 'block'
+                    }}>Fecha de Entrevista</label>
+                    {solicitud.estado === 'entrevista' && !solicitud.fechaEntrevista ? (
+                      <input
+                        type="datetime-local"
+                        value={fechaEntrevista}
+                        onChange={(e) => setFechaEntrevista(e.target.value)}
+                        style={{
+                          width: '100%',
+                          padding: '8px 12px',
+                          fontSize: '0.875rem',
+                          border: '1px solid #e2e8f0',
+                          borderRadius: '6px',
+                          backgroundColor: 'white',
+                          color: '#0f172a'
+                        }}
+                      />
+                    ) : (
+                      <p style={{
+                        fontSize: '0.875rem',
+                        color: '#0f172a'
+                      }}>
+                        {solicitud.fechaEntrevista ? new Date(solicitud.fechaEntrevista).toLocaleDateString('es-MX', {
+                          day: 'numeric',
+                          month: 'long',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        }) : 'No establecida'}
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {/* Campo de fecha de prueba */}
+                {['prueba', 'aprobada', 'rechazada'].includes(solicitud.estado) && (
+                  <>
+                    <div>
+                      <label style={{
+                        fontSize: '0.75rem',
+                        color: '#64748b',
+                        marginBottom: '4px',
+                        fontWeight: '600',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px',
+                        display: 'block'
+                      }}>Inicio de Prueba</label>
+                      {solicitud.estado === 'prueba' && !solicitud.inicioPrueba ? (
+                        <input
+                          type="date"
+                          value={fechaInicioPrueba}
+                          onChange={(e) => setFechaInicioPrueba(e.target.value)}
+                          style={{
+                            width: '100%',
+                            padding: '8px 12px',
+                            fontSize: '0.875rem',
+                            border: '1px solid #e2e8f0',
+                            borderRadius: '6px',
+                            backgroundColor: 'white',
+                            color: '#0f172a'
+                          }}
+                        />
+                      ) : (
+                        <p style={{
+                          fontSize: '0.875rem',
+                          color: '#0f172a'
+                        }}>
+                          {solicitud.inicioPrueba ? new Date(solicitud.inicioPrueba).toLocaleDateString('es-MX', {
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric'
+                          }) : 'No establecida'}
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <label style={{
+                        fontSize: '0.75rem',
+                        color: '#64748b',
+                        marginBottom: '4px',
+                        fontWeight: '600',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px',
+                        display: 'block'
+                      }}>Fin de Prueba</label>
+                      {solicitud.estado === 'prueba' && !solicitud.finPrueba ? (
+                        <input
+                          type="date"
+                          value={fechaFinPrueba}
+                          onChange={(e) => setFechaFinPrueba(e.target.value)}
+                          style={{
+                            width: '100%',
+                            padding: '8px 12px',
+                            fontSize: '0.875rem',
+                            border: '1px solid #e2e8f0',
+                            borderRadius: '6px',
+                            backgroundColor: 'white',
+                            color: '#0f172a'
+                          }}
+                        />
+                      ) : (
+                        <p style={{
+                          fontSize: '0.875rem',
+                          color: '#0f172a'
+                        }}>
+                          {solicitud.finPrueba ? new Date(solicitud.finPrueba).toLocaleDateString('es-MX', {
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric'
+                          }) : 'No establecida'}
+                        </p>
+                      )}
+                    </div>
+                  </>
+                )}
+
+                {/* Fecha de adopción */}
+                {solicitud.estado === 'aprobada' && solicitud.fechaAdopcion && (
+                  <div style={{ gridColumn: 'span 2' }}>
+                    <label style={{
+                      fontSize: '0.75rem',
+                      color: '#64748b',
+                      marginBottom: '4px',
+                      fontWeight: '600',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.5px',
+                      display: 'block'
+                    }}>Fecha de Adopción</label>
+                    <p style={{
+                      fontSize: '0.875rem',
+                      color: '#0f172a'
+                    }}>
+                      {new Date(solicitud.fechaAdopcion).toLocaleDateString('es-MX', {
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* Campo de notas */}
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{
+                  fontSize: '0.75rem',
+                  color: '#64748b',
+                  marginBottom: '4px',
+                  fontWeight: '600',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px',
+                  display: 'block'
+                }}>Notas del proceso</label>
+                <textarea
+                  value={notas}
+                  onChange={(e) => setNotas(e.target.value)}
+                  placeholder="Agregar notas sobre el proceso..."
+                  style={{
+                    width: '100%',
+                    minHeight: '80px',
+                    padding: '12px',
+                    fontSize: '0.875rem',
+                    border: '1px solid #e2e8f0',
+                    borderRadius: '6px',
+                    backgroundColor: 'white',
+                    color: '#0f172a',
+                    resize: 'vertical'
+                  }}
+                />
+              </div>
+
+              {/* Acciones según el estado */}
+              <div style={{
+                display: 'flex',
+                gap: '12px',
+                flexWrap: 'wrap'
+              }}>
+                {solicitud.estado === 'nueva' && (
+                  <>
+                    <button
+                      onClick={() => handleStateChange('revision')}
+                      style={{
+                        padding: '12px 20px',
+                        backgroundColor: '#f59e0b',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '8px',
+                        fontSize: '0.875rem',
+                        fontWeight: '500',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px'
+                      }}
+                      disabled={updating}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d97706'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f59e0b'}
+                    >
+                      <Eye style={{ width: '16px', height: '16px' }} />
+                      Iniciar Revisión
+                    </button>
+                    <button
+                      onClick={() => handleStateChange('rechazada')}
+                      style={{
+                        padding: '12px 20px',
+                        backgroundColor: 'transparent',
+                        color: '#ef4444',
+                        border: '1px solid #ef4444',
+                        borderRadius: '8px',
+                        fontSize: '0.875rem',
+                        fontWeight: '500',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px'
+                      }}
+                      disabled={updating}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = '#fee2e2'
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'transparent'
+                      }}
+                    >
+                      <XCircle style={{ width: '16px', height: '16px' }} />
+                      Rechazar Solicitud
+                    </button>
+                  </>
+                )}
+
+                {solicitud.estado === 'revision' && (
+                  <>
+                    <button
+                      onClick={() => {
+                        if (!fechaEntrevista) {
+                          toast.error('Por favor selecciona fecha y hora para la entrevista')
+                          return
+                        }
+                        handleStateChange('entrevista', { fechaEntrevista })
+                      }}
+                      style={{
+                        padding: '12px 20px',
+                        backgroundColor: '#8b5cf6',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '8px',
+                        fontSize: '0.875rem',
+                        fontWeight: '500',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px'
+                      }}
+                      disabled={updating}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#7c3aed'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#8b5cf6'}
+                    >
+                      <MessageSquare style={{ width: '16px', height: '16px' }} />
+                      Programar Entrevista
+                    </button>
+                    <button
+                      onClick={() => handleStateChange('rechazada')}
+                      style={{
+                        padding: '12px 20px',
+                        backgroundColor: 'transparent',
+                        color: '#ef4444',
+                        border: '1px solid #ef4444',
+                        borderRadius: '8px',
+                        fontSize: '0.875rem',
+                        fontWeight: '500',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px'
+                      }}
+                      disabled={updating}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = '#fee2e2'
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'transparent'
+                      }}
+                    >
+                      <XCircle style={{ width: '16px', height: '16px' }} />
+                      Rechazar Solicitud
+                    </button>
+                  </>
+                )}
+
+                {solicitud.estado === 'entrevista' && (
+                  <>
+                    <button
+                      onClick={() => {
+                        if (!fechaInicioPrueba || !fechaFinPrueba) {
+                          toast.error('Por favor selecciona las fechas de inicio y fin del período de prueba')
+                          return
+                        }
+                        handleStateChange('prueba', { inicioPrueba: fechaInicioPrueba, finPrueba: fechaFinPrueba })
+                      }}
+                      style={{
+                        padding: '12px 20px',
+                        backgroundColor: '#f97316',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '8px',
+                        fontSize: '0.875rem',
+                        fontWeight: '500',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px'
+                      }}
+                      disabled={updating}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#ea580c'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f97316'}
+                    >
+                      <Clock style={{ width: '16px', height: '16px' }} />
+                      Iniciar Período de Prueba
+                    </button>
+                    <button
+                      onClick={() => handleStateChange('rechazada')}
+                      style={{
+                        padding: '12px 20px',
+                        backgroundColor: 'transparent',
+                        color: '#ef4444',
+                        border: '1px solid #ef4444',
+                        borderRadius: '8px',
+                        fontSize: '0.875rem',
+                        fontWeight: '500',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px'
+                      }}
+                      disabled={updating}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = '#fee2e2'
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'transparent'
+                      }}
+                    >
+                      <XCircle style={{ width: '16px', height: '16px' }} />
+                      Rechazar Solicitud
+                    </button>
+                  </>
+                )}
+
+                {solicitud.estado === 'prueba' && (
+                  <>
+                    <button
+                      onClick={() => handleStateChange('aprobada')}
+                      style={{
+                        padding: '12px 20px',
+                        backgroundColor: '#10b981',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '8px',
+                        fontSize: '0.875rem',
+                        fontWeight: '500',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px'
+                      }}
+                      disabled={updating}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#059669'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#10b981'}
+                    >
+                      <CheckCircle style={{ width: '16px', height: '16px' }} />
+                      Aprobar Adopción
+                    </button>
+                    <button
+                      onClick={() => handleStateChange('rechazada')}
+                      style={{
+                        padding: '12px 20px',
+                        backgroundColor: 'transparent',
+                        color: '#ef4444',
+                        border: '1px solid #ef4444',
+                        borderRadius: '8px',
+                        fontSize: '0.875rem',
+                        fontWeight: '500',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px'
+                      }}
+                      disabled={updating}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = '#fee2e2'
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'transparent'
+                      }}
+                    >
+                      <XCircle style={{ width: '16px', height: '16px' }} />
+                      Rechazar Solicitud
+                    </button>
+                  </>
+                )}
+
+                {(solicitud.estado === 'aprobada' || solicitud.estado === 'rechazada' || solicitud.estado === 'cancelada') && (
+                  <div style={{
+                    padding: '16px',
+                    backgroundColor: '#f8fafc',
+                    borderRadius: '8px',
+                    border: '1px solid #e2e8f0',
+                    textAlign: 'center',
+                    width: '100%'
+                  }}>
+                    <Info style={{
+                      width: '24px',
+                      height: '24px',
+                      color: '#64748b',
+                      margin: '0 auto 8px'
+                    }} />
+                    <p style={{
+                      fontSize: '0.875rem',
+                      color: '#64748b'
+                    }}>
+                      Esta solicitud ha sido finalizada y no permite más acciones.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+
             {/* Datos personales */}
             <div style={{
               backgroundColor: 'white',
@@ -1719,33 +2240,6 @@ export default function SolicitudDetallePage() {
                 </Link>
               </div>
             </div>
-
-            {/* Acciones */}
-            <div style={{
-              backgroundColor: 'white',
-              borderRadius: '12px',
-              padding: '24px',
-              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-              border: '1px solid #e2e8f0'
-            }}>
-              <h2 style={{
-                fontSize: '1.125rem',
-                fontWeight: '600',
-                color: '#0f172a',
-                marginBottom: '20px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px'
-              }}>
-                <Zap style={{ width: '20px', height: '20px', color: '#af1731' }} />
-                Acciones Rápidas
-              </h2>
-              
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                {solicitud.estado === 'nueva' && (
-                  <>
-                    <button
-                      onClick={() => showConfirmDialog('state', 'revision')}
                       style={{
                         padding: '12px 20px',
                         backgroundColor: '#f59e0b',
@@ -1992,34 +2486,6 @@ export default function SolicitudDetallePage() {
                     </p>
                   </div>
                 )}
-              </div>
-            </div>
-
-            {/* Notas internas */}
-            <div style={{
-              backgroundColor: 'white',
-              borderRadius: '12px',
-              padding: '24px',
-              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-              border: '1px solid #e2e8f0'
-            }}>
-              <h2 style={{
-                fontSize: '1.125rem',
-                fontWeight: '600',
-                color: '#0f172a',
-                marginBottom: '20px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px'
-              }}>
-                <Edit style={{ width: '20px', height: '20px', color: '#af1731' }} />
-                Notas Internas
-              </h2>
-              
-              <textarea
-                value={notas}
-                onChange={(e) => setNotas(e.target.value)}
-                rows={6}
                 style={{
                   width: '100%',
                   padding: '12px',

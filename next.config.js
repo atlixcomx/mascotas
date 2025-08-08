@@ -8,7 +8,7 @@ const nextConfig = {
   },
   experimental: {
     optimizePackageImports: ['lucide-react'],
-    optimizeCss: true,
+    // optimizeCss: true, // Deshabilitado temporalmente por error con critters
   },
   images: {
     // Optimización de imágenes

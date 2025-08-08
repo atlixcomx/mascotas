@@ -168,8 +168,15 @@ export async function POST(request: NextRequest) {
       )
     }
     
+    // Log más detalles del error
+    const errorMessage = error instanceof Error ? error.message : 'Error desconocido'
+    console.error('Error details:', errorMessage)
+    
     return NextResponse.json(
-      { error: 'Error interno del servidor' },
+      { 
+        error: 'Error interno del servidor',
+        message: process.env.NODE_ENV === 'development' ? errorMessage : undefined
+      },
       { status: 500 }
     )
   }

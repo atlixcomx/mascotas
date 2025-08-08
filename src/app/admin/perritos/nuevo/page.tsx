@@ -170,9 +170,42 @@ export default function NuevoPerrito() {
   const handleSubmit = async () => {
     setLoading(true)
     try {
-      // Preparar datos para enviar
+      // Preparar datos para enviar mapeando campos correctamente
       const dataToSend = {
-        ...formData,
+        nombre: formData.nombre,
+        raza: formData.raza,
+        edad: formData.edad,
+        sexo: formData.sexo,
+        tamano: formData.tamano,
+        peso: formData.peso ? parseFloat(formData.peso) : undefined,
+        energia: formData.energia,
+        historia: formData.descripcion || formData.notasIngreso || 'Perrito rescatado en busca de un hogar',
+        tipoIngreso: formData.tipoIngreso,
+        procedencia: formData.notasIngreso,
+        responsableIngreso: formData.responsableIngreso,
+        // Mapear campos de salud
+        vacunas: formData.vacunado,
+        esterilizado: formData.esterilizado,
+        desparasitado: true, // Default true ya que no está en el form
+        saludNotas: '',
+        // Mapear arrays
+        padecimientos: formData.padecimientos,
+        vacunasDetalle: formData.vacunas,
+        tratamientos: formData.tratamientos,
+        alergias: formData.alergias,
+        // Mapear personalidad a caracter
+        caracter: formData.personalidad ? [formData.personalidad] : [],
+        // Compatibilidad
+        aptoNinos: formData.aptoNinos,
+        aptoPerros: formData.aptoPerros,
+        aptoGatos: formData.aptoGatos,
+        // Fotos (temporalmente URLs placeholder)
+        fotoPrincipal: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1',
+        fotos: [],
+        fotosInternas: [],
+        fotosCatalogo: [],
+        // Estado
+        destacado: false,
         estado: 'disponible'
       }
 
@@ -208,9 +241,14 @@ export default function NuevoPerrito() {
         }
         
         router.push('/admin/perritos')
+      } else {
+        const errorData = await response.json()
+        console.error('Error response:', errorData)
+        alert(`Error al guardar: ${errorData.error || 'Error desconocido'}${errorData.details ? '\n\nDetalles: ' + JSON.stringify(errorData.details, null, 2) : ''}`)
       }
     } catch (error) {
       console.error('Error creating perrito:', error)
+      alert('Error al guardar el perrito. Por favor revisa los datos e intenta de nuevo.')
     } finally {
       setLoading(false)
     }

@@ -892,6 +892,64 @@ export default function SolicitudDetallePage() {
                   </div>
                 )}
 
+                {/* Campos de fecha de período de prueba - Mostrar inputs cuando está en entrevista */}
+                {solicitud.estado === 'entrevista' && (
+                  <>
+                    <div>
+                      <label style={{
+                        fontSize: '0.75rem',
+                        color: '#64748b',
+                        marginBottom: '4px',
+                        fontWeight: '600',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px',
+                        display: 'block'
+                      }}>Fecha de Inicio del Período de Prueba</label>
+                      <input
+                        type="date"
+                        value={fechaInicioPrueba}
+                        onChange={(e) => setFechaInicioPrueba(e.target.value)}
+                        style={{
+                          width: '100%',
+                          padding: '8px 12px',
+                          fontSize: '0.875rem',
+                          border: '1px solid #e2e8f0',
+                          borderRadius: '6px',
+                          backgroundColor: 'white',
+                          color: '#0f172a'
+                        }}
+                        placeholder="Selecciona fecha de inicio"
+                      />
+                    </div>
+                    <div>
+                      <label style={{
+                        fontSize: '0.75rem',
+                        color: '#64748b',
+                        marginBottom: '4px',
+                        fontWeight: '600',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px',
+                        display: 'block'
+                      }}>Fecha de Fin del Período de Prueba</label>
+                      <input
+                        type="date"
+                        value={fechaFinPrueba}
+                        onChange={(e) => setFechaFinPrueba(e.target.value)}
+                        style={{
+                          width: '100%',
+                          padding: '8px 12px',
+                          fontSize: '0.875rem',
+                          border: '1px solid #e2e8f0',
+                          borderRadius: '6px',
+                          backgroundColor: 'white',
+                          color: '#0f172a'
+                        }}
+                        placeholder="Selecciona fecha de fin"
+                      />
+                    </div>
+                  </>
+                )}
+
                 {/* Campo de fecha de prueba */}
                 {['prueba', 'aprobada', 'rechazada'].includes(solicitud.estado) && (
                   <>

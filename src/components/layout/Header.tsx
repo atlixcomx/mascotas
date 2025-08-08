@@ -73,20 +73,20 @@ export default function Header() {
             cursor: 'pointer'
           }}>
             <div style={{
-              width: '100px',
-              height: '100px',
+              width: '120px',
+              height: '120px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              minWidth: '100px',
+              minWidth: '120px',
               position: 'relative',
               transition: 'transform 0.2s ease'
             }}>
               <Image 
                 src="/centro.png" 
                 alt="Centro de Adopción y Bienestar Animal"
-                width={100}
-                height={100}
+                width={120}
+                height={120}
                 style={{ objectFit: 'contain' }}
               />
             </div>

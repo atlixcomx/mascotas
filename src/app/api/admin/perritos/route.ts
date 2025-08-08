@@ -27,6 +27,15 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json()
     
+    // Log para depuración en desarrollo
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Datos recibidos para crear perrito:', {
+        nombre: body.nombre,
+        fotoPrincipal: body.fotoPrincipal,
+        fotos: body.fotos
+      })
+    }
+    
     // Validar datos de entrada con Zod
     const datosValidados = crearPerritoSchema.parse(body)
 

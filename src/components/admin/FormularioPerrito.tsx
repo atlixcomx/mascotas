@@ -166,10 +166,11 @@ export default function FormularioPerrito({ perrito }: FormularioPerritoProps) {
   const agregarFoto = () => {
     if (nuevaFoto.trim() && nuevaFoto.startsWith('http')) {
       const actual = getValues('fotos')
-      setValue('fotos', [...actual, nuevaFoto.trim()])
-      // Si es la primera foto, también ponerla como principal
-      if (actual.length === 0 && !getValues('fotoPrincipal')) {
-        setValue('fotoPrincipal', nuevaFoto.trim())
+      const nuevaFotoUrl = nuevaFoto.trim()
+      setValue('fotos', [...actual, nuevaFotoUrl])
+      // Si no hay foto principal, establecer esta como principal
+      if (!getValues('fotoPrincipal')) {
+        setValue('fotoPrincipal', nuevaFotoUrl)
       }
       setNuevaFoto('')
     }
@@ -182,8 +183,12 @@ export default function FormularioPerrito({ perrito }: FormularioPerritoProps) {
     
     // Si se eliminó la foto principal, usar la primera disponible
     const fotoPrincipal = getValues('fotoPrincipal')
-    if (fotoPrincipal === actual[index] && nuevasFotos.length > 0) {
-      setValue('fotoPrincipal', nuevasFotos[0])
+    if (fotoPrincipal === actual[index]) {
+      if (nuevasFotos.length > 0) {
+        setValue('fotoPrincipal', nuevasFotos[0])
+      } else {
+        setValue('fotoPrincipal', '')
+      }
     }
   }
 

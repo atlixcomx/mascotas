@@ -202,13 +202,13 @@ export default function FormularioAdopcion({ perrito }: FormularioAdopcionProps)
 
           <div className="space-y-3">
             <button
-              onClick={() => router.push(`/perritos/${perrito.slug}`)}
+              onClick={() => router.push(`/catalogo/${perrito.slug}`)}
               className="w-full btn-secondary"
             >
               Ver perfil de {perrito.nombre}
             </button>
             <button
-              onClick={() => router.push('/perritos')}
+              onClick={() => router.push('/catalogo')}
               className="w-full btn-primary"
             >
               Ver otros perritos

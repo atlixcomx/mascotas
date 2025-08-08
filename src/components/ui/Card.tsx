@@ -428,7 +428,7 @@ export function PerritoCard({
           </div>
         )}
 
-        <Link href={`/perritos/${perrito.slug}`} passHref>
+        <Link href={`/catalogo/${perrito.slug}`} passHref>
           <Button 
             variant="primary" 
             size={size === 'sm' ? 'sm' : 'md'}

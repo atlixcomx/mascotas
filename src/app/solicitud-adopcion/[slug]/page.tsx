@@ -323,7 +323,7 @@ export default function SolicitudAdopcionPage({ params }: PageProps) {
           gap: '20px'
         }}>
           <Link
-            href={`/perritos/${params.slug}`}
+            href={`/catalogo/${params.slug}`}
             style={{
               display: 'flex',
               alignItems: 'center',

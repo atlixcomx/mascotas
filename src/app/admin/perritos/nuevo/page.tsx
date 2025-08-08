@@ -325,10 +325,9 @@ export default function NuevoPerrito() {
                 required
               >
                 <option value="">Seleccionar...</option>
-                <option value="pequeño">Pequeño (0-10 kg)</option>
+                <option value="chico">Chico (0-10 kg)</option>
                 <option value="mediano">Mediano (10-25 kg)</option>
-                <option value="grande">Grande (25-40 kg)</option>
-                <option value="gigante">Gigante (40+ kg)</option>
+                <option value="grande">Grande (25+ kg)</option>
               </select>
             </div>
             

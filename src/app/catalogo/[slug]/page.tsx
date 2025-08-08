@@ -24,6 +24,7 @@ const defaultDogImage = 'https://somosmaka.com/cdn/shop/articles/perro_mestizo.j
 export default function PerritoDetailPage({ params }: PageProps) {
   const [selectedImage, setSelectedImage] = useState(0)
   const [isLiked, setIsLiked] = useState(false)
+  const [imageError, setImageError] = useState(false)
 
   const {
     perrito,
@@ -82,6 +83,13 @@ export default function PerritoDetailPage({ params }: PageProps) {
   
   // Si no hay fotos, usar imagen por defecto
   const allImages = uniqueImages.size > 0 ? Array.from(uniqueImages) : [defaultDogImage]
+  
+  console.log('Perrito data:', {
+    nombre: perrito.nombre,
+    fotoPrincipal: perrito.fotoPrincipal,
+    fotos: perrito.fotos,
+    allImages: allImages
+  })
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f8f9fa' }}>
@@ -90,22 +98,29 @@ export default function PerritoDetailPage({ params }: PageProps) {
         position: 'relative',
         height: '60vh',
         minHeight: '500px',
-        background: 'linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.6) 100%)',
+        background: `linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.6) 100%), url(${defaultDogImage}) center/cover`,
         overflow: 'hidden'
       }}>
-        <Image
-          src={allImages[selectedImage] || defaultDogImage}
-          alt={perrito.nombre}
-          fill
-          sizes="100vw"
-          style={{
-            objectFit: 'cover',
-            zIndex: -1,
-            imageOrientation: 'from-image'
-          }}
-          priority
-          quality={95}
-        />
+        {allImages[selectedImage] && (
+          <Image
+            src={imageError ? defaultDogImage : allImages[selectedImage]}
+            alt={perrito.nombre}
+            fill
+            sizes="100vw"
+            style={{
+              objectFit: 'cover',
+              zIndex: -1,
+              imageOrientation: 'from-image'
+            }}
+            priority
+            quality={95}
+            onError={() => {
+              console.error('Error loading image:', allImages[selectedImage])
+              setImageError(true)
+            }}
+            onLoad={() => setImageError(false)}
+          />
+        )}
         
         {/* Navigation */}
         <div style={{
@@ -234,7 +249,10 @@ export default function PerritoDetailPage({ params }: PageProps) {
                 {allImages.slice(0, 5).map((img, index) => (
                   <button
                     key={index}
-                    onClick={() => setSelectedImage(index)}
+                    onClick={() => {
+                      setSelectedImage(index)
+                      setImageError(false)
+                    }}
                     style={{
                       minWidth: '80px',
                       height: '80px',

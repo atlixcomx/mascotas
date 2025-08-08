@@ -2,23 +2,42 @@
 
 import { generateUploadButton } from "@uploadthing/react";
 import type { OurFileRouter } from "../app/api/uploadthing/core";
+import { useEffect } from "react";
 
 const BaseUploadButton = generateUploadButton<OurFileRouter>();
 
 // Wrapper con logging mejorado para debugging
 export function UploadButton(props: any) {
-  // Log del entorno
-  if (typeof window !== 'undefined') {
-    console.log("🌐 Upload environment:");
-    console.log("- URL:", window.location.href);
-    console.log("- Origin:", window.location.origin);
-    console.log("- Protocol:", window.location.protocol);
-  }
+  // Debug al montar el componente
+  useEffect(() => {
+    console.log("🔧 UploadButton mounted");
+    console.log("Props:", props);
+    console.log("Environment:", {
+      url: typeof window !== 'undefined' ? window.location.href : 'server',
+      origin: typeof window !== 'undefined' ? window.location.origin : 'server',
+      protocol: typeof window !== 'undefined' ? window.location.protocol : 'server',
+    });
+    
+    // Verificar si hay algún problema con la configuración
+    if (typeof window !== 'undefined') {
+      // Hacer una petición de prueba al endpoint
+      fetch('/api/uploadthing')
+        .then(res => {
+          console.log("Test fetch status:", res.status);
+          return res.text();
+        })
+        .then(text => {
+          console.log("Test fetch response:", text.substring(0, 100));
+        })
+        .catch(err => {
+          console.error("Test fetch error:", err);
+        });
+    }
+  }, []);
 
   return (
     <BaseUploadButton
       {...props}
-      url={typeof window !== 'undefined' ? `${window.location.origin}/api/uploadthing` : undefined}
       onBeforeUploadBegin={(files) => {
         console.log("📁 Files to upload:", files);
         console.log("Number of files:", files.length);
@@ -61,7 +80,19 @@ export function UploadButton(props: any) {
           if (errorObj.cause) {
             console.error("Error cause:", errorObj.cause);
           }
+          if (errorObj.code) {
+            console.error("Error code:", errorObj.code);
+          }
           console.error("Full error:", JSON.stringify(error, Object.getOwnPropertyNames(error), 2));
+        }
+        
+        // Log adicional para el error específico de "Failed to parse response"
+        if (error.message.includes("Failed to parse response")) {
+          console.error("⚠️ This is a parsing error. The server responded but with unexpected format.");
+          console.error("Common causes:");
+          console.error("1. Token not configured in production");
+          console.error("2. CORS or middleware issues");
+          console.error("3. Server returning HTML instead of JSON");
         }
         
         props.onUploadError?.(error);

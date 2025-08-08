@@ -49,7 +49,7 @@ export function middleware(request: NextRequest) {
     style-src 'self' 'unsafe-inline';
     img-src 'self' blob: data: https: http:;
     font-src 'self' data:;
-    connect-src 'self' https://api.uploadthing.com https://uploadthing.com wss://uploadthing.com https://*.vercel-insights.com;
+    connect-src 'self' https://api.uploadthing.com https://uploadthing.com wss://uploadthing.com https://utfs.io https://ingest.uploadthing.com https://*.vercel-insights.com;
     media-src 'self';
     object-src 'none';
     child-src 'self';

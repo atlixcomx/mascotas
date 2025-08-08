@@ -23,6 +23,9 @@
     },
     "src/app/api/notifications/sse/route.ts": {
       "maxDuration": 60
+    },
+    "src/app/api/uploadthing/route.ts": {
+      "maxDuration": 60
     }
   },
   "headers": [

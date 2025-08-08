@@ -42,9 +42,9 @@ const solicitudSchema = z.object({
   tienePatio: z.boolean(),
   
   // Step 3: Experiencia y motivación
-  experiencia: z.string().min(10, 'Describe tu experiencia con mascotas'),
+  experiencia: z.string().min(2, 'Describe tu experiencia con mascotas (mínimo 2 caracteres)'),
   otrasMascotas: z.string().optional(),
-  motivoAdopcion: z.string().min(20, 'Explica tu motivación para adoptar'),
+  motivoAdopcion: z.string().min(2, 'Explica tu motivación para adoptar (mínimo 2 caracteres)'),
 })
 
 type SolicitudData = z.infer<typeof solicitudSchema>

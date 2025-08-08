@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,179 +8,136 @@ datasource db {
 }
 
 model Perrito {
-  id            String   @id @default(cuid())
-  codigo        String   @unique // ATL-2024-001
-  nombre        String
-  slug          String   @unique
-  fotos         String   @db.Text // JSON string de array de URLs
-  fotoPrincipal String
-  edad          String
-  tamano        String   // chico, mediano, grande
-  raza          String
-  sexo          String   // macho, hembra
-  peso          Float?
-  
-  // Historia y Procedencia
-  historia      String   @db.Text
-  fechaIngreso  DateTime
-  tipoIngreso   String   // entrega_voluntaria, rescate, decomiso
-  procedencia   String?
-  responsableIngreso String? // Nombre de quien lo trajo/reportó
-  
-  // Salud
-  vacunas       Boolean  @default(false)
-  esterilizado  Boolean  @default(false)
-  desparasitado Boolean  @default(false)
-  saludNotas    String?  @db.Text
-  
-  // Expediente médico
-  expedienteMedico ExpedienteMedico[]
-  
-  // Temperamento
-  energia       String   // baja, media, alta
-  aptoNinos     Boolean  @default(false)
-  aptoPerros    Boolean  @default(false)
-  aptoGatos     Boolean  @default(false)
-  caracter      String   @db.Text // JSON string de array de características
-  
-  // Estado
-  estado        String   @default("disponible") // disponible, proceso, adoptado
-  destacado     Boolean  @default(false)
-  vistas        Int      @default(0)
-  
-  // Adopción
-  fechaAdopcion DateTime?
-  adoptanteNombre String?
-  adoptanteTelefono String?
-  
-  solicitudes   Solicitud[]
-  notas         NotaPerrito[]
-  seguimientos  SeguimientoAdopcion[]
-  
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id                 String                @id @default(cuid())
+  nombre             String
+  slug               String                @unique
+  fotos              String
+  fotoPrincipal      String
+  edad               String
+  tamano             String
+  raza               String
+  sexo               String
+  peso               Float?
+  historia           String
+  fechaIngreso       DateTime
+  procedencia        String?
+  vacunas            Boolean               @default(false)
+  esterilizado       Boolean               @default(false)
+  desparasitado      Boolean               @default(false)
+  saludNotas         String?
+  energia            String
+  aptoNinos          Boolean               @default(false)
+  aptoPerros         Boolean               @default(false)
+  aptoGatos          Boolean               @default(false)
+  caracter           String
+  estado             String                @default("disponible")
+  destacado          Boolean               @default(false)
+  vistas             Int                   @default(0)
+  createdAt          DateTime              @default(now())
+  updatedAt          DateTime              @updatedAt
+  adoptanteNombre    String?
+  adoptanteTelefono  String?
+  codigo             String                @unique
+  fechaAdopcion      DateTime?
+  responsableIngreso String?
+  tipoIngreso        String
+  expedienteMedico   ExpedienteMedico[]
+  notas              NotaPerrito[]
+  seguimientos       SeguimientoAdopcion[]
+  solicitudes        Solicitud[]
 }
 
 model Solicitud {
-  id            String   @id @default(cuid())
-  codigo        String   @unique // ADPX-0001
-  
-  perritoId     String
-  perrito       Perrito  @relation(fields: [perritoId], references: [id])
-  
-  // Datos solicitante
-  nombre        String
-  edad          Int
-  telefono      String
-  email         String
-  direccion     String
-  ciudad        String
-  codigoPostal  String
-  
-  // Información adicional
-  tipoVivienda  String   // casa, departamento
-  tienePatio    Boolean
-  experiencia   String   @db.Text
-  otrasMascotas String?
-  motivoAdopcion String   @db.Text
-  
-  // Documentos
-  ineUrl        String?
-  comprobanteUrl String?
-  
-  // Estado del proceso
-  estado        String   @default("nueva") // nueva, revision, entrevista, prueba, aprobada, rechazada
-  
-  // Fechas de seguimiento
+  id              String                @id @default(cuid())
+  codigo          String                @unique
+  perritoId       String
+  nombre          String
+  edad            Int
+  telefono        String
+  email           String
+  direccion       String
+  ciudad          String
+  codigoPostal    String
+  tipoVivienda    String
+  tienePatio      Boolean
+  experiencia     String
+  otrasMascotas   String?
+  motivoAdopcion  String
+  ineUrl          String?
+  comprobanteUrl  String?
+  estado          String                @default("nueva")
   fechaEntrevista DateTime?
   inicioPrueba    DateTime?
   finPrueba       DateTime?
   fechaAdopcion   DateTime?
-  
-  // Notas y seguimiento
-  notas         NotaSolicitud[]
-  seguimientos  SeguimientoAdopcion[]
-  motivoRechazo String?  @db.Text
-  
-  // QR tracking
-  origenQR      String?  // código del comercio
-  
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  motivoRechazo   String?
+  origenQR        String?
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
+  notas           NotaSolicitud[]
+  seguimientos    SeguimientoAdopcion[]
+  perrito         Perrito               @relation(fields: [perritoId], references: [id])
 }
 
 model Comercio {
-  id            String   @id @default(cuid())
-  codigo        String   @unique // Para QR
+  id            String    @id @default(cuid())
+  codigo        String    @unique
   nombre        String
-  slug          String   @unique
-  categoria     String   // restaurant, hotel, cafe, tienda
+  slug          String    @unique
+  categoria     String
   logo          String?
-  
-  // Información
-  descripcion   String   @db.Text
+  descripcion   String
   direccion     String
   telefono      String
   email         String?
   website       String?
   horarios      String
-  
-  // Pet friendly
-  servicios     String   @db.Text // JSON string de array de servicios
-  restricciones String?  @db.Text
-  certificado   Boolean  @default(false)
+  servicios     String
+  restricciones String?
+  certificado   Boolean   @default(false)
   fechaCert     DateTime?
-  
-  // Ubicación
   latitud       Float?
   longitud      Float?
-  
-  // Métricas
-  qrEscaneos    Int      @default(0)
-  conversiones  Int      @default(0)
-  
-  activo        Boolean  @default(true)
-  
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  qrEscaneos    Int       @default(0)
+  conversiones  Int       @default(0)
+  activo        Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 }
 
 model Usuario {
-  id            String   @id @default(cuid())
-  email         String   @unique
-  nombre        String
-  password      String
-  rol           String   @default("admin")
-  activo        Boolean  @default(true)
-  
-  accounts      Account[]
-  sessions      Session[]
-  
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id        String    @id @default(cuid())
+  email     String    @unique
+  nombre    String
+  password  String
+  rol       String    @default("admin")
+  activo    Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  accounts  Account[]
+  sessions  Session[]
 }
 
 model NotaPerrito {
-  id          String   @id @default(cuid())
-  perritoId   String
-  perrito     Perrito  @relation(fields: [perritoId], references: [id])
-  contenido   String   @db.Text
-  autor       String
-  tipo        String   // salud, comportamiento, general
-  createdAt   DateTime @default(now())
+  id        String   @id @default(cuid())
+  perritoId String
+  contenido String
+  autor     String
+  tipo      String
+  createdAt DateTime @default(now())
+  perrito   Perrito  @relation(fields: [perritoId], references: [id])
 }
 
 model NotaSolicitud {
   id          String    @id @default(cuid())
   solicitudId String
-  solicitud   Solicitud @relation(fields: [solicitudId], references: [id])
-  contenido   String   @db.Text
+  contenido   String
   autor       String
-  tipo        String    // interna, seguimiento, entrevista
+  tipo        String
   createdAt   DateTime  @default(now())
+  solicitud   Solicitud @relation(fields: [solicitudId], references: [id])
 }
 
-// Modelo para NextAuth
 model Account {
   id                String  @id @default(cuid())
   userId            String
@@ -197,8 +151,7 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-
-  user Usuario @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              Usuario @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -219,146 +172,106 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-// Nuevos modelos para el sistema completo
-
 model ExpedienteMedico {
-  id          String   @id @default(cuid())
-  perritoId   String
-  perrito     Perrito  @relation(fields: [perritoId], references: [id])
-  
-  tipo        String   // vacuna, consulta, cirugia, tratamiento, desparasitacion
-  descripcion String   @db.Text
-  fecha       DateTime
-  veterinario String?
+  id            String       @id @default(cuid())
+  perritoId     String
+  tipo          String
+  descripcion   String
+  fecha         DateTime
+  veterinario   String?
   veterinariaId String?
-  veterinaria Veterinaria? @relation(fields: [veterinariaId], references: [id])
-  
-  // Para vacunas
-  vacunaTipo  String?  // multiple, rabia, parvovirus, etc
-  proximaDosis DateTime?
-  
-  // Para medicamentos
-  medicamento String?
-  dosis       String?
-  duracion    String?
-  
-  // Archivos adjuntos
-  documentos  String?  @db.Text // JSON array de URLs
-  
-  costo       Float?
-  notas       String?  @db.Text
-  
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  vacunaTipo    String?
+  proximaDosis  DateTime?
+  medicamento   String?
+  dosis         String?
+  duracion      String?
+  documentos    String?
+  costo         Float?
+  notas         String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  perrito       Perrito      @relation(fields: [perritoId], references: [id])
+  veterinaria   Veterinaria? @relation(fields: [veterinariaId], references: [id])
 }
 
 model Veterinaria {
-  id          String   @id @default(cuid())
+  id          String             @id @default(cuid())
   nombre      String
   direccion   String
   telefono    String
   email       String?
-  contacto    String?  // Nombre del veterinario principal
-  
-  convenio    Boolean  @default(false)
-  descuento   Float?   // Porcentaje de descuento si hay convenio
-  
+  contacto    String?
+  convenio    Boolean            @default(false)
+  descuento   Float?
+  activa      Boolean            @default(true)
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
   expedientes ExpedienteMedico[]
-  
-  activa      Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
 }
 
 model SeguimientoAdopcion {
-  id          String   @id @default(cuid())
-  perritoId   String
-  perrito     Perrito  @relation(fields: [perritoId], references: [id])
-  solicitudId String?
-  solicitud   Solicitud? @relation(fields: [solicitudId], references: [id])
-  
-  tipo        String   // llamada_30, llamada_60, llamada_90, visita, reporte
-  fecha       DateTime
-  realizado   Boolean  @default(false)
-  
-  // Resultado del seguimiento
-  contactado  Boolean?
-  respuesta   String?  @db.Text
-  estadoMascota String? // excelente, bueno, regular, preocupante
-  
-  // Evidencia
-  fotos       String?  @db.Text // JSON array de URLs
-  
-  observaciones String? @db.Text
-  responsable String?
-  
-  // Próximo seguimiento
+  id              String     @id @default(cuid())
+  perritoId       String
+  solicitudId     String?
+  tipo            String
+  fecha           DateTime
+  realizado       Boolean    @default(false)
+  contactado      Boolean?
+  respuesta       String?
+  estadoMascota   String?
+  fotos           String?
+  observaciones   String?
+  responsable     String?
   proximoContacto DateTime?
-  
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  perrito         Perrito    @relation(fields: [perritoId], references: [id])
+  solicitud       Solicitud? @relation(fields: [solicitudId], references: [id])
 }
 
 model Evento {
   id          String   @id @default(cuid())
   nombre      String
-  tipo        String   // feria_adopcion, campaña_esterilizacion, colecta, otro
-  descripcion String   @db.Text
-  
+  tipo        String
+  descripcion String
   fecha       DateTime
   horaInicio  String
   horaFin     String
-  
   lugar       String
   direccion   String
-  
-  // Métricas
   asistentes  Int?     @default(0)
   adopciones  Int?     @default(0)
-  
-  // Mascotas participantes
-  perritosIds String?  @db.Text // JSON array de IDs
-  
-  estado      String   @default("programado") // programado, en_curso, finalizado, cancelado
-  
+  perritosIds String?
+  estado      String   @default("programado")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
 
 model Insumo {
-  id          String   @id @default(cuid())
-  categoria   String   // alimento, medicamento, limpieza, otro
+  id          String             @id @default(cuid())
+  categoria   String
   nombre      String
   descripcion String?
-  unidad      String   // kg, litros, piezas, etc
-  
-  // Control de inventario
-  stockActual Float    @default(0)
-  stockMinimo Float    @default(0)
-  
+  unidad      String
+  stockActual Float              @default(0)
+  stockMinimo Float              @default(0)
+  activo      Boolean            @default(true)
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
   movimientos MovimientoInsumo[]
-  
-  activo      Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
 }
 
 model MovimientoInsumo {
-  id          String   @id @default(cuid())
-  insumoId    String
-  insumo      Insumo   @relation(fields: [insumoId], references: [id])
-  
-  tipo        String   // entrada, salida
-  cantidad    Float
-  motivo      String   // donacion, compra, uso_medico, uso_general
-  
-  // Para salidas
-  perritoId   String?
-  destinatario String? // Si es para un perrito específico o uso general
-  
-  responsable String
-  notas       String?  @db.Text
-  
-  fecha       DateTime
-  createdAt   DateTime @default(now())
+  id           String   @id @default(cuid())
+  insumoId     String
+  tipo         String
+  cantidad     Float
+  motivo       String
+  perritoId    String?
+  destinatario String?
+  responsable  String
+  notas        String?
+  fecha        DateTime
+  createdAt    DateTime @default(now())
+  insumo       Insumo   @relation(fields: [insumoId], references: [id])
 }

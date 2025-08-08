@@ -93,6 +93,14 @@ export function UploadButton(props: any) {
           console.error("1. Token not configured in production");
           console.error("2. CORS or middleware issues");
           console.error("3. Server returning HTML instead of JSON");
+          console.error("4. Timeout en Vercel (check vercel.json configuration)");
+        }
+        
+        // Mejorar mensaje de error para el usuario
+        if (error.message.includes("Failed to parse response")) {
+          error.message = "Error de conexión con el servidor. Por favor intenta de nuevo en unos segundos.";
+        } else if (error.message.includes("timeout")) {
+          error.message = "La carga tomó demasiado tiempo. Por favor intenta con una imagen más pequeña.";
         }
         
         props.onUploadError?.(error);

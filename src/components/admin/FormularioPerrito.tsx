@@ -21,7 +21,6 @@ import {
   Camera
 } from 'lucide-react'
 import { UploadButton } from '../UploadButton'
-import CloudinaryUploader from './CloudinaryUploader'
 
 interface PerritoData {
   id?: string
@@ -643,26 +642,6 @@ export default function FormularioPerrito({ perrito }: FormularioPerritoProps) {
               <div className="mb-4">
                 <p className="text-sm text-slate-600 mb-2">Sube imágenes directamente:</p>
                 
-                {/* Solución temporal mientras se resuelve UploadThing */}
-                <CloudinaryUploader
-                  onUploadComplete={(url) => {
-                    console.log("Upload complete:", url);
-                    const actual = getValues('fotos')
-                    setValue('fotos', [...actual, url])
-                    
-                    // Si no hay foto principal, establecer esta como principal
-                    if (!getValues('fotoPrincipal')) {
-                      setValue('fotoPrincipal', url)
-                    }
-                    setError('') // Limpiar errores
-                  }}
-                  onUploadError={(error) => {
-                    console.error("Upload error:", error);
-                    setError(`Error al subir imagen: ${error.message}`)
-                  }}
-                />
-                
-                {/* UploadButton comentado temporalmente
                 <UploadButton
                   endpoint="petImageUploader"
                   onClientUploadComplete={(res) => {
@@ -676,6 +655,7 @@ export default function FormularioPerrito({ perrito }: FormularioPerritoProps) {
                       if (!getValues('fotoPrincipal')) {
                         setValue('fotoPrincipal', nuevaFotoUrl)
                       }
+                      setError('') // Limpiar errores
                     }
                   }}
                   onUploadError={(error: Error) => {
@@ -683,7 +663,6 @@ export default function FormularioPerrito({ perrito }: FormularioPerritoProps) {
                     setError(`Error al subir imagen: ${error.message}`)
                   }}
                 />
-                */}
               </div>
               
               <div className="relative">

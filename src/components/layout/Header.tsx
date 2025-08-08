@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { CentroAdopcionLogo, MenuIcon, CloseIcon, DogIcon, HomeIcon, FormIcon, HandshakeIcon } from '../icons/Icons'
+import Image from 'next/image'
+import { MenuIcon, CloseIcon, DogIcon, HomeIcon, FormIcon, HandshakeIcon } from '../icons/Icons'
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -81,7 +82,13 @@ export default function Header() {
               position: 'relative',
               transition: 'transform 0.2s ease'
             }}>
-              <CentroAdopcionLogo size={60} />
+              <Image 
+                src="/centro.png" 
+                alt="Centro de Adopción y Bienestar Animal"
+                width={60}
+                height={60}
+                style={{ objectFit: 'contain' }}
+              />
             </div>
             <div className="header-title">
               <h1 style={{

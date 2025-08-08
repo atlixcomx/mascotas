@@ -75,11 +75,6 @@ export default function SolicitudAdopcionPage({ params }: PageProps) {
       title: "Motivación y Compromiso",
       icon: DogIcon,
       fields: ['motivacion', 'comprometimiento', 'visitasVeterinario', 'tiempoDisponible']
-    },
-    {
-      title: "Documentos",
-      icon: FileText,
-      fields: []
     }
   ]
 
@@ -126,15 +121,15 @@ export default function SolicitudAdopcionPage({ params }: PageProps) {
       if (!formData.tipoVivienda) newErrors.tipoVivienda = 'Selecciona el tipo de vivienda'
       if (!formData.espacioExterior) newErrors.espacioExterior = 'Indica si tienes espacio exterior'
       if (!formData.tiempoSolo) newErrors.tiempoSolo = 'Indica cuánto tiempo estaría solo'
-      if (!formData.experienciaPerros.trim() || formData.experienciaPerros.length < 20) {
-        newErrors.experienciaPerros = 'Describe tu experiencia con perros (mínimo 20 caracteres)'
+      if (!formData.experienciaPerros.trim() || formData.experienciaPerros.length < 2) {
+        newErrors.experienciaPerros = 'Describe tu experiencia con perros (mínimo 2 caracteres)'
       }
     }
     
     if (step === 2) {
       // Validar motivación y compromiso
-      if (!formData.motivacion.trim() || formData.motivacion.length < 50) {
-        newErrors.motivacion = 'Explica tu motivación (mínimo 50 caracteres)'
+      if (!formData.motivacion.trim() || formData.motivacion.length < 2) {
+        newErrors.motivacion = 'Explica tu motivación (mínimo 2 caracteres)'
       }
       if (!formData.comprometimiento) {
         newErrors.comprometimiento = 'Debes comprometerte a cuidar al perrito'
@@ -219,12 +214,6 @@ export default function SolicitudAdopcionPage({ params }: PageProps) {
         body: JSON.stringify({
           ...formData,
           perritoSlug: params.slug,
-          archivosAdjuntos: uploadedFiles.map(f => ({
-            id: f.id,
-            fileName: f.fileName,
-            fileType: f.fileType,
-            category: f.category
-          }))
         })
       })
 
@@ -885,69 +874,6 @@ export default function SolicitudAdopcionPage({ params }: PageProps) {
             </div>
           )}
 
-          {/* Step 4: Documentos */}
-          {currentStep === 3 && (
-            <div>
-              <h2 style={{
-                fontSize: '24px',
-                fontWeight: '700',
-                color: '#0e312d',
-                marginBottom: '32px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px'
-              }}>
-                <FileText size={28} color="#6b3838" />
-                Documentos
-              </h2>
-
-              <div style={{
-                backgroundColor: '#f0f9ff',
-                border: '1px solid #bae6fd',
-                borderRadius: '12px',
-                padding: '16px',
-                marginBottom: '24px'
-              }}>
-                <p style={{
-                  fontSize: '0.875rem',
-                  color: '#075985',
-                  margin: 0
-                }}>
-                  <strong>Opcional:</strong> Puedes adjuntar documentos que respalden tu solicitud, como identificación oficial, comprobante de domicilio o cartas de referencia. Esto ayudará a agilizar el proceso de adopción.
-                </p>
-              </div>
-
-              <FileUpload
-                onUpload={handleFileUpload}
-                onRemove={handleFileRemove}
-                uploadedFiles={uploadedFiles}
-                showCategorySelect={true}
-                maxFiles={5}
-                disabled={isSubmitting}
-              />
-
-              {uploadedFiles.length === 0 && (
-                <div style={{
-                  marginTop: '24px',
-                  padding: '24px',
-                  backgroundColor: '#f8fafc',
-                  borderRadius: '12px',
-                  textAlign: 'center'
-                }}>
-                  <FileText size={48} color="#d1d5db" style={{ marginBottom: '12px' }} />
-                  <p style={{
-                    fontSize: '0.875rem',
-                    color: '#6b7280',
-                    margin: 0
-                  }}>
-                    No has adjuntado ningún documento aún.
-                    <br />
-                    Puedes continuar sin documentos o agregarlos ahora.
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
         </div>
 
         {/* Error general */}

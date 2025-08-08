@@ -1,5 +1,6 @@
+import Image from 'next/image'
 import { 
-  CentroAdopcionLogo, LocationIcon, PhoneIcon, MailIcon, ClockIcon,
+  LocationIcon, PhoneIcon, MailIcon, ClockIcon,
   ArrowRightIcon, FacebookIcon, InstagramIcon, WhatsAppIcon
 } from '../icons/Icons'
 
@@ -49,17 +50,18 @@ export default function Footer() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                background: 'rgba(191, 181, 145, 0.1)',
+                background: 'rgba(255, 255, 255, 0.1)',
                 borderRadius: '12px',
-                border: '2px solid rgba(191, 181, 145, 0.3)'
+                border: '2px solid rgba(255, 255, 255, 0.2)',
+                padding: '4px'
               }}>
-                <svg width="40" height="40" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M26 12C20 12 15 17 15 23C15 25 15.5 27 16.5 28.5L26 38L35.5 28.5C36.5 27 37 25 37 23C37 17 32 12 26 12Z" 
-                        fill="none" stroke="#bfb591" strokeWidth="2.5"/>
-                  <circle cx="22" cy="22" r="1.5" fill="#bfb591"/>
-                  <circle cx="30" cy="22" r="1.5" fill="#bfb591"/>
-                  <path d="M24 25Q26 27 28 25" stroke="#bfb591" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
-                </svg>
+                <Image 
+                  src="/centro.png" 
+                  alt="Centro de Adopción"
+                  width={48}
+                  height={48}
+                  style={{ objectFit: 'contain', filter: 'brightness(1.2)' }}
+                />
               </div>
               <div>
                 <h3 style={{
@@ -269,49 +271,102 @@ export default function Footer() {
           alignItems: 'center',
           gap: '24px'
         }}>
-          {/* Logo del Ayuntamiento */}
+          {/* Logos del Ayuntamiento y Mi Casa */}
           <div style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '24px',
+            gap: '32px',
             flexWrap: 'wrap',
             justifyContent: 'center'
           }}>
-            {/* Escudo de Atlixco simplificado */}
-            <svg width="60" height="60" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <g opacity="0.7">
-                {/* Volcán */}
-                <path d="M50 20L30 60L70 60Z" fill="#bfb591" opacity="0.5"/>
-                {/* Agua */}
-                <path d="M25 65C25 65 35 70 50 70C65 70 75 65 75 65" stroke="#bfb591" strokeWidth="2" fill="none"/>
-                <path d="M25 72C25 72 35 77 50 77C65 77 75 72 75 72" stroke="#bfb591" strokeWidth="2" fill="none"/>
-                {/* Flor */}
-                <circle cx="50" cy="45" r="8" fill="none" stroke="#bfb591" strokeWidth="1.5"/>
-                <circle cx="50" cy="45" r="3" fill="#bfb591"/>
-                {/* Colibrí */}
-                <path d="M20 40Q25 35 30 40" stroke="#bfb591" strokeWidth="1.5" fill="none"/>
-                <circle cx="25" cy="38" r="2" fill="#bfb591"/>
-              </g>
-            </svg>
-            <div style={{ textAlign: 'center' }}>
-              <p style={{
-                color: '#bfb591',
-                fontSize: '16px',
-                margin: 0,
-                fontWeight: '600',
-                letterSpacing: '1px'
+            {/* Logo del Centro */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '16px'
+            }}>
+              <div style={{
+                width: '50px',
+                height: '50px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: 'rgba(255, 255, 255, 0.1)',
+                borderRadius: '8px',
+                padding: '4px'
               }}>
-                AYUNTAMIENTO DE
-              </p>
-              <p style={{
-                color: '#bfb591',
-                fontSize: '24px',
-                margin: 0,
-                fontWeight: '700',
-                letterSpacing: '2px'
+                <Image 
+                  src="/centro.png" 
+                  alt="Centro de Adopción"
+                  width={42}
+                  height={42}
+                  style={{ objectFit: 'contain', filter: 'brightness(1.2)' }}
+                />
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <p style={{
+                  color: '#bfb591',
+                  fontSize: '14px',
+                  margin: 0,
+                  fontWeight: '600'
+                }}>
+                  CENTRO DE ADOPCIÓN
+                </p>
+                <p style={{
+                  color: '#bfb591',
+                  fontSize: '18px',
+                  margin: 0,
+                  fontWeight: '700',
+                  letterSpacing: '1px'
+                }}>
+                  ATLIXCO
+                </p>
+              </div>
+            </div>
+
+            {/* Logo Mi Casa */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '16px'
+            }}>
+              <div style={{
+                width: '50px',
+                height: '50px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: 'rgba(255, 255, 255, 0.1)',
+                borderRadius: '8px',
+                padding: '4px'
               }}>
-                ATLIXCO
-              </p>
+                <Image 
+                  src="/micasa.png" 
+                  alt="Mi Casa"
+                  width={42}
+                  height={42}
+                  style={{ objectFit: 'contain', filter: 'brightness(1.2)' }}
+                />
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <p style={{
+                  color: '#bfb591',
+                  fontSize: '14px',
+                  margin: 0,
+                  fontWeight: '600'
+                }}>
+                  MI CASA
+                </p>
+                <p style={{
+                  color: '#bfb591',
+                  fontSize: '18px',
+                  margin: 0,
+                  fontWeight: '700',
+                  letterSpacing: '1px'
+                }}>
+                  ATLIXCO
+                </p>
+              </div>
             </div>
           </div>
 

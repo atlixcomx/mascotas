@@ -108,7 +108,7 @@ export default function Header() {
             alignItems: 'center',
             gap: '16px'
           }}>
-            <a href="/perritos" style={{
+            <a href="/catalogo" style={{
               backgroundColor: '#0e312d',
               color: 'white',
               padding: '12px 24px',
@@ -248,7 +248,7 @@ export default function Header() {
             <HomeIcon size={18} color="#1a1a1a" /> Inicio
           </a>
           <a
-            href="/perritos"
+            href="/catalogo"
             onClick={closeMobileMenu}
             style={{
               display: 'block',

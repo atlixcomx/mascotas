@@ -422,7 +422,7 @@ export default function CatalogoPerritos() {
 
                   {/* CTA */}
                   <Link
-                    href={`/perritos/${perrito.slug}`}
+                    href={`/catalogo/${perrito.slug}`}
                     style={{
                       display: 'flex',
                       alignItems: 'center',

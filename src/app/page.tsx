@@ -141,7 +141,7 @@ export default function Home() {
               gap: '16px',
               flexWrap: 'wrap'
             }}>
-              <a href="/perritos" style={{
+              <a href="/catalogo" style={{
                 backgroundColor: '#bfb591',
                 color: '#0e312d',
                 padding: '16px 32px',
@@ -686,7 +686,7 @@ export default function Home() {
                 Icon: HomeIcon,
                 title: 'ADOPTA',
                 desc: 'Dale una segunda oportunidad a quien más lo necesita',
-                link: '/perritos'
+                link: '/catalogo'
               },
               {
                 Icon: HandshakeIcon,

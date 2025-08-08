@@ -71,49 +71,6 @@ export default function PerritosPage() {
         </div>
       </div>
 
-      {/* Stats Bar */}
-      <div style={{
-        background: 'white',
-        borderBottom: '1px solid #e9ecef',
-        position: 'sticky',
-        top: '88px',
-        zIndex: 10,
-        boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
-      }}>
-        <div style={{
-          maxWidth: '1200px',
-          margin: '0 auto',
-          padding: '20px',
-          display: 'flex',
-          justifyContent: 'space-around',
-          flexWrap: 'wrap',
-          gap: '24px'
-        }}>
-          {[
-            { number: '24', label: 'Disponibles', color: '#6b3838' },
-            { number: '12', label: 'Cachorros', color: '#bfb591' },
-            { number: '8', label: 'Adultos', color: '#0e312d' },
-            { number: '4', label: 'Especiales', color: '#246257' }
-          ].map((stat, idx) => (
-            <div key={idx} style={{
-              textAlign: 'center',
-              minWidth: '100px'
-            }}>
-              <div style={{
-                fontSize: '32px',
-                fontWeight: '800',
-                color: stat.color,
-                marginBottom: '4px'
-              }}>{stat.number}</div>
-              <div style={{
-                fontSize: '14px',
-                color: '#666',
-                fontWeight: '500'
-              }}>{stat.label}</div>
-            </div>
-          ))}
-        </div>
-      </div>
 
       {/* Catálogo */}
       <Suspense fallback={

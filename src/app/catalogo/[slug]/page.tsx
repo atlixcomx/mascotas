@@ -103,7 +103,7 @@ export default function PerritoDetailPage({ params }: PageProps) {
             alignItems: 'center'
           }}>
             <Link
-              href="/perritos"
+              href="/catalogo"
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -654,7 +654,7 @@ export default function PerritoDetailPage({ params }: PageProps) {
               {perrito.similares.slice(0, 3).map((similar, index) => (
                 <Link
                   key={similar.id}
-                  href={`/perritos/${similar.slug}`}
+                  href={`/catalogo/${similar.slug}`}
                   style={{
                     display: 'block',
                     background: 'white',

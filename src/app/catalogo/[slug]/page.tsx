@@ -97,11 +97,14 @@ export default function PerritoDetailPage({ params }: PageProps) {
           src={allImages[selectedImage] || defaultDogImage}
           alt={perrito.nombre}
           fill
+          sizes="100vw"
           style={{
             objectFit: 'cover',
-            zIndex: -1
+            zIndex: -1,
+            imageOrientation: 'from-image'
           }}
           priority
+          quality={95}
         />
         
         {/* Navigation */}
@@ -250,8 +253,10 @@ export default function PerritoDetailPage({ params }: PageProps) {
                       style={{
                         width: '100%',
                         height: '100%',
-                        objectFit: 'cover'
+                        objectFit: 'cover',
+                        imageOrientation: 'from-image'
                       }}
+                      quality={90}
                     />
                   </button>
                 ))}

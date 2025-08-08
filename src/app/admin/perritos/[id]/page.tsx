@@ -1091,7 +1091,9 @@ export default function EditPerrito() {
                           width: '100%',
                           height: '320px',
                           objectFit: 'cover',
+                          imageOrientation: 'from-image'
                         }}
+                        quality={95}
                       />
                     <div style={{
                       position: 'absolute',
@@ -1177,7 +1179,9 @@ export default function EditPerrito() {
                             width: '100%',
                             height: '240px',
                             objectFit: 'cover',
+                            imageOrientation: 'from-image'
                           }}
+                          quality={95}
                           onError={(e) => {
                             console.error('Image failed to load:', foto)
                           }}

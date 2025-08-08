@@ -275,46 +275,46 @@ export default function Footer() {
           <div style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '64px',
+            gap: '80px',
             flexWrap: 'wrap',
             justifyContent: 'center'
           }}>
             {/* Logo del Centro */}
             <div style={{
-              width: '140px',
-              height: '140px',
+              width: '252px',
+              height: '252px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               background: 'rgba(255, 255, 255, 0.2)',
-              borderRadius: '16px',
-              padding: '12px'
+              borderRadius: '20px',
+              padding: '20px'
             }}>
               <Image 
                 src="/centro.png" 
                 alt="Centro de Adopción"
-                width={120}
-                height={120}
+                width={216}
+                height={216}
                 style={{ objectFit: 'contain', filter: 'brightness(1.2)' }}
               />
             </div>
 
             {/* Logo Mi Casa */}
             <div style={{
-              width: '140px',
-              height: '140px',
+              width: '252px',
+              height: '252px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               background: 'rgba(255, 255, 255, 0.2)',
-              borderRadius: '16px',
-              padding: '12px'
+              borderRadius: '20px',
+              padding: '20px'
             }}>
               <Image 
                 src="/micasa.png" 
                 alt="Mi Casa"
-                width={120}
-                height={120}
+                width={216}
+                height={216}
                 style={{ objectFit: 'contain', filter: 'brightness(1.2)' }}
               />
             </div>

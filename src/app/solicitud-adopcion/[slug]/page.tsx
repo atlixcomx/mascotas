@@ -42,7 +42,7 @@ export default function SolicitudAdopcionPage({ params }: PageProps) {
     espacioExterior: '',
     tiempoSolo: '',
     experienciaPerros: '',
-    otrosMascotas: '',
+    otrasMascotas: '',
     
     // Motivación
     motivacion: '',
@@ -71,7 +71,7 @@ export default function SolicitudAdopcionPage({ params }: PageProps) {
     {
       title: "Tu Hogar",
       icon: HomeIcon, 
-      fields: ['tipoVivienda', 'espacioExterior', 'tiempoSolo', 'experienciaPerros', 'otrosMascotas']
+      fields: ['tipoVivienda', 'espacioExterior', 'tiempoSolo', 'experienciaPerros', 'otrasMascotas']
     },
     {
       title: "Motivación y Compromiso",
@@ -230,7 +230,7 @@ export default function SolicitudAdopcionPage({ params }: PageProps) {
           tipoVivienda: formData.tipoVivienda,
           tienePatio: formData.espacioExterior !== 'no', // Convert to boolean
           experiencia: formData.experienciaPerros,
-          otrasMascotas: formData.otrosMascotas,
+          otrasMascotas: formData.otrasMascotas,
           motivoAdopcion: formData.motivacion,
           perritoId: perrito.id,
         })
@@ -793,8 +793,8 @@ export default function SolicitudAdopcionPage({ params }: PageProps) {
                   ¿Tienes otras mascotas?
                 </label>
                 <textarea
-                  value={formData.otrosMascotas}
-                  onChange={(e) => handleInputChange('otrosMascotas', e.target.value)}
+                  value={formData.otrasMascotas}
+                  onChange={(e) => handleInputChange('otrasMascotas', e.target.value)}
                   rows={2}
                   style={{
                     width: '100%',

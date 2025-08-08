@@ -18,7 +18,8 @@ import {
   AlertCircle,
   Camera,
   Heart,
-  Shield
+  Shield,
+  Trash2
 } from 'lucide-react'
 
 interface FormData {

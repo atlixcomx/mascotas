@@ -212,8 +212,16 @@ export default function SolicitudAdopcionPage({ params }: PageProps) {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          ...formData,
-          perritoSlug: params.slug,
+          nombre: formData.nombre,
+          email: formData.email,
+          telefono: formData.telefono,
+          direccion: formData.direccion,
+          tipoVivienda: formData.tipoVivienda,
+          experiencia: formData.experienciaPerros,
+          otrasMascotas: formData.otrosMascotas,
+          motivoAdopcion: formData.motivacion,
+          notas: `Edad: ${formData.edad}. Apellidos: ${formData.apellidos}. Espacio exterior: ${formData.espacioExterior}. Tiempo solo: ${formData.tiempoSolo}. Tiempo disponible: ${formData.tiempoDisponible}. Comprometimiento: ${formData.comprometimiento ? 'Sí' : 'No'}. Visitas veterinario: ${formData.visitasVeterinario ? 'Sí' : 'No'}.`,
+          perritoId: perrito.id,
         })
       })
 

@@ -144,14 +144,7 @@ export async function POST(request: NextRequest) {
       perrito: {
         ...perrito,
         fotos: JSON.parse(perrito.fotos),
-        caracter: JSON.parse(perrito.caracter),
-        // Campos adicionales calculados
-        padecimientos: datosValidados.padecimientos,
-        vacunasDetalle: datosValidados.vacunasDetalle,
-        tratamientos: datosValidados.tratamientos,
-        alergias: datosValidados.alergias,
-        fotosInternas: datosValidados.fotosInternas,
-        fotosCatalogo: datosValidados.fotosCatalogo
+        caracter: JSON.parse(perrito.caracter)
       }
     })
 

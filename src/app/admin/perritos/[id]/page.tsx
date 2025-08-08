@@ -178,15 +178,13 @@ export default function EditPerrito() {
       
       // Asegurarse de que fotos sea un array válido con URLs válidas
       const fotosArray = Array.isArray(perrito.fotos) ? perrito.fotos : parsePhotosField(perrito.fotos)
+      // Filtrar solo URLs de Uploadthing y rutas locales válidas
       const validFotos = fotosArray.filter((foto: any) => {
         if (typeof foto !== 'string') return false
-        try {
-          new URL(foto)
-          return true
-        } catch {
-          // Si no es URL absoluta, verificar si es ruta relativa válida
-          return foto.startsWith('/')
-        }
+        // Solo aceptar URLs de Uploadthing o rutas locales
+        return foto.includes('utfs.io') || 
+               foto.includes('uploadthing.com') || 
+               foto.startsWith('/')
       })
       
       // Limpiar datos antes de enviar

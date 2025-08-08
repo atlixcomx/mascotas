@@ -65,25 +65,31 @@ export default function PerritoDetailPage({ params }: PageProps) {
   }
 
   // Construir array de imágenes sin duplicados
-  const uniqueImages = new Set<string>()
+  const validPhotos: string[] = []
   
-  // Agregar foto principal primero
-  if (perrito.fotoPrincipal) {
-    uniqueImages.add(perrito.fotoPrincipal)
+  // Agregar foto principal primero si es válida
+  if (perrito.fotoPrincipal && 
+      (perrito.fotoPrincipal.includes('utfs.io') || 
+       perrito.fotoPrincipal.includes('uploadthing'))) {
+    validPhotos.push(perrito.fotoPrincipal)
   }
   
-  // Agregar otras fotos (solo URLs válidas de Uploadthing)
+  // Agregar otras fotos válidas sin duplicados
   if (perrito.fotos && Array.isArray(perrito.fotos)) {
     perrito.fotos.forEach(foto => {
-      if (foto && foto !== perrito.fotoPrincipal && 
-          (foto.includes('utfs.io') || foto.includes('uploadthing'))) {
-        uniqueImages.add(foto)
+      if (foto && 
+          foto !== perrito.fotoPrincipal && 
+          (foto.includes('utfs.io') || foto.includes('uploadthing')) &&
+          !validPhotos.includes(foto)) {
+        validPhotos.push(foto)
       }
     })
   }
   
-  // Si no hay fotos, usar imagen por defecto
-  const allImages = uniqueImages.size > 0 ? Array.from(uniqueImages) : [defaultDogImage]
+  // Si no hay fotos válidas, usar imagen por defecto
+  const allImages = validPhotos.length > 0 ? validPhotos : [defaultDogImage]
+  
+  console.log('Fotos válidas finales:', allImages)
   
   console.log('Perrito data en cliente:', {
     nombre: perrito.nombre,

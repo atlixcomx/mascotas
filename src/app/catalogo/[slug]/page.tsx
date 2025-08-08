@@ -116,29 +116,28 @@ export default function PerritoDetailPage({ params }: PageProps) {
         position: 'relative',
         height: '60vh',
         minHeight: '500px',
-        background: `linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.6) 100%), url(${defaultDogImage}) center/cover`,
+        background: 'linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.6) 100%)',
+        backgroundColor: '#1a1a1a',
         overflow: 'hidden'
       }}>
-        {allImages[selectedImage] && (
-          <Image
-            src={imageError ? defaultDogImage : allImages[selectedImage]}
-            alt={perrito.nombre}
-            fill
-            sizes="100vw"
-            style={{
-              objectFit: 'cover',
-              zIndex: -1,
-              imageOrientation: 'from-image'
-            }}
-            priority
-            quality={95}
-            onError={() => {
-              console.error('Error loading image:', allImages[selectedImage])
-              setImageError(true)
-            }}
-            onLoad={() => setImageError(false)}
-          />
-        )}
+        <Image
+          src={allImages[selectedImage] || defaultDogImage}
+          alt={perrito.nombre}
+          fill
+          sizes="100vw"
+          style={{
+            objectFit: 'cover',
+            zIndex: 0,
+            imageOrientation: 'from-image'
+          }}
+          priority
+          quality={95}
+          onError={() => {
+            console.error('Error loading image:', allImages[selectedImage])
+            setImageError(true)
+          }}
+          onLoad={() => setImageError(false)}
+        />
         
         {/* Navigation */}
         <div style={{

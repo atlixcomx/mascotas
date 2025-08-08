@@ -5,6 +5,9 @@
       "NODE_OPTIONS": "--max-old-space-size=4096"
     }
   },
+  "github": {
+    "silent": false
+  },
   "crons": [
     {
       "path": "/api/cron/recordatorios",

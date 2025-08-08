@@ -332,12 +332,29 @@ export default function EditPerrito() {
       })
 
       if (response.ok) {
-        await fetchPerrito()
+        // Actualizar inmediatamente el estado local con la nueva foto
+        if (perrito) {
+          const currentPhotos = Array.isArray(perrito.fotos) 
+            ? perrito.fotos 
+            : parsePhotosField(perrito.fotos);
+          
+          const updatedPhotos = [...currentPhotos, url];
+          const updatedPhotosString = JSON.stringify(updatedPhotos);
+          
+          setPerrito({
+            ...perrito,
+            fotos: updatedPhotosString,
+            // Si no hay foto principal, establecer esta como principal
+            fotoPrincipal: perrito.fotoPrincipal || url
+          });
+        }
+        
         setUploadSuccess(true)
         // Resetear el estado de éxito después de 3 segundos
         setTimeout(() => setUploadSuccess(false), 3000)
-        // Forzar actualización del componente
-        router.refresh()
+        
+        // También hacer fetch para asegurar sincronización
+        await fetchPerrito()
       } else {
         const data = await response.json()
         alert(data.error || 'Error al guardar la foto')

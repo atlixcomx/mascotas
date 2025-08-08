@@ -171,13 +171,37 @@ export default function EditPerrito() {
     try {
       console.log('Guardando perrito con datos:', {
         fotoPrincipal: perrito.fotoPrincipal,
-        fotos: perrito.fotos
+        fotos: perrito.fotos,
+        fotosType: typeof perrito.fotos,
+        fotosIsArray: Array.isArray(perrito.fotos)
       })
+      
+      // Asegurarse de que fotos sea un array válido con URLs válidas
+      const fotosArray = Array.isArray(perrito.fotos) ? perrito.fotos : parsePhotosField(perrito.fotos)
+      const validFotos = fotosArray.filter((foto: any) => {
+        if (typeof foto !== 'string') return false
+        try {
+          new URL(foto)
+          return true
+        } catch {
+          // Si no es URL absoluta, verificar si es ruta relativa válida
+          return foto.startsWith('/')
+        }
+      })
+      
+      const dataToSend = {
+        ...perrito,
+        fotos: validFotos,
+        // Si fotoPrincipal es null, enviarlo como undefined para que sea opcional
+        fotoPrincipal: perrito.fotoPrincipal || undefined
+      }
+      
+      console.log('Datos a enviar:', dataToSend)
       
       const response = await fetch(`/api/admin/perritos/${perritoId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(perrito)
+        body: JSON.stringify(dataToSend)
       })
       
       if (response.ok) {
@@ -186,7 +210,15 @@ export default function EditPerrito() {
       } else {
         const errorData = await response.json()
         console.error('Error response:', errorData)
-        alert(`Error al guardar: ${errorData.error || 'Error desconocido'}`)
+        if (errorData.details) {
+          console.error('Validation errors:', errorData.details)
+          const errorMessages = errorData.details.map((err: any) => 
+            `${err.path.join('.')}: ${err.message}`
+          ).join('\n')
+          alert(`Error de validación:\n${errorMessages}`)
+        } else {
+          alert(`Error al guardar: ${errorData.error || 'Error desconocido'}`)
+        }
       }
     } catch (error) {
       console.error('Error saving perrito:', error)

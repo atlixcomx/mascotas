@@ -35,56 +35,12 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
     }
 
-    // Verificar que el perrito existe
-    const perrito = await prisma.perrito.findUnique({
-      where: { id: params.id }
-    })
-
-    if (!perrito) {
-      return NextResponse.json({ error: 'Perrito no encontrado' }, { status: 404 })
-    }
-
-    const formData = await request.formData()
-    const archivo = formData.get('archivo') as File
-    const tipo = formData.get('tipo') as string
-    const descripcion = formData.get('descripcion') as string
-
-    if (!archivo) {
-      return NextResponse.json({ error: 'No se proporcionó archivo' }, { status: 400 })
-    }
-
-    // Validar tipo de archivo
-    const tiposPermitidos = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
-    if (!tiposPermitidos.includes(archivo.type)) {
-      return NextResponse.json({ 
-        error: 'Tipo de archivo no permitido. Solo se permiten JPG, PNG y WebP' 
-      }, { status: 400 })
-    }
-
-    // Validar tamaño (máximo 5MB)
-    const maxSize = 5 * 1024 * 1024 // 5MB
-    if (archivo.size > maxSize) {
-      return NextResponse.json({ 
-        error: 'El archivo es muy grande. Tamaño máximo: 5MB' 
-      }, { status: 400 })
-    }
-
-    // Validar datos con Zod (simplificado porque File no es validable directamente)
-    const tipoValidado = z.enum(['principal', 'galeria', 'interna', 'catalogo']).parse(tipo)
-
-    // Crear directorio para las fotos
-    const uploadDir = join(process.cwd(), 'public', 'uploads', 'perritos', params.id)
-    await crearDirectorio(uploadDir)
-
-    // Generar nombre único
-    const nombreArchivo = generarNombreArchivo(archivo.name)
-    const rutaArchivo = join(uploadDir, nombreArchivo)
-    const urlPublica = `/uploads/perritos/${params.id}/${nombreArchivo}`
-
-    // Guardar archivo
-    const bytes = await archivo.arrayBuffer()
-    const buffer = Buffer.from(bytes)
-    await writeFile(rutaArchivo, buffer)
+    // Por ahora, retornar mensaje informativo ya que Vercel no permite escritura de archivos
+    return NextResponse.json({ 
+      success: false,
+      message: 'La funcionalidad de carga de fotos está temporalmente deshabilitada. Por favor, usa URLs de imágenes externas (ej: de Unsplash, Cloudinary, etc.) editando directamente el campo de fotos.',
+      info: 'En producción, se recomienda integrar con servicios como Cloudinary o AWS S3 para el almacenamiento de imágenes.'
+    }, { status: 503 })
 
     // Obtener fotos actuales del perrito
     const fotosActuales = JSON.parse(perrito.fotos || '[]')

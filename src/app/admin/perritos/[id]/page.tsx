@@ -277,7 +277,8 @@ export default function EditPerrito() {
         await fetchPerrito()
         alert('Foto subida correctamente')
       } else {
-        alert('Error al subir la foto')
+        const data = await response.json()
+        alert(data.message || 'Error al subir la foto')
       }
     } catch (error) {
       console.error('Error uploading photo:', error)
@@ -671,7 +672,7 @@ export default function EditPerrito() {
                     style={{ width: '16px', height: '16px' }}
                   />
                   <Eye style={{ width: '16px', height: '16px', color: '#16a34a' }} />
-                  Visible como "Disponible para Adopción"
+                  <span style={{ color: '#374151' }}>Visible como "Disponible para Adopción"</span>
                 </label>
 
                 <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
@@ -682,7 +683,7 @@ export default function EditPerrito() {
                     style={{ width: '16px', height: '16px' }}
                   />
                   <Heart style={{ width: '16px', height: '16px', color: '#af1731' }} />
-                  Destacar en página principal
+                  <span style={{ color: '#374151' }}>Destacar en página principal</span>
                 </label>
 
                 <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
@@ -693,14 +694,14 @@ export default function EditPerrito() {
                     style={{ width: '16px', height: '16px' }}
                   />
                   <EyeOff style={{ width: '16px', height: '16px', color: '#dc2626' }} />
-                  Mostrar como "En Recuperación"
+                  <span style={{ color: '#374151' }}>Mostrar como "En Recuperación"</span>
                 </label>
               </div>
             </div>
 
             {/* Health Status */}
             <div style={{ marginBottom: '24px' }}>
-              <h4 style={{ marginBottom: '12px', fontSize: '1rem', fontWeight: '600' }}>
+              <h4 style={{ marginBottom: '12px', fontSize: '1rem', fontWeight: '600', color: '#111827' }}>
                 Estado de Salud
               </h4>
               
@@ -712,7 +713,7 @@ export default function EditPerrito() {
                     onChange={(e) => handleInputChange('vacunas', e.target.checked)}
                     style={{ width: '16px', height: '16px' }}
                   />
-                  Vacunas completas
+                  <span style={{ color: '#374151' }}>Vacunas completas</span>
                 </label>
 
                 <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
@@ -722,7 +723,7 @@ export default function EditPerrito() {
                     onChange={(e) => handleInputChange('esterilizado', e.target.checked)}
                     style={{ width: '16px', height: '16px' }}
                   />
-                  Esterilizado/Castrado
+                  <span style={{ color: '#374151' }}>Esterilizado/Castrado</span>
                 </label>
 
                 <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
@@ -732,14 +733,14 @@ export default function EditPerrito() {
                     onChange={(e) => handleInputChange('desparasitado', e.target.checked)}
                     style={{ width: '16px', height: '16px' }}
                   />
-                  Desparasitado
+                  <span style={{ color: '#374151' }}>Desparasitado</span>
                 </label>
               </div>
             </div>
 
             {/* Temperament */}
             <div style={{ marginBottom: '24px' }}>
-              <h4 style={{ marginBottom: '12px', fontSize: '1rem', fontWeight: '600' }}>
+              <h4 style={{ marginBottom: '12px', fontSize: '1rem', fontWeight: '600', color: '#111827' }}>
                 Temperamento y Compatibilidad
               </h4>
               
@@ -779,7 +780,7 @@ export default function EditPerrito() {
                     onChange={(e) => handleInputChange('aptoNinos', e.target.checked)}
                     style={{ width: '16px', height: '16px' }}
                   />
-                  Apto para niños
+                  <span style={{ color: '#374151' }}>Apto para niños</span>
                 </label>
 
                 <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
@@ -789,7 +790,7 @@ export default function EditPerrito() {
                     onChange={(e) => handleInputChange('aptoPerros', e.target.checked)}
                     style={{ width: '16px', height: '16px' }}
                   />
-                  Apto para otros perros
+                  <span style={{ color: '#374151' }}>Apto para otros perros</span>
                 </label>
 
                 <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
@@ -799,14 +800,14 @@ export default function EditPerrito() {
                     onChange={(e) => handleInputChange('aptoGatos', e.target.checked)}
                     style={{ width: '16px', height: '16px' }}
                   />
-                  Apto para gatos
+                  <span style={{ color: '#374151' }}>Apto para gatos</span>
                 </label>
               </div>
             </div>
 
             {/* Historia */}
             <div>
-              <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500' }}>
+              <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500', color: '#374151' }}>
                 Historia
               </label>
               <textarea
@@ -819,7 +820,9 @@ export default function EditPerrito() {
                   borderRadius: '6px',
                   border: '1px solid #e2e8f0',
                   fontSize: '0.875rem',
-                  resize: 'vertical'
+                  resize: 'vertical',
+                  color: '#111827',
+                  backgroundColor: '#ffffff'
                 }}
                 placeholder="Cuenta la historia de esta mascota..."
               />

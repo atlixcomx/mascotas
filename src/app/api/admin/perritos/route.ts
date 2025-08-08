@@ -80,54 +80,61 @@ export async function POST(request: NextRequest) {
       }
     })
 
-    // Crear nota inicial con información detallada
-    const notaInicial = [
-      `Perrito ${datosValidados.nombre} agregado al sistema`,
-      `Código: ${codigoFinal}`,
-      `Tipo de ingreso: ${datosValidados.tipoIngreso}`,
-      datosValidados.procedencia ? `Procedencia: ${datosValidados.procedencia}` : '',
-      datosValidados.responsableIngreso ? `Responsable: ${datosValidados.responsableIngreso}` : ''
-    ].filter(Boolean).join('\n')
-
-    await prisma.notaPerrito.create({
-      data: {
-        perritoId: perrito.id,
-        contenido: notaInicial,
-        autor: session.user.name || 'Admin',
-        tipo: 'general'
-      }
+    // Crear notas para información adicional
+    const notasACrear = []
+    
+    // Nota inicial
+    notasACrear.push({
+      contenido: [
+        `Perrito ${datosValidados.nombre} agregado al sistema`,
+        `Código: ${codigoFinal}`,
+        `Tipo de ingreso: ${datosValidados.tipoIngreso}`,
+        datosValidados.procedencia ? `Procedencia: ${datosValidados.procedencia}` : '',
+        datosValidados.responsableIngreso ? `Responsable: ${datosValidados.responsableIngreso}` : ''
+      ].filter(Boolean).join('\n'),
+      tipo: 'general'
     })
 
-    // Crear notas adicionales para campos especiales
-    if (datosValidados.padecimientos.length > 0) {
-      await prisma.notaPerrito.create({
-        data: {
-          perritoId: perrito.id,
-          contenido: `Padecimientos registrados: ${datosValidados.padecimientos.join(', ')}`,
-          autor: session.user.name || 'Admin',
-          tipo: 'salud'
-        }
+    // Padecimientos
+    if (datosValidados.padecimientos && datosValidados.padecimientos.length > 0) {
+      notasACrear.push({
+        contenido: `Padecimientos registrados: ${datosValidados.padecimientos.join(', ')}`,
+        tipo: 'salud'
       })
     }
 
-    if (datosValidados.alergias.length > 0) {
-      await prisma.notaPerrito.create({
-        data: {
-          perritoId: perrito.id,
-          contenido: `Alergias registradas: ${datosValidados.alergias.join(', ')}`,
-          autor: session.user.name || 'Admin',
-          tipo: 'salud'
-        }
+    // Alergias
+    if (datosValidados.alergias && datosValidados.alergias.length > 0) {
+      notasACrear.push({
+        contenido: `Alergias registradas: ${datosValidados.alergias.join(', ')}`,
+        tipo: 'salud'
       })
     }
 
-    if (datosValidados.tratamientos.length > 0) {
+    // Tratamientos
+    if (datosValidados.tratamientos && datosValidados.tratamientos.length > 0) {
+      notasACrear.push({
+        contenido: `Tratamientos: ${datosValidados.tratamientos.map(t => `${t.descripcion} (${t.fechaInicio}${t.fechaFin ? ' - ' + t.fechaFin : ''})`).join(', ')}`,
+        tipo: 'salud'
+      })
+    }
+
+    // Vacunas detalladas
+    if (datosValidados.vacunasDetalle && datosValidados.vacunasDetalle.length > 0) {
+      notasACrear.push({
+        contenido: `Vacunas aplicadas: ${datosValidados.vacunasDetalle.map(v => `${v.nombre} (${v.fecha}, Dr. ${v.veterinario})`).join(', ')}`,
+        tipo: 'salud'
+      })
+    }
+
+    // Crear todas las notas
+    for (const nota of notasACrear) {
       await prisma.notaPerrito.create({
         data: {
           perritoId: perrito.id,
-          contenido: `Tratamientos: ${datosValidados.tratamientos.map(t => `${t.descripcion} (${t.fechaInicio}${t.fechaFin ? ' - ' + t.fechaFin : ''})`).join(', ')}`,
+          contenido: nota.contenido,
           autor: session.user.name || 'Admin',
-          tipo: 'salud'
+          tipo: nota.tipo
         }
       })
     }

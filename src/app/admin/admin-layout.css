@@ -71,6 +71,8 @@
   min-height: 100vh;
   background-color: #f8fafc;
   position: relative;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 /* Mobile Overlay */
@@ -388,14 +390,16 @@
   margin-left: 0;
   background-color: #f8fafc;
   min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 @media (min-width: 768px) {
   .admin-main-content {
-    margin-left: 0;
+    margin-left: 280px;
     width: calc(100% - 280px);
     position: relative;
-    left: 280px;
+    left: 0;
   }
 }
 
@@ -563,7 +567,9 @@
 .admin-page-content {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   background-color: #f8fafc;
+  width: 100%;
 }
 
 .admin-content-wrapper {
@@ -571,6 +577,9 @@
   min-height: calc(100vh - 73px);
   background-color: #f8fafc;
   color: #0f172a;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 /* Ensure all text is visible */

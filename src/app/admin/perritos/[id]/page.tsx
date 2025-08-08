@@ -189,11 +189,27 @@ export default function EditPerrito() {
         }
       })
       
+      // Limpiar datos antes de enviar
       const dataToSend = {
         ...perrito,
         fotos: validFotos,
         // Si fotoPrincipal es null, enviarlo como undefined para que sea opcional
-        fotoPrincipal: perrito.fotoPrincipal || undefined
+        fotoPrincipal: perrito.fotoPrincipal || undefined,
+        // Convertir null a string vacío para campos opcionales que esperan string
+        responsableIngreso: perrito.responsableIngreso || '',
+        saludNotas: perrito.saludNotas || '',
+        procedencia: perrito.procedencia || '',
+        // Asegurarse de que otros campos opcionales no sean null
+        historia: perrito.historia || '',
+        raza: perrito.raza || 'Mestizo',
+        edad: perrito.edad || 'Sin especificar',
+        // Campos que pueden no existir
+        padecimientos: perrito.padecimientos || [],
+        vacunasDetalle: perrito.vacunasDetalle || [],
+        tratamientos: perrito.tratamientos || [],
+        alergias: perrito.alergias || [],
+        fotosInternas: perrito.fotosInternas || [],
+        fotosCatalogo: perrito.fotosCatalogo || []
       }
       
       console.log('Datos a enviar:', dataToSend)

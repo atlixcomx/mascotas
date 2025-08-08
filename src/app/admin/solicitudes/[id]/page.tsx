@@ -780,7 +780,37 @@ export default function SolicitudDetallePage() {
                   </div>
                 )}
 
-                {/* Campo de fecha de entrevista */}
+                {/* Campo de fecha de entrevista - Mostrar input cuando está en revisión */}
+                {solicitud.estado === 'revision' && (
+                  <div>
+                    <label style={{
+                      fontSize: '0.75rem',
+                      color: '#64748b',
+                      marginBottom: '4px',
+                      fontWeight: '600',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.5px',
+                      display: 'block'
+                    }}>Fecha y Hora de Entrevista</label>
+                    <input
+                      type="datetime-local"
+                      value={fechaEntrevista}
+                      onChange={(e) => setFechaEntrevista(e.target.value)}
+                      style={{
+                        width: '100%',
+                        padding: '8px 12px',
+                        fontSize: '0.875rem',
+                        border: '1px solid #e2e8f0',
+                        borderRadius: '6px',
+                        backgroundColor: 'white',
+                        color: '#0f172a'
+                      }}
+                      placeholder="Selecciona fecha y hora"
+                    />
+                  </div>
+                )}
+
+                {/* Mostrar fecha de entrevista cuando ya fue programada */}
                 {['entrevista', 'prueba', 'aprobada', 'rechazada'].includes(solicitud.estado) && (
                   <div>
                     <label style={{
@@ -2239,95 +2269,6 @@ export default function SolicitudDetallePage() {
                   <ExternalLink style={{ width: '16px', height: '16px' }} />
                 </Link>
               </div>
-            </div>
-          </div>
-
-          {/* Columna derecha */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            {/* Información del perrito */}
-            <div style={{
-              backgroundColor: 'white',
-              borderRadius: '12px',
-              padding: '24px',
-              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-              border: '1px solid #e2e8f0'
-            }}>
-              <h2 style={{
-                fontSize: '1.125rem',
-                fontWeight: '600',
-                color: '#0f172a',
-                marginBottom: '20px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px'
-              }}>
-                <Dog style={{ width: '20px', height: '20px', color: '#af1731' }} />
-                Perrito
-              </h2>
-              
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '16px',
-                marginBottom: '16px'
-              }}>
-                <img
-                  src={solicitud.perrito.fotoPrincipal}
-                  alt={solicitud.perrito.nombre}
-                  style={{
-                    width: '80px',
-                    height: '80px',
-                    borderRadius: '12px',
-                    objectFit: 'cover'
-                  }}
-                />
-                <div>
-                  <h3 style={{
-                    fontSize: '1.125rem',
-                    fontWeight: '600',
-                    color: '#0f172a',
-                    marginBottom: '4px'
-                  }}>{solicitud.perrito.nombre}</h3>
-                  <p style={{
-                    fontSize: '0.875rem',
-                    color: '#64748b'
-                  }}>
-                    {solicitud.perrito.raza} • {solicitud.perrito.edad} • {solicitud.perrito.sexo}
-                  </p>
-                </div>
-              </div>
-              
-              <Link
-                href={`/catalogo/${solicitud.perrito.slug}`}
-                target="_blank"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '8px',
-                  width: '100%',
-                  padding: '10px 20px',
-                  backgroundColor: 'transparent',
-                  color: '#af1731',
-                  border: '1px solid #af1731',
-                  borderRadius: '8px',
-                  textDecoration: 'none',
-                  fontSize: '0.875rem',
-                  fontWeight: '500',
-                  transition: 'all 0.2s'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#af1731'
-                  e.currentTarget.style.color = 'white'
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent'
-                  e.currentTarget.style.color = '#af1731'
-                }}
-              >
-                Ver ficha completa
-                <ExternalLink style={{ width: '16px', height: '16px' }} />
-              </Link>
             </div>
           </div>
         </div>

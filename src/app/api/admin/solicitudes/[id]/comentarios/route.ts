@@ -76,11 +76,17 @@ export async function POST(
       }
     })
 
-    // También podrías actualizar las notas de la solicitud
+    // Crear una nueva nota en la solicitud
     await prisma.solicitud.update({
       where: { id: params.id },
       data: {
-        notas: prisma.raw(`COALESCE(notas, '') || '\n[${new Date().toLocaleString('es-MX')}] ${session.user.name}: ${contenido}'`)
+        notas: {
+          create: {
+            contenido: contenido,
+            autor: session.user.name || 'Admin',
+            tipo: tipo
+          }
+        }
       }
     })
 

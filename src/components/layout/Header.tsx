@@ -73,39 +73,22 @@ export default function Header() {
             cursor: 'pointer'
           }}>
             <div style={{
-              width: '60px',
-              height: '60px',
+              width: '100px',
+              height: '100px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              minWidth: '60px',
+              minWidth: '100px',
               position: 'relative',
               transition: 'transform 0.2s ease'
             }}>
               <Image 
                 src="/centro.png" 
                 alt="Centro de Adopción y Bienestar Animal"
-                width={60}
-                height={60}
+                width={100}
+                height={100}
                 style={{ objectFit: 'contain' }}
               />
-            </div>
-            <div className="header-title">
-              <h1 style={{
-                fontWeight: '700',
-                fontSize: '18px',
-                color: '#0e312d',
-                margin: 0,
-                lineHeight: '1.2',
-                letterSpacing: '-0.5px'
-              }}>Centro de Adopción y Bienestar Animal</h1>
-              <p style={{
-                fontSize: '13px',
-                color: '#666',
-                margin: 0,
-                lineHeight: '1.2',
-                fontWeight: '500'
-              }}>H. Ayuntamiento de Atlixco</p>
             </div>
           </a>
 

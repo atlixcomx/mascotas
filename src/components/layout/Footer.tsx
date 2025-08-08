@@ -275,98 +275,48 @@ export default function Footer() {
           <div style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '32px',
+            gap: '48px',
             flexWrap: 'wrap',
             justifyContent: 'center'
           }}>
             {/* Logo del Centro */}
             <div style={{
+              width: '80px',
+              height: '80px',
               display: 'flex',
               alignItems: 'center',
-              gap: '16px'
+              justifyContent: 'center',
+              background: 'rgba(255, 255, 255, 0.2)',
+              borderRadius: '12px',
+              padding: '8px'
             }}>
-              <div style={{
-                width: '50px',
-                height: '50px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                background: 'rgba(255, 255, 255, 0.1)',
-                borderRadius: '8px',
-                padding: '4px'
-              }}>
-                <Image 
-                  src="/centro.png" 
-                  alt="Centro de Adopción"
-                  width={42}
-                  height={42}
-                  style={{ objectFit: 'contain', filter: 'brightness(1.2)' }}
-                />
-              </div>
-              <div style={{ textAlign: 'center' }}>
-                <p style={{
-                  color: '#bfb591',
-                  fontSize: '14px',
-                  margin: 0,
-                  fontWeight: '600'
-                }}>
-                  CENTRO DE ADOPCIÓN
-                </p>
-                <p style={{
-                  color: '#bfb591',
-                  fontSize: '18px',
-                  margin: 0,
-                  fontWeight: '700',
-                  letterSpacing: '1px'
-                }}>
-                  ATLIXCO
-                </p>
-              </div>
+              <Image 
+                src="/centro.png" 
+                alt="Centro de Adopción"
+                width={64}
+                height={64}
+                style={{ objectFit: 'contain', filter: 'brightness(1.2)' }}
+              />
             </div>
 
             {/* Logo Mi Casa */}
             <div style={{
+              width: '80px',
+              height: '80px',
               display: 'flex',
               alignItems: 'center',
-              gap: '16px'
+              justifyContent: 'center',
+              background: 'rgba(255, 255, 255, 0.2)',
+              borderRadius: '12px',
+              padding: '8px'
             }}>
-              <div style={{
-                width: '50px',
-                height: '50px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                background: 'rgba(255, 255, 255, 0.1)',
-                borderRadius: '8px',
-                padding: '4px'
-              }}>
-                <Image 
-                  src="/micasa.png" 
-                  alt="Mi Casa"
-                  width={42}
-                  height={42}
-                  style={{ objectFit: 'contain', filter: 'brightness(1.2)' }}
-                />
-              </div>
-              <div style={{ textAlign: 'center' }}>
-                <p style={{
-                  color: '#bfb591',
-                  fontSize: '14px',
-                  margin: 0,
-                  fontWeight: '600'
-                }}>
-                  MI CASA
-                </p>
-                <p style={{
-                  color: '#bfb591',
-                  fontSize: '18px',
-                  margin: 0,
-                  fontWeight: '700',
-                  letterSpacing: '1px'
-                }}>
-                  ATLIXCO
-                </p>
-              </div>
+              <Image 
+                src="/micasa.png" 
+                alt="Mi Casa"
+                width={64}
+                height={64}
+                style={{ objectFit: 'contain', filter: 'brightness(1.2)' }}
+              />
             </div>
           </div>
 

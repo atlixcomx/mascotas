@@ -224,7 +224,7 @@ export default function SolicitudAdopcionPage({ params }: PageProps) {
           email: formData.email,
           telefono: formData.telefono,
           direccion: formData.direccion,
-          edad: formData.edad, // Send edad as separate field
+          edad: parseInt(formData.edad), // Convert to number
           ciudad: formData.ciudad,
           codigoPostal: formData.codigoPostal,
           tipoVivienda: formData.tipoVivienda,
@@ -245,6 +245,7 @@ export default function SolicitudAdopcionPage({ params }: PageProps) {
       } else {
         const errorData = await response.json()
         const errorMessage = errorData.error || 'Error al enviar la solicitud'
+        console.error('Error al enviar solicitud:', errorData)
         setErrors({ submit: errorMessage })
         toast.error('Error al enviar solicitud', errorMessage)
       }

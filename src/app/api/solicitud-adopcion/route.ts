@@ -147,8 +147,33 @@ export async function POST(request: Request) {
 
   } catch (error) {
     console.error('Error al crear solicitud:', error)
+    
+    // Manejar errores específicos de Prisma
+    if (error instanceof Error) {
+      if (error.message.includes('Unique constraint')) {
+        return NextResponse.json(
+          { error: 'Ya existe una solicitud con este código. Por favor intenta nuevamente.' },
+          { status: 400 }
+        )
+      }
+      
+      if (error.message.includes('Foreign key constraint')) {
+        return NextResponse.json(
+          { error: 'El perrito seleccionado no existe o hay un problema con los datos.' },
+          { status: 400 }
+        )
+      }
+      
+      // Log the actual error for debugging
+      console.error('Error details:', {
+        message: error.message,
+        stack: error.stack,
+        data: data
+      })
+    }
+    
     return NextResponse.json(
-      { error: 'Error al procesar la solicitud' },
+      { error: 'Error al procesar la solicitud. Por favor verifica todos los campos e intenta nuevamente.' },
       { status: 500 }
     )
   }

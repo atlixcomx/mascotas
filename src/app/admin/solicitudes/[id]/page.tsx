@@ -71,23 +71,39 @@ interface Solicitud {
   id: string
   codigo: string
   nombre: string
+  edad: number
   email: string
   telefono: string
   direccion: string
+  ciudad: string
+  codigoPostal: string
   tipoVivienda: string
+  tienePatio: boolean
   experiencia: string
-  otrosMascotas: string
+  otrasMascotas?: string
   motivoAdopcion: string
-  compromisos: string
+  ineUrl?: string
+  comprobanteUrl?: string
   estado: string
   perritoId: string
   perrito: Perrito
   createdAt: string
+  updatedAt: string
   fechaRevision?: string
   fechaEntrevista?: string
   fechaPrueba?: string
+  inicioPrueba?: string
+  finPrueba?: string
   fechaAdopcion?: string
-  notas?: string
+  motivoRechazo?: string
+  origenQR?: string
+  notas?: Array<{
+    id: string
+    contenido: string
+    autor: string
+    tipo: string
+    createdAt: string
+  }>
 }
 
 const estadoColores = {
@@ -748,6 +764,22 @@ export default function SolicitudDetallePage() {
                     fontWeight: '600',
                     textTransform: 'uppercase',
                     letterSpacing: '0.5px'
+                  }}>Edad</p>
+                  <p style={{
+                    fontSize: '1rem',
+                    fontWeight: '500',
+                    color: '#0f172a'
+                  }}>{solicitud.edad} años</p>
+                </div>
+                
+                <div>
+                  <p style={{
+                    fontSize: '0.75rem',
+                    color: '#64748b',
+                    marginBottom: '4px',
+                    fontWeight: '600',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px'
                   }}>Email</p>
                   <p style={{
                     fontSize: '1rem',
@@ -806,6 +838,22 @@ export default function SolicitudDetallePage() {
                   </p>
                 </div>
                 
+                <div>
+                  <p style={{
+                    fontSize: '0.75rem',
+                    color: '#64748b',
+                    marginBottom: '4px',
+                    fontWeight: '600',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px'
+                  }}>¿Tiene patio?</p>
+                  <p style={{
+                    fontSize: '1rem',
+                    fontWeight: '500',
+                    color: '#0f172a'
+                  }}>{solicitud.tienePatio ? 'Sí' : 'No'}</p>
+                </div>
+                
                 <div style={{ gridColumn: 'span 2' }}>
                   <p style={{
                     fontSize: '0.75rem',
@@ -826,6 +874,38 @@ export default function SolicitudDetallePage() {
                     <MapPin style={{ width: '16px', height: '16px', color: '#64748b', marginTop: '2px' }} />
                     {solicitud.direccion}
                   </p>
+                </div>
+                
+                <div>
+                  <p style={{
+                    fontSize: '0.75rem',
+                    color: '#64748b',
+                    marginBottom: '4px',
+                    fontWeight: '600',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px'
+                  }}>Ciudad</p>
+                  <p style={{
+                    fontSize: '1rem',
+                    fontWeight: '500',
+                    color: '#0f172a'
+                  }}>{solicitud.ciudad}</p>
+                </div>
+                
+                <div>
+                  <p style={{
+                    fontSize: '0.75rem',
+                    color: '#64748b',
+                    marginBottom: '4px',
+                    fontWeight: '600',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px'
+                  }}>Código Postal</p>
+                  <p style={{
+                    fontSize: '1rem',
+                    fontWeight: '500',
+                    color: '#0f172a'
+                  }}>{solicitud.codigoPostal}</p>
                 </div>
               </div>
             </div>
@@ -890,7 +970,7 @@ export default function SolicitudDetallePage() {
                       fontSize: '0.875rem',
                       color: '#0f172a',
                       lineHeight: '1.6'
-                    }}>{solicitud.otrosMascotas}</p>
+                    }}>{solicitud.otrasMascotas || 'No tiene otras mascotas'}</p>
                   </div>
                 </div>
                 
@@ -915,28 +995,104 @@ export default function SolicitudDetallePage() {
                   </div>
                 </div>
                 
-                <div>
-                  <p style={{
-                    fontSize: '0.875rem',
-                    color: '#64748b',
-                    marginBottom: '8px',
-                    fontWeight: '600'
-                  }}>Compromisos asumidos</p>
-                  <div style={{
-                    padding: '12px 16px',
-                    backgroundColor: '#f8fafc',
-                    borderRadius: '8px',
-                    border: '1px solid #e2e8f0'
-                  }}>
-                    <p style={{
-                      fontSize: '0.875rem',
-                      color: '#0f172a',
-                      lineHeight: '1.6'
-                    }}>{solicitud.compromisos}</p>
-                  </div>
-                </div>
               </div>
             </div>
+
+            {/* Documentos adjuntos */}
+            {(solicitud.ineUrl || solicitud.comprobanteUrl) && (
+              <div style={{
+                backgroundColor: 'white',
+                borderRadius: '12px',
+                padding: '24px',
+                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+                border: '1px solid #e2e8f0'
+              }}>
+                <h2 style={{
+                  fontSize: '1.125rem',
+                  fontWeight: '600',
+                  color: '#0f172a',
+                  marginBottom: '20px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px'
+                }}>
+                  <Paperclip style={{ width: '20px', height: '20px', color: '#af1731' }} />
+                  Documentos Adjuntos
+                </h2>
+                
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px' }}>
+                  {solicitud.ineUrl && (
+                    <a
+                      href={solicitud.ineUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px',
+                        padding: '16px',
+                        backgroundColor: '#f8fafc',
+                        borderRadius: '8px',
+                        border: '1px solid #e2e8f0',
+                        textDecoration: 'none',
+                        color: '#0f172a',
+                        transition: 'all 0.2s'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = '#e2e8f0'
+                        e.currentTarget.style.borderColor = '#cbd5e1'
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = '#f8fafc'
+                        e.currentTarget.style.borderColor = '#e2e8f0'
+                      }}
+                    >
+                      <FileText style={{ width: '24px', height: '24px', color: '#64748b' }} />
+                      <div>
+                        <p style={{ fontSize: '0.875rem', fontWeight: '600' }}>INE</p>
+                        <p style={{ fontSize: '0.75rem', color: '#64748b' }}>Ver documento</p>
+                      </div>
+                      <ExternalLink style={{ width: '16px', height: '16px', color: '#64748b', marginLeft: 'auto' }} />
+                    </a>
+                  )}
+                  
+                  {solicitud.comprobanteUrl && (
+                    <a
+                      href={solicitud.comprobanteUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px',
+                        padding: '16px',
+                        backgroundColor: '#f8fafc',
+                        borderRadius: '8px',
+                        border: '1px solid #e2e8f0',
+                        textDecoration: 'none',
+                        color: '#0f172a',
+                        transition: 'all 0.2s'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = '#e2e8f0'
+                        e.currentTarget.style.borderColor = '#cbd5e1'
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = '#f8fafc'
+                        e.currentTarget.style.borderColor = '#e2e8f0'
+                      }}
+                    >
+                      <FileText style={{ width: '24px', height: '24px', color: '#64748b' }} />
+                      <div>
+                        <p style={{ fontSize: '0.875rem', fontWeight: '600' }}>Comprobante de Domicilio</p>
+                        <p style={{ fontSize: '0.75rem', color: '#64748b' }}>Ver documento</p>
+                      </div>
+                      <ExternalLink style={{ width: '16px', height: '16px', color: '#64748b', marginLeft: 'auto' }} />
+                    </a>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Historial de estados */}
             <div style={{

@@ -70,19 +70,36 @@ export async function PUT(
       return NextResponse.json({ error: 'Solicitud no encontrada' }, { status: 404 })
     }
 
+    // Preparar datos para actualización
+    const updateData: any = {
+      estado,
+      fechaRevision: fechaRevision ? new Date(fechaRevision) : undefined,
+      fechaEntrevista: fechaEntrevista ? new Date(fechaEntrevista) : undefined,
+      fechaPrueba: fechaPrueba ? new Date(fechaPrueba) : undefined,
+      fechaAdopcion: fechaAdopcion ? new Date(fechaAdopcion) : undefined
+    }
+
+    // Si se incluyen notas, crear una nueva nota relacionada
+    if (notas && notas.trim() !== '') {
+      updateData.notas = {
+        create: {
+          contenido: notas,
+          autor: session.user.name || 'Admin',
+          tipo: 'cambio_estado'
+        }
+      }
+    }
+
     // Actualizar la solicitud
     const solicitud = await prisma.solicitud.update({
       where: { id: params.id },
-      data: {
-        estado,
-        notas,
-        fechaRevision: fechaRevision ? new Date(fechaRevision) : undefined,
-        fechaEntrevista: fechaEntrevista ? new Date(fechaEntrevista) : undefined,
-        fechaPrueba: fechaPrueba ? new Date(fechaPrueba) : undefined,
-        fechaAdopcion: fechaAdopcion ? new Date(fechaAdopcion) : undefined
-      },
+      data: updateData,
       include: {
-        perrito: true
+        perrito: true,
+        notas: {
+          orderBy: { createdAt: 'desc' },
+          take: 1
+        }
       }
     })
 
@@ -94,7 +111,7 @@ export async function PUT(
         nombrePerrito: solicitud.perrito.nombre,
         codigo: solicitud.codigo,
         nuevoEstado: estado,
-        mensaje: notas
+        mensaje: notas && notas.trim() !== '' ? notas : undefined
       })
 
       // Enviar notificación en tiempo real
@@ -161,7 +178,7 @@ export async function PUT(
             <p><strong>Solicitante:</strong> ${solicitud.nombre}</p>
             <p><strong>Estado anterior:</strong> ${solicitudActual.estado}</p>
             <p><strong>Nuevo estado:</strong> ${estado}</p>
-            ${notas ? `<p><strong>Notas:</strong> ${notas}</p>` : ''}
+            ${notas && notas.trim() !== '' ? `<p><strong>Notas:</strong> ${notas}</p>` : ''}
             <p><a href="${process.env.NEXTAUTH_URL}/admin/solicitudes/${solicitud.id}">Ver solicitud</a></p>
           `
         })

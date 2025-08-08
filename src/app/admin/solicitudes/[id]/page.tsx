@@ -2240,466 +2240,98 @@ export default function SolicitudDetallePage() {
                 </Link>
               </div>
             </div>
-                      style={{
-                        padding: '12px 20px',
-                        backgroundColor: '#f59e0b',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '8px',
-                        fontSize: '0.875rem',
-                        fontWeight: '500',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '8px'
-                      }}
-                      disabled={updating}
-                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d97706'}
-                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f59e0b'}
-                    >
-                      <Eye style={{ width: '16px', height: '16px' }} />
-                      Iniciar Revisión
-                    </button>
-                    <button
-                      onClick={() => showConfirmDialog('rejection', 'rechazada')}
-                      style={{
-                        padding: '12px 20px',
-                        backgroundColor: 'transparent',
-                        color: '#ef4444',
-                        border: '1px solid #ef4444',
-                        borderRadius: '8px',
-                        fontSize: '0.875rem',
-                        fontWeight: '500',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '8px'
-                      }}
-                      disabled={updating}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = '#fee2e2'
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = 'transparent'
-                      }}
-                    >
-                      <XCircle style={{ width: '16px', height: '16px' }} />
-                      Rechazar Solicitud
-                    </button>
-                  </>
-                )}
-                
-                {solicitud.estado === 'revision' && (
-                  <>
-                    <button
-                      onClick={() => showConfirmDialog('state', 'entrevista')}
-                      style={{
-                        padding: '12px 20px',
-                        backgroundColor: '#8b5cf6',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '8px',
-                        fontSize: '0.875rem',
-                        fontWeight: '500',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '8px'
-                      }}
-                      disabled={updating}
-                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#7c3aed'}
-                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#8b5cf6'}
-                    >
-                      <MessageSquare style={{ width: '16px', height: '16px' }} />
-                      Programar Entrevista
-                    </button>
-                    <button
-                      onClick={() => showConfirmDialog('rejection', 'rechazada')}
-                      style={{
-                        padding: '12px 20px',
-                        backgroundColor: 'transparent',
-                        color: '#ef4444',
-                        border: '1px solid #ef4444',
-                        borderRadius: '8px',
-                        fontSize: '0.875rem',
-                        fontWeight: '500',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '8px'
-                      }}
-                      disabled={updating}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = '#fee2e2'
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = 'transparent'
-                      }}
-                    >
-                      <XCircle style={{ width: '16px', height: '16px' }} />
-                      Rechazar Solicitud
-                    </button>
-                  </>
-                )}
-                
-                {solicitud.estado === 'entrevista' && (
-                  <>
-                    <button
-                      onClick={() => showConfirmDialog('state', 'prueba')}
-                      style={{
-                        padding: '12px 20px',
-                        backgroundColor: '#f97316',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '8px',
-                        fontSize: '0.875rem',
-                        fontWeight: '500',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '8px'
-                      }}
-                      disabled={updating}
-                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#ea580c'}
-                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f97316'}
-                    >
-                      <Clock style={{ width: '16px', height: '16px' }} />
-                      Iniciar Período de Prueba
-                    </button>
-                    <button
-                      onClick={() => showConfirmDialog('rejection', 'rechazada')}
-                      style={{
-                        padding: '12px 20px',
-                        backgroundColor: 'transparent',
-                        color: '#ef4444',
-                        border: '1px solid #ef4444',
-                        borderRadius: '8px',
-                        fontSize: '0.875rem',
-                        fontWeight: '500',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '8px'
-                      }}
-                      disabled={updating}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = '#fee2e2'
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = 'transparent'
-                      }}
-                    >
-                      <XCircle style={{ width: '16px', height: '16px' }} />
-                      Rechazar Solicitud
-                    </button>
-                  </>
-                )}
-                
-                {solicitud.estado === 'prueba' && (
-                  <>
-                    <button
-                      onClick={() => showConfirmDialog('approval', 'aprobada')}
-                      style={{
-                        padding: '12px 20px',
-                        backgroundColor: '#10b981',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '8px',
-                        fontSize: '0.875rem',
-                        fontWeight: '500',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '8px'
-                      }}
-                      disabled={updating}
-                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#059669'}
-                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#10b981'}
-                    >
-                      <CheckCircle style={{ width: '16px', height: '16px' }} />
-                      Aprobar Adopción
-                    </button>
-                    <button
-                      onClick={() => showConfirmDialog('rejection', 'rechazada')}
-                      style={{
-                        padding: '12px 20px',
-                        backgroundColor: 'transparent',
-                        color: '#ef4444',
-                        border: '1px solid #ef4444',
-                        borderRadius: '8px',
-                        fontSize: '0.875rem',
-                        fontWeight: '500',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '8px'
-                      }}
-                      disabled={updating}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = '#fee2e2'
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = 'transparent'
-                      }}
-                    >
-                      <XCircle style={{ width: '16px', height: '16px' }} />
-                      Rechazar Solicitud
-                    </button>
-                  </>
-                )}
-                
-                {(solicitud.estado === 'aprobada' || solicitud.estado === 'rechazada' || solicitud.estado === 'cancelada') && (
-                  <div style={{
-                    padding: '16px',
-                    backgroundColor: '#f8fafc',
-                    borderRadius: '8px',
-                    border: '1px solid #e2e8f0',
-                    textAlign: 'center'
-                  }}>
-                    <Info style={{
-                      width: '24px',
-                      height: '24px',
-                      color: '#64748b',
-                      margin: '0 auto 8px'
-                    }} />
-                    <p style={{
-                      fontSize: '0.875rem',
-                      color: '#64748b'
-                    }}>
-                      Esta solicitud ha sido finalizada y no permite más acciones.
-                    </p>
-                  </div>
-                )}
-                style={{
-                  width: '100%',
-                  padding: '12px',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '8px',
-                  fontSize: '0.875rem',
-                  outline: 'none',
-                  transition: 'all 0.2s',
-                  resize: 'vertical'
-                }}
-                placeholder="Agregar notas sobre esta solicitud..."
-                onFocus={(e) => {
-                  e.target.style.borderColor = '#af1731'
-                  e.target.style.boxShadow = '0 0 0 3px rgba(175, 23, 49, 0.1)'
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = '#e2e8f0'
-                  e.target.style.boxShadow = 'none'
-                }}
-              />
+          </div>
+
+          {/* Columna derecha */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            {/* Información del perrito */}
+            <div style={{
+              backgroundColor: 'white',
+              borderRadius: '12px',
+              padding: '24px',
+              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+              border: '1px solid #e2e8f0'
+            }}>
+              <h2 style={{
+                fontSize: '1.125rem',
+                fontWeight: '600',
+                color: '#0f172a',
+                marginBottom: '20px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px'
+              }}>
+                <Dog style={{ width: '20px', height: '20px', color: '#af1731' }} />
+                Perrito
+              </h2>
               
-              <button
-                onClick={() => {
-                  setConfirmDialog({
-                    show: true,
-                    type: 'state',
-                    title: 'Guardar Notas',
-                    message: '¿Deseas guardar las notas para esta solicitud?',
-                    newState: solicitud.estado,
-                    confirmText: 'Guardar',
-                    onConfirm: () => actualizarEstado(solicitud.estado)
-                  })
-                }}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '16px',
+                marginBottom: '16px'
+              }}>
+                <img
+                  src={solicitud.perrito.fotoPrincipal}
+                  alt={solicitud.perrito.nombre}
+                  style={{
+                    width: '80px',
+                    height: '80px',
+                    borderRadius: '12px',
+                    objectFit: 'cover'
+                  }}
+                />
+                <div>
+                  <h3 style={{
+                    fontSize: '1.125rem',
+                    fontWeight: '600',
+                    color: '#0f172a',
+                    marginBottom: '4px'
+                  }}>{solicitud.perrito.nombre}</h3>
+                  <p style={{
+                    fontSize: '0.875rem',
+                    color: '#64748b'
+                  }}>
+                    {solicitud.perrito.raza} • {solicitud.perrito.edad} • {solicitud.perrito.sexo}
+                  </p>
+                </div>
+              </div>
+              
+              <Link
+                href={`/catalogo/${solicitud.perrito.slug}`}
+                target="_blank"
                 style={{
-                  marginTop: '12px',
-                  padding: '10px 20px',
-                  backgroundColor: '#64748b',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '8px',
-                  fontSize: '0.875rem',
-                  fontWeight: '500',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s',
                   display: 'flex',
                   alignItems: 'center',
+                  justifyContent: 'center',
                   gap: '8px',
-                  opacity: updating || notas === solicitud.notas ? 0.5 : 1
+                  width: '100%',
+                  padding: '10px 20px',
+                  backgroundColor: 'transparent',
+                  color: '#af1731',
+                  border: '1px solid #af1731',
+                  borderRadius: '8px',
+                  textDecoration: 'none',
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  transition: 'all 0.2s'
                 }}
-                disabled={updating || notas === solicitud.notas}
                 onMouseEnter={(e) => {
-                  if (!updating && notas !== solicitud.notas) {
-                    e.currentTarget.style.backgroundColor = '#475569'
-                  }
+                  e.currentTarget.style.backgroundColor = '#af1731'
+                  e.currentTarget.style.color = 'white'
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = '#64748b'
+                  e.currentTarget.style.backgroundColor = 'transparent'
+                  e.currentTarget.style.color = '#af1731'
                 }}
               >
-                <Save style={{ width: '16px', height: '16px' }} />
-                Guardar Notas
-              </button>
+                Ver ficha completa
+                <ExternalLink style={{ width: '16px', height: '16px' }} />
+              </Link>
             </div>
           </div>
         </div>
       </div>
-
-      {/* Diálogo de confirmación mejorado */}
-      {confirmDialog?.show && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 50
-        }}>
-          <div style={{
-            backgroundColor: 'white',
-            borderRadius: '12px',
-            padding: '32px',
-            maxWidth: '480px',
-            width: '90%',
-            boxShadow: '0 20px 40px rgba(0, 0, 0, 0.2)'
-          }}>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '16px',
-              marginBottom: '24px'
-            }}>
-              {confirmDialog.type === 'approval' ? (
-                <div style={{
-                  width: '48px',
-                  height: '48px',
-                  backgroundColor: '#d1fae5',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}>
-                  <CheckCircle style={{ width: '24px', height: '24px', color: '#10b981' }} />
-                </div>
-              ) : confirmDialog.type === 'rejection' ? (
-                <div style={{
-                  width: '48px',
-                  height: '48px',
-                  backgroundColor: '#fee2e2',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}>
-                  <AlertTriangle style={{ width: '24px', height: '24px', color: '#ef4444' }} />
-                </div>
-              ) : (
-                <div style={{
-                  width: '48px',
-                  height: '48px',
-                  backgroundColor: '#dbeafe',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}>
-                  <Info style={{ width: '24px', height: '24px', color: '#3b82f6' }} />
-                </div>
-              )}
-              <h3 style={{
-                fontSize: '1.25rem',
-                fontWeight: '600',
-                color: '#0f172a',
-                margin: 0
-              }}>
-                {confirmDialog.title}
-              </h3>
-            </div>
-            
-            <p style={{
-              fontSize: '0.875rem',
-              color: '#64748b',
-              marginBottom: '24px',
-              lineHeight: '1.6'
-            }}>
-              {confirmDialog.message}
-            </p>
-            
-            <div style={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              gap: '12px'
-            }}>
-              <button
-                onClick={() => setConfirmDialog(null)}
-                style={{
-                  padding: '10px 20px',
-                  backgroundColor: 'transparent',
-                  color: '#64748b',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '8px',
-                  fontSize: '0.875rem',
-                  fontWeight: '500',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#f8fafc'
-                  e.currentTarget.style.borderColor = '#cbd5e1'
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent'
-                  e.currentTarget.style.borderColor = '#e2e8f0'
-                }}
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={confirmDialog.onConfirm}
-                style={{
-                  padding: '10px 20px',
-                  backgroundColor: confirmDialog.type === 'approval' ? '#10b981' : confirmDialog.type === 'rejection' ? '#ef4444' : '#64748b',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '8px',
-                  fontSize: '0.875rem',
-                  fontWeight: '500',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s',
-                  opacity: updating ? 0.5 : 1
-                }}
-                disabled={updating}
-                onMouseEnter={(e) => {
-                  if (!updating) {
-                    const hoverColor = confirmDialog.type === 'approval' ? '#059669' : 
-                                     confirmDialog.type === 'rejection' ? '#dc2626' : '#475569'
-                    e.currentTarget.style.backgroundColor = hoverColor
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  const originalColor = confirmDialog.type === 'approval' ? '#10b981' :
-                                      confirmDialog.type === 'rejection' ? '#ef4444' : '#64748b'
-                  e.currentTarget.style.backgroundColor = originalColor
-                }}
-              >
-                {updating ? 'Procesando...' : confirmDialog.confirmText}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }

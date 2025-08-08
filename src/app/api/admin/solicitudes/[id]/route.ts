@@ -57,7 +57,9 @@ export async function PUT(
       fechaPrueba,
       inicioPrueba,
       finPrueba,
-      fechaAdopcion
+      fechaAdopcion,
+      copiaIneRecibida,
+      copiaComprobanteRecibida
     } = body
 
     // Obtener la solicitud actual para comparar el estado
@@ -80,7 +82,9 @@ export async function PUT(
       fechaPrueba: fechaPrueba ? new Date(fechaPrueba) : undefined,
       inicioPrueba: inicioPrueba ? new Date(inicioPrueba) : undefined,
       finPrueba: finPrueba ? new Date(finPrueba) : undefined,
-      fechaAdopcion: fechaAdopcion ? new Date(fechaAdopcion) : undefined
+      fechaAdopcion: fechaAdopcion ? new Date(fechaAdopcion) : undefined,
+      copiaIneRecibida: copiaIneRecibida !== undefined ? copiaIneRecibida : undefined,
+      copiaComprobanteRecibida: copiaComprobanteRecibida !== undefined ? copiaComprobanteRecibida : undefined
     }
 
     // Si se incluyen notas, crear una nueva nota relacionada

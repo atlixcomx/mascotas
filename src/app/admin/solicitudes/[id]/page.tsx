@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { useToastContext } from '../../../../providers/ToastProvider'
 import { AttachmentsList } from '../../../../components/admin/AttachmentsList'
+import { Check } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { 
@@ -97,6 +98,8 @@ interface Solicitud {
   fechaAdopcion?: string
   motivoRechazo?: string
   origenQR?: string
+  copiaIneRecibida?: boolean
+  copiaComprobanteRecibida?: boolean
   notas?: Array<{
     id: string
     contenido: string
@@ -185,6 +188,8 @@ export default function SolicitudDetallePage() {
   const [fechaEntrevista, setFechaEntrevista] = useState('')
   const [fechaInicioPrueba, setFechaInicioPrueba] = useState('')
   const [fechaFinPrueba, setFechaFinPrueba] = useState('')
+  const [copiaIneRecibida, setCopiaIneRecibida] = useState(false)
+  const [copiaComprobanteRecibida, setCopiaComprobanteRecibida] = useState(false)
   const [confirmDialog, setConfirmDialog] = useState<{
     show: boolean
     type: 'state' | 'approval' | 'rejection'
@@ -248,6 +253,8 @@ export default function SolicitudDetallePage() {
         setSolicitud(data)
         setNotas(data.notas || '')
         setNuevoEstado(data.estado)
+        setCopiaIneRecibida(data.copiaIneRecibida || false)
+        setCopiaComprobanteRecibida(data.copiaComprobanteRecibida || false)
       }
     } catch (error) {
       console.error('Error fetching solicitud:', error)
@@ -337,6 +344,37 @@ export default function SolicitudDetallePage() {
       console.error('Error fetching actividades:', error)
     } finally {
       setLoadingActividades(false)
+    }
+  }
+
+  async function actualizarChecklist(campo: 'copiaIneRecibida' | 'copiaComprobanteRecibida', valor: boolean) {
+    try {
+      const updateData: any = {
+        estado: solicitud?.estado,
+        [campo]: valor
+      }
+
+      const response = await fetch(`/api/admin/solicitudes/${params.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updateData)
+      })
+
+      if (response.ok) {
+        if (campo === 'copiaIneRecibida') {
+          setCopiaIneRecibida(valor)
+        } else {
+          setCopiaComprobanteRecibida(valor)
+        }
+        toast.success('Actualizado', 'El estado del documento se ha actualizado')
+      } else {
+        toast.error('Error', 'No se pudo actualizar el estado del documento')
+      }
+    } catch (error) {
+      console.error('Error updating checklist:', error)
+      toast.error('Error de conexión', 'No se pudo actualizar el estado')
     }
   }
 
@@ -1902,7 +1940,7 @@ export default function SolicitudDetallePage() {
               </div>
             </div>
 
-            {/* Archivos adjuntos */}
+            {/* Checklist de Documentos */}
             <div style={{
               backgroundColor: 'white',
               borderRadius: '12px',
@@ -1919,14 +1957,289 @@ export default function SolicitudDetallePage() {
                 alignItems: 'center',
                 gap: '12px'
               }}>
-                <Paperclip style={{ width: '20px', height: '20px', color: '#4f46e5' }} />
-                Documentos Adjuntos
+                <ClipboardCheck style={{ width: '20px', height: '20px', color: '#4f46e5' }} />
+                Documentos Recibidos
               </h2>
               
-              <AttachmentsList 
-                solicitudId={solicitud.id} 
-                canDelete={false}
-              />
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <label style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  cursor: 'pointer',
+                  padding: '12px 16px',
+                  backgroundColor: copiaIneRecibida ? '#f0fdf4' : '#f8fafc',
+                  borderRadius: '8px',
+                  border: `1px solid ${copiaIneRecibida ? '#86efac' : '#e2e8f0'}`,
+                  transition: 'all 0.2s'
+                }}>
+                  <input
+                    type="checkbox"
+                    checked={copiaIneRecibida}
+                    onChange={(e) => actualizarChecklist('copiaIneRecibida', e.target.checked)}
+                    style={{
+                      width: '20px',
+                      height: '20px',
+                      cursor: 'pointer'
+                    }}
+                  />
+                  <div style={{ flex: 1 }}>
+                    <p style={{
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      color: '#0f172a',
+                      marginBottom: '2px'
+                    }}>Copia de Identificación Oficial (INE)</p>
+                    <p style={{
+                      fontSize: '0.75rem',
+                      color: '#64748b'
+                    }}>Verificar que la INE esté vigente y sea legible</p>
+                  </div>
+                  {copiaIneRecibida && <Check style={{ width: '20px', height: '20px', color: '#10b981' }} />}
+                </label>
+                
+                <label style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  cursor: 'pointer',
+                  padding: '12px 16px',
+                  backgroundColor: copiaComprobanteRecibida ? '#f0fdf4' : '#f8fafc',
+                  borderRadius: '8px',
+                  border: `1px solid ${copiaComprobanteRecibida ? '#86efac' : '#e2e8f0'}`,
+                  transition: 'all 0.2s'
+                }}>
+                  <input
+                    type="checkbox"
+                    checked={copiaComprobanteRecibida}
+                    onChange={(e) => actualizarChecklist('copiaComprobanteRecibida', e.target.checked)}
+                    style={{
+                      width: '20px',
+                      height: '20px',
+                      cursor: 'pointer'
+                    }}
+                  />
+                  <div style={{ flex: 1 }}>
+                    <p style={{
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      color: '#0f172a',
+                      marginBottom: '2px'
+                    }}>Copia de Comprobante de Domicilio</p>
+                    <p style={{
+                      fontSize: '0.75rem',
+                      color: '#64748b'
+                    }}>No mayor a 3 meses de antigüedad</p>
+                  </div>
+                  {copiaComprobanteRecibida && <Check style={{ width: '20px', height: '20px', color: '#10b981' }} />}
+                </label>
+                
+                {solicitud.ineUrl && (
+                  <a
+                    href={solicitud.ineUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '8px 16px',
+                      backgroundColor: '#f8fafc',
+                      borderRadius: '8px',
+                      border: '1px solid #e2e8f0',
+                      textDecoration: 'none',
+                      color: '#af1731',
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      transition: 'all 0.2s'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = '#fef2f2'
+                      e.currentTarget.style.borderColor = '#af1731'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = '#f8fafc'
+                      e.currentTarget.style.borderColor = '#e2e8f0'
+                    }}
+                  >
+                    <FileText style={{ width: '16px', height: '16px' }} />
+                    Ver INE subida
+                    <ExternalLink style={{ width: '14px', height: '14px', marginLeft: 'auto' }} />
+                  </a>
+                )}
+                
+                {solicitud.comprobanteUrl && (
+                  <a
+                    href={solicitud.comprobanteUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '8px 16px',
+                      backgroundColor: '#f8fafc',
+                      borderRadius: '8px',
+                      border: '1px solid #e2e8f0',
+                      textDecoration: 'none',
+                      color: '#af1731',
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      transition: 'all 0.2s'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = '#fef2f2'
+                      e.currentTarget.style.borderColor = '#af1731'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = '#f8fafc'
+                      e.currentTarget.style.borderColor = '#e2e8f0'
+                    }}
+                  >
+                    <FileText style={{ width: '16px', height: '16px' }} />
+                    Ver Comprobante subido
+                    <ExternalLink style={{ width: '14px', height: '14px', marginLeft: 'auto' }} />
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Columna derecha */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            {/* Mascota solicitada */}
+            <div style={{
+              backgroundColor: 'white',
+              borderRadius: '12px',
+              padding: '24px',
+              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+              border: '1px solid #e2e8f0'
+            }}>
+              <h2 style={{
+                fontSize: '1.125rem',
+                fontWeight: '600',
+                color: '#0f172a',
+                marginBottom: '20px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px'
+              }}>
+                <Dog style={{ width: '20px', height: '20px', color: '#af1731' }} />
+                Mascota Solicitada
+              </h2>
+              
+              <div style={{ textAlign: 'center' }}>
+                <Image
+                  src={solicitud.perrito.fotoPrincipal || '/placeholder-dog.jpg'}
+                  alt={solicitud.perrito.nombre}
+                  width={160}
+                  height={160}
+                  style={{
+                    borderRadius: '12px',
+                    objectFit: 'cover',
+                    marginBottom: '16px'
+                  }}
+                />
+                <h3 style={{
+                  fontSize: '1.25rem',
+                  fontWeight: '700',
+                  color: '#0f172a',
+                  marginBottom: '4px'
+                }}>{solicitud.perrito.nombre}</h3>
+                <p style={{
+                  fontSize: '0.875rem',
+                  color: '#64748b',
+                  marginBottom: '16px'
+                }}>{solicitud.perrito.raza}</p>
+                
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(3, 1fr)',
+                  gap: '8px',
+                  marginBottom: '20px'
+                }}>
+                  <div style={{
+                    padding: '8px',
+                    backgroundColor: '#f8fafc',
+                    borderRadius: '8px',
+                    border: '1px solid #e2e8f0'
+                  }}>
+                    <p style={{
+                      fontSize: '0.75rem',
+                      color: '#64748b',
+                      marginBottom: '2px'
+                    }}>Edad</p>
+                    <p style={{
+                      fontSize: '0.875rem',
+                      fontWeight: '600',
+                      color: '#0f172a'
+                    }}>{solicitud.perrito.edad}</p>
+                  </div>
+                  <div style={{
+                    padding: '8px',
+                    backgroundColor: '#f8fafc',
+                    borderRadius: '8px',
+                    border: '1px solid #e2e8f0'
+                  }}>
+                    <p style={{
+                      fontSize: '0.75rem',
+                      color: '#64748b',
+                      marginBottom: '2px'
+                    }}>Sexo</p>
+                    <p style={{
+                      fontSize: '0.875rem',
+                      fontWeight: '600',
+                      color: '#0f172a'
+                    }}>{solicitud.perrito.sexo}</p>
+                  </div>
+                  <div style={{
+                    padding: '8px',
+                    backgroundColor: '#f8fafc',
+                    borderRadius: '8px',
+                    border: '1px solid #e2e8f0'
+                  }}>
+                    <p style={{
+                      fontSize: '0.75rem',
+                      color: '#64748b',
+                      marginBottom: '2px'
+                    }}>Tamaño</p>
+                    <p style={{
+                      fontSize: '0.875rem',
+                      fontWeight: '600',
+                      color: '#0f172a'
+                    }}>{solicitud.perrito.tamano}</p>
+                  </div>
+                </div>
+                
+                <Link
+                  href={`/admin/perritos/${solicitud.perritoId}`}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    padding: '10px 20px',
+                    backgroundColor: 'transparent',
+                    color: '#af1731',
+                    border: '1px solid #af1731',
+                    borderRadius: '8px',
+                    textDecoration: 'none',
+                    fontSize: '0.875rem',
+                    fontWeight: '500',
+                    transition: 'all 0.2s'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#af1731'
+                    e.currentTarget.style.color = 'white'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'transparent'
+                    e.currentTarget.style.color = '#af1731'
+                  }}
+                >
+                  Ver ficha completa
+                  <ExternalLink style={{ width: '16px', height: '16px' }} />
+                </Link>
+              </div>
             </div>
 
             {/* Timeline de actividad */}
@@ -2130,144 +2443,6 @@ export default function SolicitudDetallePage() {
                     )}
                   </button>
                 </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Columna derecha */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            {/* Mascota solicitada */}
-            <div style={{
-              backgroundColor: 'white',
-              borderRadius: '12px',
-              padding: '24px',
-              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-              border: '1px solid #e2e8f0'
-            }}>
-              <h2 style={{
-                fontSize: '1.125rem',
-                fontWeight: '600',
-                color: '#0f172a',
-                marginBottom: '20px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px'
-              }}>
-                <Dog style={{ width: '20px', height: '20px', color: '#af1731' }} />
-                Mascota Solicitada
-              </h2>
-              
-              <div style={{ textAlign: 'center' }}>
-                <Image
-                  src={solicitud.perrito.fotoPrincipal || '/placeholder-dog.jpg'}
-                  alt={solicitud.perrito.nombre}
-                  width={160}
-                  height={160}
-                  style={{
-                    borderRadius: '12px',
-                    objectFit: 'cover',
-                    marginBottom: '16px'
-                  }}
-                />
-                <h3 style={{
-                  fontSize: '1.25rem',
-                  fontWeight: '700',
-                  color: '#0f172a',
-                  marginBottom: '4px'
-                }}>{solicitud.perrito.nombre}</h3>
-                <p style={{
-                  fontSize: '0.875rem',
-                  color: '#64748b',
-                  marginBottom: '16px'
-                }}>{solicitud.perrito.raza}</p>
-                
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(3, 1fr)',
-                  gap: '8px',
-                  marginBottom: '20px'
-                }}>
-                  <div style={{
-                    padding: '8px',
-                    backgroundColor: '#f8fafc',
-                    borderRadius: '8px',
-                    border: '1px solid #e2e8f0'
-                  }}>
-                    <p style={{
-                      fontSize: '0.75rem',
-                      color: '#64748b',
-                      marginBottom: '2px'
-                    }}>Edad</p>
-                    <p style={{
-                      fontSize: '0.875rem',
-                      fontWeight: '600',
-                      color: '#0f172a'
-                    }}>{solicitud.perrito.edad}</p>
-                  </div>
-                  <div style={{
-                    padding: '8px',
-                    backgroundColor: '#f8fafc',
-                    borderRadius: '8px',
-                    border: '1px solid #e2e8f0'
-                  }}>
-                    <p style={{
-                      fontSize: '0.75rem',
-                      color: '#64748b',
-                      marginBottom: '2px'
-                    }}>Sexo</p>
-                    <p style={{
-                      fontSize: '0.875rem',
-                      fontWeight: '600',
-                      color: '#0f172a'
-                    }}>{solicitud.perrito.sexo}</p>
-                  </div>
-                  <div style={{
-                    padding: '8px',
-                    backgroundColor: '#f8fafc',
-                    borderRadius: '8px',
-                    border: '1px solid #e2e8f0'
-                  }}>
-                    <p style={{
-                      fontSize: '0.75rem',
-                      color: '#64748b',
-                      marginBottom: '2px'
-                    }}>Tamaño</p>
-                    <p style={{
-                      fontSize: '0.875rem',
-                      fontWeight: '600',
-                      color: '#0f172a'
-                    }}>{solicitud.perrito.tamano}</p>
-                  </div>
-                </div>
-                
-                <Link
-                  href={`/admin/perritos/${solicitud.perritoId}`}
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    padding: '10px 20px',
-                    backgroundColor: 'transparent',
-                    color: '#af1731',
-                    border: '1px solid #af1731',
-                    borderRadius: '8px',
-                    textDecoration: 'none',
-                    fontSize: '0.875rem',
-                    fontWeight: '500',
-                    transition: 'all 0.2s'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#af1731'
-                    e.currentTarget.style.color = 'white'
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'transparent'
-                    e.currentTarget.style.color = '#af1731'
-                  }}
-                >
-                  Ver ficha completa
-                  <ExternalLink style={{ width: '16px', height: '16px' }} />
-                </Link>
               </div>
             </div>
           </div>

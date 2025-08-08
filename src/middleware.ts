@@ -5,6 +5,11 @@ export function middleware(request: NextRequest) {
   // Clonar la respuesta para poder modificar los headers
   const response = NextResponse.next()
   
+  // Excluir UploadThing del middleware para evitar conflictos
+  if (request.nextUrl.pathname.startsWith('/api/uploadthing')) {
+    return NextResponse.next()
+  }
+
   // CORS headers para API routes
   if (request.nextUrl.pathname.startsWith('/api/')) {
     // Configurar CORS solo para rutas API
@@ -12,7 +17,8 @@ export function middleware(request: NextRequest) {
     const allowedOrigins = [
       process.env.NEXTAUTH_URL || 'http://localhost:3000',
       'https://atlixco.vercel.app', // Tu dominio de producción
-      'https://adopciones-atlixco.vercel.app' // Otro posible dominio
+      'https://adopciones-atlixco.vercel.app', // Otro posible dominio
+      'https://4tlixco.vercel.app' // Dominio actual
     ].filter(Boolean)
     
     if (origin && allowedOrigins.includes(origin)) {

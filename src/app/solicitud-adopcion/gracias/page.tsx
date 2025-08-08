@@ -333,7 +333,7 @@ function GraciasContent() {
           animation: 'slideInUp 0.8s ease-out 1.4s both'
         }}>
           <Link
-            href="/perritos"
+            href="/catalogo"
             style={{
               display: 'inline-flex',
               alignItems: 'center',

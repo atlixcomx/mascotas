@@ -99,7 +99,7 @@ export default function SolicitudAdopcionPage({ params }: PageProps) {
           <p className="text-slate-600 mb-6">
             Este perrito ya encontró su hogar para siempre. Te invitamos a conocer otros perritos disponibles.
           </p>
-          <Link href="/perritos" className="btn-primary">
+          <Link href="/catalogo" className="btn-primary">
             Ver Otros Perritos
           </Link>
         </div>

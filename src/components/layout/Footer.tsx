@@ -97,7 +97,7 @@ export default function Footer() {
               letterSpacing: '0.5px'
             }}>Enlaces Rápidos</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <a href="/perritos" style={{
+              <a href="/catalogo" style={{
                 color: 'rgba(255,255,255,0.8)',
                 textDecoration: 'none',
                 fontSize: '15px',

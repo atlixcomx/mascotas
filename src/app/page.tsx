@@ -781,7 +781,7 @@ export default function Home() {
               <ClockIcon size={18} color="#666" /> Lun-Dom: 9:00 - 17:00
             </p>
           </div>
-          <a href="/perritos" style={{
+          <a href="/catalogo" style={{
             backgroundColor: '#0e312d',
             color: 'white',
             padding: '16px 40px',

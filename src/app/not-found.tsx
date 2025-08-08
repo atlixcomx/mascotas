@@ -20,7 +20,7 @@ export default function NotFound() {
           <Link href="/" className="block w-full btn-primary">
             Ir al Inicio
           </Link>
-          <Link href="/perritos" className="block w-full btn-secondary">
+          <Link href="/catalogo" className="block w-full btn-secondary">
             Ver Perritos Disponibles
           </Link>
         </div>

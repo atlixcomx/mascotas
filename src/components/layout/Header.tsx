@@ -73,20 +73,21 @@ export default function Header() {
             cursor: 'pointer'
           }}>
             <div style={{
-              width: '243px',
-              height: '243px',
+              width: '207px',
+              height: '207px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              minWidth: '243px',
+              minWidth: '207px',
               position: 'relative',
-              transition: 'transform 0.2s ease'
+              transition: 'transform 0.2s ease',
+              margin: '20px 0'
             }}>
               <Image 
                 src="/centro.png" 
                 alt="Centro de Adopción y Bienestar Animal"
-                width={243}
-                height={243}
+                width={207}
+                height={207}
                 style={{ objectFit: 'contain' }}
               />
             </div>
@@ -96,8 +97,32 @@ export default function Header() {
           <nav className="desktop-nav" style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '16px'
+            gap: '20px'
           }}>
+            <a href="/programa-adopcion" style={{
+              color: '#0e312d',
+              textDecoration: 'none',
+              fontSize: '15px',
+              fontWeight: '600',
+              padding: '8px 16px',
+              borderRadius: '6px',
+              transition: 'all 0.3s',
+              border: '2px solid transparent'
+            }}>
+              Programa Adopción
+            </a>
+            <a href="/comercios-friendly" style={{
+              color: '#0e312d',
+              textDecoration: 'none',
+              fontSize: '15px',
+              fontWeight: '600',
+              padding: '8px 16px',
+              borderRadius: '6px',
+              transition: 'all 0.3s',
+              border: '2px solid transparent'
+            }}>
+              Comercios Friendly
+            </a>
             <a href="/catalogo" style={{
               backgroundColor: '#0e312d',
               color: 'white',
@@ -238,6 +263,38 @@ export default function Header() {
             <HomeIcon size={18} color="#1a1a1a" /> Inicio
           </a>
           <a
+            href="/programa-adopcion"
+            onClick={closeMobileMenu}
+            style={{
+              display: 'block',
+              padding: '16px 20px',
+              color: '#1a1a1a',
+              textDecoration: 'none',
+              fontWeight: '500',
+              fontSize: '16px',
+              borderBottom: '1px solid #f3f4f6',
+              transition: 'background-color 0.2s'
+            }}
+          >
+            <FormIcon size={18} color="#1a1a1a" /> Programa Adopción
+          </a>
+          <a
+            href="/comercios-friendly"
+            onClick={closeMobileMenu}
+            style={{
+              display: 'block',
+              padding: '16px 20px',
+              color: '#1a1a1a',
+              textDecoration: 'none',
+              fontWeight: '500',
+              fontSize: '16px',
+              borderBottom: '1px solid #f3f4f6',
+              transition: 'background-color 0.2s'
+            }}
+          >
+            <HandshakeIcon size={18} color="#1a1a1a" /> Comercios Friendly
+          </a>
+          <a
             href="/catalogo"
             onClick={closeMobileMenu}
             style={{
@@ -299,6 +356,11 @@ export default function Header() {
         
         a:hover div[style*="transition"] {
           transform: scale(1.05) !important;
+        }
+        
+        .desktop-nav a:hover {
+          background-color: #f3f4f6 !important;
+          border-color: #0e312d !important;
         }
       `}</style>
     </header>

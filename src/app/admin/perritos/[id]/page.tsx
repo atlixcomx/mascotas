@@ -169,6 +169,11 @@ export default function EditPerrito() {
     
     setSaving(true)
     try {
+      console.log('Guardando perrito con datos:', {
+        fotoPrincipal: perrito.fotoPrincipal,
+        fotos: perrito.fotos
+      })
+      
       const response = await fetch(`/api/admin/perritos/${perritoId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -178,6 +183,10 @@ export default function EditPerrito() {
       if (response.ok) {
         alert('Información actualizada correctamente')
         fetchPerrito() // Refresh data
+      } else {
+        const errorData = await response.json()
+        console.error('Error response:', errorData)
+        alert(`Error al guardar: ${errorData.error || 'Error desconocido'}`)
       }
     } catch (error) {
       console.error('Error saving perrito:', error)
@@ -1129,8 +1138,8 @@ export default function EditPerrito() {
                               handleInputChange('fotoPrincipal', null)
                               const currentPhotos = Array.isArray(perrito.fotos) ? perrito.fotos : parsePhotosField(perrito.fotos)
                               const updatedPhotos = currentPhotos.filter((f: string) => f !== perrito.fotoPrincipal)
-                              handleInputChange('fotos', JSON.stringify(updatedPhotos))
-                              savePerrito()
+                              handleInputChange('fotos', updatedPhotos) // Mantener como array
+                              alert('Foto principal eliminada. Haz clic en "Guardar cambios" para aplicar.')
                             }
                           }}
                           style={{
@@ -1208,10 +1217,8 @@ export default function EditPerrito() {
                       }}>
                         <button
                           onClick={() => {
-                            if (confirm('¿Establecer como foto principal?')) {
-                              handleInputChange('fotoPrincipal', foto)
-                              savePerrito()
-                            }
+                            handleInputChange('fotoPrincipal', foto)
+                            alert('Foto marcada como principal. Haz clic en "Guardar cambios" para aplicar.')
                           }}
                           style={{
                             padding: '6px',
@@ -1225,15 +1232,20 @@ export default function EditPerrito() {
                           }}
                           title="Establecer como principal"
                         >
-                          <Heart style={{ width: '16px', height: '16px', color: '#af1731' }} />
+                          <Heart style={{ 
+                            width: '16px', 
+                            height: '16px', 
+                            color: '#af1731',
+                            fill: foto === perrito.fotoPrincipal ? '#af1731' : 'none'
+                          }} />
                         </button>
                         <button
                           onClick={() => {
                             if (confirm('¿Eliminar esta foto?')) {
                               const currentPhotos = Array.isArray(perrito.fotos) ? perrito.fotos : parsePhotosField(perrito.fotos)
                               const updatedPhotos = currentPhotos.filter((f: string) => f !== foto)
-                              handleInputChange('fotos', JSON.stringify(updatedPhotos))
-                              savePerrito()
+                              handleInputChange('fotos', updatedPhotos) // Mantener como array
+                              alert('Foto eliminada. Haz clic en "Guardar cambios" para aplicar.')
                             }
                           }}
                           style={{

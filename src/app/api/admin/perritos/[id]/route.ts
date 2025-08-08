@@ -161,7 +161,12 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     if (datosValidados.aptoGatos !== undefined) datosActualizacion.aptoGatos = datosValidados.aptoGatos
     if (datosValidados.caracter !== undefined) datosActualizacion.caracter = JSON.stringify(datosValidados.caracter)
     if (datosValidados.fotoPrincipal !== undefined) datosActualizacion.fotoPrincipal = datosValidados.fotoPrincipal
-    if (datosValidados.fotos !== undefined) datosActualizacion.fotos = JSON.stringify(datosValidados.fotos)
+    if (datosValidados.fotos !== undefined) {
+      // Si fotos ya es un string (JSON), lo guardamos tal cual, si es array lo stringificamos
+      datosActualizacion.fotos = typeof datosValidados.fotos === 'string' 
+        ? datosValidados.fotos 
+        : JSON.stringify(datosValidados.fotos)
+    }
     if (datosValidados.destacado !== undefined) datosActualizacion.destacado = datosValidados.destacado
     if (datosValidados.estado !== undefined) datosActualizacion.estado = datosValidados.estado
 

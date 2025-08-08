@@ -49,8 +49,21 @@ export const crearPerritoSchema = z.object({
   caracter: z.array(z.string()).default([]),
 
   // Fotos
-  fotoPrincipal: z.string().url('URL de foto principal inválida').optional(),
-  fotos: z.array(z.string().url('URL de foto inválida')).default([]),
+  fotoPrincipal: z.string().url('URL de foto principal inválida').optional().nullable(),
+  fotos: z.union([
+    z.array(z.string().url('URL de foto inválida')),
+    z.string() // Para aceptar JSON string
+  ]).default([]).transform((val) => {
+    // Si es string, intentar parsearlo
+    if (typeof val === 'string') {
+      try {
+        return JSON.parse(val)
+      } catch {
+        return []
+      }
+    }
+    return val
+  }),
   fotosInternas: z.array(z.string().url('URL de foto interna inválida')).default([]),
   fotosCatalogo: z.array(z.string().url('URL de foto catálogo inválida')).default([]),
 

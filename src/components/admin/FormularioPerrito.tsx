@@ -20,6 +20,7 @@ import {
   User,
   Camera
 } from 'lucide-react'
+import { ImageUploader } from './ImageUploader'
 
 interface PerritoData {
   id?: string
@@ -637,26 +638,55 @@ export default function FormularioPerrito({ perrito }: FormularioPerritoProps) {
             </div>
 
             {/* Agregar nueva foto */}
-            <div className="flex gap-2">
-              <input
-                value={nuevaFoto}
-                onChange={(e) => setNuevaFoto(e.target.value)}
-                onKeyPress={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault()
-                    agregarFoto()
-                  }
-                }}
-                className="input flex-1"
-                placeholder="https://ejemplo.com/nueva-foto.jpg"
-              />
-              <button
-                type="button"
-                onClick={agregarFoto}
-                className="px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors"
-              >
-                <Upload className="h-4 w-4" />
-              </button>
+            <div className="space-y-4">
+              <div className="mb-4">
+                <p className="text-sm text-slate-600 mb-2">Sube imágenes directamente:</p>
+                <ImageUploader
+                  onImageUploaded={(url) => {
+                    const actual = getValues('fotos')
+                    setValue('fotos', [...actual, url])
+                    
+                    // Si no hay foto principal, establecer esta como principal
+                    if (!getValues('fotoPrincipal')) {
+                      setValue('fotoPrincipal', url)
+                    }
+                  }}
+                  onError={(error) => {
+                    setError(error)
+                  }}
+                />
+              </div>
+              
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-slate-200"></div>
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-white px-2 text-slate-500">O agregar URL externa</span>
+                </div>
+              </div>
+              
+              <div className="flex gap-2">
+                <input
+                  value={nuevaFoto}
+                  onChange={(e) => setNuevaFoto(e.target.value)}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault()
+                      agregarFoto()
+                    }
+                  }}
+                  className="input flex-1"
+                  placeholder="https://ejemplo.com/nueva-foto.jpg"
+                />
+                <button
+                  type="button"
+                  onClick={agregarFoto}
+                  className="px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors"
+                >
+                  <Upload className="h-4 w-4" />
+                </button>
+              </div>
             </div>
             {errors.fotos && (
               <p className="text-red-600 text-sm mt-2">{errors.fotos.message}</p>

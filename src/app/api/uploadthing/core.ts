@@ -11,11 +11,18 @@ export const ourFileRouter = {
     // Set permissions and file types for this FileRoute
     .middleware(async ({ req }) => {
       // This code runs on your server before upload
+      console.log("UploadThing middleware - checking auth...");
+      
       const session = await getServerSession(authOptions);
+      console.log("Session:", session ? "exists" : "null");
 
       // If you throw, the user will not be able to upload
-      if (!session || session.user.role !== "admin") throw new Error("No autorizado");
+      if (!session || session.user.role !== "admin") {
+        console.error("Upload rejected - no admin session");
+        throw new Error("No autorizado");
+      }
 
+      console.log("Upload authorized for user:", session.user.id);
       // Whatever is returned here is accessible in onUploadComplete as `metadata`
       return { userId: session.user.id };
     })

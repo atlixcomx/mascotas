@@ -4,7 +4,10 @@ export const dynamic = 'force-dynamic'
 
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
+import { useToastContext } from '../../../../providers/ToastProvider'
+import { AttachmentsList } from '../../../../components/admin/AttachmentsList'
 import Link from 'next/link'
+import Image from 'next/image'
 import { 
   ArrowLeft,
   User,
@@ -26,9 +29,32 @@ import {
   Dog,
   Heart,
   Shield,
-  Edit
+  Edit,
+  Activity,
+  ChevronRight,
+  Download,
+  Printer,
+  Share2,
+  UserCheck,
+  FileCheck,
+  CalendarCheck,
+  ClipboardCheck,
+  ThumbsUp,
+  ThumbsDown,
+  AlertTriangle,
+  Info,
+  Star,
+  Award,
+  Target,
+  Zap,
+  ExternalLink,
+  MoreVertical,
+  CheckSquare,
+  XSquare,
+  HelpCircle,
+  Loader2,
+  Paperclip
 } from 'lucide-react'
-import styles from '../../dashboard.module.css'
 
 interface Perrito {
   id: string
@@ -65,18 +91,68 @@ interface Solicitud {
 }
 
 const estadoColores = {
-  nueva: { bg: 'bg-blue-100', text: 'text-blue-700', label: 'Nueva' },
-  revision: { bg: 'bg-yellow-100', text: 'text-yellow-700', label: 'En Revisión' },
-  entrevista: { bg: 'bg-purple-100', text: 'text-purple-700', label: 'Entrevista' },
-  prueba: { bg: 'bg-orange-100', text: 'text-orange-700', label: 'Prueba' },
-  aprobada: { bg: 'bg-green-100', text: 'text-green-700', label: 'Aprobada' },
-  rechazada: { bg: 'bg-red-100', text: 'text-red-700', label: 'Rechazada' },
-  cancelada: { bg: 'bg-gray-100', text: 'text-gray-700', label: 'Cancelada' }
+  nueva: { 
+    bg: '#3b82f6', 
+    bgLight: '#dbeafe', 
+    text: '#1e40af', 
+    label: 'Nueva',
+    icon: FileText,
+    description: 'Solicitud recibida y pendiente de revisión'
+  },
+  revision: { 
+    bg: '#f59e0b', 
+    bgLight: '#fef3c7', 
+    text: '#92400e', 
+    label: 'En Revisión',
+    icon: Eye,
+    description: 'Evaluando información y requisitos'
+  },
+  entrevista: { 
+    bg: '#8b5cf6', 
+    bgLight: '#e9d5ff', 
+    text: '#5b21b6', 
+    label: 'Entrevista',
+    icon: MessageSquare,
+    description: 'Programada entrevista con el adoptante'
+  },
+  prueba: { 
+    bg: '#f97316', 
+    bgLight: '#fed7aa', 
+    text: '#9a3412', 
+    label: 'Prueba',
+    icon: Clock,
+    description: 'Período de prueba en progreso'
+  },
+  aprobada: { 
+    bg: '#10b981', 
+    bgLight: '#d1fae5', 
+    text: '#065f46', 
+    label: 'Aprobada',
+    icon: CheckCircle,
+    description: 'Adopción completada exitosamente'
+  },
+  rechazada: { 
+    bg: '#ef4444', 
+    bgLight: '#fee2e2', 
+    text: '#991b1b', 
+    label: 'Rechazada',
+    icon: XCircle,
+    description: 'Solicitud no cumple con los requisitos'
+  },
+  cancelada: { 
+    bg: '#6b7280', 
+    bgLight: '#f3f4f6', 
+    text: '#374151', 
+    label: 'Cancelada',
+    icon: AlertCircle,
+    description: 'Proceso cancelado por el solicitante'
+  }
 }
 
 export default function SolicitudDetallePage() {
   const params = useParams()
   const router = useRouter()
+  const toast = useToastContext()
   const [solicitud, setSolicitud] = useState<Solicitud | null>(null)
   const [loading, setLoading] = useState(true)
   const [updating, setUpdating] = useState(false)
@@ -84,10 +160,66 @@ export default function SolicitudDetallePage() {
   const [nuevoEstado, setNuevoEstado] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [modalAction, setModalAction] = useState<'aprobar' | 'rechazar' | null>(null)
+  const [showActions, setShowActions] = useState(false)
+  const [actividades, setActividades] = useState<any[]>([])
+  const [comentarios, setComentarios] = useState<any[]>([])
+  const [nuevoComentario, setNuevoComentario] = useState('')
+  const [loadingActividades, setLoadingActividades] = useState(true)
+  const [enviandoComentario, setEnviandoComentario] = useState(false)
+  const [confirmDialog, setConfirmDialog] = useState<{
+    show: boolean
+    type: 'state' | 'approval' | 'rejection'
+    title: string
+    message: string
+    newState: string
+    confirmText: string
+    onConfirm: () => void
+  } | null>(null)
 
   useEffect(() => {
     fetchSolicitud()
+    fetchActividades()
   }, [params.id])
+
+  const showConfirmDialog = (type: 'state' | 'approval' | 'rejection', newState: string) => {
+    const stateLabels: { [key: string]: string } = {
+      'revision': 'En Revisión',
+      'entrevista': 'Entrevista',
+      'prueba': 'Período de Prueba',
+      'aprobada': 'Aprobada',
+      'rechazada': 'Rechazada'
+    }
+
+    const configs = {
+      state: {
+        title: `Cambiar estado a ${stateLabels[newState]}`,
+        message: `¿Estás seguro de cambiar el estado de esta solicitud a "${stateLabels[newState]}"? Se enviará una notificación automática al solicitante.`,
+        confirmText: 'Cambiar Estado'
+      },
+      approval: {
+        title: 'Confirmar Adopción',
+        message: '¿Estás seguro de aprobar esta adopción? El perrito será marcado como adoptado y se completará el proceso. Esta acción no se puede deshacer.',
+        confirmText: 'Aprobar Adopción'
+      },
+      rejection: {
+        title: 'Rechazar Solicitud',
+        message: '¿Estás seguro de rechazar esta solicitud? El solicitante será notificado y esta acción no se puede deshacer.',
+        confirmText: 'Rechazar Solicitud'
+      }
+    }
+
+    const config = configs[type]
+    
+    setConfirmDialog({
+      show: true,
+      type,
+      title: config.title,
+      message: config.message,
+      newState,
+      confirmText: config.confirmText,
+      onConfirm: () => actualizarEstado(newState)
+    })
+  }
 
   async function fetchSolicitud() {
     try {
@@ -125,8 +257,24 @@ export default function SolicitudDetallePage() {
 
       if (response.ok) {
         await fetchSolicitud()
+        await fetchActividades()
         setShowModal(false)
         setModalAction(null)
+        setConfirmDialog(null)
+        
+        // Mostrar notificación de éxito
+        const stateLabels: { [key: string]: string } = {
+          'revision': 'En Revisión',
+          'entrevista': 'Entrevista',
+          'prueba': 'Período de Prueba',
+          'aprobada': 'Aprobada',
+          'rechazada': 'Rechazada'
+        }
+        
+        toast.success(
+          'Estado actualizado',
+          `La solicitud ha sido cambiada a "${stateLabels[estado]}" exitosamente`
+        )
         
         // Si se aprueba, actualizar el estado del perrito
         if (estado === 'aprobada') {
@@ -140,428 +288,1791 @@ export default function SolicitudDetallePage() {
             })
           })
         }
+      } else {
+        toast.error('Error al actualizar', 'No se pudo actualizar el estado de la solicitud')
       }
     } catch (error) {
       console.error('Error updating solicitud:', error)
+      toast.error('Error de conexión', 'No se pudo conectar con el servidor')
     } finally {
       setUpdating(false)
     }
   }
 
+  async function fetchActividades() {
+    try {
+      const response = await fetch(`/api/admin/solicitudes/${params.id}/actividad`)
+      if (response.ok) {
+        const data = await response.json()
+        setActividades(data)
+      }
+    } catch (error) {
+      console.error('Error fetching actividades:', error)
+    } finally {
+      setLoadingActividades(false)
+    }
+  }
+
+  async function enviarComentario() {
+    if (!nuevoComentario.trim()) return
+    
+    setEnviandoComentario(true)
+    try {
+      const response = await fetch(`/api/admin/solicitudes/${params.id}/comentarios`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          contenido: nuevoComentario
+        })
+      })
+
+      if (response.ok) {
+        setNuevoComentario('')
+        await fetchActividades()
+        await fetchSolicitud()
+        toast.success('Comentario agregado', 'El comentario se ha guardado correctamente')
+      } else {
+        toast.error('Error al comentar', 'No se pudo agregar el comentario')
+      }
+    } catch (error) {
+      console.error('Error al enviar comentario:', error)
+      toast.error('Error de conexión', 'No se pudo enviar el comentario')
+    } finally {
+      setEnviandoComentario(false)
+    }
+  }
+
   if (loading) {
     return (
-      <div className="p-6">
-        <div className="animate-pulse">
-          <div className="h-8 bg-slate-200 rounded w-1/4 mb-8"></div>
-          <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
-            <div className="space-y-4">
-              <div className="h-24 bg-slate-200 rounded"></div>
-              <div className="h-4 bg-slate-200 rounded w-3/4"></div>
-              <div className="h-4 bg-slate-200 rounded w-1/2"></div>
+      <div style={{ padding: '32px', backgroundColor: '#f8fafc', minHeight: '100vh' }}>
+        <div style={{
+          maxWidth: '1400px',
+          margin: '0 auto'
+        }}>
+          <div style={{
+            width: '200px',
+            height: '32px',
+            backgroundColor: '#e2e8f0',
+            borderRadius: '8px',
+            marginBottom: '32px',
+            animation: 'pulse 2s infinite'
+          }} />
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 380px',
+            gap: '24px'
+          }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+              {[1, 2, 3].map(i => (
+                <div key={i} style={{
+                  backgroundColor: 'white',
+                  borderRadius: '12px',
+                  padding: '24px',
+                  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
+                }}>
+                  <div style={{
+                    height: '150px',
+                    backgroundColor: '#e2e8f0',
+                    borderRadius: '8px',
+                    animation: 'pulse 2s infinite'
+                  }} />
+                </div>
+              ))}
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+              {[1, 2].map(i => (
+                <div key={i} style={{
+                  backgroundColor: 'white',
+                  borderRadius: '12px',
+                  padding: '24px',
+                  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
+                }}>
+                  <div style={{
+                    height: '200px',
+                    backgroundColor: '#e2e8f0',
+                    borderRadius: '8px',
+                    animation: 'pulse 2s infinite'
+                  }} />
+                </div>
+              ))}
             </div>
           </div>
         </div>
+        <style jsx>{`
+          @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+          }
+        `}</style>
       </div>
     )
   }
 
   if (!solicitud) {
     return (
-      <div className="p-6">
-        <div className="text-center py-12">
-          <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-slate-900">Solicitud no encontrada</h3>
+      <div style={{ padding: '32px', backgroundColor: '#f8fafc', minHeight: '100vh' }}>
+        <div style={{
+          maxWidth: '600px',
+          margin: '100px auto',
+          textAlign: 'center',
+          backgroundColor: 'white',
+          borderRadius: '12px',
+          padding: '48px',
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
+        }}>
+          <AlertCircle style={{
+            width: '64px',
+            height: '64px',
+            color: '#ef4444',
+            margin: '0 auto 24px'
+          }} />
+          <h3 style={{
+            fontSize: '1.5rem',
+            fontWeight: '600',
+            color: '#0f172a',
+            marginBottom: '16px'
+          }}>Solicitud no encontrada</h3>
+          <p style={{ color: '#64748b', marginBottom: '24px' }}>
+            La solicitud que buscas no existe o ha sido eliminada
+          </p>
+          <Link
+            href="/admin/solicitudes"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '12px 24px',
+              backgroundColor: '#af1731',
+              color: 'white',
+              borderRadius: '8px',
+              textDecoration: 'none',
+              fontSize: '0.875rem',
+              fontWeight: '500',
+              transition: 'all 0.2s'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#8b1227'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#af1731'}
+          >
+            <ArrowLeft style={{ width: '16px', height: '16px' }} />
+            Volver a solicitudes
+          </Link>
         </div>
       </div>
     )
   }
 
   const estado = estadoColores[solicitud.estado as keyof typeof estadoColores] || estadoColores.nueva
+  const EstadoIcon = estado.icon
+
+  const getTimeAgo = (date: string) => {
+    const now = new Date()
+    const then = new Date(date)
+    const diffInMs = now.getTime() - then.getTime()
+    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24))
+    
+    if (diffInDays === 0) return 'Hoy'
+    if (diffInDays === 1) return 'Ayer'
+    if (diffInDays < 7) return `Hace ${diffInDays} días`
+    if (diffInDays < 30) return `Hace ${Math.floor(diffInDays / 7)} semanas`
+    return `Hace ${Math.floor(diffInDays / 30)} meses`
+  }
 
   return (
-    <div className="p-6">
-      {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center space-x-4">
-          <Link
-            href="/admin/solicitudes"
-            className="flex items-center text-slate-600 hover:text-slate-900 transition-colors"
-          >
-            <ArrowLeft className="h-4 w-4 mr-1" />
-            Volver
-          </Link>
-        </div>
-        <div className="mt-4 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900">Solicitud {solicitud.codigo}</h1>
-            <p className="text-slate-600 mt-1">
-              Solicitud de adopción de {solicitud.nombre}
-            </p>
+    <div style={{ backgroundColor: '#f8fafc', minHeight: '100vh' }}>
+      {/* Header mejorado */}
+      <div style={{
+        backgroundColor: 'white',
+        borderBottom: '1px solid #e2e8f0',
+        padding: '24px 32px',
+        marginBottom: '32px'
+      }}>
+        <div style={{
+          maxWidth: '1400px',
+          margin: '0 auto'
+        }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-start',
+            marginBottom: '24px'
+          }}>
+            <div>
+              <Link
+                href="/admin/solicitudes"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  color: '#64748b',
+                  textDecoration: 'none',
+                  fontSize: '0.875rem',
+                  marginBottom: '16px',
+                  transition: 'color 0.2s'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.color = '#0f172a'}
+                onMouseLeave={(e) => e.currentTarget.style.color = '#64748b'}
+              >
+                <ArrowLeft style={{ width: '16px', height: '16px' }} />
+                Volver a solicitudes
+              </Link>
+              <h1 style={{
+                fontSize: '2rem',
+                fontWeight: '700',
+                color: '#0f172a',
+                margin: '0 0 8px 0',
+                fontFamily: 'Poppins, sans-serif'
+              }}>
+                Solicitud {solicitud.codigo}
+              </h1>
+              <p style={{ color: '#64748b', margin: 0 }}>
+                {solicitud.nombre} • {new Date(solicitud.createdAt).toLocaleDateString('es-MX', {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
+              </p>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <button
+                style={{
+                  padding: '10px',
+                  backgroundColor: 'transparent',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'all 0.2s'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#f8fafc'
+                  e.currentTarget.style.borderColor = '#cbd5e1'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent'
+                  e.currentTarget.style.borderColor = '#e2e8f0'
+                }}
+              >
+                <Printer style={{ width: '20px', height: '20px', color: '#64748b' }} />
+              </button>
+              <button
+                style={{
+                  padding: '10px',
+                  backgroundColor: 'transparent',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'all 0.2s'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#f8fafc'
+                  e.currentTarget.style.borderColor = '#cbd5e1'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent'
+                  e.currentTarget.style.borderColor = '#e2e8f0'
+                }}
+              >
+                <Download style={{ width: '20px', height: '20px', color: '#64748b' }} />
+              </button>
+              <button
+                style={{
+                  padding: '10px',
+                  backgroundColor: 'transparent',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'all 0.2s'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#f8fafc'
+                  e.currentTarget.style.borderColor = '#cbd5e1'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent'
+                  e.currentTarget.style.borderColor = '#e2e8f0'
+                }}
+              >
+                <Share2 style={{ width: '20px', height: '20px', color: '#64748b' }} />
+              </button>
+            </div>
           </div>
-          <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${estado.bg} ${estado.text}`}>
-            {estado.label}
-          </span>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Información del solicitante */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Datos personales */}
-          <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
-            <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center">
-              <User className="w-5 h-5 mr-2" />
-              Datos del Solicitante
-            </h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          
+          {/* Estado y progreso */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '32px'
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              padding: '12px 20px',
+              backgroundColor: estado.bgLight,
+              borderRadius: '12px',
+              border: `2px solid ${estado.bg}`
+            }}>
+              <EstadoIcon style={{ width: '24px', height: '24px', color: estado.bg }} />
               <div>
-                <p className="text-sm text-slate-600">Nombre completo</p>
-                <p className="font-medium text-slate-900">{solicitud.nombre}</p>
-              </div>
-              
-              <div>
-                <p className="text-sm text-slate-600">Email</p>
-                <p className="font-medium text-slate-900">{solicitud.email}</p>
-              </div>
-              
-              <div>
-                <p className="text-sm text-slate-600">Teléfono</p>
-                <p className="font-medium text-slate-900">{solicitud.telefono}</p>
-              </div>
-              
-              <div>
-                <p className="text-sm text-slate-600">Dirección</p>
-                <p className="font-medium text-slate-900">{solicitud.direccion}</p>
-              </div>
-              
-              <div>
-                <p className="text-sm text-slate-600">Tipo de vivienda</p>
-                <p className="font-medium text-slate-900">{solicitud.tipoVivienda}</p>
-              </div>
-              
-              <div>
-                <p className="text-sm text-slate-600">Fecha de solicitud</p>
-                <p className="font-medium text-slate-900">
-                  {new Date(solicitud.createdAt).toLocaleDateString('es-MX', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                  })}
+                <p style={{
+                  fontSize: '0.875rem',
+                  fontWeight: '600',
+                  color: estado.text,
+                  margin: 0
+                }}>
+                  {estado.label}
+                </p>
+                <p style={{
+                  fontSize: '0.75rem',
+                  color: estado.text,
+                  margin: 0,
+                  opacity: 0.8
+                }}>
+                  {estado.description}
                 </p>
               </div>
             </div>
-          </div>
-
-          {/* Experiencia y motivación */}
-          <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
-            <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center">
-              <Heart className="w-5 h-5 mr-2" />
-              Experiencia y Motivación
-            </h2>
             
-            <div className="space-y-4">
-              <div>
-                <p className="text-sm text-slate-600 mb-1">Experiencia con mascotas</p>
-                <p className="text-slate-900">{solicitud.experiencia}</p>
-              </div>
-              
-              <div>
-                <p className="text-sm text-slate-600 mb-1">Otras mascotas en casa</p>
-                <p className="text-slate-900">{solicitud.otrosMascotas}</p>
-              </div>
-              
-              <div>
-                <p className="text-sm text-slate-600 mb-1">Motivo de adopción</p>
-                <p className="text-slate-900">{solicitud.motivoAdopcion}</p>
-              </div>
-              
-              <div>
-                <p className="text-sm text-slate-600 mb-1">Compromisos asumidos</p>
-                <p className="text-slate-900">{solicitud.compromisos}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Historial de estados */}
-          <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
-            <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center">
-              <Clock className="w-5 h-5 mr-2" />
-              Historial del Proceso
-            </h2>
-            
-            <div className="space-y-3">
-              <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                <div className="flex items-center">
-                  <FileText className="w-4 h-4 text-slate-600 mr-3" />
-                  <div>
-                    <p className="font-medium text-slate-900">Solicitud recibida</p>
-                    <p className="text-sm text-slate-600">
-                      {new Date(solicitud.createdAt).toLocaleDateString('es-MX')}
-                    </p>
-                  </div>
-                </div>
-                <CheckCircle className="w-5 h-5 text-green-500" />
-              </div>
-              
-              {solicitud.fechaRevision && (
-                <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                  <div className="flex items-center">
-                    <Eye className="w-4 h-4 text-slate-600 mr-3" />
-                    <div>
-                      <p className="font-medium text-slate-900">Revisión iniciada</p>
-                      <p className="text-sm text-slate-600">
-                        {new Date(solicitud.fechaRevision).toLocaleDateString('es-MX')}
-                      </p>
+            {/* Timeline de progreso */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              {['nueva', 'revision', 'entrevista', 'prueba', 'aprobada'].map((step, index) => {
+                const stepConfig = estadoColores[step as keyof typeof estadoColores]
+                const isActive = ['nueva', 'revision', 'entrevista', 'prueba', 'aprobada'].indexOf(solicitud.estado) >= index
+                const StepIcon = stepConfig.icon
+                
+                return (
+                  <div key={step} style={{ display: 'flex', alignItems: 'center' }}>
+                    <div style={{
+                      width: '40px',
+                      height: '40px',
+                      borderRadius: '50%',
+                      backgroundColor: isActive ? stepConfig.bg : '#e2e8f0',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      transition: 'all 0.3s'
+                    }}>
+                      <StepIcon style={{
+                        width: '20px',
+                        height: '20px',
+                        color: isActive ? 'white' : '#94a3b8'
+                      }} />
                     </div>
+                    {index < 4 && (
+                      <div style={{
+                        height: '2px',
+                        width: '60px',
+                        backgroundColor: isActive && ['nueva', 'revision', 'entrevista', 'prueba', 'aprobada'].indexOf(solicitud.estado) > index ? stepConfig.bg : '#e2e8f0',
+                        transition: 'all 0.3s'
+                      }} />
+                    )}
                   </div>
-                  <CheckCircle className="w-5 h-5 text-green-500" />
-                </div>
-              )}
-              
-              {solicitud.fechaEntrevista && (
-                <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                  <div className="flex items-center">
-                    <MessageSquare className="w-4 h-4 text-slate-600 mr-3" />
-                    <div>
-                      <p className="font-medium text-slate-900">Entrevista realizada</p>
-                      <p className="text-sm text-slate-600">
-                        {new Date(solicitud.fechaEntrevista).toLocaleDateString('es-MX')}
-                      </p>
-                    </div>
-                  </div>
-                  <CheckCircle className="w-5 h-5 text-green-500" />
-                </div>
-              )}
-              
-              {solicitud.fechaPrueba && (
-                <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                  <div className="flex items-center">
-                    <Clock className="w-4 h-4 text-slate-600 mr-3" />
-                    <div>
-                      <p className="font-medium text-slate-900">Período de prueba iniciado</p>
-                      <p className="text-sm text-slate-600">
-                        {new Date(solicitud.fechaPrueba).toLocaleDateString('es-MX')}
-                      </p>
-                    </div>
-                  </div>
-                  <CheckCircle className="w-5 h-5 text-green-500" />
-                </div>
-              )}
-              
-              {solicitud.fechaAdopcion && (
-                <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                  <div className="flex items-center">
-                    <Heart className="w-4 h-4 text-slate-600 mr-3" />
-                    <div>
-                      <p className="font-medium text-slate-900">Adopción completada</p>
-                      <p className="text-sm text-slate-600">
-                        {new Date(solicitud.fechaAdopcion).toLocaleDateString('es-MX')}
-                      </p>
-                    </div>
-                  </div>
-                  <CheckCircle className="w-5 h-5 text-green-500" />
-                </div>
-              )}
+                )
+              })}
             </div>
-          </div>
-        </div>
-
-        {/* Columna derecha */}
-        <div className="space-y-6">
-          {/* Mascota solicitada */}
-          <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
-            <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center">
-              <Dog className="w-5 h-5 mr-2" />
-              Mascota Solicitada
-            </h2>
-            
-            <div className="text-center">
-              <img
-                src={solicitud.perrito.fotoPrincipal || '/placeholder-dog.jpg'}
-                alt={solicitud.perrito.nombre}
-                className="w-32 h-32 rounded-full object-cover mx-auto mb-4"
-              />
-              <h3 className="text-lg font-semibold text-slate-900">{solicitud.perrito.nombre}</h3>
-              <p className="text-slate-600">{solicitud.perrito.raza}</p>
-              <div className="mt-2 space-y-1 text-sm">
-                <p>{solicitud.perrito.edad} • {solicitud.perrito.sexo}</p>
-                <p>Tamaño {solicitud.perrito.tamano}</p>
-              </div>
-              <Link
-                href={`/admin/perritos/${solicitud.perritoId}`}
-                className="inline-flex items-center mt-4 text-atlixco-600 hover:text-atlixco-700 font-medium text-sm"
-              >
-                Ver ficha completa
-                <ChevronRight className="w-4 h-4 ml-1" />
-              </Link>
-            </div>
-          </div>
-
-          {/* Acciones */}
-          <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
-            <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center">
-              <Shield className="w-5 h-5 mr-2" />
-              Acciones
-            </h2>
-            
-            <div className="space-y-3">
-              {solicitud.estado === 'nueva' && (
-                <>
-                  <button
-                    onClick={() => actualizarEstado('revision')}
-                    className="w-full px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors font-medium"
-                    disabled={updating}
-                  >
-                    Iniciar Revisión
-                  </button>
-                  <button
-                    onClick={() => {
-                      setModalAction('rechazar')
-                      setShowModal(true)
-                    }}
-                    className="w-full px-4 py-2 border border-red-500 text-red-500 rounded-lg hover:bg-red-50 transition-colors font-medium"
-                    disabled={updating}
-                  >
-                    Rechazar Solicitud
-                  </button>
-                </>
-              )}
-              
-              {solicitud.estado === 'revision' && (
-                <>
-                  <button
-                    onClick={() => actualizarEstado('entrevista')}
-                    className="w-full px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors font-medium"
-                    disabled={updating}
-                  >
-                    Programar Entrevista
-                  </button>
-                  <button
-                    onClick={() => {
-                      setModalAction('rechazar')
-                      setShowModal(true)
-                    }}
-                    className="w-full px-4 py-2 border border-red-500 text-red-500 rounded-lg hover:bg-red-50 transition-colors font-medium"
-                    disabled={updating}
-                  >
-                    Rechazar Solicitud
-                  </button>
-                </>
-              )}
-              
-              {solicitud.estado === 'entrevista' && (
-                <>
-                  <button
-                    onClick={() => actualizarEstado('prueba')}
-                    className="w-full px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-medium"
-                    disabled={updating}
-                  >
-                    Iniciar Período de Prueba
-                  </button>
-                  <button
-                    onClick={() => {
-                      setModalAction('rechazar')
-                      setShowModal(true)
-                    }}
-                    className="w-full px-4 py-2 border border-red-500 text-red-500 rounded-lg hover:bg-red-50 transition-colors font-medium"
-                    disabled={updating}
-                  >
-                    Rechazar Solicitud
-                  </button>
-                </>
-              )}
-              
-              {solicitud.estado === 'prueba' && (
-                <>
-                  <button
-                    onClick={() => {
-                      setModalAction('aprobar')
-                      setShowModal(true)
-                    }}
-                    className="w-full px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-medium"
-                    disabled={updating}
-                  >
-                    Aprobar Adopción
-                  </button>
-                  <button
-                    onClick={() => {
-                      setModalAction('rechazar')
-                      setShowModal(true)
-                    }}
-                    className="w-full px-4 py-2 border border-red-500 text-red-500 rounded-lg hover:bg-red-50 transition-colors font-medium"
-                    disabled={updating}
-                  >
-                    Rechazar Solicitud
-                  </button>
-                </>
-              )}
-            </div>
-          </div>
-
-          {/* Notas internas */}
-          <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
-            <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center">
-              <Edit className="w-5 h-5 mr-2" />
-              Notas Internas
-            </h2>
-            
-            <textarea
-              value={notas}
-              onChange={(e) => setNotas(e.target.value)}
-              rows={4}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-atlixco-500 focus:border-transparent"
-              placeholder="Agregar notas sobre esta solicitud..."
-            />
-            
-            <button
-              onClick={() => actualizarEstado(solicitud.estado)}
-              className="mt-3 px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition-colors font-medium text-sm"
-              disabled={updating || notas === solicitud.notas}
-            >
-              <Save className="w-4 h-4 inline mr-1" />
-              Guardar Notas
-            </button>
           </div>
         </div>
       </div>
 
-      {/* Modal de confirmación */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full">
-            <h3 className="text-lg font-semibold text-slate-900 mb-4">
-              {modalAction === 'aprobar' ? 'Confirmar Adopción' : 'Rechazar Solicitud'}
-            </h3>
-            
-            <p className="text-slate-600 mb-6">
-              {modalAction === 'aprobar' 
-                ? '¿Estás seguro de aprobar esta adopción? El perrito será marcado como adoptado.'
-                : '¿Estás seguro de rechazar esta solicitud? Esta acción no se puede deshacer.'}
-            </p>
-            
-            <div className="flex justify-end space-x-3">
+      {/* Main content */}
+      <div style={{
+        maxWidth: '1400px',
+        margin: '0 auto',
+        padding: '0 32px 32px'
+      }}>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 380px',
+          gap: '24px'
+        }}>
+          {/* Columna izquierda - Información detallada */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            {/* Datos personales */}
+            <div style={{
+              backgroundColor: 'white',
+              borderRadius: '12px',
+              padding: '24px',
+              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+              border: '1px solid #e2e8f0'
+            }}>
+              <h2 style={{
+                fontSize: '1.125rem',
+                fontWeight: '600',
+                color: '#0f172a',
+                marginBottom: '20px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px'
+              }}>
+                <User style={{ width: '20px', height: '20px', color: '#af1731' }} />
+                Datos del Solicitante
+              </h2>
+              
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(2, 1fr)',
+                gap: '20px'
+              }}>
+                <div>
+                  <p style={{
+                    fontSize: '0.75rem',
+                    color: '#64748b',
+                    marginBottom: '4px',
+                    fontWeight: '600',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px'
+                  }}>Nombre completo</p>
+                  <p style={{
+                    fontSize: '1rem',
+                    fontWeight: '500',
+                    color: '#0f172a'
+                  }}>{solicitud.nombre}</p>
+                </div>
+                
+                <div>
+                  <p style={{
+                    fontSize: '0.75rem',
+                    color: '#64748b',
+                    marginBottom: '4px',
+                    fontWeight: '600',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px'
+                  }}>Email</p>
+                  <p style={{
+                    fontSize: '1rem',
+                    fontWeight: '500',
+                    color: '#0f172a',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}>
+                    <Mail style={{ width: '16px', height: '16px', color: '#64748b' }} />
+                    {solicitud.email}
+                  </p>
+                </div>
+                
+                <div>
+                  <p style={{
+                    fontSize: '0.75rem',
+                    color: '#64748b',
+                    marginBottom: '4px',
+                    fontWeight: '600',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px'
+                  }}>Teléfono</p>
+                  <p style={{
+                    fontSize: '1rem',
+                    fontWeight: '500',
+                    color: '#0f172a',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}>
+                    <Phone style={{ width: '16px', height: '16px', color: '#64748b' }} />
+                    {solicitud.telefono}
+                  </p>
+                </div>
+                
+                <div>
+                  <p style={{
+                    fontSize: '0.75rem',
+                    color: '#64748b',
+                    marginBottom: '4px',
+                    fontWeight: '600',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px'
+                  }}>Tipo de vivienda</p>
+                  <p style={{
+                    fontSize: '1rem',
+                    fontWeight: '500',
+                    color: '#0f172a',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}>
+                    <Home style={{ width: '16px', height: '16px', color: '#64748b' }} />
+                    {solicitud.tipoVivienda}
+                  </p>
+                </div>
+                
+                <div style={{ gridColumn: 'span 2' }}>
+                  <p style={{
+                    fontSize: '0.75rem',
+                    color: '#64748b',
+                    marginBottom: '4px',
+                    fontWeight: '600',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px'
+                  }}>Dirección</p>
+                  <p style={{
+                    fontSize: '1rem',
+                    fontWeight: '500',
+                    color: '#0f172a',
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: '8px'
+                  }}>
+                    <MapPin style={{ width: '16px', height: '16px', color: '#64748b', marginTop: '2px' }} />
+                    {solicitud.direccion}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Experiencia y motivación */}
+            <div style={{
+              backgroundColor: 'white',
+              borderRadius: '12px',
+              padding: '24px',
+              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+              border: '1px solid #e2e8f0'
+            }}>
+              <h2 style={{
+                fontSize: '1.125rem',
+                fontWeight: '600',
+                color: '#0f172a',
+                marginBottom: '20px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px'
+              }}>
+                <Heart style={{ width: '20px', height: '20px', color: '#af1731' }} />
+                Experiencia y Motivación
+              </h2>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <div>
+                  <p style={{
+                    fontSize: '0.875rem',
+                    color: '#64748b',
+                    marginBottom: '8px',
+                    fontWeight: '600'
+                  }}>Experiencia con mascotas</p>
+                  <div style={{
+                    padding: '12px 16px',
+                    backgroundColor: '#f8fafc',
+                    borderRadius: '8px',
+                    border: '1px solid #e2e8f0'
+                  }}>
+                    <p style={{
+                      fontSize: '0.875rem',
+                      color: '#0f172a',
+                      lineHeight: '1.6'
+                    }}>{solicitud.experiencia}</p>
+                  </div>
+                </div>
+                
+                <div>
+                  <p style={{
+                    fontSize: '0.875rem',
+                    color: '#64748b',
+                    marginBottom: '8px',
+                    fontWeight: '600'
+                  }}>Otras mascotas en casa</p>
+                  <div style={{
+                    padding: '12px 16px',
+                    backgroundColor: '#f8fafc',
+                    borderRadius: '8px',
+                    border: '1px solid #e2e8f0'
+                  }}>
+                    <p style={{
+                      fontSize: '0.875rem',
+                      color: '#0f172a',
+                      lineHeight: '1.6'
+                    }}>{solicitud.otrosMascotas}</p>
+                  </div>
+                </div>
+                
+                <div>
+                  <p style={{
+                    fontSize: '0.875rem',
+                    color: '#64748b',
+                    marginBottom: '8px',
+                    fontWeight: '600'
+                  }}>Motivo de adopción</p>
+                  <div style={{
+                    padding: '12px 16px',
+                    backgroundColor: '#f8fafc',
+                    borderRadius: '8px',
+                    border: '1px solid #e2e8f0'
+                  }}>
+                    <p style={{
+                      fontSize: '0.875rem',
+                      color: '#0f172a',
+                      lineHeight: '1.6'
+                    }}>{solicitud.motivoAdopcion}</p>
+                  </div>
+                </div>
+                
+                <div>
+                  <p style={{
+                    fontSize: '0.875rem',
+                    color: '#64748b',
+                    marginBottom: '8px',
+                    fontWeight: '600'
+                  }}>Compromisos asumidos</p>
+                  <div style={{
+                    padding: '12px 16px',
+                    backgroundColor: '#f8fafc',
+                    borderRadius: '8px',
+                    border: '1px solid #e2e8f0'
+                  }}>
+                    <p style={{
+                      fontSize: '0.875rem',
+                      color: '#0f172a',
+                      lineHeight: '1.6'
+                    }}>{solicitud.compromisos}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Historial de estados */}
+            <div style={{
+              backgroundColor: 'white',
+              borderRadius: '12px',
+              padding: '24px',
+              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+              border: '1px solid #e2e8f0'
+            }}>
+              <h2 style={{
+                fontSize: '1.125rem',
+                fontWeight: '600',
+                color: '#0f172a',
+                marginBottom: '20px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px'
+              }}>
+                <Activity style={{ width: '20px', height: '20px', color: '#af1731' }} />
+                Historial del Proceso
+              </h2>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '16px',
+                  backgroundColor: '#f8fafc',
+                  borderRadius: '8px',
+                  border: '1px solid #e2e8f0'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                    <div style={{
+                      width: '40px',
+                      height: '40px',
+                      backgroundColor: '#dbeafe',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}>
+                      <FileText style={{ width: '20px', height: '20px', color: '#3b82f6' }} />
+                    </div>
+                    <div>
+                      <p style={{
+                        fontSize: '0.875rem',
+                        fontWeight: '600',
+                        color: '#0f172a',
+                        marginBottom: '2px'
+                      }}>Solicitud recibida</p>
+                      <p style={{
+                        fontSize: '0.75rem',
+                        color: '#64748b'
+                      }}>
+                        {new Date(solicitud.createdAt).toLocaleDateString('es-MX', {
+                          day: 'numeric',
+                          month: 'long',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                  <CheckCircle style={{ width: '20px', height: '20px', color: '#10b981' }} />
+                </div>
+                
+                {solicitud.fechaRevision && (
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '16px',
+                    backgroundColor: '#f8fafc',
+                    borderRadius: '8px',
+                    border: '1px solid #e2e8f0'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                      <div style={{
+                        width: '40px',
+                        height: '40px',
+                        backgroundColor: '#fef3c7',
+                        borderRadius: '50%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}>
+                        <Eye style={{ width: '20px', height: '20px', color: '#f59e0b' }} />
+                      </div>
+                      <div>
+                        <p style={{
+                          fontSize: '0.875rem',
+                          fontWeight: '600',
+                          color: '#0f172a',
+                          marginBottom: '2px'
+                        }}>Revisión iniciada</p>
+                        <p style={{
+                          fontSize: '0.75rem',
+                          color: '#64748b'
+                        }}>
+                          {new Date(solicitud.fechaRevision).toLocaleDateString('es-MX', {
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </p>
+                      </div>
+                    </div>
+                    <CheckCircle style={{ width: '20px', height: '20px', color: '#10b981' }} />
+                  </div>
+                )}
+                
+                {solicitud.fechaEntrevista && (
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '16px',
+                    backgroundColor: '#f8fafc',
+                    borderRadius: '8px',
+                    border: '1px solid #e2e8f0'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                      <div style={{
+                        width: '40px',
+                        height: '40px',
+                        backgroundColor: '#e9d5ff',
+                        borderRadius: '50%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}>
+                        <MessageSquare style={{ width: '20px', height: '20px', color: '#8b5cf6' }} />
+                      </div>
+                      <div>
+                        <p style={{
+                          fontSize: '0.875rem',
+                          fontWeight: '600',
+                          color: '#0f172a',
+                          marginBottom: '2px'
+                        }}>Entrevista realizada</p>
+                        <p style={{
+                          fontSize: '0.75rem',
+                          color: '#64748b'
+                        }}>
+                          {new Date(solicitud.fechaEntrevista).toLocaleDateString('es-MX', {
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </p>
+                      </div>
+                    </div>
+                    <CheckCircle style={{ width: '20px', height: '20px', color: '#10b981' }} />
+                  </div>
+                )}
+                
+                {solicitud.fechaPrueba && (
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '16px',
+                    backgroundColor: '#f8fafc',
+                    borderRadius: '8px',
+                    border: '1px solid #e2e8f0'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                      <div style={{
+                        width: '40px',
+                        height: '40px',
+                        backgroundColor: '#fed7aa',
+                        borderRadius: '50%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}>
+                        <Clock style={{ width: '20px', height: '20px', color: '#f97316' }} />
+                      </div>
+                      <div>
+                        <p style={{
+                          fontSize: '0.875rem',
+                          fontWeight: '600',
+                          color: '#0f172a',
+                          marginBottom: '2px'
+                        }}>Período de prueba iniciado</p>
+                        <p style={{
+                          fontSize: '0.75rem',
+                          color: '#64748b'
+                        }}>
+                          {new Date(solicitud.fechaPrueba).toLocaleDateString('es-MX', {
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </p>
+                      </div>
+                    </div>
+                    <CheckCircle style={{ width: '20px', height: '20px', color: '#10b981' }} />
+                  </div>
+                )}
+                
+                {solicitud.fechaAdopcion && (
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '16px',
+                    backgroundColor: '#d1fae5',
+                    borderRadius: '8px',
+                    border: '1px solid #10b981'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                      <div style={{
+                        width: '40px',
+                        height: '40px',
+                        backgroundColor: '#10b981',
+                        borderRadius: '50%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}>
+                        <Heart style={{ width: '20px', height: '20px', color: 'white' }} />
+                      </div>
+                      <div>
+                        <p style={{
+                          fontSize: '0.875rem',
+                          fontWeight: '600',
+                          color: '#065f46',
+                          marginBottom: '2px'
+                        }}>Adopción completada</p>
+                        <p style={{
+                          fontSize: '0.75rem',
+                          color: '#065f46'
+                        }}>
+                          {new Date(solicitud.fechaAdopcion).toLocaleDateString('es-MX', {
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </p>
+                      </div>
+                    </div>
+                    <Award style={{ width: '24px', height: '24px', color: '#10b981' }} />
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Archivos adjuntos */}
+            <div style={{
+              backgroundColor: 'white',
+              borderRadius: '12px',
+              padding: '24px',
+              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+              border: '1px solid #e2e8f0'
+            }}>
+              <h2 style={{
+                fontSize: '1.125rem',
+                fontWeight: '600',
+                color: '#0f172a',
+                marginBottom: '20px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px'
+              }}>
+                <Paperclip style={{ width: '20px', height: '20px', color: '#4f46e5' }} />
+                Documentos Adjuntos
+              </h2>
+              
+              <AttachmentsList 
+                solicitudId={solicitud.id} 
+                canDelete={false}
+              />
+            </div>
+
+            {/* Timeline de actividad */}
+            <div style={{
+              backgroundColor: 'white',
+              borderRadius: '12px',
+              padding: '24px',
+              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+              border: '1px solid #e2e8f0'
+            }}>
+              <h2 style={{
+                fontSize: '1.125rem',
+                fontWeight: '600',
+                color: '#0f172a',
+                marginBottom: '20px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px'
+              }}>
+                <Zap style={{ width: '20px', height: '20px', color: '#af1731' }} />
+                Actividad Reciente
+              </h2>
+              
+              {loadingActividades ? (
+                <div style={{ textAlign: 'center', padding: '40px' }}>
+                  <div style={{
+                    width: '40px',
+                    height: '40px',
+                    border: '3px solid #f3f4f6',
+                    borderTop: '3px solid #af1731',
+                    borderRadius: '50%',
+                    margin: '0 auto',
+                    animation: 'spin 1s linear infinite'
+                  }} />
+                </div>
+              ) : actividades.length === 0 ? (
+                <p style={{
+                  textAlign: 'center',
+                  color: '#64748b',
+                  fontSize: '0.875rem',
+                  padding: '20px'
+                }}>
+                  No hay actividad registrada
+                </p>
+              ) : (
+                <div style={{
+                  maxHeight: '400px',
+                  overflowY: 'auto',
+                  paddingRight: '8px'
+                }}>
+                  {actividades.map((actividad, index) => {
+                    const IconoActividad = actividad.tipo === 'estado' ? Activity :
+                                         actividad.tipo === 'email' ? Mail :
+                                         actividad.tipo === 'nota' ? Edit :
+                                         actividad.tipo === 'comentario' ? MessageSquare :
+                                         FileText
+                    
+                    return (
+                      <div key={actividad.id} style={{
+                        display: 'flex',
+                        gap: '16px',
+                        marginBottom: index < actividades.length - 1 ? '20px' : 0,
+                        paddingBottom: index < actividades.length - 1 ? '20px' : 0,
+                        borderBottom: index < actividades.length - 1 ? '1px solid #e2e8f0' : 'none'
+                      }}>
+                        <div style={{
+                          width: '32px',
+                          height: '32px',
+                          backgroundColor: '#f8fafc',
+                          borderRadius: '50%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          flexShrink: 0
+                        }}>
+                          <IconoActividad style={{
+                            width: '16px',
+                            height: '16px',
+                            color: '#64748b'
+                          }} />
+                        </div>
+                        
+                        <div style={{ flex: 1 }}>
+                          <p style={{
+                            fontSize: '0.875rem',
+                            fontWeight: '500',
+                            color: '#0f172a',
+                            marginBottom: '4px'
+                          }}>
+                            {actividad.descripcion}
+                          </p>
+                          <p style={{
+                            fontSize: '0.75rem',
+                            color: '#64748b'
+                          }}>
+                            {actividad.usuario} • {new Date(actividad.fecha).toLocaleString('es-MX')}
+                          </p>
+                          {actividad.detalles?.contenido && (
+                            <p style={{
+                              fontSize: '0.8125rem',
+                              color: '#475569',
+                              marginTop: '8px',
+                              padding: '8px 12px',
+                              backgroundColor: '#f8fafc',
+                              borderRadius: '6px',
+                              borderLeft: '3px solid #cbd5e1'
+                            }}>
+                              {actividad.detalles.contenido}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
+
+              {/* Agregar comentario */}
+              <div style={{
+                marginTop: '24px',
+                paddingTop: '24px',
+                borderTop: '1px solid #e2e8f0'
+              }}>
+                <div style={{
+                  display: 'flex',
+                  gap: '12px'
+                }}>
+                  <input
+                    type="text"
+                    value={nuevoComentario}
+                    onChange={(e) => setNuevoComentario(e.target.value)}
+                    placeholder="Agregar un comentario..."
+                    style={{
+                      flex: 1,
+                      padding: '10px 12px',
+                      border: '1px solid #e2e8f0',
+                      borderRadius: '8px',
+                      fontSize: '0.875rem',
+                      outline: 'none',
+                      transition: 'all 0.2s'
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = '#af1731'
+                      e.target.style.boxShadow = '0 0 0 3px rgba(175, 23, 49, 0.1)'
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = '#e2e8f0'
+                      e.target.style.boxShadow = 'none'
+                    }}
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter' && !enviandoComentario) {
+                        enviarComentario()
+                      }
+                    }}
+                  />
+                  <button
+                    onClick={enviarComentario}
+                    disabled={enviandoComentario || !nuevoComentario.trim()}
+                    style={{
+                      padding: '10px 20px',
+                      backgroundColor: enviandoComentario || !nuevoComentario.trim() ? '#cbd5e1' : '#af1731',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '8px',
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      cursor: enviandoComentario || !nuevoComentario.trim() ? 'not-allowed' : 'pointer',
+                      transition: 'all 0.2s',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!enviandoComentario && nuevoComentario.trim()) {
+                        e.currentTarget.style.backgroundColor = '#8b1227'
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!enviandoComentario && nuevoComentario.trim()) {
+                        e.currentTarget.style.backgroundColor = '#af1731'
+                      }
+                    }}
+                  >
+                    {enviandoComentario ? (
+                      <>
+                        <div style={{
+                          width: '14px',
+                          height: '14px',
+                          border: '2px solid white',
+                          borderTop: '2px solid transparent',
+                          borderRadius: '50%',
+                          animation: 'spin 1s linear infinite'
+                        }} />
+                        Enviando...
+                      </>
+                    ) : (
+                      <>
+                        <MessageSquare style={{ width: '16px', height: '16px' }} />
+                        Comentar
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Columna derecha */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            {/* Mascota solicitada */}
+            <div style={{
+              backgroundColor: 'white',
+              borderRadius: '12px',
+              padding: '24px',
+              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+              border: '1px solid #e2e8f0'
+            }}>
+              <h2 style={{
+                fontSize: '1.125rem',
+                fontWeight: '600',
+                color: '#0f172a',
+                marginBottom: '20px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px'
+              }}>
+                <Dog style={{ width: '20px', height: '20px', color: '#af1731' }} />
+                Mascota Solicitada
+              </h2>
+              
+              <div style={{ textAlign: 'center' }}>
+                <Image
+                  src={solicitud.perrito.fotoPrincipal || '/placeholder-dog.jpg'}
+                  alt={solicitud.perrito.nombre}
+                  width={160}
+                  height={160}
+                  style={{
+                    borderRadius: '12px',
+                    objectFit: 'cover',
+                    marginBottom: '16px'
+                  }}
+                />
+                <h3 style={{
+                  fontSize: '1.25rem',
+                  fontWeight: '700',
+                  color: '#0f172a',
+                  marginBottom: '4px'
+                }}>{solicitud.perrito.nombre}</h3>
+                <p style={{
+                  fontSize: '0.875rem',
+                  color: '#64748b',
+                  marginBottom: '16px'
+                }}>{solicitud.perrito.raza}</p>
+                
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(3, 1fr)',
+                  gap: '8px',
+                  marginBottom: '20px'
+                }}>
+                  <div style={{
+                    padding: '8px',
+                    backgroundColor: '#f8fafc',
+                    borderRadius: '8px',
+                    border: '1px solid #e2e8f0'
+                  }}>
+                    <p style={{
+                      fontSize: '0.75rem',
+                      color: '#64748b',
+                      marginBottom: '2px'
+                    }}>Edad</p>
+                    <p style={{
+                      fontSize: '0.875rem',
+                      fontWeight: '600',
+                      color: '#0f172a'
+                    }}>{solicitud.perrito.edad}</p>
+                  </div>
+                  <div style={{
+                    padding: '8px',
+                    backgroundColor: '#f8fafc',
+                    borderRadius: '8px',
+                    border: '1px solid #e2e8f0'
+                  }}>
+                    <p style={{
+                      fontSize: '0.75rem',
+                      color: '#64748b',
+                      marginBottom: '2px'
+                    }}>Sexo</p>
+                    <p style={{
+                      fontSize: '0.875rem',
+                      fontWeight: '600',
+                      color: '#0f172a'
+                    }}>{solicitud.perrito.sexo}</p>
+                  </div>
+                  <div style={{
+                    padding: '8px',
+                    backgroundColor: '#f8fafc',
+                    borderRadius: '8px',
+                    border: '1px solid #e2e8f0'
+                  }}>
+                    <p style={{
+                      fontSize: '0.75rem',
+                      color: '#64748b',
+                      marginBottom: '2px'
+                    }}>Tamaño</p>
+                    <p style={{
+                      fontSize: '0.875rem',
+                      fontWeight: '600',
+                      color: '#0f172a'
+                    }}>{solicitud.perrito.tamano}</p>
+                  </div>
+                </div>
+                
+                <Link
+                  href={`/admin/perritos/${solicitud.perritoId}`}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    padding: '10px 20px',
+                    backgroundColor: 'transparent',
+                    color: '#af1731',
+                    border: '1px solid #af1731',
+                    borderRadius: '8px',
+                    textDecoration: 'none',
+                    fontSize: '0.875rem',
+                    fontWeight: '500',
+                    transition: 'all 0.2s'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#af1731'
+                    e.currentTarget.style.color = 'white'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'transparent'
+                    e.currentTarget.style.color = '#af1731'
+                  }}
+                >
+                  Ver ficha completa
+                  <ExternalLink style={{ width: '16px', height: '16px' }} />
+                </Link>
+              </div>
+            </div>
+
+            {/* Acciones */}
+            <div style={{
+              backgroundColor: 'white',
+              borderRadius: '12px',
+              padding: '24px',
+              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+              border: '1px solid #e2e8f0'
+            }}>
+              <h2 style={{
+                fontSize: '1.125rem',
+                fontWeight: '600',
+                color: '#0f172a',
+                marginBottom: '20px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px'
+              }}>
+                <Zap style={{ width: '20px', height: '20px', color: '#af1731' }} />
+                Acciones Rápidas
+              </h2>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {solicitud.estado === 'nueva' && (
+                  <>
+                    <button
+                      onClick={() => showConfirmDialog('state', 'revision')}
+                      style={{
+                        padding: '12px 20px',
+                        backgroundColor: '#f59e0b',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '8px',
+                        fontSize: '0.875rem',
+                        fontWeight: '500',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px'
+                      }}
+                      disabled={updating}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d97706'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f59e0b'}
+                    >
+                      <Eye style={{ width: '16px', height: '16px' }} />
+                      Iniciar Revisión
+                    </button>
+                    <button
+                      onClick={() => showConfirmDialog('rejection', 'rechazada')}
+                      style={{
+                        padding: '12px 20px',
+                        backgroundColor: 'transparent',
+                        color: '#ef4444',
+                        border: '1px solid #ef4444',
+                        borderRadius: '8px',
+                        fontSize: '0.875rem',
+                        fontWeight: '500',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px'
+                      }}
+                      disabled={updating}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = '#fee2e2'
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'transparent'
+                      }}
+                    >
+                      <XCircle style={{ width: '16px', height: '16px' }} />
+                      Rechazar Solicitud
+                    </button>
+                  </>
+                )}
+                
+                {solicitud.estado === 'revision' && (
+                  <>
+                    <button
+                      onClick={() => showConfirmDialog('state', 'entrevista')}
+                      style={{
+                        padding: '12px 20px',
+                        backgroundColor: '#8b5cf6',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '8px',
+                        fontSize: '0.875rem',
+                        fontWeight: '500',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px'
+                      }}
+                      disabled={updating}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#7c3aed'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#8b5cf6'}
+                    >
+                      <MessageSquare style={{ width: '16px', height: '16px' }} />
+                      Programar Entrevista
+                    </button>
+                    <button
+                      onClick={() => showConfirmDialog('rejection', 'rechazada')}
+                      style={{
+                        padding: '12px 20px',
+                        backgroundColor: 'transparent',
+                        color: '#ef4444',
+                        border: '1px solid #ef4444',
+                        borderRadius: '8px',
+                        fontSize: '0.875rem',
+                        fontWeight: '500',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px'
+                      }}
+                      disabled={updating}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = '#fee2e2'
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'transparent'
+                      }}
+                    >
+                      <XCircle style={{ width: '16px', height: '16px' }} />
+                      Rechazar Solicitud
+                    </button>
+                  </>
+                )}
+                
+                {solicitud.estado === 'entrevista' && (
+                  <>
+                    <button
+                      onClick={() => showConfirmDialog('state', 'prueba')}
+                      style={{
+                        padding: '12px 20px',
+                        backgroundColor: '#f97316',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '8px',
+                        fontSize: '0.875rem',
+                        fontWeight: '500',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px'
+                      }}
+                      disabled={updating}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#ea580c'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f97316'}
+                    >
+                      <Clock style={{ width: '16px', height: '16px' }} />
+                      Iniciar Período de Prueba
+                    </button>
+                    <button
+                      onClick={() => showConfirmDialog('rejection', 'rechazada')}
+                      style={{
+                        padding: '12px 20px',
+                        backgroundColor: 'transparent',
+                        color: '#ef4444',
+                        border: '1px solid #ef4444',
+                        borderRadius: '8px',
+                        fontSize: '0.875rem',
+                        fontWeight: '500',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px'
+                      }}
+                      disabled={updating}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = '#fee2e2'
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'transparent'
+                      }}
+                    >
+                      <XCircle style={{ width: '16px', height: '16px' }} />
+                      Rechazar Solicitud
+                    </button>
+                  </>
+                )}
+                
+                {solicitud.estado === 'prueba' && (
+                  <>
+                    <button
+                      onClick={() => showConfirmDialog('approval', 'aprobada')}
+                      style={{
+                        padding: '12px 20px',
+                        backgroundColor: '#10b981',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '8px',
+                        fontSize: '0.875rem',
+                        fontWeight: '500',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px'
+                      }}
+                      disabled={updating}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#059669'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#10b981'}
+                    >
+                      <CheckCircle style={{ width: '16px', height: '16px' }} />
+                      Aprobar Adopción
+                    </button>
+                    <button
+                      onClick={() => showConfirmDialog('rejection', 'rechazada')}
+                      style={{
+                        padding: '12px 20px',
+                        backgroundColor: 'transparent',
+                        color: '#ef4444',
+                        border: '1px solid #ef4444',
+                        borderRadius: '8px',
+                        fontSize: '0.875rem',
+                        fontWeight: '500',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px'
+                      }}
+                      disabled={updating}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = '#fee2e2'
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'transparent'
+                      }}
+                    >
+                      <XCircle style={{ width: '16px', height: '16px' }} />
+                      Rechazar Solicitud
+                    </button>
+                  </>
+                )}
+                
+                {(solicitud.estado === 'aprobada' || solicitud.estado === 'rechazada' || solicitud.estado === 'cancelada') && (
+                  <div style={{
+                    padding: '16px',
+                    backgroundColor: '#f8fafc',
+                    borderRadius: '8px',
+                    border: '1px solid #e2e8f0',
+                    textAlign: 'center'
+                  }}>
+                    <Info style={{
+                      width: '24px',
+                      height: '24px',
+                      color: '#64748b',
+                      margin: '0 auto 8px'
+                    }} />
+                    <p style={{
+                      fontSize: '0.875rem',
+                      color: '#64748b'
+                    }}>
+                      Esta solicitud ha sido finalizada y no permite más acciones.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Notas internas */}
+            <div style={{
+              backgroundColor: 'white',
+              borderRadius: '12px',
+              padding: '24px',
+              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+              border: '1px solid #e2e8f0'
+            }}>
+              <h2 style={{
+                fontSize: '1.125rem',
+                fontWeight: '600',
+                color: '#0f172a',
+                marginBottom: '20px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px'
+              }}>
+                <Edit style={{ width: '20px', height: '20px', color: '#af1731' }} />
+                Notas Internas
+              </h2>
+              
+              <textarea
+                value={notas}
+                onChange={(e) => setNotas(e.target.value)}
+                rows={6}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '8px',
+                  fontSize: '0.875rem',
+                  outline: 'none',
+                  transition: 'all 0.2s',
+                  resize: 'vertical'
+                }}
+                placeholder="Agregar notas sobre esta solicitud..."
+                onFocus={(e) => {
+                  e.target.style.borderColor = '#af1731'
+                  e.target.style.boxShadow = '0 0 0 3px rgba(175, 23, 49, 0.1)'
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = '#e2e8f0'
+                  e.target.style.boxShadow = 'none'
+                }}
+              />
+              
               <button
                 onClick={() => {
-                  setShowModal(false)
-                  setModalAction(null)
+                  setConfirmDialog({
+                    show: true,
+                    type: 'state',
+                    title: 'Guardar Notas',
+                    message: '¿Deseas guardar las notas para esta solicitud?',
+                    newState: solicitud.estado,
+                    confirmText: 'Guardar',
+                    onConfirm: () => actualizarEstado(solicitud.estado)
+                  })
                 }}
-                className="px-4 py-2 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors"
+                style={{
+                  marginTop: '12px',
+                  padding: '10px 20px',
+                  backgroundColor: '#64748b',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  opacity: updating || notas === solicitud.notas ? 0.5 : 1
+                }}
+                disabled={updating || notas === solicitud.notas}
+                onMouseEnter={(e) => {
+                  if (!updating && notas !== solicitud.notas) {
+                    e.currentTarget.style.backgroundColor = '#475569'
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = '#64748b'
+                }}
+              >
+                <Save style={{ width: '16px', height: '16px' }} />
+                Guardar Notas
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Diálogo de confirmación mejorado */}
+      {confirmDialog?.show && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 50
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '12px',
+            padding: '32px',
+            maxWidth: '480px',
+            width: '90%',
+            boxShadow: '0 20px 40px rgba(0, 0, 0, 0.2)'
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '16px',
+              marginBottom: '24px'
+            }}>
+              {confirmDialog.type === 'approval' ? (
+                <div style={{
+                  width: '48px',
+                  height: '48px',
+                  backgroundColor: '#d1fae5',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  <CheckCircle style={{ width: '24px', height: '24px', color: '#10b981' }} />
+                </div>
+              ) : confirmDialog.type === 'rejection' ? (
+                <div style={{
+                  width: '48px',
+                  height: '48px',
+                  backgroundColor: '#fee2e2',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  <AlertTriangle style={{ width: '24px', height: '24px', color: '#ef4444' }} />
+                </div>
+              ) : (
+                <div style={{
+                  width: '48px',
+                  height: '48px',
+                  backgroundColor: '#dbeafe',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  <Info style={{ width: '24px', height: '24px', color: '#3b82f6' }} />
+                </div>
+              )}
+              <h3 style={{
+                fontSize: '1.25rem',
+                fontWeight: '600',
+                color: '#0f172a',
+                margin: 0
+              }}>
+                {confirmDialog.title}
+              </h3>
+            </div>
+            
+            <p style={{
+              fontSize: '0.875rem',
+              color: '#64748b',
+              marginBottom: '24px',
+              lineHeight: '1.6'
+            }}>
+              {confirmDialog.message}
+            </p>
+            
+            <div style={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              gap: '12px'
+            }}>
+              <button
+                onClick={() => setConfirmDialog(null)}
+                style={{
+                  padding: '10px 20px',
+                  backgroundColor: 'transparent',
+                  color: '#64748b',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '8px',
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#f8fafc'
+                  e.currentTarget.style.borderColor = '#cbd5e1'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent'
+                  e.currentTarget.style.borderColor = '#e2e8f0'
+                }}
               >
                 Cancelar
               </button>
               <button
-                onClick={() => actualizarEstado(modalAction === 'aprobar' ? 'aprobada' : 'rechazada')}
-                className={`px-4 py-2 text-white rounded-lg transition-colors ${
-                  modalAction === 'aprobar' 
-                    ? 'bg-green-500 hover:bg-green-600' 
-                    : 'bg-red-500 hover:bg-red-600'
-                }`}
+                onClick={confirmDialog.onConfirm}
+                style={{
+                  padding: '10px 20px',
+                  backgroundColor: confirmDialog.type === 'approval' ? '#10b981' : confirmDialog.type === 'rejection' ? '#ef4444' : '#64748b',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  opacity: updating ? 0.5 : 1
+                }}
                 disabled={updating}
+                onMouseEnter={(e) => {
+                  if (!updating) {
+                    const hoverColor = confirmDialog.type === 'approval' ? '#059669' : 
+                                     confirmDialog.type === 'rejection' ? '#dc2626' : '#475569'
+                    e.currentTarget.style.backgroundColor = hoverColor
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  const originalColor = confirmDialog.type === 'approval' ? '#10b981' :
+                                      confirmDialog.type === 'rejection' ? '#ef4444' : '#64748b'
+                  e.currentTarget.style.backgroundColor = originalColor
+                }}
               >
-                {updating ? 'Procesando...' : 'Confirmar'}
+                {updating ? 'Procesando...' : confirmDialog.confirmText}
               </button>
             </div>
           </div>

@@ -5,9 +5,21 @@
       "NODE_OPTIONS": "--max-old-space-size=4096"
     }
   },
+  "crons": [
+    {
+      "path": "/api/cron/recordatorios",
+      "schedule": "0 */6 * * *"
+    }
+  ],
   "functions": {
     "src/app/**/*.tsx": {
       "maxDuration": 30
+    },
+    "src/app/api/admin/metrics/sse/route.ts": {
+      "maxDuration": 60
+    },
+    "src/app/api/notifications/sse/route.ts": {
+      "maxDuration": 60
     }
   },
   "headers": [

@@ -20,13 +20,17 @@ import {
   Shield,
   Crown,
   Sparkles,
-  ChevronRight
+  ChevronRight,
+  Activity
 } from 'lucide-react'
+import { NotificationPanel } from '../../components/ui/NotificationPanel'
 
 const navigation = [
   { name: 'Panel Principal', href: '/admin', icon: LayoutDashboard },
+  { name: 'Dashboard en Vivo', href: '/admin/dashboard', icon: Activity },
   { name: 'Gestión de Mascotas', href: '/admin/perritos', icon: Dog },
   { name: 'Solicitudes de Adopción', href: '/admin/solicitudes', icon: FileText },
+  { name: 'Recordatorios', href: '/admin/recordatorios', icon: Bell },
   { name: 'Comercios Aliados', href: '/admin/comercios', icon: Building2 },
   { name: 'Configuración del Sistema', href: '/admin/configuracion', icon: Settings },
 ]
@@ -202,10 +206,7 @@ export default function AdminLayout({
               <div className="system-status-indicator"></div>
               <span className="system-status-text">SISTEMA OPERATIVO</span>
             </div>
-            <button className="admin-notifications">
-              <Bell className="notification-icon" />
-              <div className="notification-badge">3</div>
-            </button>
+            <NotificationPanel />
             <div className="admin-user-avatar-small">
               <span className="user-initial-small">
                 {session?.user?.name?.charAt(0) || 'A'}

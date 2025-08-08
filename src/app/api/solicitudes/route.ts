@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '../../../../lib/db'
+import { EmailService } from '../../../../src/lib/email'
+import { sendNotificationToAdmins } from '../../../../src/lib/notifications'
+import { addActivityEvent, broadcastActivityEvent } from '../../../../src/lib/metrics'
 
 // Función para generar código único ADPX-XXXX
 function generateSolicitudCode(): string {
@@ -136,11 +139,63 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    // TODO: Enviar email de confirmación (cuando se configure Resend)
-    // await enviarEmailConfirmacion(solicitud)
-    
-    // TODO: Notificar al admin por email
-    // await notificarAdminNuevaSolicitud(solicitud)
+    // Enviar email de confirmación
+    await EmailService.sendSolicitudRecibida({
+      email: solicitud.email,
+      nombreSolicitante: solicitud.nombre,
+      nombrePerrito: solicitud.perrito.nombre,
+      codigo: solicitud.codigo
+    })
+
+    // Enviar notificación en tiempo real a administradores
+    sendNotificationToAdmins({
+      type: 'solicitud_nueva',
+      title: `Nueva solicitud: ${solicitud.codigo}`,
+      message: `${solicitud.nombre} quiere adoptar a ${solicitud.perrito.nombre}`,
+      solicitudId: solicitud.id,
+      data: {
+        perrito: solicitud.perrito.nombre,
+        solicitante: solicitud.nombre,
+        origen: origenQR ? `QR ${origenQR}` : 'Web directa'
+      }
+    })
+
+    // Registrar evento de actividad
+    const activityEvent = {
+      tipo: 'solicitud_nueva' as const,
+      descripcion: `Nueva solicitud de ${solicitud.nombre} para adoptar a ${solicitud.perrito.nombre}`,
+      usuario: solicitud.nombre,
+      metadata: {
+        solicitudId: solicitud.id,
+        codigo: solicitud.codigo,
+        perritoId: solicitud.perritoId
+      }
+    }
+    addActivityEvent(activityEvent)
+    broadcastActivityEvent({
+      ...activityEvent,
+      id: Math.random().toString(36).substr(2, 9),
+      timestamp: new Date().toISOString()
+    })
+
+    // Notificar al admin por email
+    if (process.env.ADMIN_EMAIL) {
+      await EmailService.send({
+        to: process.env.ADMIN_EMAIL,
+        subject: `Nueva solicitud de adopción - ${solicitud.codigo}`,
+        html: `
+          <h2>Nueva solicitud de adopción</h2>
+          <p><strong>Código:</strong> ${solicitud.codigo}</p>
+          <p><strong>Perrito:</strong> ${solicitud.perrito.nombre}</p>
+          <p><strong>Solicitante:</strong> ${solicitud.nombre}</p>
+          <p><strong>Email:</strong> ${solicitud.email}</p>
+          <p><strong>Teléfono:</strong> ${solicitud.telefono}</p>
+          <p><strong>Ciudad:</strong> ${solicitud.ciudad}</p>
+          <p><strong>Origen:</strong> ${origenQR ? `QR ${origenQR}` : 'Web directa'}</p>
+          <p><a href="${process.env.NEXTAUTH_URL}/admin/solicitudes/${solicitud.id}">Ver solicitud</a></p>
+        `
+      })
+    }
 
     return NextResponse.json({
       success: true,

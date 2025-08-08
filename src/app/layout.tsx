@@ -3,7 +3,10 @@
 import "./globals.css";
 import Layout from "../components/layout/Layout";
 import AuthProvider from "../components/providers/AuthProvider";
+import { ToastProvider } from "../providers/ToastProvider";
 import { usePathname } from "next/navigation";
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 export const dynamic = 'force-dynamic';
 
@@ -37,10 +40,14 @@ export default function RootLayout({
       </head>
       <body>
         <AuthProvider>
-          <LayoutWrapper>
-            {children}
-          </LayoutWrapper>
+          <ToastProvider>
+            <LayoutWrapper>
+              {children}
+            </LayoutWrapper>
+          </ToastProvider>
         </AuthProvider>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

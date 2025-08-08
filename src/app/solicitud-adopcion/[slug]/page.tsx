@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { notFound } from 'next/navigation'
+import { useToastContext } from '../../../providers/ToastProvider'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePerrito } from '../../../hooks/usePerritos'
@@ -11,6 +12,9 @@ import ErrorMessage from '../../../components/ui/ErrorMessage'
 import { 
   CloseIcon, HomeIcon, FormIcon, DogIcon, CheckCircleIcon, ArrowLeftIcon, ArrowRightIcon
 } from '../../../components/icons/Icons'
+import { FileUpload } from '../../../components/FileUpload'
+import { FileAttachment } from '../../../lib/attachments'
+import { FileText } from 'lucide-react'
 
 interface PageProps {
   params: { slug: string }
@@ -20,6 +24,7 @@ const defaultDogImage = 'https://somosmaka.com/cdn/shop/articles/perro_mestizo.j
 
 export default function SolicitudAdopcionPage({ params }: PageProps) {
   const router = useRouter()
+  const toast = useToastContext()
   const [currentStep, setCurrentStep] = useState(0)
   const [formData, setFormData] = useState({
     // Información personal
@@ -44,6 +49,10 @@ export default function SolicitudAdopcionPage({ params }: PageProps) {
     tiempoDisponible: ''
   })
 
+  const [errors, setErrors] = useState<{[key: string]: string}>({})
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [uploadedFiles, setUploadedFiles] = useState<FileAttachment[]>([])
+
   const {
     perrito,
     loading,
@@ -66,17 +75,124 @@ export default function SolicitudAdopcionPage({ params }: PageProps) {
       title: "Motivación y Compromiso",
       icon: DogIcon,
       fields: ['motivacion', 'comprometimiento', 'visitasVeterinario', 'tiempoDisponible']
+    },
+    {
+      title: "Documentos",
+      icon: FileText,
+      fields: []
     }
   ]
 
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
+  }
+
+  const validatePhone = (phone: string) => {
+    const phoneRegex = /^[\d\s\-\+\(\)]{10,}$/
+    return phoneRegex.test(phone.replace(/\s/g, ''))
+  }
+
+  const validateStep = (step: number) => {
+    const newErrors: {[key: string]: string} = {}
+    
+    if (step === 0) {
+      // Validar información personal
+      if (!formData.nombre.trim()) newErrors.nombre = 'El nombre es requerido'
+      if (!formData.apellidos.trim()) newErrors.apellidos = 'Los apellidos son requeridos'
+      
+      const edad = parseInt(formData.edad)
+      if (!formData.edad || edad < 18 || edad > 100) {
+        newErrors.edad = 'La edad debe estar entre 18 y 100 años'
+      }
+      
+      if (!formData.telefono.trim()) {
+        newErrors.telefono = 'El teléfono es requerido'
+      } else if (!validatePhone(formData.telefono)) {
+        newErrors.telefono = 'Formato de teléfono inválido'
+      }
+      
+      if (!formData.email.trim()) {
+        newErrors.email = 'El email es requerido'
+      } else if (!validateEmail(formData.email)) {
+        newErrors.email = 'Formato de email inválido'
+      }
+      
+      if (!formData.direccion.trim()) newErrors.direccion = 'La dirección es requerida'
+    }
+    
+    if (step === 1) {
+      // Validar información del hogar
+      if (!formData.tipoVivienda) newErrors.tipoVivienda = 'Selecciona el tipo de vivienda'
+      if (!formData.espacioExterior) newErrors.espacioExterior = 'Indica si tienes espacio exterior'
+      if (!formData.tiempoSolo) newErrors.tiempoSolo = 'Indica cuánto tiempo estaría solo'
+      if (!formData.experienciaPerros.trim() || formData.experienciaPerros.length < 20) {
+        newErrors.experienciaPerros = 'Describe tu experiencia con perros (mínimo 20 caracteres)'
+      }
+    }
+    
+    if (step === 2) {
+      // Validar motivación y compromiso
+      if (!formData.motivacion.trim() || formData.motivacion.length < 50) {
+        newErrors.motivacion = 'Explica tu motivación (mínimo 50 caracteres)'
+      }
+      if (!formData.comprometimiento) {
+        newErrors.comprometimiento = 'Debes comprometerte a cuidar al perrito'
+      }
+      if (!formData.visitasVeterinario) {
+        newErrors.visitasVeterinario = 'Debes comprometerte a llevarlo al veterinario'
+      }
+      if (!formData.tiempoDisponible) {
+        newErrors.tiempoDisponible = 'Indica cuánto tiempo puedes dedicarle'
+      }
+    }
+    
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }))
+    // Limpiar error del campo cuando el usuario empiece a escribir
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: '' }))
+    }
+  }
+
+  const handleFileUpload = async (file: File, category: string): Promise<FileAttachment> => {
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('category', category)
+    formData.append('solicitudId', 'temp-' + Date.now()) // ID temporal antes de crear la solicitud
+
+    const response = await fetch('/api/attachments/upload', {
+      method: 'POST',
+      body: formData
+    })
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.error || 'Error al subir archivo')
+    }
+
+    const data = await response.json()
+    const newFile = data.attachment
+    setUploadedFiles(prev => [...prev, newFile])
+    return newFile
+  }
+
+  const handleFileRemove = async (fileId: string) => {
+    // En este caso solo removemos de la lista local
+    setUploadedFiles(prev => prev.filter(f => f.id !== fileId))
   }
 
   const handleNext = () => {
-    if (currentStep < steps.length - 1) {
+    if (validateStep(currentStep) && currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1)
       window.scrollTo({ top: 0, behavior: 'smooth' })
+      toast.success('¡Paso completado!', `Has completado el paso ${currentStep + 1} exitosamente`)
+    } else if (!validateStep(currentStep)) {
+      toast.error('Formulario incompleto', 'Por favor completa todos los campos requeridos antes de continuar')
     }
   }
 
@@ -87,13 +203,50 @@ export default function SolicitudAdopcionPage({ params }: PageProps) {
     }
   }
 
-  const handleSubmit = () => {
-    // Aquí se enviaría la solicitud
-    console.log('Solicitud enviada:', formData)
+  const handleSubmit = async () => {
+    if (!validateStep(currentStep)) {
+      return
+    }
+
+    setIsSubmitting(true)
     
-    // Redirigir a página de agradecimiento con datos del perrito
-    const thankYouUrl = `/solicitud-adopcion/gracias?dog=${encodeURIComponent(perrito.nombre)}&image=${encodeURIComponent(perrito.fotoPrincipal || defaultDogImage)}`
-    router.push(thankYouUrl)
+    try {
+      const response = await fetch('/api/solicitud-adopcion', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          ...formData,
+          perritoSlug: params.slug,
+          archivosAdjuntos: uploadedFiles.map(f => ({
+            id: f.id,
+            fileName: f.fileName,
+            fileType: f.fileType,
+            category: f.category
+          }))
+        })
+      })
+
+      if (response.ok) {
+        toast.success('¡Solicitud enviada!', `Tu solicitud para adoptar a ${perrito.nombre} ha sido enviada exitosamente`)
+        
+        // Redirigir a página de agradecimiento con datos del perrito
+        const thankYouUrl = `/solicitud-adopcion/gracias?dog=${encodeURIComponent(perrito.nombre)}&image=${encodeURIComponent(perrito.fotoPrincipal || defaultDogImage)}`
+        router.push(thankYouUrl)
+      } else {
+        const errorData = await response.json()
+        const errorMessage = errorData.error || 'Error al enviar la solicitud'
+        setErrors({ submit: errorMessage })
+        toast.error('Error al enviar solicitud', errorMessage)
+      }
+    } catch (error) {
+      const errorMessage = 'Error de conexión. Intenta nuevamente.'
+      setErrors({ submit: errorMessage })
+      toast.error('Error de conexión', errorMessage)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   if (loading) {
@@ -128,6 +281,26 @@ export default function SolicitudAdopcionPage({ params }: PageProps) {
 
   if (perritoNotFound || !perrito) {
     notFound()
+  }
+
+  const getFieldStyle = (fieldName: string, baseStyle: any) => ({
+    ...baseStyle,
+    borderColor: errors[fieldName] ? '#ef4444' : '#e5e7eb',
+    boxShadow: errors[fieldName] ? '0 0 0 3px rgba(239, 68, 68, 0.1)' : 'none'
+  })
+
+  const ErrorMessage = ({ error }: { error?: string }) => {
+    if (!error) return null
+    return (
+      <p style={{
+        fontSize: '0.875rem',
+        color: '#ef4444',
+        marginTop: '4px',
+        marginBottom: '0'
+      }}>
+        {error}
+      </p>
+    )
   }
 
   return (
@@ -349,16 +522,17 @@ export default function SolicitudAdopcionPage({ params }: PageProps) {
                     type="text"
                     value={formData.nombre}
                     onChange={(e) => handleInputChange('nombre', e.target.value)}
-                    style={{
+                    style={getFieldStyle('nombre', {
                       width: '100%',
                       padding: '12px',
                       border: '2px solid #e5e7eb',
                       borderRadius: '8px',
                       fontSize: '16px',
-                      transition: 'border-color 0.2s'
-                    }}
+                      transition: 'all 0.2s'
+                    })}
                     placeholder="Tu nombre"
                   />
+                  <ErrorMessage error={errors.nombre} />
                 </div>
                 <div>
                   <label style={{ fontSize: '14px', fontWeight: '600', color: '#374151', marginBottom: '8px', display: 'block' }}>
@@ -423,15 +597,17 @@ export default function SolicitudAdopcionPage({ params }: PageProps) {
                   type="email"
                   value={formData.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}
-                  style={{
+                  style={getFieldStyle('email', {
                     width: '100%',
                     padding: '12px',
                     border: '2px solid #e5e7eb',
                     borderRadius: '8px',
-                    fontSize: '16px'
-                  }}
+                    fontSize: '16px',
+                    transition: 'all 0.2s'
+                  })}
                   placeholder="tu@email.com"
                 />
+                <ErrorMessage error={errors.email} />
               </div>
               <div>
                 <label style={{ fontSize: '14px', fontWeight: '600', color: '#374151', marginBottom: '8px', display: 'block' }}>
@@ -708,7 +884,91 @@ export default function SolicitudAdopcionPage({ params }: PageProps) {
               </div>
             </div>
           )}
+
+          {/* Step 4: Documentos */}
+          {currentStep === 3 && (
+            <div>
+              <h2 style={{
+                fontSize: '24px',
+                fontWeight: '700',
+                color: '#0e312d',
+                marginBottom: '32px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px'
+              }}>
+                <FileText size={28} color="#6b3838" />
+                Documentos
+              </h2>
+
+              <div style={{
+                backgroundColor: '#f0f9ff',
+                border: '1px solid #bae6fd',
+                borderRadius: '12px',
+                padding: '16px',
+                marginBottom: '24px'
+              }}>
+                <p style={{
+                  fontSize: '0.875rem',
+                  color: '#075985',
+                  margin: 0
+                }}>
+                  <strong>Opcional:</strong> Puedes adjuntar documentos que respalden tu solicitud, como identificación oficial, comprobante de domicilio o cartas de referencia. Esto ayudará a agilizar el proceso de adopción.
+                </p>
+              </div>
+
+              <FileUpload
+                onUpload={handleFileUpload}
+                onRemove={handleFileRemove}
+                uploadedFiles={uploadedFiles}
+                showCategorySelect={true}
+                maxFiles={5}
+                disabled={isSubmitting}
+              />
+
+              {uploadedFiles.length === 0 && (
+                <div style={{
+                  marginTop: '24px',
+                  padding: '24px',
+                  backgroundColor: '#f8fafc',
+                  borderRadius: '12px',
+                  textAlign: 'center'
+                }}>
+                  <FileText size={48} color="#d1d5db" style={{ marginBottom: '12px' }} />
+                  <p style={{
+                    fontSize: '0.875rem',
+                    color: '#6b7280',
+                    margin: 0
+                  }}>
+                    No has adjuntado ningún documento aún.
+                    <br />
+                    Puedes continuar sin documentos o agregarlos ahora.
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
+
+        {/* Error general */}
+        {errors.submit && (
+          <div style={{
+            marginBottom: '24px',
+            padding: '16px',
+            backgroundColor: '#fef2f2',
+            border: '1px solid #fecaca',
+            borderRadius: '12px'
+          }}>
+            <p style={{
+              fontSize: '0.875rem',
+              color: '#dc2626',
+              margin: 0,
+              fontWeight: '500'
+            }}>
+              {errors.submit}
+            </p>
+          </div>
+        )}
 
         {/* Navigation Buttons - Always visible at bottom */}
         <div style={{
@@ -773,23 +1033,24 @@ export default function SolicitudAdopcionPage({ params }: PageProps) {
             ) : (
               <button
                 onClick={handleSubmit}
+                disabled={isSubmitting}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
                   gap: '8px',
                   padding: '14px 24px',
-                  background: '#22c55e',
+                  background: isSubmitting ? '#94a3b8' : '#22c55e',
                   border: 'none',
                   color: 'white',
                   borderRadius: '12px',
                   fontSize: '16px',
                   fontWeight: '600',
-                  cursor: 'pointer',
+                  cursor: isSubmitting ? 'not-allowed' : 'pointer',
                   transition: 'all 0.2s'
                 }}
               >
                 <CheckCircleIcon size={18} color="white" />
-                Enviar Solicitud
+                {isSubmitting ? 'Enviando...' : 'Enviar Solicitud'}
               </button>
             )}
           </div>

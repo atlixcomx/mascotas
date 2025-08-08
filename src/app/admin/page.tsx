@@ -29,7 +29,8 @@ import {
   Syringe,
   CalendarDays,
   Megaphone,
-  AlertTriangle
+  AlertTriangle,
+  FileSpreadsheet
 } from 'lucide-react'
 import styles from './dashboard.module.css'
 
@@ -1049,6 +1050,13 @@ export default function AdminDashboard() {
               icon={Phone}
               color="purple"
               badge={data.seguimientos.vencidos}
+            />
+            <QuickActionCard
+              title="Importar Datos"
+              description="CSV Import"
+              href="/admin/importar"
+              icon={FileSpreadsheet}
+              color="orange"
             />
           </div>
         </div>

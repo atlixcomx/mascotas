@@ -42,7 +42,7 @@ export async function POST(
     }
 
     const body = await request.json()
-    const { contenido, tipo = 'comentario' } = body
+    const { contenido } = body
 
     if (!contenido) {
       return NextResponse.json(
@@ -84,7 +84,7 @@ export async function POST(
           create: {
             contenido: contenido,
             autor: session.user.name || 'Admin',
-            tipo: tipo
+            tipo: 'comentario'
           }
         }
       }

@@ -27,7 +27,10 @@ export async function GET(
     const solicitud = await prisma.solicitud.findUnique({
       where: { id: params.id },
       include: {
-        perrito: true
+        perrito: true,
+        notas: {
+          orderBy: { createdAt: 'desc' }
+        }
       }
     })
 
@@ -108,17 +111,19 @@ export async function GET(
       })
     }
 
-    // Si hay notas, agregar como actividad
-    if (solicitud.notas) {
-      actividades.push({
-        id: `nota-${solicitud.id}`,
-        tipo: 'nota',
-        descripcion: 'Nota agregada',
-        usuario: 'Admin',
-        fecha: solicitud.updatedAt.toISOString(),
-        detalles: {
-          contenido: solicitud.notas
-        }
+    // Agregar todas las notas como actividades
+    if (solicitud.notas && solicitud.notas.length > 0) {
+      solicitud.notas.forEach((nota) => {
+        actividades.push({
+          id: nota.id,
+          tipo: nota.tipo === 'cambio_estado' ? 'nota' : 'comentario' as any,
+          descripcion: nota.tipo === 'cambio_estado' ? 'Nota agregada' : 'Comentario agregado',
+          usuario: nota.autor,
+          fecha: nota.createdAt.toISOString(),
+          detalles: {
+            contenido: nota.contenido
+          }
+        })
       })
     }
 

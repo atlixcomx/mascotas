@@ -34,6 +34,8 @@ export default function SolicitudAdopcionPage({ params }: PageProps) {
     telefono: '',
     email: '',
     direccion: '',
+    ciudad: '',
+    codigoPostal: '',
     
     // Información del hogar
     tipoVivienda: '',
@@ -64,7 +66,7 @@ export default function SolicitudAdopcionPage({ params }: PageProps) {
     {
       title: "Información Personal",
       icon: FormIcon,
-      fields: ['nombre', 'apellidos', 'edad', 'telefono', 'email', 'direccion']
+      fields: ['nombre', 'apellidos', 'edad', 'telefono', 'email', 'direccion', 'ciudad', 'codigoPostal']
     },
     {
       title: "Tu Hogar",
@@ -114,6 +116,12 @@ export default function SolicitudAdopcionPage({ params }: PageProps) {
       }
       
       if (!formData.direccion.trim()) newErrors.direccion = 'La dirección es requerida'
+      if (!formData.ciudad.trim()) newErrors.ciudad = 'La ciudad es requerida'
+      if (!formData.codigoPostal.trim()) {
+        newErrors.codigoPostal = 'El código postal es requerido'
+      } else if (!/^\d{5}$/.test(formData.codigoPostal)) {
+        newErrors.codigoPostal = 'El código postal debe tener 5 dígitos'
+      }
     }
     
     if (step === 1) {
@@ -217,8 +225,8 @@ export default function SolicitudAdopcionPage({ params }: PageProps) {
           telefono: formData.telefono,
           direccion: formData.direccion,
           edad: formData.edad, // Send edad as separate field
-          ciudad: 'No especificada', // Add missing required field
-          codigoPostal: '00000', // Add missing required field
+          ciudad: formData.ciudad,
+          codigoPostal: formData.codigoPostal,
           tipoVivienda: formData.tipoVivienda,
           tienePatio: formData.espacioExterior !== 'no', // Convert to boolean
           experiencia: formData.experienciaPerros,
@@ -616,17 +624,65 @@ export default function SolicitudAdopcionPage({ params }: PageProps) {
                 <textarea
                   value={formData.direccion}
                   onChange={(e) => handleInputChange('direccion', e.target.value)}
-                  rows={3}
-                  style={{
+                  rows={2}
+                  style={getFieldStyle('direccion', {
                     width: '100%',
                     padding: '12px',
                     border: '2px solid #e5e7eb',
                     borderRadius: '8px',
                     fontSize: '16px',
                     resize: 'vertical'
-                  }}
-                  placeholder="Tu dirección completa"
+                  })}
+                  placeholder="Calle y número"
                 />
+                <ErrorMessage error={errors.direccion} />
+              </div>
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                gap: '24px'
+              }}>
+                <div>
+                  <label style={{ fontSize: '14px', fontWeight: '600', color: '#374151', marginBottom: '8px', display: 'block' }}>
+                    Ciudad *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.ciudad}
+                    onChange={(e) => handleInputChange('ciudad', e.target.value)}
+                    style={getFieldStyle('ciudad', {
+                      width: '100%',
+                      padding: '12px',
+                      border: '2px solid #e5e7eb',
+                      borderRadius: '8px',
+                      fontSize: '16px',
+                      transition: 'all 0.2s'
+                    })}
+                    placeholder="Tu ciudad"
+                  />
+                  <ErrorMessage error={errors.ciudad} />
+                </div>
+                <div>
+                  <label style={{ fontSize: '14px', fontWeight: '600', color: '#374151', marginBottom: '8px', display: 'block' }}>
+                    Código Postal *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.codigoPostal}
+                    onChange={(e) => handleInputChange('codigoPostal', e.target.value)}
+                    style={getFieldStyle('codigoPostal', {
+                      width: '100%',
+                      padding: '12px',
+                      border: '2px solid #e5e7eb',
+                      borderRadius: '8px',
+                      fontSize: '16px',
+                      transition: 'all 0.2s'
+                    })}
+                    placeholder="C.P."
+                    maxLength={5}
+                  />
+                  <ErrorMessage error={errors.codigoPostal} />
+                </div>
               </div>
             </div>
           )}

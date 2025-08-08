@@ -110,6 +110,8 @@ export default function EditPerrito() {
   const [activeTab, setActiveTab] = useState('informacion')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [uploadingPhoto, setUploadingPhoto] = useState(false)
+  const [uploadSuccess, setUploadSuccess] = useState(false)
 
   // Estados para modales
   const [showMedicalModal, setShowMedicalModal] = useState(false)
@@ -259,6 +261,9 @@ export default function EditPerrito() {
   }
 
   const handlePhotoUpload = async (url: string) => {
+    setUploadingPhoto(true)
+    setUploadSuccess(false)
+    
     try {
       const response = await fetch(`/api/admin/perritos/${perritoId}/fotos`, {
         method: 'POST',
@@ -270,14 +275,18 @@ export default function EditPerrito() {
 
       if (response.ok) {
         await fetchPerrito()
-        alert('Foto subida correctamente')
+        setUploadSuccess(true)
+        // Resetear el estado de éxito después de 3 segundos
+        setTimeout(() => setUploadSuccess(false), 3000)
       } else {
         const data = await response.json()
-        alert(data.error || 'Error al subir la foto')
+        alert(data.error || 'Error al guardar la foto')
       }
     } catch (error) {
       console.error('Error uploading photo:', error)
-      alert('Error al subir la foto')
+      alert('Error al guardar la foto en la base de datos')
+    } finally {
+      setUploadingPhoto(false)
     }
   }
 
@@ -937,50 +946,103 @@ export default function EditPerrito() {
 
             {/* Upload Section */}
             <div style={{
-              backgroundColor: '#f9fafb',
-              border: '2px dashed #e5e7eb',
+              backgroundColor: uploadSuccess ? '#f0fdf4' : '#f9fafb',
+              border: uploadSuccess ? '2px solid #22c55e' : '2px dashed #e5e7eb',
               borderRadius: '12px',
               padding: '24px',
               textAlign: 'center',
-              marginBottom: '32px'
+              marginBottom: '32px',
+              transition: 'all 0.3s ease'
             }}>
-              <Camera style={{ width: '48px', height: '48px', color: '#9ca3af', margin: '0 auto 16px' }} />
-              <h4 style={{ fontSize: '1rem', fontWeight: '600', color: '#374151', marginBottom: '8px' }}>
-                Subir Nueva Foto
-              </h4>
-              <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '16px' }}>
-                Arrastra y suelta o selecciona una imagen (máx. 4MB)
-              </p>
-              <UploadButton
-                endpoint="petImageUploader"
-                onClientUploadComplete={(res) => {
-                  if (res && res[0]) {
-                    handlePhotoUpload(res[0].url)
-                  }
-                }}
-                onUploadError={(error: Error) => {
-                  alert(`Error al subir: ${error.message}`)
-                }}
-                appearance={{
-                  button: {
-                    backgroundColor: '#af1731',
-                    color: 'white',
-                    fontSize: '0.875rem',
-                    fontWeight: '500',
-                    padding: '10px 20px',
-                    borderRadius: '8px',
-                    border: 'none',
-                    cursor: 'pointer',
-                  },
-                  container: {
-                    marginTop: '0',
-                  },
-                  allowedContent: {
-                    display: 'none',
-                  },
-                }}
-              />
+              {uploadSuccess ? (
+                <>
+                  <div style={{
+                    width: '64px',
+                    height: '64px',
+                    backgroundColor: '#22c55e',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    margin: '0 auto 16px'
+                  }}>
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  </div>
+                  <h4 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#16a34a', marginBottom: '8px' }}>
+                    ¡Foto subida exitosamente!
+                  </h4>
+                  <p style={{ fontSize: '0.875rem', color: '#15803d' }}>
+                    La foto se ha agregado a la galería
+                  </p>
+                </>
+              ) : uploadingPhoto ? (
+                <>
+                  <div style={{
+                    width: '64px',
+                    height: '64px',
+                    border: '4px solid #f3f4f6',
+                    borderTop: '4px solid #af1731',
+                    borderRadius: '50%',
+                    margin: '0 auto 16px',
+                    animation: 'spin 1s linear infinite'
+                  }} />
+                  <h4 style={{ fontSize: '1rem', fontWeight: '600', color: '#374151', marginBottom: '8px' }}>
+                    Guardando foto...
+                  </h4>
+                  <p style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+                    Estamos guardando la foto en la galería de {perrito.nombre}
+                  </p>
+                </>
+              ) : (
+                <>
+                  <Camera style={{ width: '48px', height: '48px', color: '#9ca3af', margin: '0 auto 16px' }} />
+                  <h4 style={{ fontSize: '1rem', fontWeight: '600', color: '#374151', marginBottom: '8px' }}>
+                    Subir Nueva Foto
+                  </h4>
+                  <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '8px' }}>
+                    <strong>Paso 1:</strong> Haz clic en el botón para seleccionar una foto
+                  </p>
+                  <p style={{ fontSize: '0.75rem', color: '#9ca3af', marginBottom: '16px' }}>
+                    JPG, PNG o WebP • Máximo 4MB
+                  </p>
+                  <UploadButton
+                    endpoint="petImageUploader"
+                    onClientUploadComplete={(res) => {
+                      if (res && res[0]) {
+                        handlePhotoUpload(res[0].url)
+                      }
+                    }}
+                    onUploadError={(error: Error) => {
+                      alert(`Error al subir: ${error.message}`)
+                    }}
+                    appearance={{
+                      button: {
+                        backgroundColor: '#af1731',
+                        color: 'white',
+                        fontSize: '0.875rem',
+                        fontWeight: '500',
+                        padding: '10px 20px',
+                        borderRadius: '8px',
+                        border: 'none',
+                        cursor: 'pointer',
+                      },
+                      container: {
+                        marginTop: '0',
+                      },
+                      allowedContent: {
+                        display: 'none',
+                      },
+                    }}
+                  />
+                  <p style={{ fontSize: '0.75rem', color: '#9ca3af', marginTop: '12px' }}>
+                    <strong>Paso 2:</strong> La foto se subirá automáticamente y aparecerá en la galería
+                  </p>
+                </>
+              )}
             </div>
+
 
             {/* Photo Grid */}
             <div>

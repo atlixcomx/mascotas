@@ -2255,3 +2255,13 @@ label {
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+/* Spinner animation for photo upload */
+@keyframes spin {
+  from { 
+    transform: rotate(0deg); 
+  }
+  to { 
+    transform: rotate(360deg); 
+  }
+}

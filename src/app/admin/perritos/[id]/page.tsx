@@ -149,6 +149,9 @@ export default function EditPerrito() {
       const response = await fetch(`/api/admin/perritos/${perritoId}`)
       if (response.ok) {
         const data = await response.json()
+        console.log('Perrito data received:', data.perrito)
+        console.log('Fotos field:', data.perrito.fotos)
+        console.log('Foto principal:', data.perrito.fotoPrincipal)
         setPerrito(data.perrito)
         setExpedienteMedico(data.expedienteMedico || [])
         setNotas(data.notas || [])
@@ -1070,25 +1073,26 @@ export default function EditPerrito() {
                   gap: '20px'
                 }}>
                   {/* Main Photo */}
-                  <div style={{ 
-                    gridColumn: (Array.isArray(perrito.fotos) ? perrito.fotos : parsePhotosField(perrito.fotos)).length > 1 ? 'span 2' : 'span 1',
-                    position: 'relative',
-                    overflow: 'hidden',
-                    borderRadius: '12px',
-                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-                    border: '2px solid #af1731'
-                  }}>
-                    <Image
-                      src={perrito.fotoPrincipal || '/placeholder-dog.jpg'}
-                      alt={perrito.nombre}
-                      width={600}
-                      height={400}
-                      style={{
-                        width: '100%',
-                        height: '320px',
-                        objectFit: 'cover',
-                      }}
-                    />
+                  {perrito.fotoPrincipal && (
+                    <div style={{ 
+                      gridColumn: (Array.isArray(perrito.fotos) ? perrito.fotos : parsePhotosField(perrito.fotos)).length > 1 ? 'span 2' : 'span 1',
+                      position: 'relative',
+                      overflow: 'hidden',
+                      borderRadius: '12px',
+                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                      border: '2px solid #af1731'
+                    }}>
+                      <Image
+                        src={perrito.fotoPrincipal || '/placeholder-dog.jpg'}
+                        alt={perrito.nombre}
+                        width={600}
+                        height={400}
+                        style={{
+                          width: '100%',
+                          height: '320px',
+                          objectFit: 'cover',
+                        }}
+                      />
                     <div style={{
                       position: 'absolute',
                       top: '12px',
@@ -1144,10 +1148,17 @@ export default function EditPerrito() {
                         </button>
                       </div>
                     )}
-                  </div>
+                    </div>
+                  )}
                   
                   {/* Additional Photos */}
-                  {(Array.isArray(perrito.fotos) ? perrito.fotos : parsePhotosField(perrito.fotos)).slice(1).map((foto: string, index: number) => (
+                  {(Array.isArray(perrito.fotos) ? perrito.fotos : parsePhotosField(perrito.fotos)).map((foto: string, index: number) => {
+                    // Skip if this is the main photo
+                    if (foto === perrito.fotoPrincipal) return null
+                    
+                    console.log('Rendering photo:', foto, 'Is URL?', foto.startsWith('http') || foto.startsWith('/'))
+                    
+                    return (
                     <div key={index} style={{ 
                       position: 'relative',
                       overflow: 'hidden',
@@ -1156,17 +1167,34 @@ export default function EditPerrito() {
                       border: '1px solid #e5e7eb',
                       backgroundColor: '#ffffff'
                     }}>
-                      <Image
-                        src={foto}
-                        alt={`${perrito.nombre} ${index + 2}`}
-                        width={300}
-                        height={300}
-                        style={{
+                      {foto && (foto.startsWith('http') || foto.startsWith('/')) ? (
+                        <Image
+                          src={foto}
+                          alt={`${perrito.nombre} ${index + 1}`}
+                          width={300}
+                          height={300}
+                          style={{
+                            width: '100%',
+                            height: '240px',
+                            objectFit: 'cover',
+                          }}
+                          onError={(e) => {
+                            console.error('Image failed to load:', foto)
+                          }}
+                        />
+                      ) : (
+                        <div style={{
                           width: '100%',
                           height: '240px',
-                          objectFit: 'cover',
-                        }}
-                      />
+                          backgroundColor: '#e5e7eb',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: '#6b7280'
+                        }}>
+                          <Camera style={{ width: '48px', height: '48px' }} />
+                        </div>
+                      )}
                       <div style={{
                         position: 'absolute',
                         top: '8px',
@@ -1219,20 +1247,9 @@ export default function EditPerrito() {
                           <Trash2 style={{ width: '16px', height: '16px', color: '#ef4444' }} />
                         </button>
                       </div>
-                      <div style={{
-                        position: 'absolute',
-                        bottom: '0',
-                        left: '0',
-                        right: '0',
-                        padding: '8px',
-                        background: 'linear-gradient(to top, rgba(0,0,0,0.7), transparent)',
-                        color: 'white',
-                        fontSize: '0.75rem'
-                      }}>
-                        Foto {index + 2}
-                      </div>
                     </div>
-                  ))}
+                  )
+                  })}
                 </div>
               )}
             </div>

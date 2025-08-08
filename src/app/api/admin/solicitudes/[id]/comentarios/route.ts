@@ -56,13 +56,13 @@ export async function POST(
     const nuevoComentario = {
       id: Date.now().toString(),
       solicitudId: params.id,
-      usuarioId: session.user.id,
+      usuarioId: session.user.email,
       usuario: {
-        nombre: session.user.name,
+        nombre: session.user.name || 'Admin',
         email: session.user.email
       },
       contenido,
-      tipo,
+      tipo: 'comentario',
       createdAt: new Date().toISOString()
     }
 
@@ -92,18 +92,23 @@ export async function POST(
 
     // Enviar notificación en tiempo real (no notificar al usuario que creó el comentario)
     if (solicitud) {
-      sendNotificationToAdmins({
-        type: 'comentario_nuevo',
-        title: `Nuevo comentario: ${solicitud.codigo}`,
-        message: `${session.user.name} agregó un comentario a la solicitud de ${solicitud.nombre} para adoptar a ${solicitud.perrito.nombre}`,
-        solicitudId: solicitud.id,
-        data: {
-          autor: session.user.name,
-          perrito: solicitud.perrito.nombre,
-          solicitante: solicitud.nombre,
-          comentario: contenido.substring(0, 100) + (contenido.length > 100 ? '...' : '')
-        }
-      })
+      try {
+        sendNotificationToAdmins({
+          type: 'comentario_nuevo',
+          title: `Nuevo comentario: ${solicitud.codigo}`,
+          message: `${session.user.name || 'Admin'} agregó un comentario a la solicitud de ${solicitud.nombre} para adoptar a ${solicitud.perrito.nombre}`,
+          solicitudId: solicitud.id,
+          data: {
+            autor: session.user.name || 'Admin',
+            perrito: solicitud.perrito.nombre,
+            solicitante: solicitud.nombre,
+            comentario: contenido.substring(0, 100) + (contenido.length > 100 ? '...' : '')
+          }
+        })
+      } catch (notificationError) {
+        console.error('Error sending notification:', notificationError)
+        // No fallar la operación si la notificación falla
+      }
     }
 
     return NextResponse.json({

@@ -72,10 +72,11 @@ export default function PerritoDetailPage({ params }: PageProps) {
     uniqueImages.add(perrito.fotoPrincipal)
   }
   
-  // Agregar otras fotos
+  // Agregar otras fotos (solo URLs válidas de Uploadthing)
   if (perrito.fotos && Array.isArray(perrito.fotos)) {
     perrito.fotos.forEach(foto => {
-      if (foto && foto !== perrito.fotoPrincipal) {
+      if (foto && foto !== perrito.fotoPrincipal && 
+          (foto.includes('utfs.io') || foto.includes('uploadthing'))) {
         uniqueImages.add(foto)
       }
     })
@@ -93,6 +94,14 @@ export default function PerritoDetailPage({ params }: PageProps) {
     allImages: allImages,
     allImagesLength: allImages.length
   })
+  
+  // Log detallado del contenido de fotos
+  if (perrito.fotos && Array.isArray(perrito.fotos)) {
+    console.log('Contenido del array fotos:')
+    perrito.fotos.forEach((foto, index) => {
+      console.log(`  [${index}]: ${foto}`)
+    })
+  }
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f8f9fa' }}>

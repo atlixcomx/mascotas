@@ -5,6 +5,19 @@ import { prisma } from '../../../../../../lib/db'
 import { actualizarPerritoSchema } from '../../../../../../src/lib/validations/perrito'
 import { z } from 'zod'
 
+// Helper function to safely parse photos field
+function parsePhotosField(fotos: string | null): string[] {
+  if (!fotos || fotos === '[]') return []
+  
+  try {
+    const parsed = JSON.parse(fotos)
+    return Array.isArray(parsed) ? parsed : [fotos]
+  } catch (error) {
+    // If it's not valid JSON, treat as single URL
+    return [fotos]
+  }
+}
+
 interface RouteParams {
   params: { id: string }
 }
@@ -91,7 +104,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({
       perrito: {
         ...perrito,
-        fotos: perrito.fotos ? JSON.parse(perrito.fotos) : [],
+        fotos: parsePhotosField(perrito.fotos),
         caracter: perrito.caracter ? JSON.parse(perrito.caracter) : []
       },
       expedienteMedico: perrito.expedienteMedico || [],
@@ -206,7 +219,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       success: true,
       perrito: {
         ...perrito,
-        fotos: JSON.parse(perrito.fotos || '[]'),
+        fotos: parsePhotosField(perrito.fotos),
         caracter: JSON.parse(perrito.caracter || '[]'),
         // Campos adicionales
         padecimientos: datosValidados.padecimientos || [],
@@ -333,7 +346,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
         type: 'soft_delete',
         perrito: {
           ...perritoActualizado,
-          fotos: JSON.parse(perritoActualizado.fotos || '[]'),
+          fotos: parsePhotosField(perritoActualizado.fotos),
           caracter: JSON.parse(perritoActualizado.caracter || '[]')
         }
       })

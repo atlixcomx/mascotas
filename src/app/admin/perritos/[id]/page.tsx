@@ -83,6 +83,19 @@ interface CambioHistorial {
   fecha: string
 }
 
+// Helper function to safely parse photos field
+function parsePhotosField(fotos: string | null): string[] {
+  if (!fotos || fotos === '[]') return []
+  
+  try {
+    const parsed = JSON.parse(fotos)
+    return Array.isArray(parsed) ? parsed : [fotos]
+  } catch (error) {
+    // If it's not valid JSON, treat as single URL
+    return [fotos]
+  }
+}
+
 export default function EditPerrito() {
   const params = useParams()
   const router = useRouter()
@@ -933,7 +946,7 @@ export default function EditPerrito() {
               </div>
               
               {/* Additional Photos */}
-              {JSON.parse(perrito.fotos || '[]').slice(0, 6).map((foto: string, index: number) => (
+              {parsePhotosField(perrito.fotos).slice(0, 6).map((foto: string, index: number) => (
                 <div key={index} style={{ position: 'relative' }}>
                   <Image
                     src={foto}

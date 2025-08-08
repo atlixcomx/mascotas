@@ -1,6 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '../../../../../lib/db'
 
+// Helper function to safely parse photos field
+function parsePhotosField(fotos: string | null): string[] {
+  if (!fotos || fotos === '[]') return []
+  
+  try {
+    const parsed = JSON.parse(fotos)
+    return Array.isArray(parsed) ? parsed : [fotos]
+  } catch (error) {
+    // If it's not valid JSON, treat as single URL
+    return [fotos]
+  }
+}
+
 export async function GET(
   request: NextRequest,
   { params }: { params: { slug: string } }
@@ -50,7 +63,7 @@ export async function GET(
 
     const response = {
       ...perrito,
-      fotos: perrito.fotos ? JSON.parse(perrito.fotos) : [perrito.fotoPrincipal],
+      fotos: parsePhotosField(perrito.fotos) || [perrito.fotoPrincipal],
       caracter: perrito.caracter ? JSON.parse(perrito.caracter) : [],
       esNuevo: new Date().getTime() - perrito.fechaIngreso.getTime() < 7 * 24 * 60 * 60 * 1000,
       similares

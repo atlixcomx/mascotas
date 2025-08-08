@@ -257,6 +257,34 @@ export default function EditPerrito() {
     }
   }
 
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (!files || files.length === 0) return
+
+    const formData = new FormData()
+    const file = files[0]
+    formData.append('archivo', file)
+    formData.append('tipo', 'galeria')
+    formData.append('descripcion', '')
+
+    try {
+      const response = await fetch(`/api/admin/perritos/${perritoId}/fotos`, {
+        method: 'POST',
+        body: formData
+      })
+
+      if (response.ok) {
+        await fetchPerrito()
+        alert('Foto subida correctamente')
+      } else {
+        alert('Error al subir la foto')
+      }
+    } catch (error) {
+      console.error('Error uploading photo:', error)
+      alert('Error al subir la foto')
+    }
+  }
+
   const getEstadoColor = (estado: string) => {
     const colors = {
       disponible: '#16a34a',
@@ -446,7 +474,7 @@ export default function EditPerrito() {
       }}>
         {activeTab === 'informacion' && (
           <div>
-            <h3 style={{ marginBottom: '20px', fontSize: '1.25rem', fontWeight: '600' }}>
+            <h3 style={{ marginBottom: '20px', fontSize: '1.25rem', fontWeight: '600', color: '#111827' }}>
               Información General
             </h3>
             
@@ -458,7 +486,7 @@ export default function EditPerrito() {
               marginBottom: '24px'
             }}>
               <div>
-                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500' }}>
+                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500', color: '#374151' }}>
                   Código
                 </label>
                 <input
@@ -470,13 +498,15 @@ export default function EditPerrito() {
                     padding: '8px 12px',
                     borderRadius: '6px',
                     border: '1px solid #e2e8f0',
-                    fontSize: '0.875rem'
+                    fontSize: '0.875rem',
+                    color: '#111827',
+                    backgroundColor: '#ffffff'
                   }}
                 />
               </div>
 
               <div>
-                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500' }}>
+                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500', color: '#374151' }}>
                   Nombre
                 </label>
                 <input
@@ -488,13 +518,15 @@ export default function EditPerrito() {
                     padding: '8px 12px',
                     borderRadius: '6px',
                     border: '1px solid #e2e8f0',
-                    fontSize: '0.875rem'
+                    fontSize: '0.875rem',
+                    color: '#111827',
+                    backgroundColor: '#ffffff'
                   }}
                 />
               </div>
 
               <div>
-                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500' }}>
+                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500', color: '#374151' }}>
                   Raza
                 </label>
                 <input
@@ -506,13 +538,15 @@ export default function EditPerrito() {
                     padding: '8px 12px',
                     borderRadius: '6px',
                     border: '1px solid #e2e8f0',
-                    fontSize: '0.875rem'
+                    fontSize: '0.875rem',
+                    color: '#111827',
+                    backgroundColor: '#ffffff'
                   }}
                 />
               </div>
 
               <div>
-                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500' }}>
+                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500', color: '#374151' }}>
                   Edad
                 </label>
                 <input
@@ -524,13 +558,15 @@ export default function EditPerrito() {
                     padding: '8px 12px',
                     borderRadius: '6px',
                     border: '1px solid #e2e8f0',
-                    fontSize: '0.875rem'
+                    fontSize: '0.875rem',
+                    color: '#111827',
+                    backgroundColor: '#ffffff'
                   }}
                 />
               </div>
 
               <div>
-                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500' }}>
+                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500', color: '#374151' }}>
                   Sexo
                 </label>
                 <select
@@ -541,7 +577,9 @@ export default function EditPerrito() {
                     padding: '8px 12px',
                     borderRadius: '6px',
                     border: '1px solid #e2e8f0',
-                    fontSize: '0.875rem'
+                    fontSize: '0.875rem',
+                    color: '#111827',
+                    backgroundColor: '#ffffff'
                   }}
                 >
                   <option value="macho">Macho</option>
@@ -550,7 +588,7 @@ export default function EditPerrito() {
               </div>
 
               <div>
-                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500' }}>
+                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500', color: '#374151' }}>
                   Tamaño
                 </label>
                 <select
@@ -561,7 +599,9 @@ export default function EditPerrito() {
                     padding: '8px 12px',
                     borderRadius: '6px',
                     border: '1px solid #e2e8f0',
-                    fontSize: '0.875rem'
+                    fontSize: '0.875rem',
+                    color: '#111827',
+                    backgroundColor: '#ffffff'
                   }}
                 >
                   <option value="chico">Chico</option>
@@ -571,7 +611,7 @@ export default function EditPerrito() {
               </div>
 
               <div>
-                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500' }}>
+                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500', color: '#374151' }}>
                   Peso (kg)
                 </label>
                 <input
@@ -584,13 +624,15 @@ export default function EditPerrito() {
                     padding: '8px 12px',
                     borderRadius: '6px',
                     border: '1px solid #e2e8f0',
-                    fontSize: '0.875rem'
+                    fontSize: '0.875rem',
+                    color: '#111827',
+                    backgroundColor: '#ffffff'
                   }}
                 />
               </div>
 
               <div>
-                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500' }}>
+                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500', color: '#374151' }}>
                   Estado
                 </label>
                 <select
@@ -601,7 +643,9 @@ export default function EditPerrito() {
                     padding: '8px 12px',
                     borderRadius: '6px',
                     border: '1px solid #e2e8f0',
-                    fontSize: '0.875rem'
+                    fontSize: '0.875rem',
+                    color: '#111827',
+                    backgroundColor: '#ffffff'
                   }}
                 >
                   <option value="disponible">Disponible para Adopción</option>
@@ -614,7 +658,7 @@ export default function EditPerrito() {
 
             {/* Visibility Controls */}
             <div style={{ marginBottom: '24px', padding: '16px', backgroundColor: '#f8fafc', borderRadius: '8px' }}>
-              <h4 style={{ marginBottom: '12px', fontSize: '1rem', fontWeight: '600' }}>
+              <h4 style={{ marginBottom: '12px', fontSize: '1rem', fontWeight: '600', color: '#111827' }}>
                 Visibilidad en Catálogo
               </h4>
               
@@ -706,7 +750,7 @@ export default function EditPerrito() {
                 marginBottom: '16px'
               }}>
                 <div>
-                  <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500' }}>
+                  <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500', color: '#374151' }}>
                     Nivel de Energía
                   </label>
                   <select
@@ -786,7 +830,7 @@ export default function EditPerrito() {
         {activeTab === 'medico' && (
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <h3 style={{ fontSize: '1.25rem', fontWeight: '600', margin: 0 }}>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: '600', margin: 0, color: '#111827' }}>
                 Historial Médico
               </h3>
               <button
@@ -885,11 +929,10 @@ export default function EditPerrito() {
         {activeTab === 'fotos' && (
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <h3 style={{ fontSize: '1.25rem', fontWeight: '600', margin: 0 }}>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: '600', margin: 0, color: '#111827' }}>
                 Galería de Fotos
               </h3>
-              <button
-                onClick={() => setShowPhotoModal(true)}
+              <label
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -906,7 +949,13 @@ export default function EditPerrito() {
               >
                 <Upload style={{ width: '16px', height: '16px' }} />
                 Subir Fotos
-              </button>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handlePhotoUpload}
+                  style={{ display: 'none' }}
+                />
+              </label>
             </div>
 
             {/* Photo Gallery */}
@@ -970,7 +1019,7 @@ export default function EditPerrito() {
         {activeTab === 'notas' && (
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <h3 style={{ fontSize: '1.25rem', fontWeight: '600', margin: 0 }}>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: '600', margin: 0, color: '#111827' }}>
                 Notas y Observaciones
               </h3>
               <button
@@ -1135,7 +1184,7 @@ export default function EditPerrito() {
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
               <div>
-                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500' }}>
+                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500', color: '#374151' }}>
                   Tipo
                 </label>
                 <select
@@ -1146,7 +1195,9 @@ export default function EditPerrito() {
                     padding: '8px 12px',
                     borderRadius: '6px',
                     border: '1px solid #e2e8f0',
-                    fontSize: '0.875rem'
+                    fontSize: '0.875rem',
+                    color: '#111827',
+                    backgroundColor: '#ffffff'
                   }}
                 >
                   <option value="consulta">Consulta</option>
@@ -1158,7 +1209,7 @@ export default function EditPerrito() {
               </div>
 
               <div>
-                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500' }}>
+                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500', color: '#374151' }}>
                   Fecha
                 </label>
                 <input
@@ -1170,13 +1221,15 @@ export default function EditPerrito() {
                     padding: '8px 12px',
                     borderRadius: '6px',
                     border: '1px solid #e2e8f0',
-                    fontSize: '0.875rem'
+                    fontSize: '0.875rem',
+                    color: '#111827',
+                    backgroundColor: '#ffffff'
                   }}
                 />
               </div>
 
               <div style={{ gridColumn: 'span 2' }}>
-                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500' }}>
+                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500', color: '#374151' }}>
                   Descripción
                 </label>
                 <textarea
@@ -1195,7 +1248,7 @@ export default function EditPerrito() {
               </div>
 
               <div>
-                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500' }}>
+                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500', color: '#374151' }}>
                   Veterinario
                 </label>
                 <input
@@ -1207,13 +1260,15 @@ export default function EditPerrito() {
                     padding: '8px 12px',
                     borderRadius: '6px',
                     border: '1px solid #e2e8f0',
-                    fontSize: '0.875rem'
+                    fontSize: '0.875rem',
+                    color: '#111827',
+                    backgroundColor: '#ffffff'
                   }}
                 />
               </div>
 
               <div>
-                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500' }}>
+                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500', color: '#374151' }}>
                   Costo
                 </label>
                 <input
@@ -1226,7 +1281,9 @@ export default function EditPerrito() {
                     padding: '8px 12px',
                     borderRadius: '6px',
                     border: '1px solid #e2e8f0',
-                    fontSize: '0.875rem'
+                    fontSize: '0.875rem',
+                    color: '#111827',
+                    backgroundColor: '#ffffff'
                   }}
                 />
               </div>

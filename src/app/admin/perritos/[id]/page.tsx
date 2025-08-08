@@ -278,6 +278,8 @@ export default function EditPerrito() {
         setUploadSuccess(true)
         // Resetear el estado de éxito después de 3 segundos
         setTimeout(() => setUploadSuccess(false), 3000)
+        // Forzar actualización del componente
+        router.refresh()
       } else {
         const data = await response.json()
         alert(data.error || 'Error al guardar la foto')
@@ -1047,10 +1049,10 @@ export default function EditPerrito() {
             {/* Photo Grid */}
             <div>
               <h4 style={{ fontSize: '1rem', fontWeight: '600', color: '#374151', marginBottom: '16px' }}>
-                Fotos Actuales ({parsePhotosField(perrito.fotos).length})
+                Fotos Actuales ({Array.isArray(perrito.fotos) ? perrito.fotos.length : parsePhotosField(perrito.fotos).length})
               </h4>
               
-              {parsePhotosField(perrito.fotos).length === 0 ? (
+              {(Array.isArray(perrito.fotos) ? perrito.fotos : parsePhotosField(perrito.fotos)).length === 0 ? (
                 <div style={{
                   textAlign: 'center',
                   padding: '48px',
@@ -1069,7 +1071,7 @@ export default function EditPerrito() {
                 }}>
                   {/* Main Photo */}
                   <div style={{ 
-                    gridColumn: parsePhotosField(perrito.fotos).length > 1 ? 'span 2' : 'span 1',
+                    gridColumn: (Array.isArray(perrito.fotos) ? perrito.fotos : parsePhotosField(perrito.fotos)).length > 1 ? 'span 2' : 'span 1',
                     position: 'relative',
                     overflow: 'hidden',
                     borderRadius: '12px',
@@ -1109,10 +1111,43 @@ export default function EditPerrito() {
                         Foto Principal
                       </span>
                     </div>
+                    {perrito.fotoPrincipal && (
+                      <div style={{
+                        position: 'absolute',
+                        top: '12px',
+                        right: '12px',
+                      }}>
+                        <button
+                          onClick={() => {
+                            if (confirm('¿Eliminar foto principal?')) {
+                              handleInputChange('fotoPrincipal', null)
+                              const currentPhotos = Array.isArray(perrito.fotos) ? perrito.fotos : parsePhotosField(perrito.fotos)
+                              const updatedPhotos = currentPhotos.filter((f: string) => f !== perrito.fotoPrincipal)
+                              handleInputChange('fotos', JSON.stringify(updatedPhotos))
+                              savePerrito()
+                            }
+                          }}
+                          style={{
+                            padding: '8px',
+                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                            border: '1px solid #e5e7eb',
+                            borderRadius: '6px',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                          }}
+                          title="Eliminar foto principal"
+                        >
+                          <Trash2 style={{ width: '18px', height: '18px', color: '#ef4444' }} />
+                        </button>
+                      </div>
+                    )}
                   </div>
                   
                   {/* Additional Photos */}
-                  {parsePhotosField(perrito.fotos).slice(1).map((foto: string, index: number) => (
+                  {(Array.isArray(perrito.fotos) ? perrito.fotos : parsePhotosField(perrito.fotos)).slice(1).map((foto: string, index: number) => (
                     <div key={index} style={{ 
                       position: 'relative',
                       overflow: 'hidden',
@@ -1159,6 +1194,29 @@ export default function EditPerrito() {
                           title="Establecer como principal"
                         >
                           <Heart style={{ width: '16px', height: '16px', color: '#af1731' }} />
+                        </button>
+                        <button
+                          onClick={() => {
+                            if (confirm('¿Eliminar esta foto?')) {
+                              const currentPhotos = Array.isArray(perrito.fotos) ? perrito.fotos : parsePhotosField(perrito.fotos)
+                              const updatedPhotos = currentPhotos.filter((f: string) => f !== foto)
+                              handleInputChange('fotos', JSON.stringify(updatedPhotos))
+                              savePerrito()
+                            }
+                          }}
+                          style={{
+                            padding: '6px',
+                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                            border: '1px solid #e5e7eb',
+                            borderRadius: '6px',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                          }}
+                          title="Eliminar foto"
+                        >
+                          <Trash2 style={{ width: '16px', height: '16px', color: '#ef4444' }} />
                         </button>
                       </div>
                       <div style={{

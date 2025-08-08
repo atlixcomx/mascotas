@@ -61,13 +61,22 @@ export async function GET(
       take: 3
     })
 
+    console.log('Perrito data from DB:', {
+      nombre: perrito.nombre,
+      fotoPrincipal: perrito.fotoPrincipal,
+      fotos: perrito.fotos,
+      fotosType: typeof perrito.fotos
+    })
+    
     const response = {
       ...perrito,
-      fotos: parsePhotosField(perrito.fotos) || [perrito.fotoPrincipal],
+      fotos: parsePhotosField(perrito.fotos) || [],
       caracter: perrito.caracter ? JSON.parse(perrito.caracter) : [],
       esNuevo: new Date().getTime() - perrito.fechaIngreso.getTime() < 7 * 24 * 60 * 60 * 1000,
       similares
     }
+    
+    console.log('Response fotos:', response.fotos)
 
     return NextResponse.json(response)
   } catch (error) {

@@ -84,11 +84,14 @@ export default function PerritoDetailPage({ params }: PageProps) {
   // Si no hay fotos, usar imagen por defecto
   const allImages = uniqueImages.size > 0 ? Array.from(uniqueImages) : [defaultDogImage]
   
-  console.log('Perrito data:', {
+  console.log('Perrito data en cliente:', {
     nombre: perrito.nombre,
     fotoPrincipal: perrito.fotoPrincipal,
     fotos: perrito.fotos,
-    allImages: allImages
+    fotosType: typeof perrito.fotos,
+    fotosIsArray: Array.isArray(perrito.fotos),
+    allImages: allImages,
+    allImagesLength: allImages.length
   })
 
   return (

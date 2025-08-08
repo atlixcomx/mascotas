@@ -54,7 +54,8 @@ import {
   XSquare,
   HelpCircle,
   Loader2,
-  Paperclip
+  Paperclip,
+  RefreshCw
 } from 'lucide-react'
 
 interface Perrito {
@@ -175,6 +176,7 @@ export default function SolicitudDetallePage() {
   const [solicitud, setSolicitud] = useState<Solicitud | null>(null)
   const [loading, setLoading] = useState(true)
   const [updating, setUpdating] = useState(false)
+  const [refreshing, setRefreshing] = useState(false)
   const [notas, setNotas] = useState('')
   const [nuevoEstado, setNuevoEstado] = useState('')
   const [showModal, setShowModal] = useState(false)
@@ -263,6 +265,19 @@ export default function SolicitudDetallePage() {
     }
   }
 
+  // Función para refrescar todos los datos con indicador visual
+  async function refreshAllData() {
+    setRefreshing(true)
+    try {
+      await Promise.all([
+        fetchSolicitud(),
+        fetchActividades()
+      ])
+    } finally {
+      setRefreshing(false)
+    }
+  }
+
   const handleStateChange = (newState: string, fechasAdicionales?: any) => {
     actualizarEstado(newState, fechasAdicionales)
   }
@@ -290,8 +305,8 @@ export default function SolicitudDetallePage() {
       })
 
       if (response.ok) {
-        await fetchSolicitud()
-        await fetchActividades()
+        // Refrescar todos los datos
+        await refreshAllData()
         setShowModal(false)
         setModalAction(null)
         setConfirmDialog(null)
@@ -363,11 +378,8 @@ export default function SolicitudDetallePage() {
       })
 
       if (response.ok) {
-        if (campo === 'copiaIneRecibida') {
-          setCopiaIneRecibida(valor)
-        } else {
-          setCopiaComprobanteRecibida(valor)
-        }
+        // Refrescar todos los datos para mantener sincronización
+        await refreshAllData()
         toast.success('Actualizado', 'El estado del documento se ha actualizado')
       } else {
         toast.error('Error', 'No se pudo actualizar el estado del documento')
@@ -395,8 +407,7 @@ export default function SolicitudDetallePage() {
 
       if (response.ok) {
         setNuevoComentario('')
-        await fetchActividades()
-        await fetchSolicitud()
+        await refreshAllData()
         toast.success('Comentario agregado', 'El comentario se ha guardado correctamente')
       } else {
         toast.error('Error al comentar', 'No se pudo agregar el comentario')
@@ -587,9 +598,22 @@ export default function SolicitudDetallePage() {
                 fontWeight: '700',
                 color: '#0f172a',
                 margin: '0 0 8px 0',
-                fontFamily: 'Poppins, sans-serif'
+                fontFamily: 'Poppins, sans-serif',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px'
               }}>
                 Solicitud {solicitud.codigo}
+                {refreshing && (
+                  <div style={{
+                    width: '20px',
+                    height: '20px',
+                    border: '2px solid #e2e8f0',
+                    borderTop: '2px solid #af1731',
+                    borderRadius: '50%',
+                    animation: 'spin 1s linear infinite'
+                  }} />
+                )}
               </h1>
               <p style={{ color: '#64748b', margin: 0 }}>
                 {solicitud.nombre} • {new Date(solicitud.createdAt).toLocaleDateString('es-MX', {
@@ -601,6 +625,47 @@ export default function SolicitudDetallePage() {
               </p>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <button
+                onClick={() => refreshAllData()}
+                disabled={refreshing}
+                style={{
+                  padding: '10px',
+                  backgroundColor: refreshing ? '#f8fafc' : 'transparent',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '8px',
+                  cursor: refreshing ? 'not-allowed' : 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'all 0.2s'
+                }}
+                onMouseEnter={(e) => {
+                  if (!refreshing) {
+                    e.currentTarget.style.backgroundColor = '#f8fafc'
+                    e.currentTarget.style.borderColor = '#cbd5e1'
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!refreshing) {
+                    e.currentTarget.style.backgroundColor = 'transparent'
+                    e.currentTarget.style.borderColor = '#e2e8f0'
+                  }
+                }}
+                title="Actualizar datos"
+              >
+                {refreshing ? (
+                  <div style={{
+                    width: '20px',
+                    height: '20px',
+                    border: '2px solid #e2e8f0',
+                    borderTop: '2px solid #af1731',
+                    borderRadius: '50%',
+                    animation: 'spin 1s linear infinite'
+                  }} />
+                ) : (
+                  <RefreshCw style={{ width: '20px', height: '20px', color: '#64748b' }} />
+                )}
+              </button>
               <button
                 style={{
                   padding: '10px',

@@ -473,7 +473,7 @@ export default function PerritosAdmin() {
                           <Eye style={{ width: '16px', height: '16px', color: '#64748b' }} />
                         </button>
                         <button
-                          onClick={() => router.push(`/admin/perritos/${perrito.id}/editar`)}
+                          onClick={() => router.push(`/admin/perritos/${perrito.id}`)}
                           style={{
                             padding: '6px',
                             backgroundColor: '#f1f5f9',

@@ -95,36 +95,40 @@ export async function POST(request: NextRequest) {
       tipo: 'general'
     })
 
-    // Padecimientos
-    if (datosValidados.padecimientos && datosValidados.padecimientos.length > 0) {
-      notasACrear.push({
-        contenido: `Padecimientos registrados: ${datosValidados.padecimientos.join(', ')}`,
-        tipo: 'salud'
-      })
-    }
+    // Procesar notas adicionales si vienen del frontend
+    const notasAdicionales = body.notasAdicionales
+    if (notasAdicionales) {
+      // Padecimientos
+      if (notasAdicionales.padecimientos && notasAdicionales.padecimientos.length > 0) {
+        notasACrear.push({
+          contenido: `Padecimientos registrados: ${notasAdicionales.padecimientos.join(', ')}`,
+          tipo: 'salud'
+        })
+      }
 
-    // Alergias
-    if (datosValidados.alergias && datosValidados.alergias.length > 0) {
-      notasACrear.push({
-        contenido: `Alergias registradas: ${datosValidados.alergias.join(', ')}`,
-        tipo: 'salud'
-      })
-    }
+      // Alergias
+      if (notasAdicionales.alergias && notasAdicionales.alergias.length > 0) {
+        notasACrear.push({
+          contenido: `Alergias registradas: ${notasAdicionales.alergias.join(', ')}`,
+          tipo: 'salud'
+        })
+      }
 
-    // Tratamientos
-    if (datosValidados.tratamientos && datosValidados.tratamientos.length > 0) {
-      notasACrear.push({
-        contenido: `Tratamientos: ${datosValidados.tratamientos.map(t => `${t.descripcion} (${t.fechaInicio}${t.fechaFin ? ' - ' + t.fechaFin : ''})`).join(', ')}`,
-        tipo: 'salud'
-      })
-    }
+      // Tratamientos
+      if (notasAdicionales.tratamientos && notasAdicionales.tratamientos.length > 0) {
+        notasACrear.push({
+          contenido: `Tratamientos: ${notasAdicionales.tratamientos.map(t => `${t.descripcion} (${t.fechaInicio}${t.fechaFin ? ' - ' + t.fechaFin : ''})`).join(', ')}`,
+          tipo: 'salud'
+        })
+      }
 
-    // Vacunas detalladas
-    if (datosValidados.vacunasDetalle && datosValidados.vacunasDetalle.length > 0) {
-      notasACrear.push({
-        contenido: `Vacunas aplicadas: ${datosValidados.vacunasDetalle.map(v => `${v.nombre} (${v.fecha}, Dr. ${v.veterinario})`).join(', ')}`,
-        tipo: 'salud'
-      })
+      // Vacunas detalladas
+      if (notasAdicionales.vacunasDetalle && notasAdicionales.vacunasDetalle.length > 0) {
+        notasACrear.push({
+          contenido: `Vacunas aplicadas: ${notasAdicionales.vacunasDetalle.map(v => `${v.nombre} (${v.fecha}, Dr. ${v.veterinario})`).join(', ')}`,
+          tipo: 'salud'
+        })
+      }
     }
 
     // Crear todas las notas

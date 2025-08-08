@@ -21,6 +21,7 @@ import {
   History,
   X
 } from 'lucide-react'
+import { UploadButton } from '../../../../components/UploadButton'
 
 interface Perrito {
   id: string
@@ -257,20 +258,14 @@ export default function EditPerrito() {
     }
   }
 
-  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
-    if (!files || files.length === 0) return
-
-    const formData = new FormData()
-    const file = files[0]
-    formData.append('archivo', file)
-    formData.append('tipo', 'galeria')
-    formData.append('descripcion', '')
-
+  const handlePhotoUpload = async (url: string) => {
     try {
       const response = await fetch(`/api/admin/perritos/${perritoId}/fotos`, {
         method: 'POST',
-        body: formData
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ url, tipo: 'galeria' })
       })
 
       if (response.ok) {
@@ -278,7 +273,7 @@ export default function EditPerrito() {
         alert('Foto subida correctamente')
       } else {
         const data = await response.json()
-        alert(data.message || 'Error al subir la foto')
+        alert(data.error || 'Error al subir la foto')
       }
     } catch (error) {
       console.error('Error uploading photo:', error)
@@ -935,30 +930,32 @@ export default function EditPerrito() {
               <h3 style={{ fontSize: '1.25rem', fontWeight: '600', margin: 0, color: '#111827' }}>
                 Galería de Fotos
               </h3>
-              <label
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  padding: '8px 16px',
-                  backgroundColor: '#af1731',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '6px',
-                  fontSize: '0.875rem',
-                  fontWeight: '500',
-                  cursor: 'pointer'
+              <UploadButton
+                endpoint="petImageUploader"
+                onClientUploadComplete={(res) => {
+                  // Do something with the response
+                  if (res && res[0]) {
+                    handlePhotoUpload(res[0].url)
+                  }
                 }}
-              >
-                <Upload style={{ width: '16px', height: '16px' }} />
-                Subir Fotos
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handlePhotoUpload}
-                  style={{ display: 'none' }}
-                />
-              </label>
+                onUploadError={(error: Error) => {
+                  // Do something with the error.
+                  alert(`Error al subir: ${error.message}`)
+                }}
+                appearance={{
+                  button: {
+                    backgroundColor: '#af1731',
+                    color: 'white',
+                    fontSize: '0.875rem',
+                    fontWeight: '500',
+                    padding: '8px 16px',
+                    borderRadius: '6px',
+                  },
+                  container: {
+                    marginTop: '0',
+                  },
+                }}
+              />
             </div>
 
             {/* Photo Gallery */}

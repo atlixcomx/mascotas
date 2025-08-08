@@ -2,29 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '../../../../../../../lib/auth'
 import { prisma } from '../../../../../../../lib/db'
-import { subirFotoSchema } from '../../../../../../../src/lib/validations/perrito'
 import { z } from 'zod'
-import { writeFile, mkdir } from 'fs/promises'
-import { join } from 'path'
-import { existsSync } from 'fs'
 
 interface RouteParams {
   params: { id: string }
-}
-
-// Función para generar nombre único de archivo
-function generarNombreArchivo(originalName: string): string {
-  const extension = originalName.split('.').pop() || 'jpg'
-  const timestamp = Date.now()
-  const random = Math.random().toString(36).substring(2, 8)
-  return `${timestamp}_${random}.${extension}`
-}
-
-// Función para crear directorio si no existe
-async function crearDirectorio(ruta: string) {
-  if (!existsSync(ruta)) {
-    await mkdir(ruta, { recursive: true })
-  }
 }
 
 export async function POST(request: NextRequest, { params }: RouteParams) {
@@ -35,12 +16,25 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
     }
 
-    // Por ahora, retornar mensaje informativo ya que Vercel no permite escritura de archivos
-    return NextResponse.json({ 
-      success: false,
-      message: 'La funcionalidad de carga de fotos está temporalmente deshabilitada. Por favor, usa URLs de imágenes externas (ej: de Unsplash, Cloudinary, etc.) editando directamente el campo de fotos.',
-      info: 'En producción, se recomienda integrar con servicios como Cloudinary o AWS S3 para el almacenamiento de imágenes.'
-    }, { status: 503 })
+    // Verificar que el perrito existe
+    const perrito = await prisma.perrito.findUnique({
+      where: { id: params.id }
+    })
+
+    if (!perrito) {
+      return NextResponse.json({ error: 'Perrito no encontrado' }, { status: 404 })
+    }
+
+    // Recibir la URL de la imagen subida por Uploadthing
+    const body = await request.json()
+    const { url, tipo = 'galeria' } = body
+
+    if (!url) {
+      return NextResponse.json({ error: 'No se proporcionó URL de imagen' }, { status: 400 })
+    }
+
+    // Validar tipo
+    const tipoValidado = z.enum(['principal', 'galeria', 'interna', 'catalogo']).parse(tipo)
 
     // Obtener fotos actuales del perrito
     const fotosActuales = JSON.parse(perrito.fotos || '[]')
@@ -97,7 +91,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     await prisma.notaPerrito.create({
       data: {
         perritoId: params.id,
-        contenido: `Foto ${tipoValidado} subida por ${session.user.name}: ${nombreArchivo}${descripcion ? ` - ${descripcion}` : ''}`,
+        contenido: `Foto ${tipoValidado} subida por ${session.user.name}`,
         autor: session.user.name || 'Admin',
         tipo: 'general'
       }
@@ -106,13 +100,9 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({
       success: true,
       foto: {
-        id: nombreArchivo,
-        url: urlPublica,
+        url: url,
         tipo: tipoValidado,
-        descripcion: descripcion || '',
-        fechaSubida: new Date(),
-        tamaño: archivo.size,
-        tipoArchivo: archivo.type
+        fechaSubida: new Date()
       },
       perrito: {
         ...perritoActualizado,

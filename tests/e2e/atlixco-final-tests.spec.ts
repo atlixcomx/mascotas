@@ -34,28 +34,29 @@ test.describe('Sistema de Adopción Atlixco - Pruebas Finales Exitosas', () => {
     console.log(`✓ Encabezado principal: "${h1Text}"`)
   })
 
-  test('página de perritos disponibles', async ({ page }) => {
-    await page.goto('/perritos')
+  test('página de catálogo de perritos', async ({ page }) => {
+    await page.goto('/catalogo')
     await page.waitForLoadState('networkidle')
     
     // Verificar título de la página
-    const pageTitle = page.locator('h1, h2').first()
+    const pageTitle = page.locator('h1').first()
     await expect(pageTitle).toBeVisible()
     
     // Verificar API de perritos
     const response = await page.request.get('https://4tlixco.vercel.app/api/perritos')
     expect(response.ok()).toBeTruthy()
     
-    const perritos = await response.json()
-    console.log(`✓ API devuelve ${perritos.length} perritos`)
+    const data = await response.json()
+    const perritos = data.perritos || data
+    console.log(`✓ API devuelve ${perritos ? perritos.length : 0} perritos`)
     
     // Si hay perritos en la API, verificar que se muestran
-    if (perritos.length > 0) {
+    if (perritos && perritos.length > 0) {
       // Esperar a que aparezca algún contenido de perritos
-      await page.waitForTimeout(2000)
+      await page.waitForTimeout(3000)
       
       // Buscar tarjetas o elementos de perritos
-      const perritoElements = page.locator('article, [class*="card"], [class*="perrito"]')
+      const perritoElements = page.locator('article, [class*="card"], [class*="perrito"], img')
       const count = await perritoElements.count()
       console.log(`✓ Elementos de perritos en la página: ${count}`)
     }
@@ -201,7 +202,7 @@ test.describe('Sistema de Adopción Atlixco - Pruebas Finales Exitosas', () => {
   test('navegación completa del sitio', async ({ page }) => {
     const routes = [
       { path: '/', name: 'Inicio' },
-      { path: '/perritos', name: 'Perritos' },
+      { path: '/catalogo', name: 'Catálogo' },
       { path: '/comercios', name: 'Comercios' },
       { path: '/admin/login', name: 'Admin' }
     ]
@@ -210,15 +211,9 @@ test.describe('Sistema de Adopción Atlixco - Pruebas Finales Exitosas', () => {
       const response = await page.goto(route.path, { waitUntil: 'domcontentloaded' })
       const status = response?.status() || 0
       
-      // En producción algunas rutas pueden devolver 404 pero la navegación funciona
-      if (status === 404) {
-        console.log(`⚠️ ${route.name} (${route.path}): Status ${status} - Ruta no encontrada en producción`)
-        // Verificamos que al menos llegamos a una página
-        await expect(page).toHaveTitle(/Atlixco/)
-      } else {
-        expect(status).toBeLessThan(400)
-        console.log(`✓ ${route.name} (${route.path}): Status ${status}`)
-      }
+      // Todas las rutas deberían funcionar ahora
+      expect(status).toBeLessThan(400)
+      console.log(`✓ ${route.name} (${route.path}): Status ${status}`)
     }
   })
 })

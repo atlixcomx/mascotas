@@ -4,6 +4,14 @@ import { authOptions } from "../../../../lib/auth";
 
 const f = createUploadthing();
 
+// Verificar configuración al iniciar
+const UPLOADTHING_TOKEN = process.env.UPLOADTHING_TOKEN;
+if (!UPLOADTHING_TOKEN) {
+  console.error("❌ UPLOADTHING_TOKEN no está configurado!");
+} else {
+  console.log("✅ UPLOADTHING_TOKEN configurado, longitud:", UPLOADTHING_TOKEN.length);
+}
+
 // FileRouter for your app, can contain multiple FileRoutes
 export const ourFileRouter = {
   // Define route for pet images
@@ -11,51 +19,46 @@ export const ourFileRouter = {
     // Set permissions and file types for this FileRoute
     .middleware(async ({ req }) => {
       // This code runs on your server before upload
-      console.log("=== UploadThing Middleware Debug ===");
-      console.log("Headers:", req.headers);
+      console.log("=== UploadThing Middleware ===");
+      console.log("Timestamp:", new Date().toISOString());
+      console.log("Method:", req.method);
+      console.log("URL:", req.url);
+      console.log("Headers:", Object.fromEntries(req.headers.entries()));
       
-      // Temporalmente permitir uploads sin autenticación estricta
-      // para resolver el problema inmediato
+      // Verificar token nuevamente
+      if (!process.env.UPLOADTHING_TOKEN) {
+        console.error("❌ Token no disponible en middleware!");
+        throw new Error("UploadThing token not configured");
+      }
+      
+      // Simplificar autenticación al máximo
       try {
-        // Intentar obtener la sesión si está disponible
         const session = await getServerSession(authOptions);
-        console.log("Session check:", session ? "found" : "not found");
-        
         if (session?.user) {
-          console.log("Authenticated user:", session.user.email);
+          console.log("✅ Usuario autenticado:", session.user.email);
           return { 
-            userId: session.user.id || session.user.email || "authenticated-user",
-            email: session.user.email,
-            role: session.user.role || "user"
+            userId: session.user.email || "user",
           };
         }
       } catch (error) {
-        console.error("Session error (non-blocking):", error);
+        console.log("⚠️ Error obteniendo sesión:", error);
       }
 
-      // Permitir upload sin sesión para resolver el problema actual
-      console.log("Allowing upload without session");
+      // Permitir upload sin sesión
+      console.log("✅ Permitiendo upload como invitado");
       return { 
-        userId: "guest-upload",
-        email: "guest@atlixco.org",
-        role: "guest"
+        userId: "guest",
       };
     })
     .onUploadComplete(async ({ metadata, file }) => {
       // This code RUNS ON YOUR SERVER after upload
       console.log("=== Upload Complete ===");
+      console.log("File:", file);
       console.log("Metadata:", metadata);
-      console.log("File URL:", file.url);
-      console.log("File name:", file.name);
-      console.log("File size:", file.size);
 
-      // Return data that will be available on the client
+      // Return minimal data
       return { 
-        uploadedBy: metadata.userId,
-        email: metadata.email,
         url: file.url,
-        name: file.name,
-        size: file.size
       };
     }),
 } satisfies FileRouter;

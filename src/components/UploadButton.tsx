@@ -7,12 +7,34 @@ const BaseUploadButton = generateUploadButton<OurFileRouter>();
 
 // Wrapper con logging mejorado para debugging
 export function UploadButton(props: any) {
+  // Log del entorno
+  if (typeof window !== 'undefined') {
+    console.log("🌐 Upload environment:");
+    console.log("- URL:", window.location.href);
+    console.log("- Origin:", window.location.origin);
+    console.log("- Protocol:", window.location.protocol);
+  }
+
   return (
     <BaseUploadButton
       {...props}
+      url={typeof window !== 'undefined' ? `${window.location.origin}/api/uploadthing` : undefined}
+      onBeforeUploadBegin={(files) => {
+        console.log("📁 Files to upload:", files);
+        console.log("Number of files:", files.length);
+        files.forEach((file, index) => {
+          console.log(`File ${index + 1}:`, {
+            name: file.name,
+            size: file.size,
+            type: file.type
+          });
+        });
+        return files;
+      }}
       onUploadBegin={() => {
         console.log("🚀 Upload beginning...");
         console.log("Timestamp:", new Date().toISOString());
+        console.log("Endpoint:", props.endpoint || "default");
         props.onUploadBegin?.();
       }}
       onClientUploadComplete={(res) => {
@@ -26,14 +48,20 @@ export function UploadButton(props: any) {
       }}
       onUploadError={(error: Error) => {
         console.error("❌ Upload error details:");
+        console.error("Error type:", error.constructor.name);
         console.error("Error message:", error.message);
         console.error("Error stack:", error.stack);
-        console.error("Full error object:", error);
         
         // Intentar extraer más información del error
         if (error && typeof error === 'object') {
-          console.error("Error properties:", Object.keys(error));
-          console.error("Error as JSON:", JSON.stringify(error, null, 2));
+          const errorObj = error as any;
+          if (errorObj.data) {
+            console.error("Error data:", errorObj.data);
+          }
+          if (errorObj.cause) {
+            console.error("Error cause:", errorObj.cause);
+          }
+          console.error("Full error:", JSON.stringify(error, Object.getOwnPropertyNames(error), 2));
         }
         
         props.onUploadError?.(error);

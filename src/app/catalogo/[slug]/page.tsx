@@ -63,7 +63,25 @@ export default function PerritoDetailPage({ params }: PageProps) {
     notFound()
   }
 
-  const allImages = [perrito.fotoPrincipal || defaultDogImage, ...(perrito.fotos || [])].filter(Boolean)
+  // Construir array de imágenes sin duplicados
+  const uniqueImages = new Set<string>()
+  
+  // Agregar foto principal primero
+  if (perrito.fotoPrincipal) {
+    uniqueImages.add(perrito.fotoPrincipal)
+  }
+  
+  // Agregar otras fotos
+  if (perrito.fotos && Array.isArray(perrito.fotos)) {
+    perrito.fotos.forEach(foto => {
+      if (foto && foto !== perrito.fotoPrincipal) {
+        uniqueImages.add(foto)
+      }
+    })
+  }
+  
+  // Si no hay fotos, usar imagen por defecto
+  const allImages = uniqueImages.size > 0 ? Array.from(uniqueImages) : [defaultDogImage]
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f8f9fa' }}>

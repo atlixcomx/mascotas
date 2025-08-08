@@ -113,6 +113,12 @@ const nextConfig = {
       }
     }
     
+    // Fix para UploadThing en producción
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      'uploadthing/server': 'uploadthing/dist/server.js',
+    }
+    
     // Optimización de bundle
     config.optimization.minimize = true
     

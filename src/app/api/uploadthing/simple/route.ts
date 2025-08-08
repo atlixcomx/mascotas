@@ -1,13 +1,13 @@
-import { createRouteHandler } from "uploadthing/next";
+import { createRouteHandler, createUploadthing } from "uploadthing/next";
+import type { FileRouter } from "uploadthing/next";
 
-// Usar el file router más simple
-const f = require("uploadthing/next").createUploadthing();
+const f = createUploadthing();
 
 const simpleFileRouter = {
   petImageUploader: f({ image: { maxFileSize: "4MB" } })
     .middleware(() => ({ userId: "test" }))
     .onUploadComplete(({ file }) => ({ url: file.url })),
-};
+} satisfies FileRouter;
 
 export const { GET, POST } = createRouteHandler({
   router: simpleFileRouter,

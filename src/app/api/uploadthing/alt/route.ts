@@ -1,10 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { UTApi } from "uploadthing/server";
 
-// Crear instancia de UTApi directamente
-const utapi = new UTApi({
-  token: process.env.UPLOADTHING_TOKEN,
-});
+// Importación dinámica para evitar problemas de build
+let UTApi: any;
+
+async function getUTApi() {
+  if (!UTApi) {
+    const module = await import("uploadthing/server");
+    UTApi = module.UTApi;
+  }
+  return new UTApi({
+    token: process.env.UPLOADTHING_TOKEN,
+  });
+}
 
 export async function POST(request: NextRequest) {
   console.log("=== Alternative UploadThing Handler ===");
@@ -30,6 +37,9 @@ export async function POST(request: NextRequest) {
     }
 
     console.log(`Uploading ${files.length} files...`);
+
+    // Obtener instancia de UTApi
+    const utapi = await getUTApi();
 
     // Subir archivos usando UTApi
     const responses = await Promise.all(

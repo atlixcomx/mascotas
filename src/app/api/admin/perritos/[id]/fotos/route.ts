@@ -45,17 +45,17 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 
     switch (tipoValidado) {
       case 'principal':
-        campoActualizar.fotoPrincipal = urlPublica
+        campoActualizar.fotoPrincipal = url
         // También agregar a fotos generales si no está
-        if (!fotosActualizadas.includes(urlPublica)) {
-          fotosActualizadas.unshift(urlPublica)
+        if (!fotosActualizadas.includes(url)) {
+          fotosActualizadas.unshift(url)
         }
         campoActualizar.fotos = JSON.stringify(fotosActualizadas)
         break
       
       case 'galeria':
-        if (!fotosActualizadas.includes(urlPublica)) {
-          fotosActualizadas.push(urlPublica)
+        if (!fotosActualizadas.includes(url)) {
+          fotosActualizadas.push(url)
         }
         campoActualizar.fotos = JSON.stringify(fotosActualizadas)
         break
@@ -65,7 +65,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
         await prisma.notaPerrito.create({
           data: {
             perritoId: params.id,
-            contenido: `Foto interna subida: ${urlPublica}${descripcion ? ` - ${descripcion}` : ''}`,
+            contenido: `Foto interna subida: ${url}`,
             autor: session.user.name || 'Admin',
             tipo: 'general'
           }
@@ -74,8 +74,8 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       
       case 'catalogo':
         // Para fotos de catálogo, las agregamos tanto a fotos como marcamos especialmente
-        if (!fotosActualizadas.includes(urlPublica)) {
-          fotosActualizadas.push(urlPublica)
+        if (!fotosActualizadas.includes(url)) {
+          fotosActualizadas.push(url)
         }
         campoActualizar.fotos = JSON.stringify(fotosActualizadas)
         break

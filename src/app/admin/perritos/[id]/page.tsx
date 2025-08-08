@@ -926,20 +926,39 @@ export default function EditPerrito() {
 
         {activeTab === 'fotos' && (
           <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <h3 style={{ fontSize: '1.25rem', fontWeight: '600', margin: 0, color: '#111827' }}>
+            <div style={{ marginBottom: '32px' }}>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: '600', margin: '0 0 8px 0', color: '#111827' }}>
                 Galería de Fotos
               </h3>
+              <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>
+                Administra las fotos de {perrito.nombre}. La primera foto será la principal.
+              </p>
+            </div>
+
+            {/* Upload Section */}
+            <div style={{
+              backgroundColor: '#f9fafb',
+              border: '2px dashed #e5e7eb',
+              borderRadius: '12px',
+              padding: '24px',
+              textAlign: 'center',
+              marginBottom: '32px'
+            }}>
+              <Camera style={{ width: '48px', height: '48px', color: '#9ca3af', margin: '0 auto 16px' }} />
+              <h4 style={{ fontSize: '1rem', fontWeight: '600', color: '#374151', marginBottom: '8px' }}>
+                Subir Nueva Foto
+              </h4>
+              <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '16px' }}>
+                Arrastra y suelta o selecciona una imagen (máx. 4MB)
+              </p>
               <UploadButton
                 endpoint="petImageUploader"
                 onClientUploadComplete={(res) => {
-                  // Do something with the response
                   if (res && res[0]) {
                     handlePhotoUpload(res[0].url)
                   }
                 }}
                 onUploadError={(error: Error) => {
-                  // Do something with the error.
                   alert(`Error al subir: ${error.message}`)
                 }}
                 appearance={{
@@ -948,70 +967,154 @@ export default function EditPerrito() {
                     color: 'white',
                     fontSize: '0.875rem',
                     fontWeight: '500',
-                    padding: '8px 16px',
-                    borderRadius: '6px',
+                    padding: '10px 20px',
+                    borderRadius: '8px',
+                    border: 'none',
+                    cursor: 'pointer',
                   },
                   container: {
                     marginTop: '0',
+                  },
+                  allowedContent: {
+                    display: 'none',
                   },
                 }}
               />
             </div>
 
-            {/* Photo Gallery */}
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-              gap: '16px'
-            }}>
-              {/* Main Photo */}
-              <div style={{ position: 'relative', gridColumn: 'span 2' }}>
-                <Image
-                  src={perrito.fotoPrincipal || '/placeholder-dog.jpg'}
-                  alt={perrito.nombre}
-                  width={400}
-                  height={300}
-                  style={{
-                    width: '100%',
-                    height: '300px',
-                    objectFit: 'cover',
-                    borderRadius: '8px',
-                    border: '3px solid #af1731'
-                  }}
-                />
-                <div style={{
-                  position: 'absolute',
-                  top: '8px',
-                  left: '8px',
-                  padding: '4px 8px',
-                  backgroundColor: '#af1731',
-                  color: 'white',
-                  borderRadius: '4px',
-                  fontSize: '0.75rem',
-                  fontWeight: '500'
-                }}>
-                  Foto Principal
-                </div>
-              </div>
+            {/* Photo Grid */}
+            <div>
+              <h4 style={{ fontSize: '1rem', fontWeight: '600', color: '#374151', marginBottom: '16px' }}>
+                Fotos Actuales ({parsePhotosField(perrito.fotos).length})
+              </h4>
               
-              {/* Additional Photos */}
-              {parsePhotosField(perrito.fotos).slice(0, 6).map((foto: string, index: number) => (
-                <div key={index} style={{ position: 'relative' }}>
-                  <Image
-                    src={foto}
-                    alt={`${perrito.nombre} ${index + 1}`}
-                    width={200}
-                    height={200}
-                    style={{
-                      width: '100%',
-                      height: '200px',
-                      objectFit: 'cover',
-                      borderRadius: '8px',
-                      border: '1px solid #e2e8f0'
-                    }}
-                  />
+              {parsePhotosField(perrito.fotos).length === 0 ? (
+                <div style={{
+                  textAlign: 'center',
+                  padding: '48px',
+                  backgroundColor: '#f9fafb',
+                  borderRadius: '12px',
+                  color: '#6b7280'
+                }}>
+                  <Camera style={{ width: '48px', height: '48px', color: '#d1d5db', margin: '0 auto 16px' }} />
+                  <p>No hay fotos aún. Sube la primera foto de {perrito.nombre}.</p>
                 </div>
-              ))}
+              ) : (
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
+                  gap: '20px'
+                }}>
+                  {/* Main Photo */}
+                  <div style={{ 
+                    gridColumn: parsePhotosField(perrito.fotos).length > 1 ? 'span 2' : 'span 1',
+                    position: 'relative',
+                    overflow: 'hidden',
+                    borderRadius: '12px',
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                    border: '2px solid #af1731'
+                  }}>
+                    <Image
+                      src={perrito.fotoPrincipal || '/placeholder-dog.jpg'}
+                      alt={perrito.nombre}
+                      width={600}
+                      height={400}
+                      style={{
+                        width: '100%',
+                        height: '320px',
+                        objectFit: 'cover',
+                      }}
+                    />
+                    <div style={{
+                      position: 'absolute',
+                      top: '12px',
+                      left: '12px',
+                      display: 'flex',
+                      gap: '8px'
+                    }}>
+                      <span style={{
+                        padding: '6px 12px',
+                        backgroundColor: '#af1731',
+                        color: 'white',
+                        borderRadius: '6px',
+                        fontSize: '0.75rem',
+                        fontWeight: '600',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px'
+                      }}>
+                        <Heart style={{ width: '14px', height: '14px' }} />
+                        Foto Principal
+                      </span>
+                    </div>
+                  </div>
+                  
+                  {/* Additional Photos */}
+                  {parsePhotosField(perrito.fotos).slice(1).map((foto: string, index: number) => (
+                    <div key={index} style={{ 
+                      position: 'relative',
+                      overflow: 'hidden',
+                      borderRadius: '12px',
+                      boxShadow: '0 2px 4px -1px rgba(0, 0, 0, 0.1)',
+                      border: '1px solid #e5e7eb',
+                      backgroundColor: '#ffffff'
+                    }}>
+                      <Image
+                        src={foto}
+                        alt={`${perrito.nombre} ${index + 2}`}
+                        width={300}
+                        height={300}
+                        style={{
+                          width: '100%',
+                          height: '240px',
+                          objectFit: 'cover',
+                        }}
+                      />
+                      <div style={{
+                        position: 'absolute',
+                        top: '8px',
+                        right: '8px',
+                        display: 'flex',
+                        gap: '4px'
+                      }}>
+                        <button
+                          onClick={() => {
+                            if (confirm('¿Establecer como foto principal?')) {
+                              handleInputChange('fotoPrincipal', foto)
+                              savePerrito()
+                            }
+                          }}
+                          style={{
+                            padding: '6px',
+                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                            border: '1px solid #e5e7eb',
+                            borderRadius: '6px',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                          }}
+                          title="Establecer como principal"
+                        >
+                          <Heart style={{ width: '16px', height: '16px', color: '#af1731' }} />
+                        </button>
+                      </div>
+                      <div style={{
+                        position: 'absolute',
+                        bottom: '0',
+                        left: '0',
+                        right: '0',
+                        padding: '8px',
+                        background: 'linear-gradient(to top, rgba(0,0,0,0.7), transparent)',
+                        color: 'white',
+                        fontSize: '0.75rem'
+                      }}>
+                        Foto {index + 2}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         )}

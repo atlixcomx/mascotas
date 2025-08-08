@@ -216,11 +216,14 @@ export default function SolicitudAdopcionPage({ params }: PageProps) {
           email: formData.email,
           telefono: formData.telefono,
           direccion: formData.direccion,
+          edad: formData.edad, // Send edad as separate field
+          ciudad: 'No especificada', // Add missing required field
+          codigoPostal: '00000', // Add missing required field
           tipoVivienda: formData.tipoVivienda,
+          tienePatio: formData.espacioExterior !== 'no', // Convert to boolean
           experiencia: formData.experienciaPerros,
           otrasMascotas: formData.otrosMascotas,
           motivoAdopcion: formData.motivacion,
-          notas: `Edad: ${formData.edad}. Apellidos: ${formData.apellidos}. Espacio exterior: ${formData.espacioExterior}. Tiempo solo: ${formData.tiempoSolo}. Tiempo disponible: ${formData.tiempoDisponible}. Comprometimiento: ${formData.comprometimiento ? 'Sí' : 'No'}. Visitas veterinario: ${formData.visitasVeterinario ? 'Sí' : 'No'}.`,
           perritoId: perrito.id,
         })
       })

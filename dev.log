@@ -1,0 +1,138 @@
+
+> atlixco@0.1.1 dev
+> next dev --turbopack
+
+   ▲ Next.js 15.4.5 (Turbopack)
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.100.41:3000
+   - Environments: .env.local, .env
+   - Experiments (use with caution):
+     · optimizePackageImports
+
+ ✓ Starting...
+ ✓ Compiled middleware in 137ms
+ ✓ Ready in 2.9s
+ ⚠ Webpack is configured while Turbopack is not, which may cause problems.
+ ⚠ See instructions if you need to configure Turbopack:
+  https://nextjs.org/docs/app/api-reference/next-config-js/turbopack
+
+ ○ Compiling /api/perritos ...
+ ✓ Compiled /api/perritos in 891ms
+prisma:query SELECT COUNT(*) FROM (SELECT "public"."Perrito"."id" FROM "public"."Perrito" WHERE "public"."Perrito"."estado" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT "public"."Perrito"."id", "public"."Perrito"."nombre", "public"."Perrito"."slug", "public"."Perrito"."fotoPrincipal", "public"."Perrito"."edad", "public"."Perrito"."tamano", "public"."Perrito"."raza", "public"."Perrito"."sexo", "public"."Perrito"."energia", "public"."Perrito"."aptoNinos", "public"."Perrito"."aptoPerros", "public"."Perrito"."aptoGatos", "public"."Perrito"."destacado", "public"."Perrito"."fechaIngreso", "public"."Perrito"."estado", "public"."Perrito"."caracter" FROM "public"."Perrito" WHERE "public"."Perrito"."estado" = $1 ORDER BY "public"."Perrito"."createdAt" DESC LIMIT $2 OFFSET $3
+ GET /api/perritos 200 in 2660ms
+ ✓ Compiled /api/perritos/[slug] in 68ms
+Error: Route "/api/perritos/[slug]" used `params.slug`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at GET (src/app/api/perritos/[slug]/route.ts:23:28)
+  21 |   try {
+  22 |     const perrito = await prisma.perrito.findUnique({
+> 23 |       where: { slug: params.slug },
+     |                            ^
+  24 |       include: {
+  25 |         notas: {
+  26 |           orderBy: { createdAt: 'desc' },
+prisma:query SELECT "public"."Perrito"."id", "public"."Perrito"."codigo", "public"."Perrito"."nombre", "public"."Perrito"."slug", "public"."Perrito"."fotos", "public"."Perrito"."fotoPrincipal", "public"."Perrito"."edad", "public"."Perrito"."tamano", "public"."Perrito"."raza", "public"."Perrito"."sexo", "public"."Perrito"."peso", "public"."Perrito"."historia", "public"."Perrito"."fechaIngreso", "public"."Perrito"."tipoIngreso", "public"."Perrito"."procedencia", "public"."Perrito"."responsableIngreso", "public"."Perrito"."vacunas", "public"."Perrito"."esterilizado", "public"."Perrito"."desparasitado", "public"."Perrito"."saludNotas", "public"."Perrito"."energia", "public"."Perrito"."aptoNinos", "public"."Perrito"."aptoPerros", "public"."Perrito"."aptoGatos", "public"."Perrito"."caracter", "public"."Perrito"."estado", "public"."Perrito"."destacado", "public"."Perrito"."vistas", "public"."Perrito"."fechaAdopcion", "public"."Perrito"."adoptanteNombre", "public"."Perrito"."adoptanteTelefono", "public"."Perrito"."createdAt", "public"."Perrito"."updatedAt" FROM "public"."Perrito" WHERE ("public"."Perrito"."slug" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."NotaPerrito"."id", "public"."NotaPerrito"."perritoId", "public"."NotaPerrito"."contenido", "public"."NotaPerrito"."autor", "public"."NotaPerrito"."tipo", "public"."NotaPerrito"."createdAt" FROM "public"."NotaPerrito" WHERE "public"."NotaPerrito"."perritoId" IN ($1) ORDER BY "public"."NotaPerrito"."createdAt" DESC LIMIT $2 OFFSET $3
+prisma:query UPDATE "public"."Perrito" SET "vistas" = ("public"."Perrito"."vistas" + $1), "updatedAt" = $2 WHERE ("public"."Perrito"."id" = $3 AND 1=1) RETURNING "public"."Perrito"."id", "public"."Perrito"."codigo", "public"."Perrito"."nombre", "public"."Perrito"."slug", "public"."Perrito"."fotos", "public"."Perrito"."fotoPrincipal", "public"."Perrito"."edad", "public"."Perrito"."tamano", "public"."Perrito"."raza", "public"."Perrito"."sexo", "public"."Perrito"."peso", "public"."Perrito"."historia", "public"."Perrito"."fechaIngreso", "public"."Perrito"."tipoIngreso", "public"."Perrito"."procedencia", "public"."Perrito"."responsableIngreso", "public"."Perrito"."vacunas", "public"."Perrito"."esterilizado", "public"."Perrito"."desparasitado", "public"."Perrito"."saludNotas", "public"."Perrito"."energia", "public"."Perrito"."aptoNinos", "public"."Perrito"."aptoPerros", "public"."Perrito"."aptoGatos", "public"."Perrito"."caracter", "public"."Perrito"."estado", "public"."Perrito"."destacado", "public"."Perrito"."vistas", "public"."Perrito"."fechaAdopcion", "public"."Perrito"."adoptanteNombre", "public"."Perrito"."adoptanteTelefono", "public"."Perrito"."createdAt", "public"."Perrito"."updatedAt"
+prisma:query SELECT "public"."Perrito"."id", "public"."Perrito"."nombre", "public"."Perrito"."slug", "public"."Perrito"."fotoPrincipal", "public"."Perrito"."edad", "public"."Perrito"."raza", "public"."Perrito"."tamano" FROM "public"."Perrito" WHERE ("public"."Perrito"."id" <> $1 AND "public"."Perrito"."estado" = $2 AND ("public"."Perrito"."tamano" = $3 OR "public"."Perrito"."energia" = $4)) ORDER BY "public"."Perrito"."id" ASC LIMIT $5 OFFSET $6
+Perrito data from DB: {
+  nombre: 'Max',
+  fotoPrincipal: 'https://images.unsplash.com/photo-1551717743-49959800b1f6?w=400',
+  fotos: '["https://images.unsplash.com/photo-1551717743-49959800b1f6?w=400"]',
+  fotosType: 'string'
+}
+Response fotos: [ 'https://images.unsplash.com/photo-1551717743-49959800b1f6?w=400' ]
+ GET /api/perritos/max 200 in 1265ms
+Error: Route "/api/perritos/[slug]" used `params.slug`. `params` should be awaited before using its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at GET (src/app/api/perritos/[slug]/route.ts:23:28)
+  21 |   try {
+  22 |     const perrito = await prisma.perrito.findUnique({
+> 23 |       where: { slug: params.slug },
+     |                            ^
+  24 |       include: {
+  25 |         notas: {
+  26 |           orderBy: { createdAt: 'desc' },
+prisma:query SELECT "public"."Perrito"."id", "public"."Perrito"."codigo", "public"."Perrito"."nombre", "public"."Perrito"."slug", "public"."Perrito"."fotos", "public"."Perrito"."fotoPrincipal", "public"."Perrito"."edad", "public"."Perrito"."tamano", "public"."Perrito"."raza", "public"."Perrito"."sexo", "public"."Perrito"."peso", "public"."Perrito"."historia", "public"."Perrito"."fechaIngreso", "public"."Perrito"."tipoIngreso", "public"."Perrito"."procedencia", "public"."Perrito"."responsableIngreso", "public"."Perrito"."vacunas", "public"."Perrito"."esterilizado", "public"."Perrito"."desparasitado", "public"."Perrito"."saludNotas", "public"."Perrito"."energia", "public"."Perrito"."aptoNinos", "public"."Perrito"."aptoPerros", "public"."Perrito"."aptoGatos", "public"."Perrito"."caracter", "public"."Perrito"."estado", "public"."Perrito"."destacado", "public"."Perrito"."vistas", "public"."Perrito"."fechaAdopcion", "public"."Perrito"."adoptanteNombre", "public"."Perrito"."adoptanteTelefono", "public"."Perrito"."createdAt", "public"."Perrito"."updatedAt" FROM "public"."Perrito" WHERE ("public"."Perrito"."slug" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."NotaPerrito"."id", "public"."NotaPerrito"."perritoId", "public"."NotaPerrito"."contenido", "public"."NotaPerrito"."autor", "public"."NotaPerrito"."tipo", "public"."NotaPerrito"."createdAt" FROM "public"."NotaPerrito" WHERE "public"."NotaPerrito"."perritoId" IN ($1) ORDER BY "public"."NotaPerrito"."createdAt" DESC LIMIT $2 OFFSET $3
+prisma:query UPDATE "public"."Perrito" SET "vistas" = ("public"."Perrito"."vistas" + $1), "updatedAt" = $2 WHERE ("public"."Perrito"."id" = $3 AND 1=1) RETURNING "public"."Perrito"."id", "public"."Perrito"."codigo", "public"."Perrito"."nombre", "public"."Perrito"."slug", "public"."Perrito"."fotos", "public"."Perrito"."fotoPrincipal", "public"."Perrito"."edad", "public"."Perrito"."tamano", "public"."Perrito"."raza", "public"."Perrito"."sexo", "public"."Perrito"."peso", "public"."Perrito"."historia", "public"."Perrito"."fechaIngreso", "public"."Perrito"."tipoIngreso", "public"."Perrito"."procedencia", "public"."Perrito"."responsableIngreso", "public"."Perrito"."vacunas", "public"."Perrito"."esterilizado", "public"."Perrito"."desparasitado", "public"."Perrito"."saludNotas", "public"."Perrito"."energia", "public"."Perrito"."aptoNinos", "public"."Perrito"."aptoPerros", "public"."Perrito"."aptoGatos", "public"."Perrito"."caracter", "public"."Perrito"."estado", "public"."Perrito"."destacado", "public"."Perrito"."vistas", "public"."Perrito"."fechaAdopcion", "public"."Perrito"."adoptanteNombre", "public"."Perrito"."adoptanteTelefono", "public"."Perrito"."createdAt", "public"."Perrito"."updatedAt"
+prisma:query SELECT "public"."Perrito"."id", "public"."Perrito"."nombre", "public"."Perrito"."slug", "public"."Perrito"."fotoPrincipal", "public"."Perrito"."edad", "public"."Perrito"."raza", "public"."Perrito"."tamano" FROM "public"."Perrito" WHERE ("public"."Perrito"."id" <> $1 AND "public"."Perrito"."estado" = $2 AND ("public"."Perrito"."tamano" = $3 OR "public"."Perrito"."energia" = $4)) ORDER BY "public"."Perrito"."id" ASC LIMIT $5 OFFSET $6
+Perrito data from DB: {
+  nombre: 'Max',
+  fotoPrincipal: 'https://images.unsplash.com/photo-1551717743-49959800b1f6?w=400',
+  fotos: '["https://images.unsplash.com/photo-1551717743-49959800b1f6?w=400"]',
+  fotosType: 'string'
+}
+Response fotos: [ 'https://images.unsplash.com/photo-1551717743-49959800b1f6?w=400' ]
+ GET /api/perritos/max 200 in 407ms
+ ✓ Compiled /api/solicitud-adopcion in 80ms
+=== SOLICITUD ADOPCION DEBUG ===
+Received data: {
+  "nombre": "Juan Perez",
+  "email": "juan.perez@test.com",
+  "telefono": "555-123-4567",
+  "direccion": "Calle Test 123, Colonia Centro",
+  "edad": "30",
+  "ciudad": "Puebla",
+  "codigoPostal": "72000",
+  "tipoVivienda": "casa",
+  "tienePatio": true,
+  "experiencia": "He tenido perros toda mi vida. Mi ultimo perro fue un labrador que vivio 12 años conmigo.",
+  "otrasMascotas": "Tengo un gato llamado Whiskers",
+  "motivoAdopcion": "Quiero darle una segunda oportunidad a Max y ofrecerle un hogar lleno de amor",
+  "perritoId": "cme2bin220001rk1wwigdn49o"
+}
+Received data keys: [
+  'nombre',        'email',
+  'telefono',      'direccion',
+  'edad',          'ciudad',
+  'codigoPostal',  'tipoVivienda',
+  'tienePatio',    'experiencia',
+  'otrasMascotas', 'motivoAdopcion',
+  'perritoId'
+]
+perritoId type: string
+perritoId value: cme2bin220001rk1wwigdn49o
+prisma:query SELECT 1
+prisma:query SELECT "public"."Perrito"."id", "public"."Perrito"."codigo", "public"."Perrito"."nombre", "public"."Perrito"."slug", "public"."Perrito"."fotos", "public"."Perrito"."fotoPrincipal", "public"."Perrito"."edad", "public"."Perrito"."tamano", "public"."Perrito"."raza", "public"."Perrito"."sexo", "public"."Perrito"."peso", "public"."Perrito"."historia", "public"."Perrito"."fechaIngreso", "public"."Perrito"."tipoIngreso", "public"."Perrito"."procedencia", "public"."Perrito"."responsableIngreso", "public"."Perrito"."vacunas", "public"."Perrito"."esterilizado", "public"."Perrito"."desparasitado", "public"."Perrito"."saludNotas", "public"."Perrito"."energia", "public"."Perrito"."aptoNinos", "public"."Perrito"."aptoPerros", "public"."Perrito"."aptoGatos", "public"."Perrito"."caracter", "public"."Perrito"."estado", "public"."Perrito"."destacado", "public"."Perrito"."vistas", "public"."Perrito"."fechaAdopcion", "public"."Perrito"."adoptanteNombre", "public"."Perrito"."adoptanteTelefono", "public"."Perrito"."createdAt", "public"."Perrito"."updatedAt" FROM "public"."Perrito" WHERE ("public"."Perrito"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."Solicitud"."id", "public"."Solicitud"."codigo", "public"."Solicitud"."perritoId", "public"."Solicitud"."nombre", "public"."Solicitud"."edad", "public"."Solicitud"."telefono", "public"."Solicitud"."email", "public"."Solicitud"."direccion", "public"."Solicitud"."ciudad", "public"."Solicitud"."codigoPostal", "public"."Solicitud"."tipoVivienda", "public"."Solicitud"."tienePatio", "public"."Solicitud"."experiencia", "public"."Solicitud"."otrasMascotas", "public"."Solicitud"."motivoAdopcion", "public"."Solicitud"."ineUrl", "public"."Solicitud"."comprobanteUrl", "public"."Solicitud"."estado", "public"."Solicitud"."fechaEntrevista", "public"."Solicitud"."inicioPrueba", "public"."Solicitud"."finPrueba", "public"."Solicitud"."fechaAdopcion", "public"."Solicitud"."motivoRechazo", "public"."Solicitud"."origenQR", "public"."Solicitud"."createdAt", "public"."Solicitud"."updatedAt" FROM "public"."Solicitud" WHERE ("public"."Solicitud"."email" = $1 AND "public"."Solicitud"."perritoId" = $2 AND "public"."Solicitud"."estado" NOT IN ($3,$4)) LIMIT $5 OFFSET $6
+Data to be inserted: {
+  "codigo": "SOL25081909",
+  "nombre": "Juan Perez",
+  "email": "juan.perez@test.com",
+  "telefono": "555-123-4567",
+  "direccion": "Calle Test 123, Colonia Centro",
+  "ciudad": "Puebla",
+  "codigoPostal": "72000",
+  "edad": 30,
+  "tipoVivienda": "casa",
+  "tienePatio": true,
+  "experiencia": "He tenido perros toda mi vida. Mi ultimo perro fue un labrador que vivio 12 años conmigo.",
+  "otrasMascotas": "Tengo un gato llamado Whiskers",
+  "motivoAdopcion": "Quiero darle una segunda oportunidad a Max y ofrecerle un hogar lleno de amor",
+  "estado": "nueva",
+  "perritoId": "cme2bin220001rk1wwigdn49o"
+}
+prisma:query BEGIN
+prisma:query INSERT INTO "public"."Solicitud" ("id","codigo","perritoId","nombre","edad","telefono","email","direccion","ciudad","codigoPostal","tipoVivienda","tienePatio","experiencia","otrasMascotas","motivoAdopcion","estado","createdAt","updatedAt") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18) RETURNING "public"."Solicitud"."id"
+prisma:query SELECT "public"."Solicitud"."id", "public"."Solicitud"."codigo", "public"."Solicitud"."perritoId", "public"."Solicitud"."nombre", "public"."Solicitud"."edad", "public"."Solicitud"."telefono", "public"."Solicitud"."email", "public"."Solicitud"."direccion", "public"."Solicitud"."ciudad", "public"."Solicitud"."codigoPostal", "public"."Solicitud"."tipoVivienda", "public"."Solicitud"."tienePatio", "public"."Solicitud"."experiencia", "public"."Solicitud"."otrasMascotas", "public"."Solicitud"."motivoAdopcion", "public"."Solicitud"."ineUrl", "public"."Solicitud"."comprobanteUrl", "public"."Solicitud"."estado", "public"."Solicitud"."fechaEntrevista", "public"."Solicitud"."inicioPrueba", "public"."Solicitud"."finPrueba", "public"."Solicitud"."fechaAdopcion", "public"."Solicitud"."motivoRechazo", "public"."Solicitud"."origenQR", "public"."Solicitud"."createdAt", "public"."Solicitud"."updatedAt" FROM "public"."Solicitud" WHERE "public"."Solicitud"."id" = $1 LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."Perrito"."id", "public"."Perrito"."codigo", "public"."Perrito"."nombre", "public"."Perrito"."slug", "public"."Perrito"."fotos", "public"."Perrito"."fotoPrincipal", "public"."Perrito"."edad", "public"."Perrito"."tamano", "public"."Perrito"."raza", "public"."Perrito"."sexo", "public"."Perrito"."peso", "public"."Perrito"."historia", "public"."Perrito"."fechaIngreso", "public"."Perrito"."tipoIngreso", "public"."Perrito"."procedencia", "public"."Perrito"."responsableIngreso", "public"."Perrito"."vacunas", "public"."Perrito"."esterilizado", "public"."Perrito"."desparasitado", "public"."Perrito"."saludNotas", "public"."Perrito"."energia", "public"."Perrito"."aptoNinos", "public"."Perrito"."aptoPerros", "public"."Perrito"."aptoGatos", "public"."Perrito"."caracter", "public"."Perrito"."estado", "public"."Perrito"."destacado", "public"."Perrito"."vistas", "public"."Perrito"."fechaAdopcion", "public"."Perrito"."adoptanteNombre", "public"."Perrito"."adoptanteTelefono", "public"."Perrito"."createdAt", "public"."Perrito"."updatedAt" FROM "public"."Perrito" WHERE "public"."Perrito"."id" IN ($1) OFFSET $2
+prisma:query COMMIT
+📧 Email enviado:
+Para: juan.perez@test.com
+Asunto: Solicitud de adopción recibida - Max
+---
+ POST /api/solicitud-adopcion 200 in 1214ms
+prisma:query SELECT 1
+prisma:query SELECT "public"."Perrito"."id", "public"."Perrito"."codigo", "public"."Perrito"."nombre", "public"."Perrito"."slug", "public"."Perrito"."fotos", "public"."Perrito"."fotoPrincipal", "public"."Perrito"."edad", "public"."Perrito"."tamano", "public"."Perrito"."raza", "public"."Perrito"."sexo", "public"."Perrito"."peso", "public"."Perrito"."historia", "public"."Perrito"."fechaIngreso", "public"."Perrito"."tipoIngreso", "public"."Perrito"."procedencia", "public"."Perrito"."responsableIngreso", "public"."Perrito"."vacunas", "public"."Perrito"."esterilizado", "public"."Perrito"."desparasitado", "public"."Perrito"."saludNotas", "public"."Perrito"."energia", "public"."Perrito"."aptoNinos", "public"."Perrito"."aptoPerros", "public"."Perrito"."aptoGatos", "public"."Perrito"."caracter", "public"."Perrito"."estado", "public"."Perrito"."destacado", "public"."Perrito"."vistas", "public"."Perrito"."fechaAdopcion", "public"."Perrito"."adoptanteNombre", "public"."Perrito"."adoptanteTelefono", "public"."Perrito"."createdAt", "public"."Perrito"."updatedAt" FROM "public"."Perrito" WHERE ("public"."Perrito"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."Solicitud"."id", "public"."Solicitud"."codigo", "public"."Solicitud"."perritoId", "public"."Solicitud"."nombre", "public"."Solicitud"."edad", "public"."Solicitud"."telefono", "public"."Solicitud"."email", "public"."Solicitud"."direccion", "public"."Solicitud"."ciudad", "public"."Solicitud"."codigoPostal", "public"."Solicitud"."tipoVivienda", "public"."Solicitud"."tienePatio", "public"."Solicitud"."experiencia", "public"."Solicitud"."otrasMascotas", "public"."Solicitud"."motivoAdopcion", "public"."Solicitud"."ineUrl", "public"."Solicitud"."comprobanteUrl", "public"."Solicitud"."estado", "public"."Solicitud"."fechaEntrevista", "public"."Solicitud"."inicioPrueba", "public"."Solicitud"."finPrueba", "public"."Solicitud"."fechaAdopcion", "public"."Solicitud"."motivoRechazo", "public"."Solicitud"."origenQR", "public"."Solicitud"."createdAt", "public"."Solicitud"."updatedAt" FROM "public"."Solicitud" WHERE ("public"."Solicitud"."email" = $1 AND "public"."Solicitud"."perritoId" = $2 AND "public"."Solicitud"."estado" NOT IN ($3,$4)) LIMIT $5 OFFSET $6
+prisma:query BEGIN
+prisma:query INSERT INTO "public"."Solicitud" ("id","codigo","perritoId","nombre","edad","telefono","email","direccion","ciudad","codigoPostal","tipoVivienda","tienePatio","experiencia","otrasMascotas","motivoAdopcion","estado","createdAt","updatedAt") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18) RETURNING "public"."Solicitud"."id"
+prisma:query SELECT "public"."Solicitud"."id", "public"."Solicitud"."codigo", "public"."Solicitud"."perritoId", "public"."Solicitud"."nombre", "public"."Solicitud"."edad", "public"."Solicitud"."telefono", "public"."Solicitud"."email", "public"."Solicitud"."direccion", "public"."Solicitud"."ciudad", "public"."Solicitud"."codigoPostal", "public"."Solicitud"."tipoVivienda", "public"."Solicitud"."tienePatio", "public"."Solicitud"."experiencia", "public"."Solicitud"."otrasMascotas", "public"."Solicitud"."motivoAdopcion", "public"."Solicitud"."ineUrl", "public"."Solicitud"."comprobanteUrl", "public"."Solicitud"."estado", "public"."Solicitud"."fechaEntrevista", "public"."Solicitud"."inicioPrueba", "public"."Solicitud"."finPrueba", "public"."Solicitud"."fechaAdopcion", "public"."Solicitud"."motivoRechazo", "public"."Solicitud"."origenQR", "public"."Solicitud"."createdAt", "public"."Solicitud"."updatedAt" FROM "public"."Solicitud" WHERE "public"."Solicitud"."id" = $1 LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."Perrito"."id", "public"."Perrito"."codigo", "public"."Perrito"."nombre", "public"."Perrito"."slug", "public"."Perrito"."fotos", "public"."Perrito"."fotoPrincipal", "public"."Perrito"."edad", "public"."Perrito"."tamano", "public"."Perrito"."raza", "public"."Perrito"."sexo", "public"."Perrito"."peso", "public"."Perrito"."historia", "public"."Perrito"."fechaIngreso", "public"."Perrito"."tipoIngreso", "public"."Perrito"."procedencia", "public"."Perrito"."responsableIngreso", "public"."Perrito"."vacunas", "public"."Perrito"."esterilizado", "public"."Perrito"."desparasitado", "public"."Perrito"."saludNotas", "public"."Perrito"."energia", "public"."Perrito"."aptoNinos", "public"."Perrito"."aptoPerros", "public"."Perrito"."aptoGatos", "public"."Perrito"."caracter", "public"."Perrito"."estado", "public"."Perrito"."destacado", "public"."Perrito"."vistas", "public"."Perrito"."fechaAdopcion", "public"."Perrito"."adoptanteNombre", "public"."Perrito"."adoptanteTelefono", "public"."Perrito"."createdAt", "public"."Perrito"."updatedAt" FROM "public"."Perrito" WHERE "public"."Perrito"."id" IN ($1) OFFSET $2
+prisma:query COMMIT
+📧 Email enviado:
+Para: maria.rodriguez@test.com
+Asunto: Solicitud de adopción recibida - Max
+---
+ POST /api/solicitud-adopcion 200 in 1143ms
+[?25h

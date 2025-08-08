@@ -21,6 +21,7 @@ export async function POST(request: Request) {
       'email',
       'telefono',
       'direccion',
+      'edad',
       'tipoVivienda',
       'experiencia',
       'motivoAdopcion',
@@ -34,6 +35,15 @@ export async function POST(request: Request) {
           { status: 400 }
         )
       }
+    }
+    
+    // Validar que la edad sea un número válido
+    const edad = parseInt(data.edad)
+    if (isNaN(edad) || edad < 18 || edad > 100) {
+      return NextResponse.json(
+        { error: 'La edad debe ser un número válido entre 18 y 100 años' },
+        { status: 400 }
+      )
     }
 
     // Verificar que el perrito existe y está disponible
@@ -76,21 +86,27 @@ export async function POST(request: Request) {
     // Crear la solicitud
     const codigo = generarCodigo()
     
+    // Preparar datos para inserción en la base de datos
+    const solicitudData = {
+      codigo,
+      nombre: data.nombre,
+      email: data.email,
+      telefono: data.telefono,
+      direccion: data.direccion,
+      ciudad: data.ciudad || 'No especificada',
+      codigoPostal: data.codigoPostal || '00000',  
+      edad: edad,
+      tipoVivienda: data.tipoVivienda,
+      tienePatio: data.tienePatio === true || data.tienePatio === 'true',
+      experiencia: data.experiencia,
+      otrasMascotas: data.otrasMascotas || '',
+      motivoAdopcion: data.motivoAdopcion,
+      estado: 'nueva',
+      perritoId: data.perritoId
+    }
+    
     const solicitud = await prisma.solicitud.create({
-      data: {
-        codigo,
-        nombre: data.nombre,
-        email: data.email,
-        telefono: data.telefono,
-        direccion: data.direccion,
-        tipoVivienda: data.tipoVivienda,
-        experiencia: data.experiencia,
-        otrasMascotas: data.otrasMascotas || '',
-        motivoAdopcion: data.motivoAdopcion,
-        notas: data.notas || data.compromisos || '',
-        estado: 'nueva',
-        perritoId: data.perritoId
-      },
+      data: solicitudData,
       include: {
         perrito: true
       }

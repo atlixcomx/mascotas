@@ -66,7 +66,9 @@ model Solicitud {
   ineUrl          String?
   comprobanteUrl  String?
   estado          String                @default("nueva")
+  fechaRevision   DateTime?
   fechaEntrevista DateTime?
+  fechaPrueba     DateTime?
   inicioPrueba    DateTime?
   finPrueba       DateTime?
   fechaAdopcion   DateTime?

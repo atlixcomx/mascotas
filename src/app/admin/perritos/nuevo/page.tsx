@@ -170,46 +170,42 @@ export default function NuevoPerrito() {
   const handleSubmit = async () => {
     setLoading(true)
     try {
-      // Preparar datos para enviar - SOLO campos que existen en Prisma
+      // Preparar datos para enviar - coincidiendo con el esquema de validación Zod
       const dataToSend = {
         nombre: formData.nombre,
         raza: formData.raza,
         edad: formData.edad,
         sexo: formData.sexo,
         tamano: formData.tamano,
-        peso: formData.peso ? parseFloat(formData.peso) : null,
+        peso: formData.peso ? parseFloat(formData.peso) : undefined,
         energia: formData.energia,
         historia: formData.descripcion || formData.notasIngreso || 'Perrito rescatado en busca de un hogar',
         tipoIngreso: formData.tipoIngreso,
-        procedencia: formData.notasIngreso || null,
-        responsableIngreso: formData.responsableIngreso || null,
+        procedencia: formData.notasIngreso || undefined, // undefined en lugar de null
+        responsableIngreso: formData.responsableIngreso || undefined, // undefined en lugar de null
         // Campos de salud booleanos
         vacunas: formData.vacunado,
         esterilizado: formData.esterilizado,
         desparasitado: true, // Default true
         saludNotas: '', // Se puede mejorar concatenando info de padecimientos/alergias
+        // Arrays que espera el esquema
+        padecimientos: formData.padecimientos,
+        alergias: formData.alergias,
+        vacunasDetalle: formData.vacunas,
+        tratamientos: formData.tratamientos,
         // Temperamento
         aptoNinos: formData.aptoNinos,
         aptoPerros: formData.aptoPerros,
         aptoGatos: formData.aptoGatos,
-        caracter: JSON.stringify(formData.personalidad ? [formData.personalidad] : []),
+        caracter: formData.personalidad ? [formData.personalidad] : [], // Array, no string
         // Fotos
         fotoPrincipal: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1',
-        fotos: JSON.stringify([]),
+        fotos: [], // Array, no string
+        fotosInternas: [],
+        fotosCatalogo: [],
         // Estado
         destacado: false,
-        estado: 'disponible',
-        // Los siguientes campos se crearán como NotaPerrito en el backend:
-        // - padecimientos
-        // - alergias  
-        // - vacunasDetalle
-        // - tratamientos
-        notasAdicionales: {
-          padecimientos: formData.padecimientos,
-          alergias: formData.alergias,
-          vacunasDetalle: formData.vacunas,
-          tratamientos: formData.tratamientos
-        }
+        estado: 'disponible'
       }
 
       const response = await fetch('/api/admin/perritos', {

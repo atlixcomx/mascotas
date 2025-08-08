@@ -23,9 +23,7 @@ export async function POST(request: Request) {
       'direccion',
       'tipoVivienda',
       'experiencia',
-      'otrasMascotas',
       'motivoAdopcion',
-      'notas',
       'perritoId'
     ]
 
@@ -87,7 +85,7 @@ export async function POST(request: Request) {
         direccion: data.direccion,
         tipoVivienda: data.tipoVivienda,
         experiencia: data.experiencia,
-        otrasMascotas: data.otrasMascotas,
+        otrasMascotas: data.otrasMascotas || '',
         motivoAdopcion: data.motivoAdopcion,
         notas: data.notas || data.compromisos || '',
         estado: 'nueva',

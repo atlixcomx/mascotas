@@ -76,18 +76,27 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         veterinario: exp.veterinario || 'No especificado'
       }))
 
+    // Mock data for change history - in production, this would come from an audit table
+    const historialCambios = [
+      {
+        id: '1',
+        campo: 'estado',
+        valorAnterior: 'tratamiento',
+        valorNuevo: 'disponible',
+        usuario: 'Admin',
+        fecha: new Date().toISOString()
+      }
+    ]
+
     return NextResponse.json({
-      ...perrito,
-      fotos: perrito.fotos ? JSON.parse(perrito.fotos) : [],
-      caracter: perrito.caracter ? JSON.parse(perrito.caracter) : [],
-      // Campos adicionales
-      padecimientos,
-      vacunasDetalle,
-      tratamientos,
-      alergias,
-      fotosInternas: [], // TODO: implementar almacenamiento
-      fotosCatalogo: perrito.fotos ? JSON.parse(perrito.fotos) : [],
-      diasEnRefugio: Math.floor((new Date().getTime() - perrito.fechaIngreso.getTime()) / (1000 * 60 * 60 * 24))
+      perrito: {
+        ...perrito,
+        fotos: perrito.fotos ? JSON.parse(perrito.fotos) : [],
+        caracter: perrito.caracter ? JSON.parse(perrito.caracter) : []
+      },
+      expedienteMedico: perrito.expedienteMedico || [],
+      notas: perrito.notas || [],
+      historialCambios
     })
 
   } catch (error) {

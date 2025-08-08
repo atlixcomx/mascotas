@@ -1,30 +1,28 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter, useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { 
-  ChevronLeft,
-  Dog,
-  Calendar,
-  MapPin,
-  User,
-  Heart,
-  Syringe,
-  FileText,
-  Edit2,
-  Save,
-  X,
+  ArrowLeft, 
+  Save, 
+  Plus, 
+  Edit2, 
+  Trash2, 
+  Upload, 
+  Calendar, 
+  FileText, 
   Camera,
-  Shield,
-  Clock,
-  Activity,
+  Eye,
+  EyeOff,
+  Heart,
   AlertCircle,
-  CheckCircle,
-  Trash2
+  Stethoscope,
+  History,
+  X
 } from 'lucide-react'
 
-interface PerritoDetalle {
+interface Perrito {
   id: string
   codigo: string
   nombre: string
@@ -32,64 +30,113 @@ interface PerritoDetalle {
   edad: string
   sexo: string
   tamano: string
-  peso?: number
-  energia: string
-  personalidad?: string
-  descripcion?: string
   estado: string
+  tipoIngreso: string
+  fechaIngreso: string
+  fotoPrincipal: string
+  fotos: string
+  historia: string
+  peso?: number
+  vacunas: boolean
+  esterilizado: boolean
+  desparasitado: boolean
+  saludNotas?: string
+  energia: string
   aptoNinos: boolean
   aptoPerros: boolean
   aptoGatos: boolean
-  esterilizado: boolean
-  vacunado: boolean
-  tipoIngreso: string
-  fechaIngreso: string
+  caracter: string
+  destacado: boolean
+  procedencia?: string
   responsableIngreso?: string
-  fotoPrincipal?: string
-  galeria?: string[]
-  fotosInternas?: string[]
-  fotosCatalogo?: string[]
-  padecimientos?: string[]
-  alergias?: string[]
-  vacunas?: Array<{
-    nombre: string
-    fecha: string
-    veterinario: string
-  }>
-  tratamientos?: Array<{
-    descripcion: string
-    fechaInicio: string
-    fechaFin?: string
-  }>
-  createdAt: string
-  updatedAt: string
+}
+
+interface ExpedienteMedico {
+  id: string
+  tipo: string
+  descripcion: string
+  fecha: string
+  veterinario?: string
+  vacunaTipo?: string
+  proximaDosis?: string
+  medicamento?: string
+  dosis?: string
+  duracion?: string
+  costo?: number
   notas?: string
 }
 
-export default function PerritoDetalle() {
-  const router = useRouter()
+interface NotaPerrito {
+  id: string
+  contenido: string
+  autor: string
+  tipo: string
+  createdAt: string
+}
+
+interface CambioHistorial {
+  id: string
+  campo: string
+  valorAnterior: string
+  valorNuevo: string
+  usuario: string
+  fecha: string
+}
+
+export default function EditPerrito() {
   const params = useParams()
-  const id = params?.id as string
+  const router = useRouter()
+  const perritoId = params.id as string
+
+  const [perrito, setPerrito] = useState<Perrito | null>(null)
+  const [expedienteMedico, setExpedienteMedico] = useState<ExpedienteMedico[]>([])
+  const [notas, setNotas] = useState<NotaPerrito[]>([])
+  const [historialCambios, setHistorialCambios] = useState<CambioHistorial[]>([])
   
-  const [perrito, setPerrito] = useState<PerritoDetalle | null>(null)
+  const [activeTab, setActiveTab] = useState('informacion')
   const [loading, setLoading] = useState(true)
-  const [editMode, setEditMode] = useState(false)
-  const [activeTab, setActiveTab] = useState('info')
-  const [editedData, setEditedData] = useState<Partial<PerritoDetalle>>({})
+  const [saving, setSaving] = useState(false)
+
+  // Estados para modales
+  const [showMedicalModal, setShowMedicalModal] = useState(false)
+  const [showNoteModal, setShowNoteModal] = useState(false)
+  const [showPhotoModal, setShowPhotoModal] = useState(false)
+
+  // Estados para formularios
+  const [newMedical, setNewMedical] = useState({
+    tipo: 'consulta',
+    descripcion: '',
+    fecha: new Date().toISOString().split('T')[0],
+    veterinario: '',
+    vacunaTipo: '',
+    proximaDosis: '',
+    medicamento: '',
+    dosis: '',
+    duracion: '',
+    costo: '',
+    notas: ''
+  })
+
+  const [newNote, setNewNote] = useState({
+    contenido: '',
+    tipo: 'general'
+  })
+
+  const [newPhotos, setNewPhotos] = useState<string[]>([])
 
   useEffect(() => {
-    if (id) {
-      fetchPerrito()
-    }
-  }, [id])
+    fetchPerrito()
+  }, [perritoId])
 
   async function fetchPerrito() {
     try {
-      const response = await fetch(`/api/admin/perritos/${id}`)
+      const response = await fetch(`/api/admin/perritos/${perritoId}`)
       if (response.ok) {
         const data = await response.json()
-        setPerrito(data)
-        setEditedData(data)
+        setPerrito(data.perrito)
+        setExpedienteMedico(data.expedienteMedico || [])
+        setNotas(data.notas || [])
+        setHistorialCambios(data.historialCambios || [])
       }
     } catch (error) {
       console.error('Error fetching perrito:', error)
@@ -98,268 +145,191 @@ export default function PerritoDetalle() {
     }
   }
 
-  const handleSave = async () => {
+  async function savePerrito() {
+    if (!perrito) return
+    
+    setSaving(true)
     try {
-      const response = await fetch(`/api/admin/perritos/${id}`, {
+      const response = await fetch(`/api/admin/perritos/${perritoId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(editedData)
+        body: JSON.stringify(perrito)
       })
       
       if (response.ok) {
-        const updated = await response.json()
-        setPerrito(updated)
-        setEditMode(false)
+        alert('Información actualizada correctamente')
+        fetchPerrito() // Refresh data
       }
     } catch (error) {
-      console.error('Error updating perrito:', error)
+      console.error('Error saving perrito:', error)
+      alert('Error al guardar los cambios')
+    } finally {
+      setSaving(false)
     }
   }
 
-  const getEstadoStyle = (estado: string) => {
-    const styles = {
-      disponible: { bg: '#f0fdf4', color: '#15803d', border: '#bbf7d0', icon: CheckCircle },
-      proceso: { bg: '#fefce8', color: '#a16207', border: '#fde68a', icon: Clock },
-      adoptado: { bg: '#f3f4f6', color: '#374151', border: '#d1d5db', icon: Heart },
-      tratamiento: { bg: '#fef2f2', color: '#b91c1c', border: '#fecaca', icon: Syringe }
+  async function saveMedicalRecord() {
+    try {
+      const response = await fetch(`/api/admin/perritos/${perritoId}/medico`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newMedical)
+      })
+      
+      if (response.ok) {
+        setShowMedicalModal(false)
+        setNewMedical({
+          tipo: 'consulta',
+          descripcion: '',
+          fecha: new Date().toISOString().split('T')[0],
+          veterinario: '',
+          vacunaTipo: '',
+          proximaDosis: '',
+          medicamento: '',
+          dosis: '',
+          duracion: '',
+          costo: '',
+          notas: ''
+        })
+        fetchPerrito()
+      }
+    } catch (error) {
+      console.error('Error saving medical record:', error)
     }
-    return styles[estado as keyof typeof styles] || styles.disponible
   }
 
-  const tabs = [
-    { id: 'info', name: 'Información General', icon: Dog },
-    { id: 'salud', name: 'Historial Médico', icon: Heart },
-    { id: 'fotos', name: 'Fotos', icon: Camera },
-    { id: 'historial', name: 'Historial de Cambios', icon: Activity }
-  ]
+  async function saveNote() {
+    try {
+      const response = await fetch(`/api/admin/perritos/${perritoId}/notas`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newNote)
+      })
+      
+      if (response.ok) {
+        setShowNoteModal(false)
+        setNewNote({ contenido: '', tipo: 'general' })
+        fetchPerrito()
+      }
+    } catch (error) {
+      console.error('Error saving note:', error)
+    }
+  }
+
+  async function deleteExpediente(id: string) {
+    if (!confirm('¿Eliminar este registro médico?')) return
+    
+    try {
+      const response = await fetch(`/api/admin/expediente/${id}`, { method: 'DELETE' })
+      if (response.ok) fetchPerrito()
+    } catch (error) {
+      console.error('Error deleting medical record:', error)
+    }
+  }
+
+  async function deleteNote(id: string) {
+    if (!confirm('¿Eliminar esta nota?')) return
+    
+    try {
+      const response = await fetch(`/api/admin/notas/${id}`, { method: 'DELETE' })
+      if (response.ok) fetchPerrito()
+    } catch (error) {
+      console.error('Error deleting note:', error)
+    }
+  }
+
+  const handleInputChange = (field: string, value: any) => {
+    if (perrito) {
+      setPerrito({ ...perrito, [field]: value })
+    }
+  }
+
+  const getEstadoColor = (estado: string) => {
+    const colors = {
+      disponible: '#16a34a',
+      proceso: '#ca8a04',
+      adoptado: '#6b7280',
+      tratamiento: '#dc2626'
+    }
+    return colors[estado as keyof typeof colors] || '#6b7280'
+  }
 
   if (loading) {
     return (
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: '100vh',
-        backgroundColor: '#f8fafc'
-      }}>
+      <div style={{ padding: '48px', textAlign: 'center' }}>
         <div style={{
           width: '48px',
           height: '48px',
           border: '4px solid #f3f4f6',
           borderTop: '4px solid #af1731',
           borderRadius: '50%',
+          margin: '0 auto 16px',
           animation: 'spin 1s linear infinite'
         }} />
+        <p style={{ color: '#64748b', fontFamily: 'Poppins, sans-serif' }}>
+          Cargando información...
+        </p>
       </div>
     )
   }
 
   if (!perrito) {
     return (
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: '100vh',
-        backgroundColor: '#f8fafc'
-      }}>
-        <AlertCircle style={{ width: '48px', height: '48px', color: '#ef4444', marginBottom: '16px' }} />
-        <p style={{ fontSize: '1.125rem', color: '#0f172a' }}>Mascota no encontrada</p>
+      <div style={{ padding: '48px', textAlign: 'center' }}>
+        <AlertCircle style={{ width: '48px', height: '48px', color: '#ef4444', margin: '0 auto 16px' }} />
+        <h2 style={{ color: '#0f172a', marginBottom: '8px' }}>Mascota no encontrada</h2>
+        <button 
+          onClick={() => router.back()}
+          style={{
+            padding: '10px 20px',
+            backgroundColor: '#af1731',
+            color: 'white',
+            border: 'none',
+            borderRadius: '8px',
+            cursor: 'pointer'
+          }}
+        >
+          Volver
+        </button>
       </div>
     )
   }
 
-  const estadoStyle = getEstadoStyle(perrito.estado)
-  const StatusIcon = estadoStyle.icon
+  const tabs = [
+    { id: 'informacion', label: 'Información General', icon: FileText },
+    { id: 'medico', label: 'Historial Médico', icon: Stethoscope },
+    { id: 'fotos', label: 'Galería de Fotos', icon: Camera },
+    { id: 'notas', label: 'Notas y Observaciones', icon: Edit2 },
+    { id: 'historial', label: 'Historial de Cambios', icon: History }
+  ]
 
   return (
     <div style={{
-      display: 'flex',
+      padding: '16px',
       backgroundColor: '#f8fafc',
-      minHeight: '100vh',
-      width: '100%'
+      minHeight: '100vh'
     }}>
-      {/* Sidebar */}
+      {/* Header */}
       <div style={{
-        width: '320px',
-        backgroundColor: 'white',
-        borderRight: '1px solid #e2e8f0',
-        padding: '24px',
-        overflowY: 'auto',
-        position: 'sticky',
-        top: 0,
-        height: '100vh'
+        display: 'flex',
+        alignItems: 'center',
+        gap: '16px',
+        marginBottom: '24px'
       }}>
         <button
           onClick={() => router.back()}
           style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            padding: '8px 16px',
-            backgroundColor: '#f8fafc',
+            padding: '8px',
+            backgroundColor: 'white',
             border: '1px solid #e2e8f0',
             borderRadius: '8px',
-            fontSize: '0.875rem',
-            color: '#475569',
-            cursor: 'pointer',
-            marginBottom: '24px',
-            transition: 'all 0.2s',
-            width: '100%',
-            justifyContent: 'center'
+            cursor: 'pointer'
           }}
-          onMouseEnter={(e) => e.currentTarget.style.borderColor = '#cbd5e1'}
-          onMouseLeave={(e) => e.currentTarget.style.borderColor = '#e2e8f0'}
         >
-          <ChevronLeft style={{ width: '16px', height: '16px' }} />
-          Volver al listado
+          <ArrowLeft style={{ width: '20px', height: '20px' }} />
         </button>
 
-        {/* Foto Principal */}
-        <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-          <Image
-            src={perrito.fotoPrincipal || '/placeholder-dog.jpg'}
-            alt={perrito.nombre}
-            width={280}
-            height={280}
-            style={{
-              borderRadius: '12px',
-              objectFit: 'cover',
-              marginBottom: '16px'
-            }}
-          />
-          <h2 style={{
-            fontSize: '1.5rem',
-            fontWeight: '700',
-            color: '#0f172a',
-            margin: '0 0 8px 0',
-            fontFamily: 'Albert Sans, sans-serif'
-          }}>{perrito.nombre}</h2>
-          <p style={{
-            fontSize: '0.875rem',
-            color: '#64748b',
-            margin: '0 0 12px 0',
-            fontFamily: 'Poppins, sans-serif'
-          }}>{perrito.codigo}</p>
-          
-          {/* Estado Badge */}
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '6px',
-            padding: '6px 16px',
-            borderRadius: '20px',
-            backgroundColor: estadoStyle.bg,
-            color: estadoStyle.color,
-            border: `1px solid ${estadoStyle.border}`,
-            fontSize: '0.875rem',
-            fontWeight: '500',
-            marginBottom: '24px'
-          }}>
-            <StatusIcon style={{ width: '16px', height: '16px' }} />
-            {perrito.estado}
-          </div>
-        </div>
-
-        {/* Info Rápida */}
-        <div style={{
-          padding: '16px',
-          backgroundColor: '#f8fafc',
-          borderRadius: '8px',
-          marginBottom: '24px'
-        }}>
-          <h3 style={{
-            fontSize: '0.875rem',
-            fontWeight: '600',
-            color: '#0f172a',
-            marginBottom: '12px',
-            fontFamily: 'Albert Sans, sans-serif'
-          }}>Información Rápida</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Calendar style={{ width: '14px', height: '14px', color: '#64748b' }} />
-              <span style={{ fontSize: '0.875rem', color: '#475569' }}>
-                Ingreso: {new Date(perrito.fechaIngreso).toLocaleDateString('es-MX')}
-              </span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <User style={{ width: '14px', height: '14px', color: '#64748b' }} />
-              <span style={{ fontSize: '0.875rem', color: '#475569' }}>
-                {perrito.sexo} • {perrito.edad}
-              </span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Shield style={{ width: '14px', height: '14px', color: '#64748b' }} />
-              <span style={{ fontSize: '0.875rem', color: '#475569' }}>
-                {perrito.raza}
-              </span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <MapPin style={{ width: '14px', height: '14px', color: '#64748b' }} />
-              <span style={{ fontSize: '0.875rem', color: '#475569' }}>
-                {perrito.tipoIngreso.replace('_', ' ')}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Navegación */}
-        <nav style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-          {tabs.map(tab => {
-            const TabIcon = tab.icon
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '12px',
-                  padding: '12px 16px',
-                  backgroundColor: activeTab === tab.id ? '#fef2f2' : 'transparent',
-                  color: activeTab === tab.id ? '#af1731' : '#475569',
-                  border: 'none',
-                  borderRadius: '8px',
-                  fontSize: '0.875rem',
-                  fontWeight: activeTab === tab.id ? '600' : '400',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s',
-                  textAlign: 'left',
-                  fontFamily: 'Poppins, sans-serif'
-                }}
-                onMouseEnter={(e) => {
-                  if (activeTab !== tab.id) {
-                    e.currentTarget.style.backgroundColor = '#f8fafc'
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (activeTab !== tab.id) {
-                    e.currentTarget.style.backgroundColor = 'transparent'
-                  }
-                }}
-              >
-                <TabIcon style={{ width: '18px', height: '18px' }} />
-                {tab.name}
-              </button>
-            )
-          })}
-        </nav>
-      </div>
-
-      {/* Content */}
-      <div style={{
-        flex: 1,
-        padding: '24px',
-        overflowY: 'auto'
-      }}>
-        {/* Header con acciones */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '24px'
-        }}>
+        <div style={{ flex: 1 }}>
           <h1 style={{
             fontSize: '1.75rem',
             fontWeight: '700',
@@ -367,711 +337,1035 @@ export default function PerritoDetalle() {
             margin: 0,
             fontFamily: 'Albert Sans, sans-serif'
           }}>
-            {tabs.find(t => t.id === activeTab)?.name}
+            Editar: {perrito.nombre}
           </h1>
-          
-          {activeTab === 'info' && (
-            <div style={{ display: 'flex', gap: '12px' }}>
-              {editMode ? (
-                <>
-                  <button
-                    onClick={() => {
-                      setEditMode(false)
-                      setEditedData(perrito)
-                    }}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      padding: '8px 16px',
-                      backgroundColor: 'white',
-                      border: '1px solid #e2e8f0',
-                      borderRadius: '8px',
-                      fontSize: '0.875rem',
-                      color: '#475569',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s'
-                    }}
-                  >
-                    <X style={{ width: '16px', height: '16px' }} />
-                    Cancelar
-                  </button>
-                  <button
-                    onClick={handleSave}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      padding: '8px 16px',
-                      backgroundColor: '#15803d',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '8px',
-                      fontSize: '0.875rem',
-                      fontWeight: '600',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s'
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#166534'}
-                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#15803d'}
-                  >
-                    <Save style={{ width: '16px', height: '16px' }} />
-                    Guardar Cambios
-                  </button>
-                </>
-              ) : (
-                <button
-                  onClick={() => setEditMode(true)}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    padding: '8px 16px',
-                    backgroundColor: '#af1731',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '8px',
-                    fontSize: '0.875rem',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s'
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#7d2447'}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#af1731'}
-                >
-                  <Edit2 style={{ width: '16px', height: '16px' }} />
-                  Editar Información
-                </button>
-              )}
-            </div>
-          )}
+          <p style={{
+            fontSize: '0.875rem',
+            color: '#64748b',
+            margin: '4px 0 0 0'
+          }}>
+            {perrito.codigo} • {perrito.raza} • {perrito.sexo}
+          </p>
         </div>
 
-        {/* Tab Content */}
-        {activeTab === 'info' && (
-          <div style={{ display: 'grid', gap: '24px' }}>
-            {/* Datos Básicos */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '6px 12px',
+            backgroundColor: getEstadoColor(perrito.estado),
+            color: 'white',
+            borderRadius: '20px',
+            fontSize: '0.75rem',
+            fontWeight: '500'
+          }}>
+            {perrito.destacado && <Heart style={{ width: '14px', height: '14px' }} />}
+            {perrito.estado}
+          </div>
+
+          <button
+            onClick={savePerrito}
+            disabled={saving}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '10px 16px',
+              backgroundColor: '#af1731',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              fontWeight: '600',
+              cursor: saving ? 'not-allowed' : 'pointer',
+              opacity: saving ? 0.6 : 1
+            }}
+          >
+            <Save style={{ width: '16px', height: '16px' }} />
+            {saving ? 'Guardando...' : 'Guardar'}
+          </button>
+        </div>
+      </div>
+
+      {/* Tabs */}
+      <div style={{
+        display: 'flex',
+        gap: '8px',
+        marginBottom: '24px',
+        overflowX: 'auto',
+        paddingBottom: '8px'
+      }}>
+        {tabs.map((tab) => {
+          const Icon = tab.icon
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '8px 16px',
+                backgroundColor: activeTab === tab.id ? '#af1731' : 'white',
+                color: activeTab === tab.id ? 'white' : '#64748b',
+                border: '1px solid #e2e8f0',
+                borderRadius: '8px',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                transition: 'all 0.2s'
+              }}
+            >
+              <Icon style={{ width: '16px', height: '16px' }} />
+              {tab.label}
+            </button>
+          )
+        })}
+      </div>
+
+      {/* Content */}
+      <div style={{
+        backgroundColor: 'white',
+        borderRadius: '12px',
+        padding: '24px',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
+      }}>
+        {activeTab === 'informacion' && (
+          <div>
+            <h3 style={{ marginBottom: '20px', fontSize: '1.25rem', fontWeight: '600' }}>
+              Información General
+            </h3>
+            
+            {/* Basic Info */}
             <div style={{
-              backgroundColor: 'white',
-              borderRadius: '12px',
-              padding: '24px',
-              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+              gap: '16px',
+              marginBottom: '24px'
             }}>
-              <h2 style={{
-                fontSize: '1.25rem',
-                fontWeight: '600',
-                color: '#0f172a',
-                marginBottom: '20px',
-                fontFamily: 'Albert Sans, sans-serif'
-              }}>Datos Básicos</h2>
-              
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-                gap: '20px'
-              }}>
-                <InfoField
-                  label="Raza"
-                  value={perrito.raza}
-                  editable={editMode}
-                  onChange={(value) => setEditedData({...editedData, raza: value})}
-                />
-                <InfoField
-                  label="Edad"
-                  value={perrito.edad}
-                  editable={editMode}
-                  type="select"
-                  options={[
-                    { value: 'cachorro', label: 'Cachorro (0-1 año)' },
-                    { value: 'joven', label: 'Joven (1-3 años)' },
-                    { value: 'adulto', label: 'Adulto (3-7 años)' },
-                    { value: 'senior', label: 'Senior (7+ años)' }
-                  ]}
-                  onChange={(value) => setEditedData({...editedData, edad: value})}
-                />
-                <InfoField
-                  label="Sexo"
-                  value={perrito.sexo}
-                  editable={editMode}
-                  type="select"
-                  options={[
-                    { value: 'macho', label: 'Macho' },
-                    { value: 'hembra', label: 'Hembra' }
-                  ]}
-                  onChange={(value) => setEditedData({...editedData, sexo: value})}
-                />
-                <InfoField
-                  label="Tamaño"
-                  value={perrito.tamano}
-                  editable={editMode}
-                  type="select"
-                  options={[
-                    { value: 'pequeño', label: 'Pequeño' },
-                    { value: 'mediano', label: 'Mediano' },
-                    { value: 'grande', label: 'Grande' },
-                    { value: 'gigante', label: 'Gigante' }
-                  ]}
-                  onChange={(value) => setEditedData({...editedData, tamano: value})}
-                />
-                <InfoField
-                  label="Peso (kg)"
-                  value={perrito.peso?.toString() || '-'}
-                  editable={editMode}
-                  type="number"
-                  onChange={(value) => setEditedData({...editedData, peso: parseFloat(value)})}
-                />
-                <InfoField
-                  label="Nivel de Energía"
-                  value={perrito.energia}
-                  editable={editMode}
-                  type="select"
-                  options={[
-                    { value: 'baja', label: 'Baja' },
-                    { value: 'media', label: 'Media' },
-                    { value: 'alta', label: 'Alta' }
-                  ]}
-                  onChange={(value) => setEditedData({...editedData, energia: value})}
+              <div>
+                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500' }}>
+                  Código
+                </label>
+                <input
+                  type="text"
+                  value={perrito.codigo}
+                  onChange={(e) => handleInputChange('codigo', e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '8px 12px',
+                    borderRadius: '6px',
+                    border: '1px solid #e2e8f0',
+                    fontSize: '0.875rem'
+                  }}
                 />
               </div>
 
-              {/* Descripción */}
-              <div style={{ marginTop: '20px' }}>
-                <label style={{
-                  display: 'block',
-                  fontSize: '0.875rem',
-                  fontWeight: '500',
-                  color: '#374151',
-                  marginBottom: '6px',
-                  fontFamily: 'Poppins, sans-serif'
-                }}>Descripción</label>
-                {editMode ? (
-                  <textarea
-                    value={editedData.descripcion || ''}
-                    onChange={(e) => setEditedData({...editedData, descripcion: e.target.value})}
+              <div>
+                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500' }}>
+                  Nombre
+                </label>
+                <input
+                  type="text"
+                  value={perrito.nombre}
+                  onChange={(e) => handleInputChange('nombre', e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '8px 12px',
+                    borderRadius: '6px',
+                    border: '1px solid #e2e8f0',
+                    fontSize: '0.875rem'
+                  }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500' }}>
+                  Raza
+                </label>
+                <input
+                  type="text"
+                  value={perrito.raza}
+                  onChange={(e) => handleInputChange('raza', e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '8px 12px',
+                    borderRadius: '6px',
+                    border: '1px solid #e2e8f0',
+                    fontSize: '0.875rem'
+                  }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500' }}>
+                  Edad
+                </label>
+                <input
+                  type="text"
+                  value={perrito.edad}
+                  onChange={(e) => handleInputChange('edad', e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '8px 12px',
+                    borderRadius: '6px',
+                    border: '1px solid #e2e8f0',
+                    fontSize: '0.875rem'
+                  }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500' }}>
+                  Sexo
+                </label>
+                <select
+                  value={perrito.sexo}
+                  onChange={(e) => handleInputChange('sexo', e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '8px 12px',
+                    borderRadius: '6px',
+                    border: '1px solid #e2e8f0',
+                    fontSize: '0.875rem'
+                  }}
+                >
+                  <option value="macho">Macho</option>
+                  <option value="hembra">Hembra</option>
+                </select>
+              </div>
+
+              <div>
+                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500' }}>
+                  Tamaño
+                </label>
+                <select
+                  value={perrito.tamano}
+                  onChange={(e) => handleInputChange('tamano', e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '8px 12px',
+                    borderRadius: '6px',
+                    border: '1px solid #e2e8f0',
+                    fontSize: '0.875rem'
+                  }}
+                >
+                  <option value="chico">Chico</option>
+                  <option value="mediano">Mediano</option>
+                  <option value="grande">Grande</option>
+                </select>
+              </div>
+
+              <div>
+                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500' }}>
+                  Peso (kg)
+                </label>
+                <input
+                  type="number"
+                  step="0.1"
+                  value={perrito.peso || ''}
+                  onChange={(e) => handleInputChange('peso', e.target.value ? parseFloat(e.target.value) : null)}
+                  style={{
+                    width: '100%',
+                    padding: '8px 12px',
+                    borderRadius: '6px',
+                    border: '1px solid #e2e8f0',
+                    fontSize: '0.875rem'
+                  }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500' }}>
+                  Estado
+                </label>
+                <select
+                  value={perrito.estado}
+                  onChange={(e) => handleInputChange('estado', e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '8px 12px',
+                    borderRadius: '6px',
+                    border: '1px solid #e2e8f0',
+                    fontSize: '0.875rem'
+                  }}
+                >
+                  <option value="disponible">Disponible para Adopción</option>
+                  <option value="proceso">En Proceso de Adopción</option>
+                  <option value="adoptado">Adoptado</option>
+                  <option value="tratamiento">En Tratamiento/Recuperación</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Visibility Controls */}
+            <div style={{ marginBottom: '24px', padding: '16px', backgroundColor: '#f8fafc', borderRadius: '8px' }}>
+              <h4 style={{ marginBottom: '12px', fontSize: '1rem', fontWeight: '600' }}>
+                Visibilidad en Catálogo
+              </h4>
+              
+              <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={perrito.estado === 'disponible'}
+                    onChange={(e) => handleInputChange('estado', e.target.checked ? 'disponible' : 'tratamiento')}
+                    style={{ width: '16px', height: '16px' }}
+                  />
+                  <Eye style={{ width: '16px', height: '16px', color: '#16a34a' }} />
+                  Visible como "Disponible para Adopción"
+                </label>
+
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={perrito.destacado}
+                    onChange={(e) => handleInputChange('destacado', e.target.checked)}
+                    style={{ width: '16px', height: '16px' }}
+                  />
+                  <Heart style={{ width: '16px', height: '16px', color: '#af1731' }} />
+                  Destacar en página principal
+                </label>
+
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={perrito.estado === 'tratamiento'}
+                    onChange={(e) => handleInputChange('estado', e.target.checked ? 'tratamiento' : 'disponible')}
+                    style={{ width: '16px', height: '16px' }}
+                  />
+                  <EyeOff style={{ width: '16px', height: '16px', color: '#dc2626' }} />
+                  Mostrar como "En Recuperación"
+                </label>
+              </div>
+            </div>
+
+            {/* Health Status */}
+            <div style={{ marginBottom: '24px' }}>
+              <h4 style={{ marginBottom: '12px', fontSize: '1rem', fontWeight: '600' }}>
+                Estado de Salud
+              </h4>
+              
+              <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={perrito.vacunas}
+                    onChange={(e) => handleInputChange('vacunas', e.target.checked)}
+                    style={{ width: '16px', height: '16px' }}
+                  />
+                  Vacunas completas
+                </label>
+
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={perrito.esterilizado}
+                    onChange={(e) => handleInputChange('esterilizado', e.target.checked)}
+                    style={{ width: '16px', height: '16px' }}
+                  />
+                  Esterilizado/Castrado
+                </label>
+
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={perrito.desparasitado}
+                    onChange={(e) => handleInputChange('desparasitado', e.target.checked)}
+                    style={{ width: '16px', height: '16px' }}
+                  />
+                  Desparasitado
+                </label>
+              </div>
+            </div>
+
+            {/* Temperament */}
+            <div style={{ marginBottom: '24px' }}>
+              <h4 style={{ marginBottom: '12px', fontSize: '1rem', fontWeight: '600' }}>
+                Temperamento y Compatibilidad
+              </h4>
+              
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                gap: '16px',
+                marginBottom: '16px'
+              }}>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500' }}>
+                    Nivel de Energía
+                  </label>
+                  <select
+                    value={perrito.energia}
+                    onChange={(e) => handleInputChange('energia', e.target.value)}
                     style={{
                       width: '100%',
-                      minHeight: '100px',
                       padding: '8px 12px',
-                      borderRadius: '8px',
+                      borderRadius: '6px',
                       border: '1px solid #e2e8f0',
-                      fontSize: '0.875rem',
-                      fontFamily: 'Poppins, sans-serif',
-                      outline: 'none',
-                      transition: 'all 0.2s',
-                      resize: 'vertical'
+                      fontSize: '0.875rem'
                     }}
+                  >
+                    <option value="baja">Baja</option>
+                    <option value="media">Media</option>
+                    <option value="alta">Alta</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={perrito.aptoNinos}
+                    onChange={(e) => handleInputChange('aptoNinos', e.target.checked)}
+                    style={{ width: '16px', height: '16px' }}
                   />
-                ) : (
-                  <p style={{
-                    fontSize: '0.875rem',
-                    color: '#475569',
-                    lineHeight: '1.5'
-                  }}>
-                    {perrito.descripcion || 'Sin descripción'}
-                  </p>
-                )}
+                  Apto para niños
+                </label>
+
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={perrito.aptoPerros}
+                    onChange={(e) => handleInputChange('aptoPerros', e.target.checked)}
+                    style={{ width: '16px', height: '16px' }}
+                  />
+                  Apto para otros perros
+                </label>
+
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={perrito.aptoGatos}
+                    onChange={(e) => handleInputChange('aptoGatos', e.target.checked)}
+                    style={{ width: '16px', height: '16px' }}
+                  />
+                  Apto para gatos
+                </label>
               </div>
             </div>
 
-            {/* Compatibilidad */}
-            <div style={{
-              backgroundColor: 'white',
-              borderRadius: '12px',
-              padding: '24px',
-              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
-            }}>
-              <h2 style={{
-                fontSize: '1.25rem',
-                fontWeight: '600',
-                color: '#0f172a',
-                marginBottom: '20px',
-                fontFamily: 'Albert Sans, sans-serif'
-              }}>Compatibilidad</h2>
-              
-              <div style={{ display: 'flex', gap: '24px' }}>
-                <CompatibilityCheck
-                  label="Apto para niños"
-                  value={perrito.aptoNinos}
-                  editable={editMode}
-                  onChange={(value) => setEditedData({...editedData, aptoNinos: value})}
-                />
-                <CompatibilityCheck
-                  label="Apto con perros"
-                  value={perrito.aptoPerros}
-                  editable={editMode}
-                  onChange={(value) => setEditedData({...editedData, aptoPerros: value})}
-                />
-                <CompatibilityCheck
-                  label="Apto con gatos"
-                  value={perrito.aptoGatos}
-                  editable={editMode}
-                  onChange={(value) => setEditedData({...editedData, aptoGatos: value})}
-                />
-              </div>
-            </div>
-
-            {/* Información de Ingreso */}
-            <div style={{
-              backgroundColor: 'white',
-              borderRadius: '12px',
-              padding: '24px',
-              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
-            }}>
-              <h2 style={{
-                fontSize: '1.25rem',
-                fontWeight: '600',
-                color: '#0f172a',
-                marginBottom: '20px',
-                fontFamily: 'Albert Sans, sans-serif'
-              }}>Información de Ingreso</h2>
-              
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-                gap: '20px'
-              }}>
-                <InfoField
-                  label="Tipo de Ingreso"
-                  value={perrito.tipoIngreso.replace('_', ' ')}
-                  editable={false}
-                />
-                <InfoField
-                  label="Fecha de Ingreso"
-                  value={new Date(perrito.fechaIngreso).toLocaleDateString('es-MX')}
-                  editable={false}
-                />
-                <InfoField
-                  label="Responsable"
-                  value={perrito.responsableIngreso || '-'}
-                  editable={false}
-                />
-                <InfoField
-                  label="Días en el refugio"
-                  value={Math.floor((Date.now() - new Date(perrito.fechaIngreso).getTime()) / (1000 * 60 * 60 * 24)).toString()}
-                  editable={false}
-                />
-              </div>
+            {/* Historia */}
+            <div>
+              <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500' }}>
+                Historia
+              </label>
+              <textarea
+                value={perrito.historia}
+                onChange={(e) => handleInputChange('historia', e.target.value)}
+                rows={4}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  borderRadius: '6px',
+                  border: '1px solid #e2e8f0',
+                  fontSize: '0.875rem',
+                  resize: 'vertical'
+                }}
+                placeholder="Cuenta la historia de esta mascota..."
+              />
             </div>
           </div>
         )}
 
-        {activeTab === 'salud' && (
-          <div style={{ display: 'grid', gap: '24px' }}>
-            {/* Estado de Salud */}
-            <div style={{
-              backgroundColor: 'white',
-              borderRadius: '12px',
-              padding: '24px',
-              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
-            }}>
-              <h2 style={{
-                fontSize: '1.25rem',
-                fontWeight: '600',
-                color: '#0f172a',
-                marginBottom: '20px',
-                fontFamily: 'Albert Sans, sans-serif'
-              }}>Estado de Salud</h2>
-              
-              <div style={{ display: 'flex', gap: '32px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  {perrito.esterilizado ? (
-                    <CheckCircle style={{ width: '20px', height: '20px', color: '#15803d' }} />
-                  ) : (
-                    <X style={{ width: '20px', height: '20px', color: '#ef4444' }} />
-                  )}
-                  <span style={{ fontSize: '0.875rem', color: '#475569' }}>
-                    {perrito.esterilizado ? 'Esterilizado' : 'No esterilizado'}
-                  </span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  {perrito.vacunado ? (
-                    <CheckCircle style={{ width: '20px', height: '20px', color: '#15803d' }} />
-                  ) : (
-                    <X style={{ width: '20px', height: '20px', color: '#ef4444' }} />
-                  )}
-                  <span style={{ fontSize: '0.875rem', color: '#475569' }}>
-                    {perrito.vacunado ? 'Vacunas al día' : 'Vacunas pendientes'}
-                  </span>
-                </div>
-              </div>
+        {activeTab === 'medico' && (
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: '600', margin: 0 }}>
+                Historial Médico
+              </h3>
+              <button
+                onClick={() => setShowMedicalModal(true)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '8px 16px',
+                  backgroundColor: '#af1731',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '6px',
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  cursor: 'pointer'
+                }}
+              >
+                <Plus style={{ width: '16px', height: '16px' }} />
+                Agregar Registro
+              </button>
             </div>
 
-            {/* Padecimientos */}
-            {perrito.padecimientos && perrito.padecimientos.length > 0 && (
-              <div style={{
-                backgroundColor: 'white',
-                borderRadius: '12px',
-                padding: '24px',
-                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
-              }}>
-                <h2 style={{
-                  fontSize: '1.25rem',
-                  fontWeight: '600',
-                  color: '#0f172a',
-                  marginBottom: '20px',
-                  fontFamily: 'Albert Sans, sans-serif'
-                }}>Padecimientos</h2>
-                
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                  {perrito.padecimientos.map((padecimiento, index) => (
-                    <span key={index} style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      padding: '6px 16px',
-                      backgroundColor: '#fef2f2',
-                      color: '#b91c1c',
-                      borderRadius: '20px',
-                      fontSize: '0.875rem',
-                      border: '1px solid #fecaca'
-                    }}>
-                      <AlertCircle style={{ width: '14px', height: '14px', marginRight: '6px' }} />
-                      {padecimiento}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Alergias */}
-            {perrito.alergias && perrito.alergias.length > 0 && (
-              <div style={{
-                backgroundColor: 'white',
-                borderRadius: '12px',
-                padding: '24px',
-                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
-              }}>
-                <h2 style={{
-                  fontSize: '1.25rem',
-                  fontWeight: '600',
-                  color: '#0f172a',
-                  marginBottom: '20px',
-                  fontFamily: 'Albert Sans, sans-serif'
-                }}>Alergias</h2>
-                
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                  {perrito.alergias.map((alergia, index) => (
-                    <span key={index} style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      padding: '6px 16px',
-                      backgroundColor: '#fff7ed',
-                      color: '#c2410c',
-                      borderRadius: '20px',
-                      fontSize: '0.875rem',
-                      border: '1px solid #fed7aa'
-                    }}>
-                      {alergia}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Historial de Vacunas */}
-            <div style={{
-              backgroundColor: 'white',
-              borderRadius: '12px',
-              padding: '24px',
-              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
-            }}>
-              <h2 style={{
-                fontSize: '1.25rem',
-                fontWeight: '600',
-                color: '#0f172a',
-                marginBottom: '20px',
-                fontFamily: 'Albert Sans, sans-serif'
-              }}>Historial de Vacunas</h2>
-              
-              {perrito.vacunas && perrito.vacunas.length > 0 ? (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  {perrito.vacunas.map((vacuna, index) => (
-                    <div key={index} style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      padding: '12px 16px',
-                      backgroundColor: '#f8fafc',
-                      borderRadius: '8px',
-                      border: '1px solid #e2e8f0'
-                    }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <Syringe style={{ width: '18px', height: '18px', color: '#15803d' }} />
-                        <div>
-                          <p style={{
-                            fontSize: '0.875rem',
-                            fontWeight: '600',
-                            color: '#0f172a',
-                            margin: '0 0 2px 0'
-                          }}>{vacuna.nombre}</p>
-                          <p style={{
-                            fontSize: '0.75rem',
-                            color: '#64748b',
-                            margin: 0
-                          }}>Dr. {vacuna.veterinario}</p>
-                        </div>
-                      </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {expedienteMedico.map((record) => (
+                <div key={record.id} style={{
+                  padding: '16px',
+                  backgroundColor: '#f8fafc',
+                  borderRadius: '8px',
+                  border: '1px solid #e2e8f0'
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <span style={{
-                        fontSize: '0.875rem',
-                        color: '#475569'
+                        padding: '2px 8px',
+                        backgroundColor: '#af1731',
+                        color: 'white',
+                        borderRadius: '12px',
+                        fontSize: '0.75rem',
+                        fontWeight: '500'
                       }}>
-                        {new Date(vacuna.fecha).toLocaleDateString('es-MX')}
+                        {record.tipo}
+                      </span>
+                      <span style={{ fontSize: '0.875rem', color: '#64748b' }}>
+                        {new Date(record.fecha).toLocaleDateString('es-MX')}
                       </span>
                     </div>
-                  ))}
+                    <button
+                      onClick={() => deleteExpediente(record.id)}
+                      style={{
+                        padding: '4px',
+                        backgroundColor: 'transparent',
+                        border: 'none',
+                        color: '#ef4444',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      <Trash2 style={{ width: '16px', height: '16px' }} />
+                    </button>
+                  </div>
+                  
+                  <p style={{ margin: '8px 0', fontSize: '0.875rem', lineHeight: '1.5' }}>
+                    {record.descripcion}
+                  </p>
+                  
+                  {record.veterinario && (
+                    <p style={{ margin: '4px 0', fontSize: '0.75rem', color: '#64748b' }}>
+                      Veterinario: {record.veterinario}
+                    </p>
+                  )}
+                  
+                  {record.medicamento && (
+                    <p style={{ margin: '4px 0', fontSize: '0.75rem', color: '#64748b' }}>
+                      Medicamento: {record.medicamento} - {record.dosis}
+                    </p>
+                  )}
+                  
+                  {record.costo && (
+                    <p style={{ margin: '4px 0', fontSize: '0.75rem', color: '#16a34a', fontWeight: '500' }}>
+                      Costo: ${record.costo}
+                    </p>
+                  )}
                 </div>
-              ) : (
-                <p style={{ fontSize: '0.875rem', color: '#64748b' }}>
-                  No hay vacunas registradas
-                </p>
+              ))}
+              
+              {expedienteMedico.length === 0 && (
+                <div style={{ padding: '32px', textAlign: 'center', color: '#64748b' }}>
+                  <Stethoscope style={{ width: '32px', height: '32px', margin: '0 auto 8px' }} />
+                  <p>No hay registros médicos. Agrega el primer registro.</p>
+                </div>
               )}
             </div>
-
-            {/* Tratamientos Activos */}
-            {perrito.tratamientos && perrito.tratamientos.length > 0 && (
-              <div style={{
-                backgroundColor: 'white',
-                borderRadius: '12px',
-                padding: '24px',
-                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
-              }}>
-                <h2 style={{
-                  fontSize: '1.25rem',
-                  fontWeight: '600',
-                  color: '#0f172a',
-                  marginBottom: '20px',
-                  fontFamily: 'Albert Sans, sans-serif'
-                }}>Tratamientos Activos</h2>
-                
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  {perrito.tratamientos.map((tratamiento, index) => (
-                    <div key={index} style={{
-                      padding: '16px',
-                      backgroundColor: '#fef2f2',
-                      borderRadius: '8px',
-                      border: '1px solid #fecaca'
-                    }}>
-                      <p style={{
-                        fontSize: '0.875rem',
-                        color: '#0f172a',
-                        marginBottom: '8px',
-                        lineHeight: '1.5'
-                      }}>{tratamiento.descripcion}</p>
-                      <div style={{
-                        display: 'flex',
-                        gap: '16px',
-                        fontSize: '0.75rem',
-                        color: '#b91c1c'
-                      }}>
-                        <span>Inicio: {new Date(tratamiento.fechaInicio).toLocaleDateString('es-MX')}</span>
-                        {tratamiento.fechaFin && (
-                          <span>Fin: {new Date(tratamiento.fechaFin).toLocaleDateString('es-MX')}</span>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
         )}
 
         {activeTab === 'fotos' && (
-          <div style={{ display: 'grid', gap: '24px' }}>
-            {/* Foto Principal */}
-            <div style={{
-              backgroundColor: 'white',
-              borderRadius: '12px',
-              padding: '24px',
-              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
-            }}>
-              <h2 style={{
-                fontSize: '1.25rem',
-                fontWeight: '600',
-                color: '#0f172a',
-                marginBottom: '20px',
-                fontFamily: 'Albert Sans, sans-serif'
-              }}>Foto Principal</h2>
-              
-              {perrito.fotoPrincipal ? (
-                <Image
-                  src={perrito.fotoPrincipal}
-                  alt="Foto principal"
-                  width={400}
-                  height={400}
-                  style={{
-                    borderRadius: '8px',
-                    objectFit: 'cover'
-                  }}
-                />
-              ) : (
-                <div style={{
-                  height: '200px',
-                  backgroundColor: '#f3f4f6',
-                  borderRadius: '8px',
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: '600', margin: 0 }}>
+                Galería de Fotos
+              </h3>
+              <button
+                onClick={() => setShowPhotoModal(true)}
+                style={{
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center'
+                  gap: '8px',
+                  padding: '8px 16px',
+                  backgroundColor: '#af1731',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '6px',
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  cursor: 'pointer'
+                }}
+              >
+                <Upload style={{ width: '16px', height: '16px' }} />
+                Subir Fotos
+              </button>
+            </div>
+
+            {/* Photo Gallery */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+              gap: '16px'
+            }}>
+              {/* Main Photo */}
+              <div style={{ position: 'relative', gridColumn: 'span 2' }}>
+                <Image
+                  src={perrito.fotoPrincipal || '/placeholder-dog.jpg'}
+                  alt={perrito.nombre}
+                  width={400}
+                  height={300}
+                  style={{
+                    width: '100%',
+                    height: '300px',
+                    objectFit: 'cover',
+                    borderRadius: '8px',
+                    border: '3px solid #af1731'
+                  }}
+                />
+                <div style={{
+                  position: 'absolute',
+                  top: '8px',
+                  left: '8px',
+                  padding: '4px 8px',
+                  backgroundColor: '#af1731',
+                  color: 'white',
+                  borderRadius: '4px',
+                  fontSize: '0.75rem',
+                  fontWeight: '500'
                 }}>
-                  <Camera style={{ width: '48px', height: '48px', color: '#cbd5e1' }} />
+                  Foto Principal
+                </div>
+              </div>
+              
+              {/* Additional Photos */}
+              {JSON.parse(perrito.fotos || '[]').slice(0, 6).map((foto: string, index: number) => (
+                <div key={index} style={{ position: 'relative' }}>
+                  <Image
+                    src={foto}
+                    alt={`${perrito.nombre} ${index + 1}`}
+                    width={200}
+                    height={200}
+                    style={{
+                      width: '100%',
+                      height: '200px',
+                      objectFit: 'cover',
+                      borderRadius: '8px',
+                      border: '1px solid #e2e8f0'
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'notas' && (
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: '600', margin: 0 }}>
+                Notas y Observaciones
+              </h3>
+              <button
+                onClick={() => setShowNoteModal(true)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '8px 16px',
+                  backgroundColor: '#af1731',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '6px',
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  cursor: 'pointer'
+                }}
+              >
+                <Plus style={{ width: '16px', height: '16px' }} />
+                Agregar Nota
+              </button>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {notas.map((nota) => (
+                <div key={nota.id} style={{
+                  padding: '16px',
+                  backgroundColor: '#f8fafc',
+                  borderRadius: '8px',
+                  border: '1px solid #e2e8f0'
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span style={{
+                        padding: '2px 8px',
+                        backgroundColor: '#16a34a',
+                        color: 'white',
+                        borderRadius: '12px',
+                        fontSize: '0.75rem',
+                        fontWeight: '500'
+                      }}>
+                        {nota.tipo}
+                      </span>
+                      <span style={{ fontSize: '0.75rem', color: '#64748b' }}>
+                        {nota.autor} - {new Date(nota.createdAt).toLocaleDateString('es-MX')}
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => deleteNote(nota.id)}
+                      style={{
+                        padding: '4px',
+                        backgroundColor: 'transparent',
+                        border: 'none',
+                        color: '#ef4444',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      <Trash2 style={{ width: '16px', height: '16px' }} />
+                    </button>
+                  </div>
+                  
+                  <p style={{ margin: 0, fontSize: '0.875rem', lineHeight: '1.5' }}>
+                    {nota.contenido}
+                  </p>
+                </div>
+              ))}
+              
+              {notas.length === 0 && (
+                <div style={{ padding: '32px', textAlign: 'center', color: '#64748b' }}>
+                  <FileText style={{ width: '32px', height: '32px', margin: '0 auto 8px' }} />
+                  <p>No hay notas. Agrega la primera observación.</p>
                 </div>
               )}
             </div>
-
-            {/* Galería Pública */}
-            {perrito.fotosCatalogo && perrito.fotosCatalogo.length > 0 && (
-              <div style={{
-                backgroundColor: 'white',
-                borderRadius: '12px',
-                padding: '24px',
-                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
-              }}>
-                <h2 style={{
-                  fontSize: '1.25rem',
-                  fontWeight: '600',
-                  color: '#0f172a',
-                  marginBottom: '20px',
-                  fontFamily: 'Albert Sans, sans-serif'
-                }}>Fotos del Catálogo</h2>
-                
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-                  gap: '16px'
-                }}>
-                  {perrito.fotosCatalogo.map((foto, index) => (
-                    <Image
-                      key={index}
-                      src={foto}
-                      alt={`Foto catálogo ${index + 1}`}
-                      width={200}
-                      height={200}
-                      style={{
-                        borderRadius: '8px',
-                        objectFit: 'cover',
-                        width: '100%',
-                        height: '200px'
-                      }}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Fotos Internas */}
-            {perrito.fotosInternas && perrito.fotosInternas.length > 0 && (
-              <div style={{
-                backgroundColor: 'white',
-                borderRadius: '12px',
-                padding: '24px',
-                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
-              }}>
-                <h2 style={{
-                  fontSize: '1.25rem',
-                  fontWeight: '600',
-                  color: '#0f172a',
-                  marginBottom: '20px',
-                  fontFamily: 'Albert Sans, sans-serif'
-                }}>Fotos de Uso Interno</h2>
-                
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-                  gap: '16px'
-                }}>
-                  {perrito.fotosInternas.map((foto, index) => (
-                    <Image
-                      key={index}
-                      src={foto}
-                      alt={`Foto interna ${index + 1}`}
-                      width={200}
-                      height={200}
-                      style={{
-                        borderRadius: '8px',
-                        objectFit: 'cover',
-                        width: '100%',
-                        height: '200px'
-                      }}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
         )}
 
         {activeTab === 'historial' && (
-          <div style={{
-            backgroundColor: 'white',
-            borderRadius: '12px',
-            padding: '24px',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
-          }}>
-            <h2 style={{
-              fontSize: '1.25rem',
-              fontWeight: '600',
-              color: '#0f172a',
-              marginBottom: '20px',
-              fontFamily: 'Albert Sans, sans-serif'
-            }}>Historial de Cambios</h2>
-            
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                padding: '12px',
-                backgroundColor: '#f8fafc',
-                borderRadius: '8px'
-              }}>
-                <Activity style={{ width: '18px', height: '18px', color: '#64748b' }} />
-                <div>
-                  <p style={{
-                    fontSize: '0.875rem',
-                    color: '#0f172a',
-                    margin: '0 0 2px 0'
-                  }}>Mascota registrada en el sistema</p>
-                  <p style={{
-                    fontSize: '0.75rem',
-                    color: '#64748b',
-                    margin: 0
-                  }}>
-                    {new Date(perrito.createdAt).toLocaleDateString('es-MX')} a las{' '}
-                    {new Date(perrito.createdAt).toLocaleTimeString('es-MX')}
-                  </p>
-                </div>
-              </div>
-              
-              {perrito.updatedAt !== perrito.createdAt && (
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '12px',
-                  padding: '12px',
+          <div>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '20px' }}>
+              Historial de Cambios
+            </h3>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {historialCambios.map((cambio) => (
+                <div key={cambio.id} style={{
+                  padding: '12px 16px',
                   backgroundColor: '#f8fafc',
-                  borderRadius: '8px'
+                  borderRadius: '6px',
+                  borderLeft: '4px solid #af1731'
                 }}>
-                  <Edit2 style={{ width: '18px', height: '18px', color: '#64748b' }} />
-                  <div>
-                    <p style={{
-                      fontSize: '0.875rem',
-                      color: '#0f172a',
-                      margin: '0 0 2px 0'
-                    }}>Última actualización</p>
-                    <p style={{
-                      fontSize: '0.75rem',
-                      color: '#64748b',
-                      margin: 0
-                    }}>
-                      {new Date(perrito.updatedAt).toLocaleDateString('es-MX')} a las{' '}
-                      {new Date(perrito.updatedAt).toLocaleTimeString('es-MX')}
-                    </p>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                    <span style={{ fontSize: '0.875rem', fontWeight: '500', color: '#0f172a' }}>
+                      Campo: {cambio.campo}
+                    </span>
+                    <span style={{ fontSize: '0.75rem', color: '#64748b' }}>
+                      {cambio.usuario} - {new Date(cambio.fecha).toLocaleString('es-MX')}
+                    </span>
                   </div>
+                  <div style={{ fontSize: '0.75rem', color: '#64748b' }}>
+                    <span style={{ textDecoration: 'line-through', color: '#ef4444' }}>
+                      {cambio.valorAnterior}
+                    </span>
+                    {' → '}
+                    <span style={{ color: '#16a34a', fontWeight: '500' }}>
+                      {cambio.valorNuevo}
+                    </span>
+                  </div>
+                </div>
+              ))}
+              
+              {historialCambios.length === 0 && (
+                <div style={{ padding: '32px', textAlign: 'center', color: '#64748b' }}>
+                  <History style={{ width: '32px', height: '32px', margin: '0 auto 8px' }} />
+                  <p>No hay cambios registrados aún.</p>
                 </div>
               )}
             </div>
           </div>
         )}
       </div>
+
+      {/* Medical Modal */}
+      {showMedicalModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '12px',
+            padding: '24px',
+            width: '90%',
+            maxWidth: '600px',
+            maxHeight: '80vh',
+            overflowY: 'auto'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <h4 style={{ fontSize: '1.25rem', fontWeight: '600', margin: 0 }}>
+                Nuevo Registro Médico
+              </h4>
+              <button
+                onClick={() => setShowMedicalModal(false)}
+                style={{
+                  padding: '4px',
+                  backgroundColor: 'transparent',
+                  border: 'none',
+                  cursor: 'pointer'
+                }}
+              >
+                <X style={{ width: '20px', height: '20px' }} />
+              </button>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+              <div>
+                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500' }}>
+                  Tipo
+                </label>
+                <select
+                  value={newMedical.tipo}
+                  onChange={(e) => setNewMedical({ ...newMedical, tipo: e.target.value })}
+                  style={{
+                    width: '100%',
+                    padding: '8px 12px',
+                    borderRadius: '6px',
+                    border: '1px solid #e2e8f0',
+                    fontSize: '0.875rem'
+                  }}
+                >
+                  <option value="consulta">Consulta</option>
+                  <option value="vacuna">Vacuna</option>
+                  <option value="cirugia">Cirugía</option>
+                  <option value="tratamiento">Tratamiento</option>
+                  <option value="desparasitacion">Desparasitación</option>
+                </select>
+              </div>
+
+              <div>
+                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500' }}>
+                  Fecha
+                </label>
+                <input
+                  type="date"
+                  value={newMedical.fecha}
+                  onChange={(e) => setNewMedical({ ...newMedical, fecha: e.target.value })}
+                  style={{
+                    width: '100%',
+                    padding: '8px 12px',
+                    borderRadius: '6px',
+                    border: '1px solid #e2e8f0',
+                    fontSize: '0.875rem'
+                  }}
+                />
+              </div>
+
+              <div style={{ gridColumn: 'span 2' }}>
+                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500' }}>
+                  Descripción
+                </label>
+                <textarea
+                  value={newMedical.descripcion}
+                  onChange={(e) => setNewMedical({ ...newMedical, descripcion: e.target.value })}
+                  rows={3}
+                  style={{
+                    width: '100%',
+                    padding: '8px 12px',
+                    borderRadius: '6px',
+                    border: '1px solid #e2e8f0',
+                    fontSize: '0.875rem',
+                    resize: 'vertical'
+                  }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500' }}>
+                  Veterinario
+                </label>
+                <input
+                  type="text"
+                  value={newMedical.veterinario}
+                  onChange={(e) => setNewMedical({ ...newMedical, veterinario: e.target.value })}
+                  style={{
+                    width: '100%',
+                    padding: '8px 12px',
+                    borderRadius: '6px',
+                    border: '1px solid #e2e8f0',
+                    fontSize: '0.875rem'
+                  }}
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500' }}>
+                  Costo
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={newMedical.costo}
+                  onChange={(e) => setNewMedical({ ...newMedical, costo: e.target.value })}
+                  style={{
+                    width: '100%',
+                    padding: '8px 12px',
+                    borderRadius: '6px',
+                    border: '1px solid #e2e8f0',
+                    fontSize: '0.875rem'
+                  }}
+                />
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: '12px', marginTop: '24px', justifyContent: 'flex-end' }}>
+              <button
+                onClick={() => setShowMedicalModal(false)}
+                style={{
+                  padding: '8px 16px',
+                  backgroundColor: '#f1f5f9',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '6px',
+                  fontSize: '0.875rem',
+                  cursor: 'pointer'
+                }}
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={saveMedicalRecord}
+                style={{
+                  padding: '8px 16px',
+                  backgroundColor: '#af1731',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '6px',
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  cursor: 'pointer'
+                }}
+              >
+                Guardar Registro
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Note Modal */}
+      {showNoteModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '12px',
+            padding: '24px',
+            width: '90%',
+            maxWidth: '500px'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <h4 style={{ fontSize: '1.25rem', fontWeight: '600', margin: 0 }}>
+                Nueva Nota
+              </h4>
+              <button
+                onClick={() => setShowNoteModal(false)}
+                style={{
+                  padding: '4px',
+                  backgroundColor: 'transparent',
+                  border: 'none',
+                  cursor: 'pointer'
+                }}
+              >
+                <X style={{ width: '20px', height: '20px' }} />
+              </button>
+            </div>
+
+            <div style={{ marginBottom: '16px' }}>
+              <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500' }}>
+                Tipo de Nota
+              </label>
+              <select
+                value={newNote.tipo}
+                onChange={(e) => setNewNote({ ...newNote, tipo: e.target.value })}
+                style={{
+                  width: '100%',
+                  padding: '8px 12px',
+                  borderRadius: '6px',
+                  border: '1px solid #e2e8f0',
+                  fontSize: '0.875rem'
+                }}
+              >
+                <option value="general">General</option>
+                <option value="salud">Salud</option>
+                <option value="comportamiento">Comportamiento</option>
+                <option value="adopcion">Adopción</option>
+              </select>
+            </div>
+
+            <div style={{ marginBottom: '20px' }}>
+              <label style={{ display: 'block', marginBottom: '6px', fontSize: '0.875rem', fontWeight: '500' }}>
+                Contenido
+              </label>
+              <textarea
+                value={newNote.contenido}
+                onChange={(e) => setNewNote({ ...newNote, contenido: e.target.value })}
+                rows={4}
+                style={{
+                  width: '100%',
+                  padding: '8px 12px',
+                  borderRadius: '6px',
+                  border: '1px solid #e2e8f0',
+                  fontSize: '0.875rem',
+                  resize: 'vertical'
+                }}
+                placeholder="Escribe tu observación aquí..."
+              />
+            </div>
+
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+              <button
+                onClick={() => setShowNoteModal(false)}
+                style={{
+                  padding: '8px 16px',
+                  backgroundColor: '#f1f5f9',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '6px',
+                  fontSize: '0.875rem',
+                  cursor: 'pointer'
+                }}
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={saveNote}
+                style={{
+                  padding: '8px 16px',
+                  backgroundColor: '#af1731',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '6px',
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  cursor: 'pointer'
+                }}
+              >
+                Guardar Nota
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <style jsx>{`
         @keyframes spin {
@@ -1080,115 +1374,5 @@ export default function PerritoDetalle() {
         }
       `}</style>
     </div>
-  )
-}
-
-// Helper Components
-function InfoField({ 
-  label, 
-  value, 
-  editable, 
-  type = 'text',
-  options,
-  onChange 
-}: { 
-  label: string
-  value: string
-  editable: boolean
-  type?: 'text' | 'number' | 'select'
-  options?: { value: string; label: string }[]
-  onChange?: (value: string) => void
-}) {
-  return (
-    <div>
-      <label style={{
-        display: 'block',
-        fontSize: '0.875rem',
-        fontWeight: '500',
-        color: '#374151',
-        marginBottom: '6px',
-        fontFamily: 'Poppins, sans-serif'
-      }}>{label}</label>
-      {editable ? (
-        type === 'select' ? (
-          <select
-            value={value}
-            onChange={(e) => onChange?.(e.target.value)}
-            style={{
-              width: '100%',
-              padding: '8px 12px',
-              borderRadius: '8px',
-              border: '1px solid #e2e8f0',
-              fontSize: '0.875rem',
-              fontFamily: 'Poppins, sans-serif',
-              outline: 'none',
-              cursor: 'pointer'
-            }}
-          >
-            {options?.map(opt => (
-              <option key={opt.value} value={opt.value}>{opt.label}</option>
-            ))}
-          </select>
-        ) : (
-          <input
-            type={type}
-            value={value}
-            onChange={(e) => onChange?.(e.target.value)}
-            style={{
-              width: '100%',
-              padding: '8px 12px',
-              borderRadius: '8px',
-              border: '1px solid #e2e8f0',
-              fontSize: '0.875rem',
-              fontFamily: 'Poppins, sans-serif',
-              outline: 'none'
-            }}
-          />
-        )
-      ) : (
-        <p style={{
-          fontSize: '0.875rem',
-          color: '#475569',
-          fontWeight: '600'
-        }}>{value}</p>
-      )}
-    </div>
-  )
-}
-
-function CompatibilityCheck({
-  label,
-  value,
-  editable,
-  onChange
-}: {
-  label: string
-  value: boolean
-  editable: boolean
-  onChange?: (value: boolean) => void
-}) {
-  return (
-    <label style={{
-      display: 'flex',
-      alignItems: 'center',
-      gap: '8px',
-      cursor: editable ? 'pointer' : 'default'
-    }}>
-      {editable ? (
-        <input
-          type="checkbox"
-          checked={value}
-          onChange={(e) => onChange?.(e.target.checked)}
-        />
-      ) : value ? (
-        <CheckCircle style={{ width: '18px', height: '18px', color: '#15803d' }} />
-      ) : (
-        <X style={{ width: '18px', height: '18px', color: '#ef4444' }} />
-      )}
-      <span style={{
-        fontSize: '0.875rem',
-        color: '#475569'
-      }}>{label}</span>
-    </label>
   )
 }

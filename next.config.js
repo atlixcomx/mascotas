@@ -7,9 +7,16 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   experimental: {
-    optimizePackageImports: ['lucide-react'],
+    // Deshabilitado temporalmente para resolver problemas de memoria
+    // optimizePackageImports: ['lucide-react'],
     // optimizeCss: true, // Deshabilitado temporalmente por error con critters
+    workerThreads: false,
+    cpus: 1,
   },
+  
+  // Reducir el uso de memoria durante el build
+  swcMinify: true,
+  productionBrowserSourceMaps: false,
   images: {
     // Optimización de imágenes
     formats: ['image/avif', 'image/webp'],

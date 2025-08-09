@@ -5,10 +5,16 @@ import Layout from "../components/layout/Layout";
 import AuthProvider from "../components/providers/AuthProvider";
 import { ToastProvider } from "../providers/ToastProvider";
 import { usePathname } from "next/navigation";
-import { Analytics } from '@vercel/analytics/react';
-import { SpeedInsights } from '@vercel/speed-insights/next';
+// Temporalmente deshabilitado para resolver problemas de memoria
+// import { Analytics } from '@vercel/analytics/react';
+// import { SpeedInsights } from '@vercel/speed-insights/next';
 
 export const dynamic = 'force-dynamic';
+export const dynamicParams = true;
+export const revalidate = 0;
+export const fetchCache = 'force-no-store';
+export const runtime = 'nodejs';
+export const preferredRegion = 'auto';
 
 function LayoutWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -46,8 +52,8 @@ export default function RootLayout({
             </LayoutWrapper>
           </ToastProvider>
         </AuthProvider>
-        <Analytics />
-        <SpeedInsights />
+        {/* <Analytics /> */}
+        {/* <SpeedInsights /> */}
       </body>
     </html>
   );

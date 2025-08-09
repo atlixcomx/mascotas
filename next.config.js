@@ -132,7 +132,7 @@ nextConfig.generateBuildId = async () => {
   return Date.now().toString()
 }
 
-// Deshabilitar la generación estática para rutas problemáticas
-nextConfig.experimental.isrMemoryCacheSize = 0
+// Configuración para resolver problemas de memoria
+nextConfig.output = 'standalone'
 
 module.exports = nextConfig;

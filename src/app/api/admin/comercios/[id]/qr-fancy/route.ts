@@ -35,22 +35,17 @@ export async function GET(
 
     const colors = categoryColors[comercio.categoria as keyof typeof categoryColors] || categoryColors.otro
 
-    // Generar QR con módulos redondeados usando canvas personalizado
-    const qrCanvas = await QRCode.toCanvas(qrUrl, {
-      width: 400,
-      margin: 4,
+    // Generar QR como SVG en lugar de Canvas para evitar problemas de memoria
+    const qrSvg = await QRCode.toString(qrUrl, {
+      type: 'svg',
+      width: 380,
+      margin: 0,
       color: {
         dark: colors.dark,
         light: '#FFFFFF'
       },
-      errorCorrectionLevel: 'H',
-      rendererOpts: {
-        quality: 1
-      }
+      errorCorrectionLevel: 'H'
     })
-
-    // Convertir canvas a data URL
-    const qrDataUrl = qrCanvas.toDataURL('image/png')
 
     // SVG con diseño personalizado
     const qrSvgCustom = `
@@ -73,8 +68,10 @@ export async function GET(
   <!-- Marco decorativo -->
   <rect x="10" y="10" width="400" height="400" rx="20" ry="20" fill="white" stroke="${colors.dark}" stroke-width="4"/>
   
-  <!-- Placeholder para QR (se insertará el QR real aquí) -->
-  <rect x="20" y="20" width="380" height="380" fill="${colors.light}"/>
+  <!-- QR Code -->
+  <g transform="translate(20, 20)">
+    ${qrSvg.replace(/<svg.*?>/, '').replace('</svg>', '')}
+  </g>
   
   <!-- Texto inferior -->
   <text x="210" y="440" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="${colors.dark}">

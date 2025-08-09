@@ -15,7 +15,6 @@ const nextConfig = {
   },
   
   // Reducir el uso de memoria durante el build
-  swcMinify: true,
   productionBrowserSourceMaps: false,
   images: {
     // Optimización de imágenes
@@ -126,5 +125,14 @@ const nextConfig = {
     return config
   },
 };
+
+// Configuración adicional para resolver problemas de memoria
+nextConfig.generateBuildId = async () => {
+  // Usar timestamp para forzar builds únicos
+  return Date.now().toString()
+}
+
+// Deshabilitar la generación estática para rutas problemáticas
+nextConfig.experimental.isrMemoryCacheSize = 0
 
 module.exports = nextConfig;

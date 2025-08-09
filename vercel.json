@@ -10,7 +10,7 @@
       "SKIP_BUILD_STATIC_GENERATION": "1"
     }
   },
-  "buildCommand": "npm run build",
+  "buildCommand": "npm run prebuild && NODE_OPTIONS='--max-old-space-size=8192' next build && npm run postbuild",
   "github": {
     "silent": false
   },

@@ -7,6 +7,8 @@
     "prebuild": "node prebuild.js",
     "build": "NODE_OPTIONS='--max-old-space-size=8192' NEXT_PRIVATE_MINIMAL_MODE=1 next build",
     "postbuild": "node postbuild.js",
+    "build:emergency": "rm -rf .next && NODE_OPTIONS='--max-old-space-size=8192' next build --experimental-build-mode=compile",
+    "build:export": "NODE_OPTIONS='--max-old-space-size=8192' next build -c next.config.build.mjs && next export",
     "build:safe": "NODE_OPTIONS='--max-old-space-size=8192' NEXT_EXPERIMENTAL_PARTIAL_PRERENDERING=false next build",
     "build:migrate": "prisma migrate deploy && next build",
     "start": "next start",

@@ -7,7 +7,7 @@ import {
 export default function Footer() {
   return (
     <footer style={{
-      backgroundColor: '#0e312d',
+      backgroundColor: '#6b3838',
       color: 'white',
       padding: '64px 20px 32px',
       position: 'relative'
@@ -38,43 +38,23 @@ export default function Footer() {
           {/* Sección 1 - Identidad */}
           <div>
             <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '16px',
               marginBottom: '24px'
             }}>
               {/* Logo del Centro */}
               <div style={{
-                width: '56px',
-                height: '56px',
+                width: '200px',
+                height: '200px',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
-                background: 'rgba(255, 255, 255, 0.1)',
-                borderRadius: '12px',
-                border: '2px solid rgba(255, 255, 255, 0.2)',
-                padding: '4px'
+                justifyContent: 'center'
               }}>
                 <Image 
-                  src="/centro.png" 
+                  src="/desktop/logo/centroB.png" 
                   alt="Centro de Adopción"
-                  width={48}
-                  height={48}
-                  style={{ objectFit: 'contain', filter: 'brightness(1.2)' }}
+                  width={200}
+                  height={200}
+                  style={{ objectFit: 'contain' }}
                 />
-              </div>
-              <div>
-                <h3 style={{
-                  fontWeight: '700',
-                  fontSize: '20px',
-                  margin: 0,
-                  marginBottom: '4px'
-                }}>Centro de Adopción</h3>
-                <p style={{
-                  fontSize: '14px',
-                  margin: 0,
-                  color: 'rgba(255,255,255,0.7)'
-                }}>H. Ayuntamiento de Atlixco</p>
               </div>
             </div>
             <p style={{
@@ -279,43 +259,37 @@ export default function Footer() {
             flexWrap: 'wrap',
             justifyContent: 'center'
           }}>
-            {/* Logo del Centro */}
+            {/* Logo del Ayuntamiento */}
             <div style={{
-              width: '252px',
-              height: '252px',
+              width: '180px',
+              height: '180px',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center',
-              background: 'rgba(255, 255, 255, 0.2)',
-              borderRadius: '20px',
-              padding: '20px'
+              justifyContent: 'center'
             }}>
               <Image 
-                src="/centro.png" 
-                alt="Centro de Adopción"
-                width={216}
-                height={216}
-                style={{ objectFit: 'contain', filter: 'brightness(1.2)' }}
+                src="/desktop/logo/ayuntamientoB.png" 
+                alt="H. Ayuntamiento de Atlixco"
+                width={180}
+                height={180}
+                style={{ objectFit: 'contain' }}
               />
             </div>
 
-            {/* Logo Mi Casa */}
+            {/* Logo Mi Casa Tu Casa */}
             <div style={{
-              width: '252px',
-              height: '252px',
+              width: '180px',
+              height: '180px',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center',
-              background: 'rgba(255, 255, 255, 0.2)',
-              borderRadius: '20px',
-              padding: '20px'
+              justifyContent: 'center'
             }}>
               <Image 
-                src="/micasa.png" 
-                alt="Mi Casa"
-                width={216}
-                height={216}
-                style={{ objectFit: 'contain', filter: 'brightness(1.2)' }}
+                src="/desktop/logo/micasab.png" 
+                alt="Mi Casa Tu Casa"
+                width={180}
+                height={180}
+                style={{ objectFit: 'contain' }}
               />
             </div>
           </div>

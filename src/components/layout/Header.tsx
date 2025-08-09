@@ -81,7 +81,7 @@ export default function Header() {
               minWidth: '207px',
               position: 'relative',
               transition: 'transform 0.2s ease',
-              margin: '20px 0 40px 0'
+              margin: '40px 0 40px 0'
             }}>
               <Image 
                 src="/centro.png" 

@@ -214,13 +214,18 @@ export default function Home() {
               position: 'relative',
               backgroundColor: '#f3f4f6'
             }}>
-              <Image
-                src="/centro-principal.jpg"
-                alt="Centro Municipal de Adopción"
-                fill
-                style={{ objectFit: 'cover' }}
-                priority
-              />
+              {/* Imagen temporal removida para optimización */}
+              <div style={{
+                width: '100%',
+                height: '100%',
+                backgroundColor: '#e5e7eb',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#9ca3af'
+              }}>
+                <Building2 size={48} />
+              </div>
               <div style={{
                 position: 'absolute',
                 bottom: 0,
@@ -241,12 +246,17 @@ export default function Home() {
               position: 'relative',
               backgroundColor: '#f3f4f6'
             }}>
-              <Image
-                src="/veterinario.jpg"
-                alt="Atención Veterinaria"
-                fill
-                style={{ objectFit: 'cover' }}
-              />
+              <div style={{
+                width: '100%',
+                height: '100%',
+                backgroundColor: '#ddd6fe',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#8b5cf6'
+              }}>
+                <Stethoscope size={32} />
+              </div>
             </div>
             <div style={{
               borderRadius: '20px',
@@ -254,12 +264,17 @@ export default function Home() {
               position: 'relative',
               backgroundColor: '#f3f4f6'
             }}>
-              <Image
-                src="/adopcion.jpg"
-                alt="Proceso de Adopción"
-                fill
-                style={{ objectFit: 'cover' }}
-              />
+              <div style={{
+                width: '100%',
+                height: '100%',
+                backgroundColor: '#fce7f3',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#ec4899'
+              }}>
+                <Heart size={32} />
+              </div>
             </div>
           </div>
         </div>
@@ -388,12 +403,18 @@ export default function Home() {
             position: 'relative',
             backgroundColor: '#f3f4f6'
           }}>
-            <Image
-              src="/instalaciones-centro.jpg"
-              alt="Instalaciones del Centro Municipal"
-              fill
-              style={{ objectFit: 'cover' }}
-            />
+            {/* Imagen temporal removida para optimización */}
+            <div style={{
+              width: '100%',
+              height: '100%',
+              backgroundColor: '#fef3c7',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#f59e0b'
+            }}>
+              <Building size={48} />
+            </div>
             <div style={{
               position: 'absolute',
               bottom: 0,

@@ -121,7 +121,7 @@ export default function Header() {
               transition: 'all 0.3s',
               border: '2px solid transparent'
             }}>
-              Comercios Friendly
+              Comercios Pet Friendly
             </a>
             <a href="/catalogo" style={{
               backgroundColor: '#0e312d',
@@ -292,7 +292,7 @@ export default function Header() {
               transition: 'background-color 0.2s'
             }}
           >
-            <HandshakeIcon size={18} color="#1a1a1a" /> Comercios Friendly
+            <HandshakeIcon size={18} color="#1a1a1a" /> Comercios Pet Friendly
           </a>
           <a
             href="/catalogo"

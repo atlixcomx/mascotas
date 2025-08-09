@@ -245,22 +245,6 @@ export default function Footer() {
               />
             </div>
 
-            {/* Logo Mi Casa Tu Casa */}
-            <div style={{
-              width: '140px',
-              height: '140px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-              <Image 
-                src="/micasab.png" 
-                alt="Mi Casa Tu Casa"
-                width={140}
-                height={140}
-                style={{ objectFit: 'contain' }}
-              />
-            </div>
           </div>
 
           <p style={{

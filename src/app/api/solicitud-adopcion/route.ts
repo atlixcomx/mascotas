@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { prisma } from '../../../../lib/db'
+import { prisma } from '@/lib/db'
 import { EmailService } from '../../../lib/email'
 
 // Generar código único para la solicitud

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '../../../../../lib/db'
+import { prisma } from '@/lib/db'
 
 // Helper function to safely parse photos field
 function parsePhotosField(fotos: string | null): string[] {

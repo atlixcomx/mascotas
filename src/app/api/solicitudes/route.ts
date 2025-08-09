@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '../../../../lib/db'
+import { prisma } from '@/lib/db'
 import { EmailService } from '../../../../src/lib/email'
 import { sendNotificationToAdmins } from '../../../../src/lib/notifications'
 import { addActivityEvent, broadcastActivityEvent } from '../../../../src/lib/metrics'

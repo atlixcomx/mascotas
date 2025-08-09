@@ -9,12 +9,8 @@ import { usePathname } from "next/navigation";
 // import { Analytics } from '@vercel/analytics/react';
 // import { SpeedInsights } from '@vercel/speed-insights/next';
 
-export const dynamic = 'force-dynamic';
-export const dynamicParams = true;
-export const revalidate = 0;
-export const fetchCache = 'force-no-store';
-export const runtime = 'nodejs';
-export const preferredRegion = 'auto';
+// Estas configuraciones se mueven a archivos de página específicos
+// ya que layout.tsx es un componente client-side
 
 function LayoutWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();

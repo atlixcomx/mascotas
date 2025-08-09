@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import QRCode from 'qrcode'
-import { prisma } from '@/lib/prisma'
+import { prisma } from '@/lib/db'
 
 export async function GET(
   request: Request,
@@ -19,8 +19,8 @@ export async function GET(
       )
     }
 
-    // URL que contendrá el QR
-    const qrUrl = `${process.env.NEXT_PUBLIC_URL || 'https://4tlixco.vercel.app'}/comercios/${comercio.slug}`
+    // URL que contendrá el QR - dirigir al catálogo de adopción
+    const qrUrl = `${process.env.NEXT_PUBLIC_URL || 'https://4tlixco.vercel.app'}/catalogo`
     
     // Configuración de colores basada en la categoría
     const categoryColors = {

@@ -35,6 +35,12 @@ export function middleware(request: NextRequest) {
     }
   }
   
+  // Headers para forzar renderizado dinámico y evitar generación estática
+  response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+  response.headers.set('Pragma', 'no-cache')
+  response.headers.set('Expires', '0')
+  response.headers.set('X-Middleware-Revalidate', '0')
+  
   // Security headers para todas las rutas
   response.headers.set('X-Frame-Options', 'DENY')
   response.headers.set('X-Content-Type-Options', 'nosniff')

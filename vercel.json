@@ -2,9 +2,12 @@
   "framework": "nextjs",
   "build": {
     "env": {
-      "NODE_OPTIONS": "--max-old-space-size=8192"
+      "NODE_OPTIONS": "--max-old-space-size=8192",
+      "NEXT_EXPERIMENTAL_PARTIAL_PRERENDERING": "false",
+      "NEXT_PRIVATE_STANDALONE": "true"
     }
   },
+  "buildCommand": "npm run build",
   "github": {
     "silent": false
   },

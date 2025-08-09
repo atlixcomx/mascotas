@@ -103,9 +103,11 @@ export default function ComercioPage({ params }: { params: { slug: string } }) {
   const [comercio, setComercio] = useState<Comercio | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
+  const [mascotas, setMascotas] = useState<any[]>([])  // Para mostrar 3 mascotas aleatorias
 
   useEffect(() => {
     fetchComercio()
+    fetchMascotas()
   }, [params.slug])
 
   const fetchComercio = async () => {
@@ -124,6 +126,27 @@ export default function ComercioPage({ params }: { params: { slug: string } }) {
       setError(true)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const fetchMascotas = async () => {
+    try {
+      const response = await fetch('/api/perritos?limit=3&destacados=true')
+      if (response.ok) {
+        const data = await response.json()
+        // Si no hay destacados, obtener los primeros 3
+        if (data.perritos.length === 0) {
+          const fallbackResponse = await fetch('/api/perritos?limit=3')
+          if (fallbackResponse.ok) {
+            const fallbackData = await fallbackResponse.json()
+            setMascotas(fallbackData.perritos || [])
+          }
+        } else {
+          setMascotas(data.perritos || [])
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching mascotas:', error)
     }
   }
 
@@ -669,127 +692,171 @@ export default function ComercioPage({ params }: { params: { slug: string } }) {
             )}
           </div>
 
-          {/* Beneficios de la Certificación */}
-          <div style={{
-            backgroundColor: 'white',
-            borderRadius: '20px',
-            padding: '32px',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
-          }}>
-            <h2 style={{ 
-              fontSize: '1.5rem', 
-              fontWeight: '700', 
-              color: '#111827',
-              marginBottom: '24px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              fontFamily: 'Albert Sans, sans-serif'
-            }}>
-              <Award size={24} style={{ color: '#fbbf24' }} />
-              Beneficios de la Certificación
-            </h2>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              {[
-                { icon: Star, text: 'Reconocimiento oficial como establecimiento Pet Friendly' },
-                { icon: Users, text: 'Mayor visibilidad en nuestra comunidad' },
-                { icon: Heart, text: 'Contribuye al bienestar animal en Atlixco' },
-                { icon: Dog, text: 'Acceso a eventos y promociones especiales' }
-              ].map((benefit, idx) => (
-                <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <div style={{
-                    width: '36px',
-                    height: '36px',
-                    borderRadius: '8px',
-                    backgroundColor: '#fef3c7',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0
-                  }}>
-                    <benefit.icon size={18} style={{ color: '#d97706' }} />
-                  </div>
-                  <p style={{ 
-                    fontSize: '0.875rem', 
-                    color: '#4b5563',
-                    margin: 0,
-                    fontFamily: 'Poppins, sans-serif'
-                  }}>{benefit.text}</p>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
 
-        {/* CTA Section */}
+        {/* Sección de Mascotas en Adopción */}
         <div style={{
           marginTop: '64px',
           padding: '48px',
-          backgroundColor: categoria.lightBg,
+          backgroundColor: '#f8f9fa',
           borderRadius: '24px',
-          border: `2px solid ${categoria.bg}`,
           textAlign: 'center'
         }}>
-          <Users size={48} style={{ color: categoria.color, margin: '0 auto 16px' }} />
+          <Dog size={48} style={{ color: '#16a34a', margin: '0 auto 16px' }} />
           <h3 style={{
             fontSize: '1.75rem',
             fontWeight: '700',
             color: '#111827',
             marginBottom: '16px',
             fontFamily: 'Albert Sans, sans-serif'
-          }}>Únete al Movimiento Pet Friendly</h3>
+          }}>Conoce a nuestros amigos en adopción</h3>
           <p style={{
             fontSize: '1.125rem',
             color: '#6b7280',
-            marginBottom: '32px',
+            marginBottom: '40px',
             maxWidth: '600px',
-            margin: '0 auto 32px',
+            margin: '0 auto 40px',
             fontFamily: 'Poppins, sans-serif'
           }}>
-            Juntos podemos crear una ciudad más amigable para las mascotas y 
-            darle una segunda oportunidad a muchos animalitos
+            Dale una segunda oportunidad a estos hermosos peluditos que buscan un hogar lleno de amor
           </p>
-          <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link
-              href="/catalogo"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                backgroundColor: categoria.color,
-                color: 'white',
-                padding: '12px 32px',
-                borderRadius: '8px',
-                textDecoration: 'none',
-                fontSize: '1rem',
-                fontWeight: '600',
-                fontFamily: 'Albert Sans, sans-serif'
-              }}
-            >
-              <Heart size={20} />
-              Adoptar una Mascota
-            </Link>
-            <Link
-              href="/solicitud"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                backgroundColor: 'white',
-                color: categoria.color,
-                padding: '12px 32px',
-                borderRadius: '8px',
-                textDecoration: 'none',
-                fontSize: '1rem',
-                fontWeight: '600',
-                border: `2px solid ${categoria.color}`,
-                fontFamily: 'Albert Sans, sans-serif'
-              }}
-            >
-              Iniciar Proceso de Adopción
-            </Link>
-          </div>
+
+          {/* Grid de 3 mascotas */}
+          {mascotas.length > 0 && (
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+              gap: '24px',
+              marginBottom: '40px',
+              maxWidth: '900px',
+              margin: '0 auto 40px'
+            }}>
+              {mascotas.map((mascota) => (
+                <Link
+                  key={mascota.id}
+                  href={`/catalogo/${mascota.slug}`}
+                  style={{
+                    textDecoration: 'none',
+                    color: 'inherit'
+                  }}
+                >
+                  <div style={{
+                    backgroundColor: 'white',
+                    borderRadius: '16px',
+                    overflow: 'hidden',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                    transition: 'all 0.3s ease',
+                    cursor: 'pointer'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-4px)'
+                    e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,0,0,0.12)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)'
+                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.08)'
+                  }}>
+                    {/* Imagen */}
+                    <div style={{
+                      width: '100%',
+                      height: '200px',
+                      backgroundColor: '#f3f4f6',
+                      position: 'relative',
+                      overflow: 'hidden'
+                    }}>
+                      {mascota.fotoPrincipal && (
+                        <img
+                          src={mascota.fotoPrincipal}
+                          alt={mascota.nombre}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover'
+                          }}
+                        />
+                      )}
+                      <div style={{
+                        position: 'absolute',
+                        top: '12px',
+                        right: '12px',
+                        backgroundColor: mascota.sexo === 'macho' ? '#3b82f6' : '#ec4899',
+                        color: 'white',
+                        padding: '4px 12px',
+                        borderRadius: '12px',
+                        fontSize: '12px',
+                        fontWeight: '600',
+                        textTransform: 'capitalize'
+                      }}>
+                        {mascota.sexo}
+                      </div>
+                    </div>
+                    {/* Info */}
+                    <div style={{ padding: '20px' }}>
+                      <h4 style={{
+                        fontSize: '18px',
+                        fontWeight: '700',
+                        color: '#111827',
+                        marginBottom: '8px',
+                        fontFamily: 'Albert Sans, sans-serif'
+                      }}>{mascota.nombre}</h4>
+                      <p style={{
+                        fontSize: '14px',
+                        color: '#6b7280',
+                        marginBottom: '12px',
+                        fontFamily: 'Poppins, sans-serif'
+                      }}>
+                        {mascota.edad} • {mascota.raza}
+                      </p>
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                        color: '#16a34a',
+                        fontSize: '14px',
+                        fontWeight: '600'
+                      }}>
+                        <Heart size={16} />
+                        Conocer más
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+
+          {/* CTA para ver catálogo completo */}
+          <Link
+            href="/catalogo"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              backgroundColor: '#16a34a',
+              color: 'white',
+              padding: '14px 32px',
+              borderRadius: '8px',
+              textDecoration: 'none',
+              fontSize: '1.125rem',
+              fontWeight: '600',
+              fontFamily: 'Albert Sans, sans-serif',
+              boxShadow: '0 4px 12px rgba(22, 163, 74, 0.3)',
+              transition: 'all 0.3s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#15803d'
+              e.currentTarget.style.transform = 'translateY(-2px)'
+              e.currentTarget.style.boxShadow = '0 6px 16px rgba(22, 163, 74, 0.4)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = '#16a34a'
+              e.currentTarget.style.transform = 'translateY(0)'
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(22, 163, 74, 0.3)'
+            }}
+          >
+            <Dog size={20} />
+            Ver Catálogo Completo
+          </Link>
         </div>
       </div>
     </div>

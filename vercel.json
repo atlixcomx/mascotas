@@ -13,7 +13,7 @@
       "SKIP_ENV_VALIDATION": "1"
     }
   },
-  "buildCommand": "echo 'Starting emergency build...' && find src/app -name 'page.tsx' -path '*/admin/*' -o -path '*/test*' -o -path '*/debug*' -o -path '*\\[*\\]*' | xargs -I {} mv {} {}.bak 2>/dev/null || true && NODE_OPTIONS='--max-old-space-size=8192' next build && find src/app -name '*.bak' | while read f; do mv \"$f\" \"${f%.bak}\"; done",
+  "buildCommand": "npm run build",
   "github": {
     "silent": false
   },

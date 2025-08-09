@@ -78,25 +78,43 @@ const categoriaConfig = {
 }
 
 export default async function ComercioPage({ params }: { params: { slug: string } }) {
-  const comercio = await prisma.comercio.findUnique({
-    where: { 
-      slug: params.slug,
-      activo: true 
+  try {
+    const comercio = await prisma.comercio.findUnique({
+      where: { 
+        slug: params.slug,
+        activo: true 
+      }
+    })
+
+    if (!comercio) {
+      notFound()
     }
-  })
 
-  if (!comercio) {
-    notFound()
-  }
-
-  // Registrar escaneo de QR
-  await prisma.comercio.update({
-    where: { id: comercio.id },
-    data: { qrEscaneos: { increment: 1 } }
-  })
+    // Registrar escaneo de QR
+    try {
+      await prisma.comercio.update({
+        where: { id: comercio.id },
+        data: { qrEscaneos: { increment: 1 } }
+      })
+    } catch (error) {
+      console.error('Error updating QR scans:', error)
+      // No fallar la página si no se puede actualizar el contador
+    }
 
   const categoria = categoriaConfig[comercio.categoria as keyof typeof categoriaConfig] || categoriaConfig.otro
   const Icon = categoria.icon
+  
+  // Parsear servicios si vienen como JSON string
+  let serviciosTexto = comercio.servicios
+  try {
+    if (typeof comercio.servicios === 'string' && comercio.servicios.startsWith('[')) {
+      const serviciosArray = JSON.parse(comercio.servicios)
+      serviciosTexto = serviciosArray.join('\n')
+    }
+  } catch (e) {
+    // Si no se puede parsear, usar el texto tal cual
+    serviciosTexto = comercio.servicios
+  }
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
@@ -455,7 +473,7 @@ export default async function ComercioPage({ params }: { params: { slug: string 
               fontFamily: 'Poppins, sans-serif',
               margin: 0,
               lineHeight: 1.8
-            }}>{comercio.servicios}</pre>
+            }}>{serviciosTexto}</pre>
           </div>
 
           {/* Restricciones */}
@@ -561,4 +579,8 @@ export default async function ComercioPage({ params }: { params: { slug: string 
       </div>
     </div>
   )
+  } catch (error) {
+    console.error('Error loading comercio:', error)
+    notFound()
+  }
 }

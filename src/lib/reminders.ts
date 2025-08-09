@@ -1,4 +1,4 @@
-import { prisma } from '../../lib/db'
+import { prisma } from './db'
 import { EmailService } from './email'
 import { sendNotificationToAdmins } from './notifications'
 

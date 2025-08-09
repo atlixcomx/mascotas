@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { prisma } from '../../../../../../../lib/db'
-import { sendNotificationToAdmins } from '../../../../../../../src/lib/notifications'
+import { prisma } from '@/lib/db'
+import { sendNotificationToAdmins } from '@/lib/notifications'
 
 // GET - Obtener comentarios de una solicitud
 export async function GET(

@@ -44,27 +44,34 @@ export async function POST(
     const body = await request.json()
     const { contenido } = body
 
-    if (!contenido) {
+    if (!contenido || contenido.trim() === '') {
       return NextResponse.json(
         { error: 'El comentario no puede estar vacío' },
         { status: 400 }
       )
     }
 
-    // En producción, esto crearía un nuevo comentario en la base de datos
-    // Por ahora simulamos la respuesta
-    const nuevoComentario = {
-      id: Date.now().toString(),
-      solicitudId: params.id,
-      usuarioId: session.user.email,
-      usuario: {
-        nombre: session.user.name || 'Admin',
-        email: session.user.email
-      },
-      contenido,
-      tipo: 'comentario',
-      createdAt: new Date().toISOString()
+    // Verificar que la solicitud existe
+    const solicitudExiste = await prisma.solicitud.findUnique({
+      where: { id: params.id }
+    })
+
+    if (!solicitudExiste) {
+      return NextResponse.json(
+        { error: 'Solicitud no encontrada' },
+        { status: 404 }
+      )
     }
+
+    // Crear una nueva nota en la solicitud
+    const notaCreada = await prisma.notaSolicitud.create({
+      data: {
+        solicitudId: params.id,
+        contenido: contenido.trim(),
+        autor: session.user.name || session.user.email || 'Admin',
+        tipo: 'comentario'
+      }
+    })
 
     // Obtener información de la solicitud para la notificación
     const solicitud = await prisma.solicitud.findUnique({
@@ -76,21 +83,7 @@ export async function POST(
       }
     })
 
-    // Crear una nueva nota en la solicitud
-    await prisma.solicitud.update({
-      where: { id: params.id },
-      data: {
-        notas: {
-          create: {
-            contenido: contenido,
-            autor: session.user.name || 'Admin',
-            tipo: 'comentario'
-          }
-        }
-      }
-    })
-
-    // Enviar notificación en tiempo real (no notificar al usuario que creó el comentario)
+    // Enviar notificación en tiempo real (manejar errores sin fallar)
     if (solicitud) {
       try {
         sendNotificationToAdmins({
@@ -113,13 +106,33 @@ export async function POST(
 
     return NextResponse.json({
       success: true,
-      comentario: nuevoComentario
+      comentario: {
+        id: notaCreada.id,
+        solicitudId: notaCreada.solicitudId,
+        contenido: notaCreada.contenido,
+        autor: notaCreada.autor,
+        tipo: notaCreada.tipo,
+        createdAt: notaCreada.createdAt.toISOString()
+      }
     })
 
   } catch (error) {
-    console.error('Error creating comentario:', error)
+    console.error('Error creating comentario - Details:', error)
+    
+    // Devolver más información sobre el error
+    if (error instanceof Error) {
+      return NextResponse.json(
+        { 
+          error: 'Error al crear comentario',
+          details: error.message,
+          type: error.name
+        },
+        { status: 500 }
+      )
+    }
+    
     return NextResponse.json(
-      { error: 'Error al crear comentario' },
+      { error: 'Error desconocido al crear comentario' },
       { status: 500 }
     )
   }

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import { 
@@ -71,68 +71,62 @@ export default function DifusionPage() {
     utm_campaign: ''
   })
 
-  // Datos de ejemplo - en producción vendrían de la DB
-  const [campaigns, setCampaigns] = useState<Campaign[]>([
-    {
-      id: '1',
-      nombre: 'QR BUAP Campus Central',
-      ubicacion: 'Benemérita Universidad Autónoma de Puebla',
-      tipo: 'universidad',
-      utm_source: 'buap',
-      utm_medium: 'qr_code',
-      utm_campaign: 'adopcion_universitaria_2024',
-      url: 'https://4tlixco.vercel.app/catalogo?utm_source=buap&utm_medium=qr_code&utm_campaign=adopcion_universitaria_2024',
-      scans: 245,
-      conversiones: 12,
-      fechaCreacion: '2024-01-15'
-    },
-    {
-      id: '2',
-      nombre: 'QR Plaza de Armas',
-      ubicacion: 'Plaza de Armas Atlixco',
-      tipo: 'plaza',
-      utm_source: 'plaza_armas',
-      utm_medium: 'qr_code',
-      utm_campaign: 'difusion_publica_2024',
-      url: 'https://4tlixco.vercel.app/catalogo?utm_source=plaza_armas&utm_medium=qr_code&utm_campaign=difusion_publica_2024',
-      scans: 189,
-      conversiones: 8,
-      fechaCreacion: '2024-01-20'
-    }
-  ])
+  const [campaigns, setCampaigns] = useState<Campaign[]>([])
+  const [loading, setLoading] = useState(true)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Cargar campañas al montar el componente
+  useEffect(() => {
+    fetchCampaigns()
+  }, [])
+
+  const fetchCampaigns = async () => {
+    try {
+      const response = await fetch('/api/admin/difusion')
+      if (response.ok) {
+        const data = await response.json()
+        setCampaigns(data)
+      }
+    } catch (error) {
+      console.error('Error loading campaigns:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
     // Generar UTM campaign si no se especificó
     const utmCampaign = formData.utm_campaign || 
       `${formData.tipo}_${formData.utm_source}_${new Date().getFullYear()}`
     
-    // Construir URL con UTMs
-    const baseUrl = process.env.NEXT_PUBLIC_URL || 'https://4tlixco.vercel.app'
-    const url = `${baseUrl}/catalogo?utm_source=${formData.utm_source}&utm_medium=${formData.utm_medium}&utm_campaign=${utmCampaign}`
-    
-    const newCampaign: Campaign = {
-      id: Date.now().toString(),
-      nombre: formData.nombre,
-      ubicacion: formData.ubicacion,
-      tipo: formData.tipo,
-      utm_source: formData.utm_source,
-      utm_medium: formData.utm_medium,
-      utm_campaign: utmCampaign,
-      url: url,
-      scans: 0,
-      conversiones: 0,
-      fechaCreacion: new Date().toISOString().split('T')[0]
+    try {
+      const response = await fetch('/api/admin/difusion', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...formData,
+          utm_campaign: utmCampaign
+        })
+      })
+
+      if (response.ok) {
+        const newCampaign = await response.json()
+        setCampaigns([newCampaign, ...campaigns])
+        setShowModal(false)
+        resetForm()
+        
+        // Mostrar QR generado
+        setSelectedCampaign(newCampaign)
+        setShowQRModal(true)
+      } else {
+        const error = await response.json()
+        alert(error.error || 'Error al crear campaña')
+      }
+    } catch (error) {
+      console.error('Error creating campaign:', error)
+      alert('Error al crear campaña')
     }
-    
-    setCampaigns([newCampaign, ...campaigns])
-    setShowModal(false)
-    resetForm()
-    
-    // Mostrar QR generado
-    setSelectedCampaign(newCampaign)
-    setShowQRModal(true)
   }
 
   const resetForm = () => {

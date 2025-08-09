@@ -74,6 +74,9 @@ model Solicitud {
   fechaAdopcion   DateTime?
   motivoRechazo   String?
   origenQR        String?
+  utmSource       String?
+  utmMedium       String?
+  utmCampaign     String?
   copiaIneRecibida        Boolean   @default(false)
   copiaComprobanteRecibida Boolean   @default(false)
   createdAt       DateTime              @default(now())
@@ -278,4 +281,30 @@ model MovimientoInsumo {
   fecha        DateTime
   createdAt    DateTime @default(now())
   insumo       Insumo   @relation(fields: [insumoId], references: [id])
+}
+
+model CampaniaDifusion {
+  id            String         @id @default(cuid())
+  codigo        String         @unique
+  nombre        String
+  ubicacion     String
+  tipo          String
+  utm_source    String
+  utm_medium    String         @default("qr_code")
+  utm_campaign  String
+  descripcion   String?
+  activa        Boolean        @default(true)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  visitas       VisitaCampania[]
+}
+
+model VisitaCampania {
+  id           String            @id @default(cuid())
+  campaniaId   String
+  ipAddress    String?
+  userAgent    String?
+  referer      String?
+  createdAt    DateTime          @default(now())
+  campania     CampaniaDifusion  @relation(fields: [campaniaId], references: [id])
 }

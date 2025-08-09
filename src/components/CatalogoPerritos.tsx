@@ -26,6 +26,26 @@ export default function CatalogoPerritos() {
   const [favorites, setFavorites] = useState<string[]>([])
   const [hoveredCard, setHoveredCard] = useState<string | null>(null)
 
+  // Track UTM parameters on mount
+  useEffect(() => {
+    const utm_source = searchParams.get('utm_source')
+    const utm_medium = searchParams.get('utm_medium')
+    const utm_campaign = searchParams.get('utm_campaign')
+
+    if (utm_source && utm_campaign) {
+      // Enviar tracking de visita
+      fetch('/api/track', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          utm_source,
+          utm_medium: utm_medium || 'direct',
+          utm_campaign
+        })
+      }).catch(err => console.error('Error tracking visit:', err))
+    }
+  }, [searchParams])
+
   // Estados de filtros
   const [filters, setFilters] = useState<FilterOptions>({
     search: searchParams.get('search') || '',

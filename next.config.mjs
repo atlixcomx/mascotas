@@ -15,19 +15,8 @@ const nextConfig = {
   experimental: {
     workerThreads: false,
     cpus: 1,
-    // Forzar solo renderizado en servidor
-    serverComponents: true,
     // Desactivar streaming para reducir memoria
     isrFlushToDisk: false,
-    // Reducir paralelismo
-    workerThreads: false,
-    // Desactivar características nuevas
-    instrumentationHook: false,
-    turbotrace: {
-      logLevel: 'error',
-      logDetail: false,
-      contextDirectory: process.cwd(),
-    },
   },
   
   // Deshabilitar source maps

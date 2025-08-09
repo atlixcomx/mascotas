@@ -967,7 +967,7 @@ export default function ComerciosPage() {
                       }}>
                         {qrStyle === 'petfriendly' ? (
                           <QRPetFriendly
-                            url={`${process.env.NEXT_PUBLIC_URL || 'https://4tlixco.vercel.app'}/catalogo`}
+                            url={`${process.env.NEXT_PUBLIC_URL || 'https://4tlixco.vercel.app'}/comercios/${comercio?.slug}`}
                             size={300}
                             color={categoria.color}
                             backgroundColor={categoria.bg}

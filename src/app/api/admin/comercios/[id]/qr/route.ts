@@ -19,8 +19,8 @@ export async function GET(
       )
     }
 
-    // URL que contendrá el QR - dirigir al catálogo de adopción
-    const qrUrl = `${process.env.NEXT_PUBLIC_URL || 'https://4tlixco.vercel.app'}/catalogo`
+    // URL que contendrá el QR - página de certificación del comercio
+    const qrUrl = `${process.env.NEXT_PUBLIC_URL || 'https://4tlixco.vercel.app'}/comercios/${comercio.slug}`
     
     // Configuración de colores basada en la categoría
     const categoryColors = {

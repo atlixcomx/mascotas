@@ -21,7 +21,8 @@ import {
   Crown,
   Sparkles,
   ChevronRight,
-  Activity
+  Activity,
+  Share2
 } from 'lucide-react'
 import { NotificationPanel } from '../../components/ui/NotificationPanel'
 
@@ -32,6 +33,7 @@ const navigation = [
   { name: 'Solicitudes de Adopción', href: '/admin/solicitudes', icon: FileText },
   { name: 'Recordatorios', href: '/admin/recordatorios', icon: Bell },
   { name: 'Comercios Aliados', href: '/admin/comercios', icon: Building2 },
+  { name: 'Módulo de Difusión', href: '/admin/difusion', icon: Share2 },
   { name: 'Configuración del Sistema', href: '/admin/configuracion', icon: Settings },
 ]
 

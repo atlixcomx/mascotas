@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeftIcon, CheckBadgeIcon } from '@heroicons/react/24/outline'
+import { ArrowLeft, CheckCircle2 } from 'lucide-react'
 
 interface Comercio {
   id: string
@@ -159,7 +159,7 @@ export default function EditarComercioPage({ params }: { params: { id: string } 
           href="/admin/comercios"
           className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4"
         >
-          <ArrowLeftIcon className="h-5 w-5" />
+          <ArrowLeft className="h-5 w-5" />
           Regresar a Comercios
         </Link>
         <div className="flex items-center justify-between">
@@ -171,7 +171,7 @@ export default function EditarComercioPage({ params }: { params: { id: string } 
             <span className="text-sm text-gray-500">Código: {comercio.codigo}</span>
             {comercio.certificado && (
               <div className="flex items-center gap-1 text-blue-600">
-                <CheckBadgeIcon className="h-5 w-5" />
+                <CheckCircle2 className="h-5 w-5" />
                 <span className="text-sm">Certificado</span>
               </div>
             )}

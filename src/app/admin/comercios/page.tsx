@@ -3,15 +3,15 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { 
-  MagnifyingGlassIcon, 
-  PlusIcon,
-  PencilIcon,
-  TrashIcon,
-  MapPinIcon,
-  GlobeAltIcon,
-  CheckBadgeIcon,
-  ChartBarIcon
-} from '@heroicons/react/24/outline'
+  Search, 
+  Plus,
+  Pencil,
+  Trash2,
+  MapPin,
+  Globe,
+  CheckCircle2,
+  BarChart3
+} from 'lucide-react'
 
 interface Comercio {
   id: string
@@ -142,7 +142,7 @@ export default function ComerciosPage() {
           href="/admin/comercios/nuevo"
           className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2"
         >
-          <PlusIcon className="h-5 w-5" />
+          <Plus className="h-5 w-5" />
           Agregar Comercio
         </Link>
       </div>
@@ -156,7 +156,7 @@ export default function ComerciosPage() {
               <p className="text-2xl font-bold text-gray-900">{totalComercios}</p>
             </div>
             <div className="p-3 bg-gray-100 rounded-lg">
-              <ChartBarIcon className="h-6 w-6 text-gray-600" />
+              <BarChart3 className="h-6 w-6 text-gray-600" />
             </div>
           </div>
         </div>
@@ -168,7 +168,7 @@ export default function ComerciosPage() {
               <p className="text-2xl font-bold text-green-600">{comerciosActivos}</p>
             </div>
             <div className="p-3 bg-green-100 rounded-lg">
-              <MapPinIcon className="h-6 w-6 text-green-600" />
+              <MapPin className="h-6 w-6 text-green-600" />
             </div>
           </div>
         </div>
@@ -180,7 +180,7 @@ export default function ComerciosPage() {
               <p className="text-2xl font-bold text-blue-600">{comerciosCertificados}</p>
             </div>
             <div className="p-3 bg-blue-100 rounded-lg">
-              <CheckBadgeIcon className="h-6 w-6 text-blue-600" />
+              <CheckCircle2 className="h-6 w-6 text-blue-600" />
             </div>
           </div>
         </div>
@@ -190,7 +190,7 @@ export default function ComerciosPage() {
       <div className="bg-white p-4 rounded-lg shadow">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="relative">
-            <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
             <input
               type="text"
               placeholder="Buscar comercio..."
@@ -247,7 +247,7 @@ export default function ComerciosPage() {
                   </div>
                 </div>
                 {comercio.certificado && (
-                  <CheckBadgeIcon className="h-6 w-6 text-blue-600" />
+                  <CheckCircle2 className="h-6 w-6 text-blue-600" />
                 )}
               </div>
 
@@ -259,12 +259,12 @@ export default function ComerciosPage() {
               {/* Detalles */}
               <div className="space-y-2 text-sm text-gray-600 mb-4">
                 <div className="flex items-center gap-2">
-                  <MapPinIcon className="h-4 w-4" />
+                  <MapPin className="h-4 w-4" />
                   <span className="truncate">{comercio.direccion}</span>
                 </div>
                 {comercio.website && (
                   <div className="flex items-center gap-2">
-                    <GlobeAltIcon className="h-4 w-4" />
+                    <Globe className="h-4 w-4" />
                     <a href={comercio.website} target="_blank" rel="noopener noreferrer" 
                        className="text-blue-600 hover:underline truncate">
                       {comercio.website}
@@ -295,7 +295,7 @@ export default function ComerciosPage() {
                     href={`/admin/comercios/${comercio.id}`}
                     className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded"
                   >
-                    <PencilIcon className="h-4 w-4" />
+                    <Pencil className="h-4 w-4" />
                   </Link>
                   <button
                     onClick={() => toggleEstado(comercio.id, comercio.activo)}
@@ -307,7 +307,7 @@ export default function ComerciosPage() {
                     onClick={() => deleteComercio(comercio.id)}
                     className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded"
                   >
-                    <TrashIcon className="h-4 w-4" />
+                    <Trash2 className="h-4 w-4" />
                   </button>
                 </div>
               </div>

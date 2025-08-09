@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeftIcon } from '@heroicons/react/24/outline'
+import { ArrowLeft } from 'lucide-react'
 
 export default function NuevoComercioPage() {
   const router = useRouter()
@@ -65,7 +65,7 @@ export default function NuevoComercioPage() {
           href="/admin/comercios"
           className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4"
         >
-          <ArrowLeftIcon className="h-5 w-5" />
+          <ArrowLeft className="h-5 w-5" />
           Regresar a Comercios
         </Link>
         <h1 className="text-3xl font-bold text-gray-900">Agregar Nuevo Comercio</h1>

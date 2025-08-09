@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { 
@@ -21,7 +22,10 @@ import {
   TrendingUp,
   QrCode,
   Eye,
+  Edit2,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   MoreVertical,
   Store,
   Coffee,
@@ -32,7 +36,9 @@ import {
   Stethoscope,
   Download,
   Calendar,
-  Activity
+  Activity,
+  Star,
+  AlertCircle
 } from 'lucide-react'
 
 interface Comercio {
@@ -118,25 +124,19 @@ function MetricCard({
   title, 
   value, 
   icon: Icon, 
-  color = 'blue',
-  trend,
-  percentage,
-  subtitle
+  color = 'blue'
 }: { 
   title: string
   value: number | string
   icon: any
   color?: string
-  trend?: 'up' | 'down'
-  percentage?: number
-  subtitle?: string
 }) {
   const colorStyles = {
     blue: { bg: '#eff6ff', color: '#2563eb' },
     green: { bg: '#f0fdf4', color: '#16a34a' },
     yellow: { bg: '#fefce8', color: '#ca8a04' },
     purple: { bg: '#faf5ff', color: '#9333ea' },
-    red: { bg: '#fee2e2', color: '#dc2626' },
+    red: { bg: '#fef2f2', color: '#dc2626' },
     cyan: { bg: '#e0f2fe', color: '#0891b2' }
   }
 
@@ -145,80 +145,35 @@ function MetricCard({
   return (
     <div style={{
       backgroundColor: 'white',
-      borderRadius: '16px',
-      padding: '24px',
-      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-      border: '1px solid #e5e7eb',
-      transition: 'all 0.3s ease',
-      height: '100%'
-    }}
-    onMouseEnter={(e) => {
-      e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
-      e.currentTarget.style.transform = 'translateY(-2px)'
-    }}
-    onMouseLeave={(e) => {
-      e.currentTarget.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)'
-      e.currentTarget.style.transform = 'translateY(0)'
+      borderRadius: '10px',
+      padding: '16px',
+      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
+      border: '1px solid rgba(0, 0, 0, 0.05)',
+      transition: 'all 0.2s ease'
     }}>
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-        <div style={{ flex: 1 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div>
           <p style={{
             fontSize: '0.875rem',
-            color: '#6b7280',
-            margin: '0 0 8px 0',
-            fontWeight: '500'
+            color: '#64748b',
+            margin: '0 0 4px 0',
+            fontFamily: 'Poppins, sans-serif'
           }}>{title}</p>
           <p style={{
-            fontSize: '2.25rem',
+            fontSize: '1.5rem',
             fontWeight: '700',
-            color: '#111827',
+            color: '#0f172a',
             margin: 0,
-            lineHeight: 1.2
+            fontFamily: 'Albert Sans, sans-serif'
           }}>{value}</p>
-          {subtitle && (
-            <p style={{
-              fontSize: '0.75rem',
-              color: '#9ca3af',
-              marginTop: '4px'
-            }}>{subtitle}</p>
-          )}
-          {trend && percentage !== undefined && (
-            <div style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: '6px', 
-              marginTop: '12px',
-              backgroundColor: trend === 'up' ? '#f0fdf4' : '#fef2f2',
-              padding: '4px 8px',
-              borderRadius: '6px',
-              width: 'fit-content'
-            }}>
-              <TrendingUp 
-                size={14} 
-                style={{ 
-                  color: trend === 'up' ? '#16a34a' : '#dc2626',
-                  transform: trend === 'down' ? 'rotate(180deg)' : 'none'
-                }}
-              />
-              <span style={{
-                fontSize: '0.75rem',
-                color: trend === 'up' ? '#16a34a' : '#dc2626',
-                fontWeight: '600'
-              }}>
-                {percentage}% vs mes anterior
-              </span>
-            </div>
-          )}
         </div>
         <div style={{
-          padding: '14px',
-          borderRadius: '12px',
+          padding: '10px',
+          borderRadius: '8px',
           backgroundColor: style.bg,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
+          color: style.color
         }}>
-          <Icon size={26} style={{ color: style.color, strokeWidth: 2.5 }} />
+          <Icon style={{ width: '20px', height: '20px' }} />
         </div>
       </div>
     </div>
@@ -226,20 +181,19 @@ function MetricCard({
 }
 
 export default function ComerciosPage() {
+  const router = useRouter()
   const [comercios, setComercios] = useState<Comercio[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategoria, setSelectedCategoria] = useState('todos')
   const [selectedEstado, setSelectedEstado] = useState('todos')
-  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false)
-  const [sortBy, setSortBy] = useState('fecha_desc')
-  const [selectedComercios, setSelectedComercios] = useState<string[]>([])
-  const [showActions, setShowActions] = useState<string | null>(null)
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+  const itemsPerPage = 12
 
   useEffect(() => {
     fetchComercios()
-  }, [])
+  }, [currentPage, selectedCategoria, selectedEstado])
 
   async function fetchComercios() {
     try {
@@ -300,30 +254,21 @@ export default function ComerciosPage() {
     return matchSearch && matchCategoria && matchEstado
   })
 
-  // Ordenar comercios
-  const comerciosOrdenados = [...comerciosFiltrados].sort((a, b) => {
-    switch (sortBy) {
-      case 'fecha_desc':
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      case 'fecha_asc':
-        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-      case 'nombre_asc':
-        return a.nombre.localeCompare(b.nombre)
-      case 'nombre_desc':
-        return b.nombre.localeCompare(a.nombre)
-      case 'escaneos_desc':
-        return b.qrEscaneos - a.qrEscaneos
-      default:
-        return 0
-    }
-  })
+  // Paginación
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const comerciosPaginados = comerciosFiltrados.slice(startIndex, endIndex)
+  const totalPageCount = Math.ceil(comerciosFiltrados.length / itemsPerPage)
 
   const totalComercios = comercios.length
   const comerciosActivos = comercios.filter(c => c.activo).length
   const comerciosCertificados = comercios.filter(c => c.certificado).length
   const totalEscaneos = comercios.reduce((sum, c) => sum + c.qrEscaneos, 0)
   const totalConversiones = comercios.reduce((sum, c) => sum + c.conversiones, 0)
-  const tasaConversion = totalEscaneos > 0 ? ((totalConversiones / totalEscaneos) * 100).toFixed(1) : '0'
+
+  useEffect(() => {
+    setTotalPages(totalPageCount)
+  }, [totalPageCount])
 
   if (loading) {
     return (
@@ -332,22 +277,23 @@ export default function ComerciosPage() {
         display: 'flex', 
         alignItems: 'center', 
         justifyContent: 'center',
-        backgroundColor: '#f9fafb'
+        backgroundColor: '#f8fafc'
       }}>
         <div style={{ textAlign: 'center' }}>
           <div style={{
             width: '48px',
             height: '48px',
-            border: '3px solid #e5e7eb',
-            borderTopColor: '#3b82f6',
+            border: '4px solid #f3f4f6',
+            borderTop: '4px solid #af1731',
             borderRadius: '50%',
             margin: '0 auto 16px',
             animation: 'spin 1s linear infinite'
           }} />
-          <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>Cargando comercios...</p>
+          <p style={{ color: '#64748b', fontFamily: 'Poppins, sans-serif' }}>Cargando comercios...</p>
         </div>
         <style jsx>{`
           @keyframes spin {
+            from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
           }
         `}</style>
@@ -356,192 +302,115 @@ export default function ComerciosPage() {
   }
 
   return (
-    <div style={{ backgroundColor: '#f9fafb', minHeight: '100vh' }}>
-      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '24px' }}>
-        {/* Header */}
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'flex-start',
-          marginBottom: '32px',
+    <div style={{
+      padding: '16px',
+      width: '100%',
+      backgroundColor: '#f8fafc',
+      minHeight: '100vh',
+      overflowX: 'hidden'
+    }}>
+      {/* Header */}
+      <div style={{ marginBottom: '20px' }}>
+        <h1 style={{
+          fontSize: '1.75rem',
+          fontWeight: '700',
+          color: '#0f172a',
+          margin: '0 0 4px 0',
+          fontFamily: 'Albert Sans, sans-serif'
+        }}>Gestión de Comercios</h1>
+        <p style={{
+          fontSize: '0.875rem',
+          color: '#64748b',
+          margin: 0,
+          fontFamily: 'Poppins, sans-serif'
+        }}>Administra los comercios pet friendly del directorio</p>
+      </div>
+
+      {/* Métricas */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+        gap: '12px',
+        marginBottom: '20px'
+      }}>
+        <MetricCard title="Total Comercios" value={totalComercios} icon={Building2} color="blue" />
+        <MetricCard title="Comercios Activos" value={comerciosActivos} icon={Activity} color="green" />
+        <MetricCard title="Certificados" value={comerciosCertificados} icon={ShieldCheck} color="purple" />
+        <MetricCard title="QR Escaneos" value={totalEscaneos.toLocaleString()} icon={QrCode} color="yellow" />
+        <MetricCard title="Conversiones" value={totalConversiones} icon={TrendingUp} color="cyan" />
+      </div>
+
+      {/* Filters and Actions */}
+      <div style={{
+        backgroundColor: 'white',
+        borderRadius: '12px',
+        padding: '16px',
+        marginBottom: '20px',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
+      }}>
+        <div style={{
+          display: 'flex',
           flexWrap: 'wrap',
-          gap: '16px'
+          gap: '12px',
+          alignItems: 'center',
+          justifyContent: 'space-between'
         }}>
-          <div>
-            <h1 style={{
-              fontSize: '2.25rem',
-              fontWeight: '700',
-              color: '#111827',
-              margin: '0 0 8px 0',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px'
+          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', flex: 1 }}>
+            {/* Search */}
+            <div style={{
+              position: 'relative',
+              minWidth: '250px'
             }}>
-              <Building2 size={36} style={{ color: '#3b82f6' }} />
-              Comercios Aliados
-            </h1>
-            <p style={{
-              color: '#6b7280',
-              fontSize: '1rem',
-              margin: 0
-            }}>Gestiona los comercios pet friendly de Atlixco</p>
-          </div>
-          <Link
-            href="/admin/comercios/nuevo"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              backgroundColor: '#3b82f6',
-              color: 'white',
-              padding: '12px 24px',
-              borderRadius: '10px',
-              textDecoration: 'none',
-              fontSize: '0.875rem',
-              fontWeight: '600',
-              transition: 'all 0.2s ease',
-              border: 'none',
-              cursor: 'pointer',
-              boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#2563eb'
-              e.currentTarget.style.transform = 'translateY(-1px)'
-              e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#3b82f6'
-              e.currentTarget.style.transform = 'translateY(0)'
-              e.currentTarget.style.boxShadow = '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
-            }}
-          >
-            <Plus size={20} />
-            Agregar Comercio
-          </Link>
-        </div>
-
-        {/* Métricas */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-          gap: '24px',
-          marginBottom: '32px'
-        }}>
-          <MetricCard
-            title="Total Comercios"
-            value={totalComercios}
-            icon={Building2}
-            color="blue"
-            subtitle="En el directorio"
-          />
-          <MetricCard
-            title="Comercios Activos"
-            value={comerciosActivos}
-            icon={Activity}
-            color="green"
-            trend="up"
-            percentage={12}
-          />
-          <MetricCard
-            title="Certificados"
-            value={comerciosCertificados}
-            icon={ShieldCheck}
-            color="purple"
-            subtitle="Pet Friendly verificados"
-          />
-          <MetricCard
-            title="QR Escaneos"
-            value={totalEscaneos.toLocaleString()}
-            icon={QrCode}
-            color="yellow"
-            trend="up"
-            percentage={8}
-          />
-          <MetricCard
-            title="Conversiones"
-            value={totalConversiones}
-            icon={TrendingUp}
-            color="cyan"
-            subtitle={`${tasaConversion}% tasa de conversión`}
-          />
-        </div>
-
-        {/* Barra de búsqueda y filtros */}
-        <div style={{
-          backgroundColor: 'white',
-          borderRadius: '16px',
-          padding: '24px',
-          marginBottom: '24px',
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-          border: '1px solid #e5e7eb'
-        }}>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-            gap: '16px',
-            marginBottom: showAdvancedFilters ? '16px' : '0'
-          }}>
-            {/* Búsqueda */}
-            <div style={{ position: 'relative', gridColumn: 'span 2' }}>
-              <Search 
-                size={20} 
-                style={{ 
-                  position: 'absolute', 
-                  left: '12px', 
-                  top: '50%', 
-                  transform: 'translateY(-50%)',
-                  color: '#9ca3af'
-                }} 
-              />
+              <Search style={{
+                position: 'absolute',
+                left: '12px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                width: '18px',
+                height: '18px',
+                color: '#94a3b8'
+              }} />
               <input
                 type="text"
-                placeholder="Buscar por nombre, descripción o código..."
+                placeholder="Buscar por nombre o código..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    setCurrentPage(1)
+                  }
+                }}
                 style={{
                   width: '100%',
-                  paddingLeft: '44px',
-                  paddingRight: '16px',
-                  paddingTop: '12px',
-                  paddingBottom: '12px',
-                  fontSize: '0.875rem',
-                  border: '1px solid #e5e7eb',
+                  padding: '8px 12px 8px 40px',
                   borderRadius: '8px',
+                  border: '1px solid #e2e8f0',
+                  fontSize: '0.875rem',
+                  fontFamily: 'Poppins, sans-serif',
                   outline: 'none',
-                  transition: 'all 0.2s ease'
+                  transition: 'all 0.2s'
                 }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = '#3b82f6'
-                  e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)'
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = '#e5e7eb'
-                  e.target.style.boxShadow = 'none'
-                }}
+                onFocus={(e) => e.target.style.borderColor = '#bfb591'}
+                onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
               />
             </div>
 
-            {/* Categoría */}
+            {/* Filter Categoría */}
             <select
               value={selectedCategoria}
-              onChange={(e) => setSelectedCategoria(e.target.value)}
+              onChange={(e) => {
+                setSelectedCategoria(e.target.value)
+                setCurrentPage(1)
+              }}
               style={{
-                padding: '12px 16px',
-                fontSize: '0.875rem',
-                border: '1px solid #e5e7eb',
+                padding: '8px 12px',
                 borderRadius: '8px',
-                backgroundColor: 'white',
-                cursor: 'pointer',
+                border: '1px solid #e2e8f0',
+                fontSize: '0.875rem',
+                fontFamily: 'Poppins, sans-serif',
                 outline: 'none',
-                transition: 'all 0.2s ease'
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = '#3b82f6'
-                e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)'
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = '#e5e7eb'
-                e.target.style.boxShadow = 'none'
+                cursor: 'pointer',
+                minWidth: '150px'
               }}
             >
               <option value="todos">Todas las categorías</option>
@@ -550,27 +419,22 @@ export default function ComerciosPage() {
               ))}
             </select>
 
-            {/* Estado */}
+            {/* Filter Estado */}
             <select
               value={selectedEstado}
-              onChange={(e) => setSelectedEstado(e.target.value)}
+              onChange={(e) => {
+                setSelectedEstado(e.target.value)
+                setCurrentPage(1)
+              }}
               style={{
-                padding: '12px 16px',
-                fontSize: '0.875rem',
-                border: '1px solid #e5e7eb',
+                padding: '8px 12px',
                 borderRadius: '8px',
-                backgroundColor: 'white',
-                cursor: 'pointer',
+                border: '1px solid #e2e8f0',
+                fontSize: '0.875rem',
+                fontFamily: 'Poppins, sans-serif',
                 outline: 'none',
-                transition: 'all 0.2s ease'
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = '#3b82f6'
-                e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)'
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = '#e5e7eb'
-                e.target.style.boxShadow = 'none'
+                cursor: 'pointer',
+                minWidth: '150px'
               }}
             >
               <option value="todos">Todos los estados</option>
@@ -578,513 +442,296 @@ export default function ComerciosPage() {
               <option value="inactivos">Inactivos</option>
               <option value="certificados">Certificados</option>
             </select>
-
-            {/* Ordenar */}
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              style={{
-                padding: '12px 16px',
-                fontSize: '0.875rem',
-                border: '1px solid #e5e7eb',
-                borderRadius: '8px',
-                backgroundColor: 'white',
-                cursor: 'pointer',
-                outline: 'none',
-                transition: 'all 0.2s ease'
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = '#3b82f6'
-                e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)'
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = '#e5e7eb'
-                e.target.style.boxShadow = 'none'
-              }}
-            >
-              <option value="fecha_desc">Más recientes</option>
-              <option value="fecha_asc">Más antiguos</option>
-              <option value="nombre_asc">Nombre A-Z</option>
-              <option value="nombre_desc">Nombre Z-A</option>
-              <option value="escaneos_desc">Más escaneados</option>
-            </select>
-
-            {/* Botón de filtros avanzados */}
-            <button
-              onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                padding: '12px 16px',
-                fontSize: '0.875rem',
-                border: '1px solid #e5e7eb',
-                borderRadius: '8px',
-                backgroundColor: 'white',
-                color: '#6b7280',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#f9fafb'
-                e.currentTarget.style.color = '#374151'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'white'
-                e.currentTarget.style.color = '#6b7280'
-              }}
-            >
-              <Filter size={16} />
-              Filtros
-              <ChevronDown 
-                size={16} 
-                style={{
-                  transform: showAdvancedFilters ? 'rotate(180deg)' : 'rotate(0deg)',
-                  transition: 'transform 0.2s ease'
-                }}
-              />
-            </button>
           </div>
 
-          {/* Filtros avanzados */}
-          {showAdvancedFilters && (
+          {/* Actions */}
+          <button
+            onClick={() => router.push('/admin/comercios/nuevo')}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '10px 16px',
+              backgroundColor: '#af1731',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              fontSize: '0.875rem',
+              fontWeight: '600',
+              fontFamily: 'Albert Sans, sans-serif',
+              cursor: 'pointer',
+              transition: 'all 0.2s'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#7d2447'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#af1731'}
+          >
+            <Plus style={{ width: '18px', height: '18px' }} />
+            Registrar Comercio
+          </button>
+        </div>
+      </div>
+
+      {/* Table */}
+      <div style={{
+        backgroundColor: 'white',
+        borderRadius: '12px',
+        overflow: 'hidden',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
+      }}>
+        {loading ? (
+          <div style={{ padding: '48px', textAlign: 'center' }}>
             <div style={{
-              paddingTop: '16px',
-              borderTop: '1px solid #e5e7eb',
-              marginTop: '16px'
-            }}>
-              <p style={{ 
-                fontSize: '0.875rem', 
-                color: '#6b7280', 
-                marginBottom: '12px',
-                fontWeight: '500'
-              }}>
-                Próximamente: Filtros por ubicación, horarios y servicios específicos
-              </p>
-            </div>
-          )}
-        </div>
-
-        {/* Resultados y acciones */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '16px'
-        }}>
-          <p style={{
-            color: '#6b7280',
-            fontSize: '0.875rem'
-          }}>
-            {comerciosOrdenados.length} comercios encontrados
-          </p>
-
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <button
-              onClick={() => setViewMode('grid')}
-              style={{
-                padding: '8px',
-                border: '1px solid #e5e7eb',
-                borderRadius: '6px',
-                backgroundColor: viewMode === 'grid' ? '#3b82f6' : 'white',
-                color: viewMode === 'grid' ? 'white' : '#6b7280',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease'
-              }}
-            >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                <rect x="1" y="1" width="6" height="6" />
-                <rect x="9" y="1" width="6" height="6" />
-                <rect x="1" y="9" width="6" height="6" />
-                <rect x="9" y="9" width="6" height="6" />
-              </svg>
-            </button>
-            <button
-              onClick={() => setViewMode('list')}
-              style={{
-                padding: '8px',
-                border: '1px solid #e5e7eb',
-                borderRadius: '6px',
-                backgroundColor: viewMode === 'list' ? '#3b82f6' : 'white',
-                color: viewMode === 'list' ? 'white' : '#6b7280',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease'
-              }}
-            >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                <rect x="1" y="2" width="14" height="2" />
-                <rect x="1" y="7" width="14" height="2" />
-                <rect x="1" y="12" width="14" height="2" />
-              </svg>
-            </button>
+              width: '48px',
+              height: '48px',
+              border: '4px solid #f3f4f6',
+              borderTop: '4px solid #af1731',
+              borderRadius: '50%',
+              margin: '0 auto 16px',
+              animation: 'spin 1s linear infinite'
+            }} />
+            <p style={{ color: '#64748b', fontFamily: 'Poppins, sans-serif' }}>
+              Cargando comercios...
+            </p>
           </div>
-        </div>
-
-        {/* Lista de comercios */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: viewMode === 'grid' 
-            ? 'repeat(auto-fill, minmax(380px, 1fr))' 
-            : '1fr',
-          gap: '24px'
-        }}>
-          {comerciosOrdenados.map((comercio) => {
-            const categoria = categoriaConfig[comercio.categoria] || categoriaConfig.otro
-            const Icon = categoria.icon
-
-            return (
-              <div 
-                key={comercio.id} 
-                style={{
-                  backgroundColor: 'white',
-                  borderRadius: '16px',
-                  overflow: 'hidden',
-                  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-                  border: '1px solid #e5e7eb',
-                  transition: 'all 0.3s ease',
-                  cursor: 'pointer',
-                  position: 'relative'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
-                  e.currentTarget.style.transform = 'translateY(-2px)'
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)'
-                  e.currentTarget.style.transform = 'translateY(0)'
-                }}
-              >
-                {/* Header con categoría */}
-                <div style={{
-                  backgroundColor: categoria.lightBg,
-                  padding: '20px',
-                  borderBottom: `1px solid ${categoria.bg}`
-                }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <div style={{ display: 'flex', gap: '16px' }}>
-                      <div style={{
-                        width: '56px',
-                        height: '56px',
-                        borderRadius: '12px',
-                        backgroundColor: categoria.bg,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        flexShrink: 0
-                      }}>
-                        <Icon size={28} style={{ color: categoria.color }} />
-                      </div>
-                      <div>
-                        <h3 style={{
-                          fontSize: '1.125rem',
-                          fontWeight: '600',
-                          color: '#111827',
-                          margin: '0 0 4px 0'
-                        }}>{comercio.nombre}</h3>
-                        <p style={{
-                          fontSize: '0.875rem',
-                          color: '#6b7280',
-                          margin: 0
-                        }}>{comercio.codigo} • {categoria.label}</p>
-                      </div>
-                    </div>
-                    {comercio.certificado && (
-                      <div style={{
-                        backgroundColor: '#dbeafe',
-                        padding: '6px 10px',
-                        borderRadius: '6px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '4px'
-                      }}>
-                        <CheckCircle2 size={14} style={{ color: '#2563eb' }} />
-                        <span style={{ fontSize: '0.75rem', color: '#1e40af', fontWeight: '500' }}>
-                          Certificado
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Contenido */}
-                <div style={{ padding: '20px' }}>
-                  <p style={{
-                    fontSize: '0.875rem',
-                    color: '#4b5563',
-                    marginBottom: '16px',
-                    lineHeight: 1.6,
-                    display: '-webkit-box',
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: 'vertical',
-                    overflow: 'hidden'
-                  }}>
-                    {comercio.descripcion}
-                  </p>
-
-                  <div style={{ 
-                    display: 'flex', 
-                    flexDirection: 'column', 
-                    gap: '8px',
-                    marginBottom: '16px'
-                  }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <MapPin size={16} style={{ color: '#9ca3af' }} />
-                      <span style={{ fontSize: '0.813rem', color: '#6b7280' }}>
-                        {comercio.direccion}
-                      </span>
-                    </div>
-                    {comercio.telefono && (
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <Phone size={16} style={{ color: '#9ca3af' }} />
-                        <span style={{ fontSize: '0.813rem', color: '#6b7280' }}>
-                          {comercio.telefono}
-                        </span>
-                      </div>
-                    )}
-                    {comercio.website && (
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <Globe size={16} style={{ color: '#9ca3af' }} />
-                        <a 
-                          href={comercio.website} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          style={{ 
-                            fontSize: '0.813rem', 
-                            color: '#3b82f6',
-                            textDecoration: 'none'
-                          }}
-                          onClick={(e) => e.stopPropagation()}
-                          onMouseEnter={(e) => e.currentTarget.style.textDecoration = 'underline'}
-                          onMouseLeave={(e) => e.currentTarget.style.textDecoration = 'none'}
-                        >
-                          {comercio.website.replace(/^https?:\/\//, '')}
-                        </a>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Estadísticas */}
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr 1fr',
-                    gap: '12px',
-                    padding: '12px',
-                    backgroundColor: '#f9fafb',
-                    borderRadius: '8px',
-                    marginBottom: '16px'
-                  }}>
-                    <div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
-                        <QrCode size={14} style={{ color: '#6b7280' }} />
-                        <span style={{ fontSize: '0.75rem', color: '#6b7280' }}>QR Escaneos</span>
-                      </div>
-                      <p style={{ fontSize: '1.125rem', fontWeight: '600', color: '#111827', margin: 0 }}>
-                        {comercio.qrEscaneos.toLocaleString()}
-                      </p>
-                    </div>
-                    <div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
-                        <TrendingUp size={14} style={{ color: '#6b7280' }} />
-                        <span style={{ fontSize: '0.75rem', color: '#6b7280' }}>Conversiones</span>
-                      </div>
-                      <p style={{ fontSize: '1.125rem', fontWeight: '600', color: '#111827', margin: 0 }}>
-                        {comercio.conversiones}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Footer con estado y acciones */}
-                  <div style={{ 
-                    display: 'flex', 
-                    justifyContent: 'space-between', 
-                    alignItems: 'center',
-                    paddingTop: '16px',
-                    borderTop: '1px solid #e5e7eb'
-                  }}>
-                    <span style={{
-                      padding: '6px 12px',
-                      fontSize: '0.75rem',
-                      fontWeight: '500',
-                      borderRadius: '6px',
-                      backgroundColor: comercio.activo ? '#dcfce7' : '#f3f4f6',
-                      color: comercio.activo ? '#166534' : '#4b5563'
-                    }}>
-                      {comercio.activo ? 'Activo' : 'Inactivo'}
-                    </span>
-
-                    <div style={{ 
-                      display: 'flex', 
-                      gap: '4px',
-                      position: 'relative'
-                    }}>
-                      <Link
-                        href={`/admin/comercios/${comercio.id}`}
-                        style={{
-                          padding: '8px',
-                          borderRadius: '6px',
-                          backgroundColor: '#f3f4f6',
-                          color: '#6b7280',
-                          textDecoration: 'none',
-                          transition: 'all 0.2s ease',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center'
-                        }}
-                        onClick={(e) => e.stopPropagation()}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = '#e5e7eb'
-                          e.currentTarget.style.color = '#374151'
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.backgroundColor = '#f3f4f6'
-                          e.currentTarget.style.color = '#6b7280'
-                        }}
-                      >
-                        <Pencil size={16} />
-                      </Link>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          setShowActions(showActions === comercio.id ? null : comercio.id)
-                        }}
-                        style={{
-                          padding: '8px',
-                          borderRadius: '6px',
-                          backgroundColor: '#f3f4f6',
-                          color: '#6b7280',
-                          border: 'none',
-                          cursor: 'pointer',
-                          transition: 'all 0.2s ease',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = '#e5e7eb'
-                          e.currentTarget.style.color = '#374151'
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.backgroundColor = '#f3f4f6'
-                          e.currentTarget.style.color = '#6b7280'
-                        }}
-                      >
-                        <MoreVertical size={16} />
-                      </button>
-
-                      {/* Menú de acciones */}
-                      {showActions === comercio.id && (
-                        <div style={{
-                          position: 'absolute',
-                          right: 0,
-                          top: '100%',
-                          marginTop: '4px',
-                          backgroundColor: 'white',
-                          borderRadius: '8px',
-                          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-                          border: '1px solid #e5e7eb',
-                          padding: '8px',
-                          minWidth: '160px',
-                          zIndex: 10
-                        }}>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              toggleEstado(comercio.id, comercio.activo)
-                              setShowActions(null)
-                            }}
-                            style={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: '8px',
-                              width: '100%',
-                              padding: '8px 12px',
-                              border: 'none',
-                              backgroundColor: 'transparent',
-                              color: '#374151',
-                              fontSize: '0.875rem',
-                              borderRadius: '6px',
-                              cursor: 'pointer',
-                              transition: 'all 0.2s ease',
-                              textAlign: 'left'
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.backgroundColor = '#f3f4f6'
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.backgroundColor = 'transparent'
-                            }}
-                          >
-                            <Activity size={16} />
-                            {comercio.activo ? 'Desactivar' : 'Activar'}
-                          </button>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              deleteComercio(comercio.id)
-                              setShowActions(null)
-                            }}
-                            style={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: '8px',
-                              width: '100%',
-                              padding: '8px 12px',
-                              border: 'none',
-                              backgroundColor: 'transparent',
-                              color: '#dc2626',
-                              fontSize: '0.875rem',
-                              borderRadius: '6px',
-                              cursor: 'pointer',
-                              transition: 'all 0.2s ease',
-                              textAlign: 'left'
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.backgroundColor = '#fee2e2'
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.backgroundColor = 'transparent'
-                            }}
-                          >
-                            <Trash2 size={16} />
-                            Eliminar
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )
-          })}
-        </div>
-
-        {comerciosOrdenados.length === 0 && (
-          <div style={{
-            backgroundColor: 'white',
-            borderRadius: '16px',
-            padding: '48px',
-            textAlign: 'center',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-            border: '1px solid #e5e7eb'
-          }}>
-            <Building2 size={48} style={{ color: '#d1d5db', margin: '0 auto 16px' }} />
-            <p style={{ color: '#6b7280', fontSize: '1rem', marginBottom: '8px' }}>
+        ) : comerciosPaginados.length === 0 ? (
+          <div style={{ padding: '48px', textAlign: 'center' }}>
+            <Building2 style={{ width: '48px', height: '48px', color: '#cbd5e1', margin: '0 auto 16px' }} />
+            <p style={{ color: '#64748b', fontFamily: 'Poppins, sans-serif' }}>
               No se encontraron comercios
             </p>
-            <p style={{ color: '#9ca3af', fontSize: '0.875rem' }}>
-              Intenta ajustar los filtros o agrega un nuevo comercio
-            </p>
           </div>
+        ) : (
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '0.75rem', fontWeight: '600', color: '#64748b', fontFamily: 'Albert Sans, sans-serif' }}>CÓDIGO</th>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '0.75rem', fontWeight: '600', color: '#64748b', fontFamily: 'Albert Sans, sans-serif' }}>COMERCIO</th>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '0.75rem', fontWeight: '600', color: '#64748b', fontFamily: 'Albert Sans, sans-serif' }}>CATEGORÍA</th>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '0.75rem', fontWeight: '600', color: '#64748b', fontFamily: 'Albert Sans, sans-serif' }}>ESTADO</th>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '0.75rem', fontWeight: '600', color: '#64748b', fontFamily: 'Albert Sans, sans-serif' }}>CERTIFICADO</th>
+                <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: '0.75rem', fontWeight: '600', color: '#64748b', fontFamily: 'Albert Sans, sans-serif' }}>QR ESCANEOS</th>
+                <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: '0.75rem', fontWeight: '600', color: '#64748b', fontFamily: 'Albert Sans, sans-serif' }}>ACCIONES</th>
+              </tr>
+            </thead>
+            <tbody>
+              {comerciosPaginados.map((comercio) => {
+                const categoria = categoriaConfig[comercio.categoria] || categoriaConfig.otro
+                const Icon = categoria.icon
+                return (
+                  <tr key={comercio.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                    <td style={{ padding: '16px', fontSize: '0.875rem', fontFamily: 'Poppins, sans-serif', fontWeight: '500' }}>
+                      {comercio.codigo}
+                    </td>
+                    <td style={{ padding: '16px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <div style={{
+                          width: '48px',
+                          height: '48px',
+                          borderRadius: '8px',
+                          backgroundColor: categoria.bg,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          flexShrink: 0
+                        }}>
+                          <Icon size={24} style={{ color: categoria.color }} />
+                        </div>
+                        <div>
+                          <p style={{
+                            fontSize: '0.875rem',
+                            fontWeight: '600',
+                            color: '#0f172a',
+                            margin: '0 0 2px 0',
+                            fontFamily: 'Albert Sans, sans-serif'
+                          }}>{comercio.nombre}</p>
+                          <p style={{
+                            fontSize: '0.75rem',
+                            color: '#64748b',
+                            margin: 0,
+                            fontFamily: 'Poppins, sans-serif'
+                          }}>{comercio.direccion}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td style={{ padding: '16px' }}>
+                      <span style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '4px 12px',
+                        borderRadius: '20px',
+                        fontSize: '0.75rem',
+                        fontWeight: '500',
+                        backgroundColor: categoria.lightBg,
+                        color: categoria.color,
+                        border: `1px solid ${categoria.bg}`,
+                        fontFamily: 'Poppins, sans-serif'
+                      }}>
+                        {categoria.label}
+                      </span>
+                    </td>
+                    <td style={{ padding: '16px' }}>
+                      <span style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        padding: '4px 12px',
+                        borderRadius: '20px',
+                        fontSize: '0.75rem',
+                        fontWeight: '500',
+                        backgroundColor: comercio.activo ? '#f0fdf4' : '#f3f4f6',
+                        color: comercio.activo ? '#15803d' : '#374151',
+                        border: `1px solid ${comercio.activo ? '#bbf7d0' : '#d1d5db'}`,
+                        fontFamily: 'Poppins, sans-serif'
+                      }}>
+                        {comercio.activo ? 'Activo' : 'Inactivo'}
+                      </span>
+                    </td>
+                    <td style={{ padding: '16px' }}>
+                      {comercio.certificado ? (
+                        <div style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          padding: '4px 12px',
+                          borderRadius: '20px',
+                          backgroundColor: '#dbeafe',
+                          color: '#1e40af',
+                          fontSize: '0.75rem',
+                          fontWeight: '500',
+                          fontFamily: 'Poppins, sans-serif'
+                        }}>
+                          <ShieldCheck size={14} />
+                          Certificado
+                        </div>
+                      ) : (
+                        <span style={{ color: '#9ca3af', fontSize: '0.875rem', fontFamily: 'Poppins, sans-serif' }}>
+                          No certificado
+                        </span>
+                      )}
+                    </td>
+                    <td style={{ padding: '16px', fontSize: '0.875rem', color: '#475569', fontFamily: 'Poppins, sans-serif' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <QrCode size={16} style={{ color: '#6b7280' }} />
+                        {comercio.qrEscaneos.toLocaleString()}
+                      </div>
+                    </td>
+                    <td style={{ padding: '16px' }}>
+                      <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                        <button
+                          onClick={() => router.push(`/admin/comercios/${comercio.id}`)}
+                          style={{
+                            padding: '6px',
+                            backgroundColor: '#f1f5f9',
+                            border: 'none',
+                            borderRadius: '6px',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s'
+                          }}
+                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#e2e8f0'}
+                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f1f5f9'}
+                          title="Ver detalles"
+                        >
+                          <Eye style={{ width: '16px', height: '16px', color: '#64748b' }} />
+                        </button>
+                        <button
+                          onClick={() => router.push(`/admin/comercios/${comercio.id}`)}
+                          style={{
+                            padding: '6px',
+                            backgroundColor: '#f1f5f9',
+                            border: 'none',
+                            borderRadius: '6px',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s'
+                          }}
+                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#e2e8f0'}
+                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f1f5f9'}
+                          title="Editar"
+                        >
+                          <Edit2 style={{ width: '16px', height: '16px', color: '#64748b' }} />
+                        </button>
+                        <button
+                          onClick={() => deleteComercio(comercio.id)}
+                          style={{
+                            padding: '6px',
+                            backgroundColor: '#fef2f2',
+                            border: 'none',
+                            borderRadius: '6px',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s'
+                          }}
+                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#fee2e2'}
+                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fef2f2'}
+                          title="Eliminar"
+                        >
+                          <Trash2 style={{ width: '16px', height: '16px', color: '#ef4444' }} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
         )}
 
-        {/* Estilos globales para animaciones */}
-        <style jsx>{`
-          @keyframes spin {
-            to { transform: rotate(360deg); }
-          }
-        `}</style>
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div style={{
+            padding: '16px',
+            borderTop: '1px solid #e2e8f0',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}>
+            <p style={{
+              fontSize: '0.875rem',
+              color: '#64748b',
+              fontFamily: 'Poppins, sans-serif'
+            }}>
+              Página {currentPage} de {totalPages}
+            </p>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button
+                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                style={{
+                  padding: '8px',
+                  backgroundColor: currentPage === 1 ? '#f3f4f6' : 'white',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '6px',
+                  cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.2s',
+                  opacity: currentPage === 1 ? 0.5 : 1
+                }}
+              >
+                <ChevronLeft style={{ width: '16px', height: '16px', color: '#64748b' }} />
+              </button>
+              <button
+                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+                style={{
+                  padding: '8px',
+                  backgroundColor: currentPage === totalPages ? '#f3f4f6' : 'white',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '6px',
+                  cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.2s',
+                  opacity: currentPage === totalPages ? 0.5 : 1
+                }}
+              >
+                <ChevronRight style={{ width: '16px', height: '16px', color: '#64748b' }} />
+              </button>
+            </div>
+          </div>
+        )}
       </div>
+
+      <style jsx>{`
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   )
 }

@@ -36,14 +36,14 @@ export default function Footer() {
           marginBottom: '40px'
         }}>
           <div style={{
-            width: '200px',
-            height: '200px'
+            width: '280px',
+            height: '280px'
           }}>
             <Image 
               src="/centroB.png" 
               alt="Centro de Adopción"
-              width={200}
-              height={200}
+              width={280}
+              height={280}
               style={{ objectFit: 'contain' }}
             />
           </div>
@@ -250,8 +250,8 @@ export default function Footer() {
           }}>
             {/* Logo del Ayuntamiento */}
             <div style={{
-              width: '180px',
-              height: '180px',
+              width: '220px',
+              height: '220px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center'
@@ -259,16 +259,16 @@ export default function Footer() {
               <Image 
                 src="/ayuntamientoB.png" 
                 alt="H. Ayuntamiento de Atlixco"
-                width={180}
-                height={180}
+                width={220}
+                height={220}
                 style={{ objectFit: 'contain' }}
               />
             </div>
 
             {/* Logo Mi Casa Tu Casa */}
             <div style={{
-              width: '180px',
-              height: '180px',
+              width: '140px',
+              height: '140px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center'
@@ -276,8 +276,8 @@ export default function Footer() {
               <Image 
                 src="/micasab.png" 
                 alt="Mi Casa Tu Casa"
-                width={180}
-                height={180}
+                width={140}
+                height={140}
                 style={{ objectFit: 'contain' }}
               />
             </div>

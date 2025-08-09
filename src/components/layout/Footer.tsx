@@ -42,17 +42,17 @@ export default function Footer() {
             }}>
               {/* Logo del Centro */}
               <div style={{
-                width: '200px',
-                height: '200px',
+                width: '250px',
+                height: '250px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center'
               }}>
                 <Image 
-                  src="/centro.png" 
+                  src="/centroB.png" 
                   alt="Centro de Adopción"
-                  width={200}
-                  height={200}
+                  width={250}
+                  height={250}
                   style={{ objectFit: 'contain' }}
                 />
               </div>
@@ -261,34 +261,34 @@ export default function Footer() {
           }}>
             {/* Logo del Ayuntamiento */}
             <div style={{
-              width: '180px',
-              height: '180px',
+              width: '220px',
+              height: '220px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center'
             }}>
               <Image 
-                src="/centro.png" 
+                src="/ayuntamientoB.png" 
                 alt="H. Ayuntamiento de Atlixco"
-                width={180}
-                height={180}
+                width={220}
+                height={220}
                 style={{ objectFit: 'contain' }}
               />
             </div>
 
             {/* Logo Mi Casa Tu Casa */}
             <div style={{
-              width: '180px',
-              height: '180px',
+              width: '220px',
+              height: '220px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center'
             }}>
               <Image 
-                src="/micasa.png" 
+                src="/micasab.png" 
                 alt="Mi Casa Tu Casa"
-                width={180}
-                height={180}
+                width={220}
+                height={220}
                 style={{ objectFit: 'contain' }}
               />
             </div>

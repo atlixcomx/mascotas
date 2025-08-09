@@ -159,7 +159,7 @@ export default function Home() {
             }}>
               El municipio de Atlixco reafirma su compromiso con el bienestar animal 
               a través de instalaciones modernas, personal especializado y programas 
-              integrales que transforman vidas.
+              integrales que transforman vidas cada día.
             </p>
 
             <div style={{

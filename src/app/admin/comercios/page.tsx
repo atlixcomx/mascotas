@@ -4,6 +4,10 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
+import dynamic from 'next/dynamic'
+
+// Importar componente QR dinámicamente para evitar SSR
+const QRPetFriendly = dynamic(() => import('@/components/QRPetFriendly'), { ssr: false })
 import { 
   Search, 
   Plus,
@@ -194,6 +198,7 @@ export default function ComerciosPage() {
   const [showQRModal, setShowQRModal] = useState<string | null>(null)
   const [qrData, setQrData] = useState<{dataUrl: string, svg: string} | null>(null)
   const [loadingQR, setLoadingQR] = useState(false)
+  const [qrStyle, setQrStyle] = useState<'classic' | 'petfriendly'>('petfriendly')
   const itemsPerPage = 12
 
   useEffect(() => {
@@ -269,9 +274,24 @@ export default function ComerciosPage() {
   }
 
   function downloadQR(format: 'png' | 'svg', comercio: Comercio) {
-    if (!qrData) return
-
-    if (format === 'png') {
+    if (qrStyle === 'petfriendly' && format === 'png') {
+      // Para el diseño pet friendly, capturar el canvas
+      const canvas = document.querySelector('canvas') as HTMLCanvasElement
+      if (canvas) {
+        canvas.toBlob((blob) => {
+          if (blob) {
+            const url = URL.createObjectURL(blob)
+            const link = document.createElement('a')
+            link.download = `QR-PetFriendly-${comercio.codigo}-${comercio.nombre.replace(/\s+/g, '-')}.png`
+            link.href = url
+            link.click()
+            URL.revokeObjectURL(url)
+          }
+        })
+      }
+    } else if (!qrData) {
+      return
+    } else if (format === 'png') {
       const link = document.createElement('a')
       link.download = `QR-${comercio.codigo}-${comercio.nombre.replace(/\s+/g, '-')}.png`
       link.href = qrData.dataUrl
@@ -891,23 +911,79 @@ export default function ComerciosPage() {
                         }}>Código: {comercio?.codigo}</p>
                       </div>
 
+                      {/* Toggle estilo QR */}
+                      <div style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        marginBottom: '16px'
+                      }}>
+                        <button
+                          onClick={() => setQrStyle('petfriendly')}
+                          style={{
+                            padding: '8px 16px',
+                            borderRadius: '8px',
+                            border: 'none',
+                            backgroundColor: qrStyle === 'petfriendly' ? categoria.color : '#f3f4f6',
+                            color: qrStyle === 'petfriendly' ? 'white' : '#6b7280',
+                            fontSize: '0.813rem',
+                            fontWeight: '500',
+                            fontFamily: 'Poppins, sans-serif',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s'
+                          }}
+                        >
+                          🐾 Diseño Pet Friendly
+                        </button>
+                        <button
+                          onClick={() => setQrStyle('classic')}
+                          style={{
+                            padding: '8px 16px',
+                            borderRadius: '8px',
+                            border: 'none',
+                            backgroundColor: qrStyle === 'classic' ? '#374151' : '#f3f4f6',
+                            color: qrStyle === 'classic' ? 'white' : '#6b7280',
+                            fontSize: '0.813rem',
+                            fontWeight: '500',
+                            fontFamily: 'Poppins, sans-serif',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s'
+                          }}
+                        >
+                          Clásico
+                        </button>
+                      </div>
+
                       {/* QR Code */}
                       <div style={{
                         backgroundColor: '#f9fafb',
                         borderRadius: '12px',
                         padding: '24px',
                         textAlign: 'center',
-                        marginBottom: '24px'
+                        marginBottom: '24px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center'
                       }}>
-                        <img
-                          src={qrData.dataUrl}
-                          alt="QR Code"
-                          style={{
-                            width: '300px',
-                            height: '300px',
-                            margin: '0 auto'
-                          }}
-                        />
+                        {qrStyle === 'petfriendly' ? (
+                          <QRPetFriendly
+                            url={`${process.env.NEXT_PUBLIC_URL || 'https://4tlixco.vercel.app'}/comercios/${comercio?.slug}`}
+                            size={300}
+                            color={categoria.color}
+                            backgroundColor={categoria.bg}
+                            comercioNombre={comercio?.nombre}
+                          />
+                        ) : (
+                          <img
+                            src={qrData.dataUrl}
+                            alt="QR Code"
+                            style={{
+                              width: '300px',
+                              height: '300px',
+                              margin: '0 auto'
+                            }}
+                          />
+                        )}
                         <p style={{
                           fontSize: '0.75rem',
                           color: '#6b7280',

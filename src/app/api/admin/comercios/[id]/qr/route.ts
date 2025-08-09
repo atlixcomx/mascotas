@@ -22,15 +22,32 @@ export async function GET(
     // URL que contendrá el QR - puede ser la página del comercio o una URL especial
     const qrUrl = `${process.env.NEXT_PUBLIC_URL || 'https://4tlixco.vercel.app'}/comercios/${comercio.slug}`
     
-    // Generar QR en formato base64
+    // Configuración de colores basada en la categoría
+    const categoryColors = {
+      veterinaria: { dark: '#dc2626', light: '#fef2f2' },
+      petshop: { dark: '#9333ea', light: '#fdf4ff' },
+      hotel: { dark: '#0891b2', light: '#f0f9ff' },
+      restaurante: { dark: '#ea580c', light: '#fff7ed' },
+      cafe: { dark: '#84cc16', light: '#f7fee7' },
+      parque: { dark: '#16a34a', light: '#f0fdf4' },
+      otro: { dark: '#6b7280', light: '#f9fafb' }
+    }
+
+    const colors = categoryColors[comercio.categoria as keyof typeof categoryColors] || categoryColors.otro
+
+    // Generar QR en formato base64 con estilo personalizado
     const qrDataUrl = await QRCode.toDataURL(qrUrl, {
       width: 400,
       margin: 2,
       color: {
-        dark: '#000000',
+        dark: colors.dark,
         light: '#FFFFFF'
       },
-      errorCorrectionLevel: 'H' // Alto nivel de corrección de errores
+      errorCorrectionLevel: 'H', // Alto nivel de corrección de errores para permitir logo
+      type: 'image/png',
+      rendererOpts: {
+        quality: 1
+      }
     })
 
     // También podemos generar el QR como SVG para mejor calidad

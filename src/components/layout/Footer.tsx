@@ -7,7 +7,7 @@ import {
 export default function Footer() {
   return (
     <footer style={{
-      backgroundColor: '#6b3838',
+      backgroundColor: '#0e312d',
       color: 'white',
       padding: '64px 20px 32px',
       position: 'relative'
@@ -49,7 +49,7 @@ export default function Footer() {
                 justifyContent: 'center'
               }}>
                 <Image 
-                  src="/desktop/logo/centroB.png" 
+                  src="/centro.png" 
                   alt="Centro de Adopción"
                   width={200}
                   height={200}
@@ -268,7 +268,7 @@ export default function Footer() {
               justifyContent: 'center'
             }}>
               <Image 
-                src="/desktop/logo/ayuntamientoB.png" 
+                src="/centro.png" 
                 alt="H. Ayuntamiento de Atlixco"
                 width={180}
                 height={180}
@@ -285,7 +285,7 @@ export default function Footer() {
               justifyContent: 'center'
             }}>
               <Image 
-                src="/desktop/logo/micasab.png" 
+                src="/micasa.png" 
                 alt="Mi Casa Tu Casa"
                 width={180}
                 height={180}

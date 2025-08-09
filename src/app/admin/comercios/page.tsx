@@ -38,7 +38,9 @@ import {
   Calendar,
   Activity,
   Star,
-  AlertCircle
+  AlertCircle,
+  X,
+  Share2
 } from 'lucide-react'
 
 interface Comercio {
@@ -189,6 +191,9 @@ export default function ComerciosPage() {
   const [selectedEstado, setSelectedEstado] = useState('todos')
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
+  const [showQRModal, setShowQRModal] = useState<string | null>(null)
+  const [qrData, setQrData] = useState<{dataUrl: string, svg: string} | null>(null)
+  const [loadingQR, setLoadingQR] = useState(false)
   const itemsPerPage = 12
 
   useEffect(() => {
@@ -238,6 +243,47 @@ export default function ComerciosPage() {
       }
     } catch (error) {
       console.error('Error deleting comercio:', error)
+    }
+  }
+
+  async function generateQR(comercio: Comercio) {
+    setLoadingQR(true)
+    setShowQRModal(comercio.id)
+    
+    try {
+      const response = await fetch(`/api/admin/comercios/${comercio.id}/qr`)
+      if (response.ok) {
+        const data = await response.json()
+        setQrData(data.qr)
+      } else {
+        alert('Error al generar el código QR')
+        setShowQRModal(null)
+      }
+    } catch (error) {
+      console.error('Error generating QR:', error)
+      alert('Error al generar el código QR')
+      setShowQRModal(null)
+    } finally {
+      setLoadingQR(false)
+    }
+  }
+
+  function downloadQR(format: 'png' | 'svg', comercio: Comercio) {
+    if (!qrData) return
+
+    if (format === 'png') {
+      const link = document.createElement('a')
+      link.download = `QR-${comercio.codigo}-${comercio.nombre.replace(/\s+/g, '-')}.png`
+      link.href = qrData.dataUrl
+      link.click()
+    } else {
+      const blob = new Blob([qrData.svg], { type: 'image/svg+xml' })
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.download = `QR-${comercio.codigo}-${comercio.nombre.replace(/\s+/g, '-')}.svg`
+      link.href = url
+      link.click()
+      URL.revokeObjectURL(url)
     }
   }
 
@@ -618,6 +664,22 @@ export default function ComerciosPage() {
                     <td style={{ padding: '16px' }}>
                       <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                         <button
+                          onClick={() => generateQR(comercio)}
+                          style={{
+                            padding: '6px',
+                            backgroundColor: '#eff6ff',
+                            border: 'none',
+                            borderRadius: '6px',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s'
+                          }}
+                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#dbeafe'}
+                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#eff6ff'}
+                          title="Generar QR"
+                        >
+                          <QrCode style={{ width: '16px', height: '16px', color: '#3b82f6' }} />
+                        </button>
+                        <button
                           onClick={() => router.push(`/admin/comercios/${comercio.id}`)}
                           style={{
                             padding: '6px',
@@ -725,6 +787,237 @@ export default function ComerciosPage() {
           </div>
         )}
       </div>
+
+      {/* QR Modal */}
+      {showQRModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000,
+          padding: '20px'
+        }}
+        onClick={() => {
+          setShowQRModal(null)
+          setQrData(null)
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '16px',
+            padding: '32px',
+            maxWidth: '500px',
+            width: '100%',
+            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
+            position: 'relative'
+          }}
+          onClick={(e) => e.stopPropagation()}>
+            {/* Close button */}
+            <button
+              onClick={() => {
+                setShowQRModal(null)
+                setQrData(null)
+              }}
+              style={{
+                position: 'absolute',
+                top: '16px',
+                right: '16px',
+                padding: '8px',
+                backgroundColor: 'transparent',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                transition: 'all 0.2s'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f3f4f6'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+            >
+              <X size={20} style={{ color: '#6b7280' }} />
+            </button>
+
+            {loadingQR ? (
+              <div style={{ textAlign: 'center', padding: '40px' }}>
+                <div style={{
+                  width: '48px',
+                  height: '48px',
+                  border: '4px solid #f3f4f6',
+                  borderTop: '4px solid #3b82f6',
+                  borderRadius: '50%',
+                  margin: '0 auto 16px',
+                  animation: 'spin 1s linear infinite'
+                }} />
+                <p style={{ color: '#6b7280', fontFamily: 'Poppins, sans-serif' }}>Generando código QR...</p>
+              </div>
+            ) : qrData && (
+              <>
+                {(() => {
+                  const comercio = comercios.find(c => c.id === showQRModal)
+                  const categoria = comercio ? categoriaConfig[comercio.categoria] || categoriaConfig.otro : categoriaConfig.otro
+                  const Icon = categoria.icon
+                  
+                  return (
+                    <>
+                      {/* Header */}
+                      <div style={{ marginBottom: '24px', textAlign: 'center' }}>
+                        <div style={{
+                          width: '64px',
+                          height: '64px',
+                          borderRadius: '12px',
+                          backgroundColor: categoria.bg,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          margin: '0 auto 16px'
+                        }}>
+                          <Icon size={32} style={{ color: categoria.color }} />
+                        </div>
+                        <h3 style={{
+                          fontSize: '1.25rem',
+                          fontWeight: '700',
+                          color: '#111827',
+                          margin: '0 0 4px 0',
+                          fontFamily: 'Albert Sans, sans-serif'
+                        }}>{comercio?.nombre}</h3>
+                        <p style={{
+                          fontSize: '0.875rem',
+                          color: '#6b7280',
+                          margin: 0,
+                          fontFamily: 'Poppins, sans-serif'
+                        }}>Código: {comercio?.codigo}</p>
+                      </div>
+
+                      {/* QR Code */}
+                      <div style={{
+                        backgroundColor: '#f9fafb',
+                        borderRadius: '12px',
+                        padding: '24px',
+                        textAlign: 'center',
+                        marginBottom: '24px'
+                      }}>
+                        <img
+                          src={qrData.dataUrl}
+                          alt="QR Code"
+                          style={{
+                            width: '300px',
+                            height: '300px',
+                            margin: '0 auto'
+                          }}
+                        />
+                        <p style={{
+                          fontSize: '0.75rem',
+                          color: '#6b7280',
+                          marginTop: '12px',
+                          fontFamily: 'Poppins, sans-serif'
+                        }}>
+                          Escanea este código QR para visitar el comercio
+                        </p>
+                      </div>
+
+                      {/* Actions */}
+                      <div style={{
+                        display: 'flex',
+                        gap: '12px',
+                        justifyContent: 'center'
+                      }}>
+                        <button
+                          onClick={() => downloadQR('png', comercio!)}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            padding: '10px 20px',
+                            backgroundColor: '#3b82f6',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '8px',
+                            fontSize: '0.875rem',
+                            fontWeight: '500',
+                            fontFamily: 'Poppins, sans-serif',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s'
+                          }}
+                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#2563eb'}
+                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#3b82f6'}
+                        >
+                          <Download size={16} />
+                          Descargar PNG
+                        </button>
+                        <button
+                          onClick={() => downloadQR('svg', comercio!)}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            padding: '10px 20px',
+                            backgroundColor: 'white',
+                            color: '#374151',
+                            border: '1px solid #e5e7eb',
+                            borderRadius: '8px',
+                            fontSize: '0.875rem',
+                            fontWeight: '500',
+                            fontFamily: 'Poppins, sans-serif',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor = '#f9fafb'
+                            e.currentTarget.style.borderColor = '#d1d5db'
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = 'white'
+                            e.currentTarget.style.borderColor = '#e5e7eb'
+                          }}
+                        >
+                          <Download size={16} />
+                          Descargar SVG
+                        </button>
+                      </div>
+
+                      {/* Info */}
+                      <div style={{
+                        marginTop: '24px',
+                        padding: '16px',
+                        backgroundColor: '#eff6ff',
+                        borderRadius: '8px',
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        gap: '12px'
+                      }}>
+                        <Share2 size={20} style={{ color: '#3b82f6', flexShrink: 0, marginTop: '2px' }} />
+                        <div>
+                          <p style={{
+                            fontSize: '0.875rem',
+                            color: '#1e40af',
+                            margin: '0 0 4px 0',
+                            fontWeight: '500',
+                            fontFamily: 'Poppins, sans-serif'
+                          }}>
+                            Comparte este código QR
+                          </p>
+                          <p style={{
+                            fontSize: '0.813rem',
+                            color: '#3730a3',
+                            margin: 0,
+                            fontFamily: 'Poppins, sans-serif'
+                          }}>
+                            Puedes imprimir este código QR para colocarlo en tu establecimiento 
+                            o compartirlo en redes sociales para que más personas conozcan tu comercio.
+                          </p>
+                        </div>
+                      </div>
+                    </>
+                  )
+                })()}
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
       <style jsx>{`
         @keyframes spin {

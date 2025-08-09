@@ -106,9 +106,7 @@ export default function Home() {
           gap: '80px',
           alignItems: 'center'
         }}>
-          <div style={{
-            animation: 'slideInLeft 1s ease-out 0.2s both'
-          }}>
+          <div>
             <div style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -204,7 +202,6 @@ export default function Home() {
 
           {/* Grid de fotos del centro */}
           <div style={{
-            animation: 'slideInRight 1s ease-out 0.4s both',
             display: 'grid',
             gridTemplateColumns: 'repeat(2, 1fr)',
             gap: '16px',
@@ -939,64 +936,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Animaciones CSS */}
+      {/* Estilos CSS simplificados */}
       <style jsx>{`
-        @keyframes slideInLeft {
-          from {
-            opacity: 0;
-            transform: translateX(-50px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-        
-        @keyframes slideInRight {
-          from {
-            opacity: 0;
-            transform: translateX(50px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-        
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
-        @keyframes scaleIn {
-          from {
-            opacity: 0;
-            transform: scale(0.8);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1);
-          }
-        }
-        
-        /* Media queries para responsive */
         @media (max-width: 768px) {
           section > div > div[style*="gridTemplateColumns"] {
             grid-template-columns: 1fr !important;
-          }
-          
-          div[style*="gap: '80px'"] {
-            gap: 40px !important;
-          }
-          
-          div[style*="padding: '100px 20px'"] {
-            padding: 60px 20px !important;
           }
         }
       `}</style>

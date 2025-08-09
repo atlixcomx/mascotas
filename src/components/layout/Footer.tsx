@@ -29,26 +29,6 @@ export default function Footer() {
         position: 'relative',
         zIndex: 1
       }}>
-        {/* Logo del Centro arriba */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'center',
-          marginBottom: '40px'
-        }}>
-          <div style={{
-            width: '280px',
-            height: '280px'
-          }}>
-            <Image 
-              src="/centroB.png" 
-              alt="Centro de Adopción"
-              width={280}
-              height={280}
-              style={{ objectFit: 'contain' }}
-            />
-          </div>
-        </div>
-
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
@@ -250,8 +230,8 @@ export default function Footer() {
           }}>
             {/* Logo del Ayuntamiento */}
             <div style={{
-              width: '220px',
-              height: '220px',
+              width: '280px',
+              height: '280px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center'
@@ -259,8 +239,8 @@ export default function Footer() {
               <Image 
                 src="/ayuntamientoB.png" 
                 alt="H. Ayuntamiento de Atlixco"
-                width={220}
-                height={220}
+                width={280}
+                height={280}
                 style={{ objectFit: 'contain' }}
               />
             </div>

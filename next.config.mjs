@@ -63,61 +63,6 @@ const nextConfig = {
   generateBuildId: async () => {
     return 'build-' + Date.now()
   },
-  
-  // Configuración para excluir rutas del pre-renderizado
-  async rewrites() {
-    return {
-      beforeFiles: [
-        // Redirigir temporalmente páginas dinámicas a placeholder durante build
-        ...(process.env.BUILDING === 'true' ? [
-          {
-            source: '/admin/comercios/:id',
-            destination: '/temp-placeholder',
-          },
-          {
-            source: '/admin/expedientes/:id',
-            destination: '/temp-placeholder',
-          },
-          {
-            source: '/admin/expedientes/:id/consulta',
-            destination: '/temp-placeholder',
-          },
-          {
-            source: '/admin/perritos/:id',
-            destination: '/temp-placeholder',
-          },
-          {
-            source: '/admin/seguimientos/:id',
-            destination: '/temp-placeholder',
-          },
-          {
-            source: '/admin/seguimientos/:id/nuevo',
-            destination: '/temp-placeholder',
-          },
-          {
-            source: '/admin/solicitudes/:id',
-            destination: '/temp-placeholder',
-          },
-          {
-            source: '/catalogo/:slug',
-            destination: '/temp-placeholder',
-          },
-          {
-            source: '/comercios/:slug',
-            destination: '/temp-placeholder',
-          },
-          {
-            source: '/solicitud-adopcion/:slug',
-            destination: '/temp-placeholder',
-          },
-          {
-            source: '/solicitud/:perritoId',
-            destination: '/temp-placeholder',
-          },
-        ] : []),
-      ],
-    }
-  },
 }
 
 export default nextConfig

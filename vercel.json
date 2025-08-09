@@ -7,8 +7,7 @@
       "NEXT_PRIVATE_STANDALONE": "true",
       "NEXT_PRIVATE_MINIMAL_MODE": "1",
       "NEXT_TELEMETRY_DISABLED": "1",
-      "SKIP_BUILD_STATIC_GENERATION": "1",
-      "BUILDING": "true"
+      "SKIP_BUILD_STATIC_GENERATION": "1"
     }
   },
   "buildCommand": "npm run build",

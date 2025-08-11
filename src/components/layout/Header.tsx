@@ -316,7 +316,23 @@ export default function Header() {
               transition: 'background-color 0.2s'
             }}
           >
-            <HandshakeIcon size={18} color="#1a1a1a" /> Comercios Pet Friendly
+            <HandshakeIcon size={18} color="#1a1a1a" /> Catálogo de Comercios
+          </a>
+          <a
+            href="/noticias"
+            onClick={closeMobileMenu}
+            style={{
+              display: 'block',
+              padding: '16px 20px',
+              color: '#1a1a1a',
+              textDecoration: 'none',
+              fontWeight: '500',
+              fontSize: '16px',
+              borderBottom: '1px solid #f3f4f6',
+              transition: 'background-color 0.2s'
+            }}
+          >
+            Noticias y Eventos
           </a>
           <a
             href="/contacto"

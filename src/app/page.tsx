@@ -22,13 +22,6 @@ interface Perrito {
 export default function Home() {
   const [perritosRecientes, setPerritosRecientes] = useState<Perrito[]>([])
   const [loading, setLoading] = useState(true)
-  const [currentImageIndex, setCurrentImageIndex] = useState(0)
-  
-  const backgroundImages = [
-    '/images/centro/foto0.jpeg',
-    '/images/centro/foto1.jpeg',
-    '/images/centro/Foto2.jpeg'
-  ]
 
   useEffect(() => {
     fetch('/api/perritos?limit=3&orderBy=createdAt&order=desc')
@@ -41,16 +34,6 @@ export default function Home() {
       })
       .catch(() => setLoading(false))
   }, [])
-  
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prevIndex) => 
-        prevIndex === backgroundImages.length - 1 ? 0 : prevIndex + 1
-      )
-    }, 5000) // Cambiar imagen cada 5 segundos
-    
-    return () => clearInterval(interval)
-  }, [backgroundImages.length])
 
   return (
     <div>
@@ -63,25 +46,20 @@ export default function Home() {
         position: 'relative',
         overflow: 'hidden'
       }}>
-        {/* Imágenes de fondo */}
-        {backgroundImages.map((image, index) => (
-          <div
-            key={image}
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              backgroundImage: `url(${image})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              opacity: currentImageIndex === index ? 1 : 0,
-              transition: 'opacity 1.5s ease-in-out',
-              zIndex: 0
-            }}
-          />
-        ))}
+        {/* Imagen de fondo fija */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundImage: 'url(/images/centro/foto1.jpeg)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            zIndex: 0
+          }}
+        />
         
         {/* Overlay oscuro */}
         <div style={{

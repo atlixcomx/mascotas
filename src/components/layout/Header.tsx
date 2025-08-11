@@ -99,6 +99,18 @@ export default function Header() {
             alignItems: 'center',
             gap: '20px'
           }}>
+            <a href="/" style={{
+              color: '#0e312d',
+              textDecoration: 'none',
+              fontSize: '15px',
+              fontWeight: '600',
+              padding: '8px 16px',
+              borderRadius: '6px',
+              transition: 'all 0.3s',
+              border: '2px solid transparent'
+            }}>
+              Inicio
+            </a>
             <a href="/programa-adopcion" style={{
               color: '#0e312d',
               textDecoration: 'none',
@@ -109,7 +121,7 @@ export default function Header() {
               transition: 'all 0.3s',
               border: '2px solid transparent'
             }}>
-              Programa Adopción
+              Cómo Adoptar
             </a>
             <a href="/comercios-friendly" style={{
               color: '#0e312d',
@@ -122,6 +134,18 @@ export default function Header() {
               border: '2px solid transparent'
             }}>
               Comercios Pet Friendly
+            </a>
+            <a href="/contacto" style={{
+              color: '#0e312d',
+              textDecoration: 'none',
+              fontSize: '15px',
+              fontWeight: '600',
+              padding: '8px 16px',
+              borderRadius: '6px',
+              transition: 'all 0.3s',
+              border: '2px solid transparent'
+            }}>
+              Contacto
             </a>
             <a href="/catalogo" style={{
               backgroundColor: '#0e312d',
@@ -276,7 +300,7 @@ export default function Header() {
               transition: 'background-color 0.2s'
             }}
           >
-            <FormIcon size={18} color="#1a1a1a" /> Programa Adopción
+            <FormIcon size={18} color="#1a1a1a" /> Cómo Adoptar
           </a>
           <a
             href="/comercios-friendly"
@@ -293,6 +317,22 @@ export default function Header() {
             }}
           >
             <HandshakeIcon size={18} color="#1a1a1a" /> Comercios Pet Friendly
+          </a>
+          <a
+            href="/contacto"
+            onClick={closeMobileMenu}
+            style={{
+              display: 'block',
+              padding: '16px 20px',
+              color: '#1a1a1a',
+              textDecoration: 'none',
+              fontWeight: '500',
+              fontSize: '16px',
+              borderBottom: '1px solid #f3f4f6',
+              transition: 'background-color 0.2s'
+            }}
+          >
+            Contacto
           </a>
           <a
             href="/catalogo"
@@ -312,7 +352,7 @@ export default function Header() {
               boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
             }}
           >
-            <DogIcon size={18} color="white" /> Ver Catálogo
+            <DogIcon size={18} color="white" /> Ver Catálogo de Perritos
           </a>
         </nav>
       </div>

@@ -605,89 +605,48 @@ export default function Home() {
           
           <div style={{
             backgroundColor: '#f0fdf4',
-            padding: '32px',
+            padding: '40px',
             borderRadius: '16px',
             marginTop: '40px',
-            border: '1px solid #bbf7d0'
+            border: '1px solid #bbf7d0',
+            textAlign: 'center'
           }}>
+            <Store size={48} style={{ color: '#16a34a', marginBottom: '16px' }} />
             <h3 style={{
-              fontSize: '20px',
+              fontSize: '24px',
               fontWeight: '700',
               color: '#0e312d',
-              marginBottom: '24px',
-              textAlign: 'center'
+              marginBottom: '16px'
             }}>
-              Únete a la red oficial de comercios inclusivos del Municipio de Atlixco
+              Explora la Red de Comercios Pet Friendly
             </h3>
-            
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-              gap: '20px'
+            <p style={{
+              fontSize: '18px',
+              color: '#666',
+              marginBottom: '24px',
+              lineHeight: '1.6',
+              maxWidth: '600px',
+              margin: '0 auto 24px'
             }}>
-              <div style={{
-                backgroundColor: 'white',
-                padding: '24px',
-                borderRadius: '12px',
-                textAlign: 'center',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
-              }}>
-                <Store size={32} style={{ color: '#16a34a', marginBottom: '12px' }} />
-                <h4 style={{ fontSize: '16px', fontWeight: '600', color: '#0e312d', marginBottom: '12px' }}>
-                  Para el Público
-                </h4>
-                <p style={{ fontSize: '14px', color: '#666', marginBottom: '16px', lineHeight: '1.5' }}>
-                  Descubre lugares pet friendly certificados
-                </p>
-                <Link href="/comercios-friendly" style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  backgroundColor: '#16a34a',
-                  color: 'white',
-                  padding: '12px 24px',
-                  borderRadius: '8px',
-                  textDecoration: 'none',
-                  fontSize: '15px',
-                  fontWeight: '600',
-                  transition: 'all 0.3s ease'
-                }}>
-                  Ver Comercios <ChevronRight size={18} />
-                </Link>
-              </div>
-              
-              <div style={{
-                backgroundColor: 'white',
-                padding: '24px',
-                borderRadius: '12px',
-                textAlign: 'center',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
-              }}>
-                <CheckCircle size={32} style={{ color: '#16a34a', marginBottom: '12px' }} />
-                <h4 style={{ fontSize: '16px', fontWeight: '600', color: '#0e312d', marginBottom: '12px' }}>
-                  Para Comerciantes
-                </h4>
-                <p style={{ fontSize: '14px', color: '#666', marginBottom: '16px', lineHeight: '1.5' }}>
-                  Certifica tu negocio como pet friendly
-                </p>
-                <Link href="/comercios-friendly#certificar" style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  backgroundColor: 'transparent',
-                  color: '#16a34a',
-                  padding: '12px 24px',
-                  borderRadius: '8px',
-                  textDecoration: 'none',
-                  fontSize: '15px',
-                  fontWeight: '600',
-                  border: '2px solid #16a34a',
-                  transition: 'all 0.3s ease'
-                }}>
-                  Certificar Negocio <ChevronRight size={18} />
-                </Link>
-              </div>
-            </div>
+              Descubre todos los lugares certificados donde tú y tu mascota serán bienvenidos. 
+              Restaurantes, cafeterías, hoteles y más espacios inclusivos en Atlixco.
+            </p>
+            <Link href="/comercios-friendly" style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              backgroundColor: '#16a34a',
+              color: 'white',
+              padding: '16px 32px',
+              borderRadius: '12px',
+              textDecoration: 'none',
+              fontSize: '17px',
+              fontWeight: '600',
+              transition: 'all 0.3s ease',
+              boxShadow: '0 4px 14px rgba(22, 163, 74, 0.3)'
+            }}>
+              Ver Todos los Comercios Certificados <ChevronRight size={20} />
+            </Link>
           </div>
         </div>
       </section>

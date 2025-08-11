@@ -103,11 +103,11 @@ export default function Header() {
           <nav className="desktop-nav" style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '16px',
+            gap: '24px',
             flexWrap: 'nowrap',
             flex: '1 1 auto',
-            justifyContent: 'flex-end',
-            marginLeft: '32px'
+            justifyContent: 'center',
+            marginLeft: '20px'
           }}>
             <a href="/" style={{
               color: '#0e312d',

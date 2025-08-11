@@ -466,23 +466,6 @@ export default function Home() {
             }
           `}</style>
           
-          <div style={{ textAlign: 'center' }}>
-            <Link href="/catalogo" style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              backgroundColor: '#0e312d',
-              color: 'white',
-              padding: '16px 32px',
-              borderRadius: '12px',
-              textDecoration: 'none',
-              fontSize: '17px',
-              fontWeight: '600',
-              transition: 'all 0.3s ease'
-            }}>
-              Ver Catálogo Completo de Perritos <ChevronRight size={20} />
-            </Link>
-          </div>
         </div>
       </section>
 
@@ -528,7 +511,7 @@ export default function Home() {
             }}>
               <Coffee size={48} style={{ color: '#ea580c', marginBottom: '16px' }} />
               <h3 style={{ fontSize: '20px', fontWeight: '700', color: '#0e312d', marginBottom: '12px' }}>
-                CAFETERÍAS Y RESTAURANTES
+                Cafeterías y restaurantes
               </h3>
               <p style={{ color: '#666', fontSize: '14px' }}>
                 Café Central, Restaurante Luna, Bistró del Parque
@@ -543,7 +526,7 @@ export default function Home() {
             }}>
               <Hotel size={48} style={{ color: '#0891b2', marginBottom: '16px' }} />
               <h3 style={{ fontSize: '20px', fontWeight: '700', color: '#0e312d', marginBottom: '12px' }}>
-                HOTELES Y HOSPEDAJE
+                Hoteles y hospedaje
               </h3>
               <p style={{ color: '#666', fontSize: '14px' }}>
                 Hotel Colonial, Posada Familiar, Casa de Huéspedes Villa
@@ -558,7 +541,7 @@ export default function Home() {
             }}>
               <ShoppingBag size={48} style={{ color: '#9333ea', marginBottom: '16px' }} />
               <h3 style={{ fontSize: '20px', fontWeight: '700', color: '#0e312d', marginBottom: '12px' }}>
-                TIENDAS Y SERVICIOS
+                Tiendas y servicios
               </h3>
               <p style={{ color: '#666', fontSize: '14px' }}>
                 Pet Store Atlixco, Veterinaria San José, Farmacia del Centro
@@ -573,7 +556,7 @@ export default function Home() {
             }}>
               <Trees size={48} style={{ color: '#16a34a', marginBottom: '16px' }} />
               <h3 style={{ fontSize: '20px', fontWeight: '700', color: '#0e312d', marginBottom: '12px' }}>
-                ESPACIOS RECREATIVOS
+                Espacios recreativos
               </h3>
               <p style={{ color: '#666', fontSize: '14px' }}>
                 Parque Central, Plaza de Armas, Sendero Ecoturístico

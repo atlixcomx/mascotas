@@ -136,7 +136,7 @@ export default function Home() {
             justifyContent: 'center',
             flexWrap: 'wrap'
           }}>
-            <Link href="/catalogo" style={{
+            <Link href="/comercios-friendly" style={{
               backgroundColor: '#bfb591',
               color: '#0e312d',
               padding: '16px 32px',
@@ -150,9 +150,9 @@ export default function Home() {
               boxShadow: '0 4px 14px rgba(191, 181, 145, 0.3)',
               transition: 'all 0.3s ease'
             }}>
-              <Dog size={20} /> Ver Catálogo de Perritos en Adopción
+              <Store size={20} /> Ver Catálogo de Comercios Pet Friendly
             </Link>
-            <Link href="/comercios-friendly" style={{
+            <Link href="/noticias" style={{
               backgroundColor: 'transparent',
               color: 'white',
               padding: '16px 32px',
@@ -166,7 +166,7 @@ export default function Home() {
               border: '2px solid rgba(255,255,255,0.3)',
               transition: 'all 0.3s ease'
             }}>
-              <Store size={20} /> Ver Catálogo de Comercios Pet Friendly
+              <Dog size={20} /> Ver Noticias y Eventos
             </Link>
           </div>
         </div>

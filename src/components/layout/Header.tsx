@@ -135,18 +135,6 @@ export default function Header() {
             }}>
               Catálogo de Comercios
             </a>
-            <a href="/contacto" style={{
-              color: '#0e312d',
-              textDecoration: 'none',
-              fontSize: '15px',
-              fontWeight: '600',
-              padding: '8px 16px',
-              borderRadius: '6px',
-              transition: 'all 0.3s',
-              border: '2px solid transparent'
-            }}>
-              Contacto
-            </a>
             <a href="/catalogo" style={{
               backgroundColor: '#0e312d',
               color: 'white',
@@ -333,22 +321,6 @@ export default function Header() {
             }}
           >
             Noticias y Eventos
-          </a>
-          <a
-            href="/contacto"
-            onClick={closeMobileMenu}
-            style={{
-              display: 'block',
-              padding: '16px 20px',
-              color: '#1a1a1a',
-              textDecoration: 'none',
-              fontWeight: '500',
-              fontSize: '16px',
-              borderBottom: '1px solid #f3f4f6',
-              transition: 'background-color 0.2s'
-            }}
-          >
-            Contacto
           </a>
           <a
             href="/catalogo"

@@ -61,24 +61,26 @@ export default function Header() {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          minHeight: '80px'
+          minHeight: '80px',
+          position: 'relative'
         }}>
           {/* Logo y título */}
           <a href="/" style={{
             display: 'flex',
             alignItems: 'center',
             gap: '16px',
-            flex: 1,
+            flex: '0 0 auto',
             textDecoration: 'none',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            minWidth: 'fit-content'
           }}>
             <div style={{
-              width: 'clamp(60px, 15vw, 207px)',
-              height: 'clamp(60px, 15vw, 207px)',
+              width: 'clamp(80px, 20vw, 207px)',
+              height: 'clamp(80px, 20vw, 207px)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              minWidth: 'clamp(60px, 15vw, 207px)',
+              minWidth: 'clamp(80px, 20vw, 207px)',
               position: 'relative',
               transition: 'transform 0.2s ease',
               margin: 'clamp(10px, 5vw, 40px) 0'
@@ -101,7 +103,11 @@ export default function Header() {
           <nav className="desktop-nav" style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '20px'
+            gap: '16px',
+            flexWrap: 'nowrap',
+            flex: '1 1 auto',
+            justifyContent: 'flex-end',
+            marginLeft: '32px'
           }}>
             <a href="/" style={{
               color: '#0e312d',
@@ -126,6 +132,18 @@ export default function Header() {
               border: '2px solid transparent'
             }}>
               Cómo Adoptar
+            </a>
+            <a href="/noticias" style={{
+              color: '#0e312d',
+              textDecoration: 'none',
+              fontSize: '15px',
+              fontWeight: '600',
+              padding: '8px 16px',
+              borderRadius: '6px',
+              transition: 'all 0.3s',
+              border: '2px solid transparent'
+            }}>
+              Noticias y Eventos
             </a>
             <a href="/comercios-friendly" style={{
               color: '#0e312d',
@@ -350,7 +368,17 @@ export default function Header() {
       </div>
 
       <style jsx>{`
-        @media (max-width: 768px) {
+        @media (min-width: 1025px) {
+          .desktop-nav {
+            display: flex !important;
+          }
+          
+          .mobile-menu-button {
+            display: none !important;
+          }
+        }
+        
+        @media (max-width: 1024px) {
           .desktop-nav {
             display: none !important;
           }
@@ -358,7 +386,9 @@ export default function Header() {
           .mobile-menu-button {
             display: flex !important;
           }
-          
+        }
+        
+        @media (max-width: 768px) {
           .header-title h1 {
             font-size: 16px !important;
           }
@@ -393,6 +423,13 @@ export default function Header() {
         .desktop-nav a:hover {
           background-color: #f3f4f6 !important;
           border-color: #0e312d !important;
+          transform: translateY(-1px) !important;
+        }
+        
+        .desktop-nav a[href="/catalogo"]:hover {
+          background-color: #1a4a45 !important;
+          transform: translateY(-1px) !important;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
         }
       `}</style>
     </header>

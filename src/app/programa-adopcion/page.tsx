@@ -70,7 +70,7 @@ export default function ProgramaAdopcion() {
         overflow: 'hidden',
         display: 'flex',
         alignItems: 'center',
-        padding: '80px 20px'
+        padding: 'clamp(40px, 10vw, 80px) 20px'
       }}>
         {/* Elementos decorativos del escudo - Popocatépetl */}
         <div style={{
@@ -220,7 +220,7 @@ export default function ProgramaAdopcion() {
       {/* Sección Numeralia */}
       <section style={{
         backgroundColor: '#f8f9fa',
-        padding: '80px 20px',
+        padding: 'clamp(40px, 10vw, 80px) 20px',
         position: 'relative'
       }}>
         <div style={{
@@ -283,7 +283,7 @@ export default function ProgramaAdopcion() {
       {/* Proceso de Adopción */}
       <section id="adoptar" style={{
         backgroundColor: 'white',
-        padding: '80px 20px'
+        padding: 'clamp(40px, 10vw, 80px) 20px'
       }}>
         <div style={{
           maxWidth: '1200px',
@@ -313,14 +313,8 @@ export default function ProgramaAdopcion() {
 
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(4, 1fr)',
-            gap: '24px',
-            '@media (max-width: 1200px)': {
-              gridTemplateColumns: 'repeat(2, 1fr)'
-            },
-            '@media (max-width: 768px)': {
-              gridTemplateColumns: '1fr'
-            }
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: 'clamp(16px, 4vw, 32px)'
           }}>
             {[
               {
@@ -402,7 +396,7 @@ export default function ProgramaAdopcion() {
       {/* Proceso de Cuidado Veterinario */}
       <section id="proceso-veterinario" style={{
         backgroundColor: '#f8f9fa',
-        padding: '80px 20px',
+        padding: 'clamp(40px, 10vw, 80px) 20px',
         position: 'relative'
       }}>
         <div style={{
@@ -435,11 +429,11 @@ export default function ProgramaAdopcion() {
           <div style={{
             background: 'white',
             borderRadius: '24px',
-            padding: '48px',
+            padding: 'clamp(24px, 6vw, 48px)',
             boxShadow: '0 10px 40px rgba(0,0,0,0.05)',
             display: 'grid',
-            gridTemplateColumns: 'repeat(2, 1fr)',
-            gap: '32px'
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(300px, 100%), 1fr))',
+            gap: 'clamp(16px, 4vw, 32px)'
           }}>
             {[
               {
@@ -555,7 +549,7 @@ export default function ProgramaAdopcion() {
       {/* Nuestro Compromiso Contigo */}
       <section id="proceso" style={{
         backgroundColor: 'white',
-        padding: '80px 20px'
+        padding: 'clamp(40px, 10vw, 80px) 20px'
       }}>
         <div style={{
           maxWidth: '1200px',
@@ -634,7 +628,7 @@ export default function ProgramaAdopcion() {
       {/* Call to Action - Sé Parte del Cambio */}
       <section id="voluntariado" style={{
         background: 'linear-gradient(135deg, #0e312d 0%, #1a4a45 100%)',
-        padding: '80px 20px',
+        padding: 'clamp(40px, 10vw, 80px) 20px',
         position: 'relative',
         overflow: 'hidden'
       }}>
@@ -734,7 +728,7 @@ export default function ProgramaAdopcion() {
       {/* Sección de Contacto */}
       <section id="contacto" style={{
         backgroundColor: '#f8f9fa',
-        padding: '80px 20px'
+        padding: 'clamp(40px, 10vw, 80px) 20px'
       }}>
         <div style={{
           maxWidth: '800px',

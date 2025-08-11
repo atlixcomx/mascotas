@@ -1,4 +1,7 @@
+'use client'
+
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import { 
   Heart, Dog, Building2, Search, FileText, Home as HomeIcon, 
   HeartHandshake, Shield, Stethoscope, Star, Users, Phone,
@@ -6,7 +9,31 @@ import {
   Coffee, Hotel, ShoppingBag, Trees
 } from 'lucide-react'
 
+interface Perrito {
+  id: string
+  nombre: string
+  slug: string
+  fotoPrincipal: string
+  edad: string
+  sexo: string
+  raza: string
+}
+
 export default function Home() {
+  const [perritosRecientes, setPerritosRecientes] = useState<Perrito[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetch('/api/perritos?limit=3&orderBy=createdAt&order=desc')
+      .then(res => res.json())
+      .then(data => {
+        if (data.perritos) {
+          setPerritosRecientes(data.perritos)
+        }
+        setLoading(false)
+      })
+      .catch(() => setLoading(false))
+  }, [])
 
   return (
     <div>
@@ -184,8 +211,8 @@ export default function Home() {
           
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: '32px'
+            gridTemplateColumns: 'repeat(4, 1fr)',
+            gap: '24px'
           }}>
             <div style={{
               backgroundColor: 'white',
@@ -258,143 +285,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Tu Camino Hacia una Nueva Amistad */}
-      <section style={{
-        backgroundColor: 'white',
-        padding: '100px 20px'
-      }}>
-        <div style={{
-          maxWidth: '1200px',
-          margin: '0 auto'
-        }}>
-          <h2 style={{
-            fontSize: 'clamp(32px, 4vw, 48px)',
-            fontWeight: '800',
-            color: '#0e312d',
-            marginBottom: '16px',
-            textAlign: 'center'
-          }}>
-            Tu Camino Hacia una Nueva Amistad
-          </h2>
-          <p style={{
-            fontSize: '24px',
-            color: '#666',
-            textAlign: 'center',
-            marginBottom: '60px',
-            fontWeight: '300'
-          }}>
-            Proceso de Adopción Municipal Certificado
-          </p>
-          
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-            gap: '40px'
-          }}>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{
-                width: '80px',
-                height: '80px',
-                backgroundColor: '#f0f9ff',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                margin: '0 auto 20px'
-              }}>
-                <Search size={40} style={{ color: '#0891b2' }} />
-              </div>
-              <h3 style={{ fontSize: '24px', fontWeight: '700', color: '#0e312d', marginBottom: '12px' }}>
-                🔍 EXPLORA
-              </h3>
-              <h4 style={{ fontSize: '18px', fontWeight: '600', color: '#0891b2', marginBottom: '12px' }}>
-                Navega nuestro catálogo oficial
-              </h4>
-              <p style={{ color: '#666', lineHeight: '1.6' }}>
-                Utiliza nuestros filtros inteligentes para encontrar al compañero 
-                perfecto según tu estilo de vida y preferencias.
-              </p>
-            </div>
-            
-            <div style={{ textAlign: 'center' }}>
-              <div style={{
-                width: '80px',
-                height: '80px',
-                backgroundColor: '#f0fdf4',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                margin: '0 auto 20px'
-              }}>
-                <FileText size={40} style={{ color: '#16a34a' }} />
-              </div>
-              <h3 style={{ fontSize: '24px', fontWeight: '700', color: '#0e312d', marginBottom: '12px' }}>
-                📋 SOLICITA
-              </h3>
-              <h4 style={{ fontSize: '18px', fontWeight: '600', color: '#16a34a', marginBottom: '12px' }}>
-                Inicia tu proceso de adopción
-              </h4>
-              <p style={{ color: '#666', lineHeight: '1.6' }}>
-                Completa la solicitud municipal. Nuestro equipo te acompañará 
-                para garantizar el match perfecto entre mascota y familia.
-              </p>
-            </div>
-            
-            <div style={{ textAlign: 'center' }}>
-              <div style={{
-                width: '80px',
-                height: '80px',
-                backgroundColor: '#fef3c7',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                margin: '0 auto 20px'
-              }}>
-                <HomeIcon size={40} style={{ color: '#f59e0b' }} />
-              </div>
-              <h3 style={{ fontSize: '24px', fontWeight: '700', color: '#0e312d', marginBottom: '12px' }}>
-                🏠 VISITA
-              </h3>
-              <h4 style={{ fontSize: '18px', fontWeight: '600', color: '#f59e0b', marginBottom: '12px' }}>
-                Conoce a tu elegido en persona
-              </h4>
-              <p style={{ color: '#666', lineHeight: '1.6' }}>
-                Ven a nuestras instalaciones municipales y crea el primer 
-                vínculo con tu futuro compañero de vida.
-              </p>
-            </div>
-            
-            <div style={{ textAlign: 'center' }}>
-              <div style={{
-                width: '80px',
-                height: '80px',
-                backgroundColor: '#fee2e2',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                margin: '0 auto 20px'
-              }}>
-                <Heart size={40} style={{ color: '#dc2626' }} />
-              </div>
-              <h3 style={{ fontSize: '24px', fontWeight: '700', color: '#0e312d', marginBottom: '12px' }}>
-                ❤️ ADOPTA
-              </h3>
-              <h4 style={{ fontSize: '18px', fontWeight: '600', color: '#dc2626', marginBottom: '12px' }}>
-                Llévalo a casa con apoyo continuo
-              </h4>
-              <p style={{ color: '#666', lineHeight: '1.6' }}>
-                Recibe seguimiento post-adopción y apoyo veterinario 
-                del programa municipal.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Algunos de Nuestros Cachorros */}
+      {/* Programa de Rescate Animal */}
       <section style={{
         backgroundColor: '#f8f9fa',
         padding: '100px 20px'
@@ -410,81 +302,167 @@ export default function Home() {
             marginBottom: '16px',
             textAlign: 'center'
           }}>
-            Algunos de Nuestros Cachorros en Adopción
+            Programa de Rescate Animal
           </h2>
           <p style={{
-            fontSize: '24px',
+            fontSize: '20px',
             color: '#666',
             textAlign: 'center',
             marginBottom: '60px',
-            fontWeight: '300'
+            lineHeight: '1.8',
+            maxWidth: '800px',
+            margin: '0 auto 60px'
           }}>
-            Listos para encontrar su hogar para siempre
+            Rescatamos perritos en situación de calle para brindarles atención veterinaria integral, 
+            rehabilitación conductual y prepararlos para una adopción responsable. Cada rescate recibe 
+            vacunación completa, esterilización y tratamientos médicos necesarios, garantizando que 
+            estén listos para integrarse a una nueva familia.
           </p>
           
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
             gap: '32px',
             marginBottom: '40px'
           }}>
-            {[
-              { nombre: 'LUNA', desc: 'Cariñosa y juguetona, ideal para familias con niños', edad: 'Hembra, 2 años' },
-              { nombre: 'MAX', desc: 'Energético y leal, perfecto para personas activas', edad: 'Macho, 1 año' },
-              { nombre: 'BELLA', desc: 'Tranquila y protectora, excelente para departamentos', edad: 'Hembra, 3 años' },
-              { nombre: 'ROCKY', desc: 'Cachorro sociable, se adapta fácilmente a nuevos entornos', edad: 'Macho, 6 meses' },
-              { nombre: 'COCO', desc: 'Madura y calmada, ideal para adultos mayores', edad: 'Hembra, 4 años' },
-              { nombre: 'ZEUS', desc: 'Guardián natural, perfecto para casas con patio', edad: 'Macho, 2 años' }
-            ].map((perro, idx) => (
-              <div key={idx} style={{
-                backgroundColor: 'white',
-                borderRadius: '16px',
-                overflow: 'hidden',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-                transition: 'all 0.3s ease'
-              }}>
-                <div style={{
-                  height: '200px',
-                  backgroundColor: '#e5e7eb',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '48px'
+            {loading ? (
+              // Mostrar placeholders mientras carga
+              [1, 2, 3].map((idx) => (
+                <div key={idx} style={{
+                  backgroundColor: 'white',
+                  borderRadius: '16px',
+                  overflow: 'hidden',
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
                 }}>
-                  🐕
+                  <div style={{
+                    height: '250px',
+                    backgroundColor: '#e5e7eb',
+                    animation: 'pulse 1.5s ease-in-out infinite'
+                  }} />
+                  <div style={{ padding: '24px' }}>
+                    <div style={{
+                      height: '24px',
+                      backgroundColor: '#e5e7eb',
+                      borderRadius: '4px',
+                      marginBottom: '12px',
+                      width: '60%'
+                    }} />
+                    <div style={{
+                      height: '16px',
+                      backgroundColor: '#f3f4f6',
+                      borderRadius: '4px',
+                      marginBottom: '8px',
+                      width: '40%'
+                    }} />
+                    <div style={{
+                      height: '16px',
+                      backgroundColor: '#f3f4f6',
+                      borderRadius: '4px',
+                      width: '80%'
+                    }} />
+                  </div>
                 </div>
-                <div style={{ padding: '24px' }}>
-                  <h3 style={{
-                    fontSize: '24px',
-                    fontWeight: '700',
-                    color: '#0e312d',
-                    marginBottom: '8px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px'
+              ))
+            ) : perritosRecientes.length > 0 ? (
+              // Mostrar perritos reales
+              perritosRecientes.map((perro) => (
+                <Link 
+                  key={perro.id}
+                  href={`/catalogo/${perro.slug}`}
+                  style={{
+                    textDecoration: 'none',
+                    color: 'inherit',
+                    display: 'block'
+                  }}
+                >
+                  <div style={{
+                    backgroundColor: 'white',
+                    borderRadius: '16px',
+                    overflow: 'hidden',
+                    boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+                    transition: 'all 0.3s ease',
+                    cursor: 'pointer',
+                    height: '100%'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-4px)'
+                    e.currentTarget.style.boxShadow = '0 8px 30px rgba(0,0,0,0.12)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)'
+                    e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.08)'
                   }}>
-                    <Dog size={20} /> {perro.nombre}
-                  </h3>
-                  <p style={{ fontSize: '14px', color: '#666', marginBottom: '12px', fontStyle: 'italic' }}>
-                    {perro.edad}
-                  </p>
-                  <p style={{ color: '#666', lineHeight: '1.6' }}>
-                    {perro.desc}
-                  </p>
-                </div>
+                    <div style={{
+                      height: '250px',
+                      backgroundColor: '#e5e7eb',
+                      position: 'relative',
+                      overflow: 'hidden'
+                    }}>
+                      {perro.fotoPrincipal && (
+                        <img 
+                          src={perro.fotoPrincipal} 
+                          alt={perro.nombre}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover'
+                          }}
+                        />
+                      )}
+                    </div>
+                    <div style={{ padding: '24px' }}>
+                      <h3 style={{
+                        fontSize: '24px',
+                        fontWeight: '700',
+                        color: '#0e312d',
+                        marginBottom: '8px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px'
+                      }}>
+                        <Dog size={20} /> {perro.nombre}
+                      </h3>
+                      <p style={{ fontSize: '14px', color: '#666', marginBottom: '12px' }}>
+                        {perro.sexo} • {perro.edad}
+                      </p>
+                      <p style={{ color: '#666', lineHeight: '1.6', fontSize: '14px' }}>
+                        {perro.raza}
+                      </p>
+                      <p style={{
+                        color: '#16a34a',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        marginTop: '12px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px'
+                      }}>
+                        Ver más información <ChevronRight size={16} />
+                      </p>
+                    </div>
+                  </div>
+                </Link>
+              ))
+            ) : (
+              // Mostrar mensaje si no hay perritos
+              <div style={{
+                gridColumn: '1 / -1',
+                textAlign: 'center',
+                padding: '40px',
+                color: '#666'
+              }}>
+                <Dog size={48} style={{ marginBottom: '16px', opacity: 0.5 }} />
+                <p>No hay perritos disponibles en este momento</p>
               </div>
-            ))}
+            )}
           </div>
           
-          <p style={{
-            textAlign: 'center',
-            fontSize: '16px',
-            color: '#666',
-            marginBottom: '32px',
-            fontStyle: 'italic'
-          }}>
-            Todos vacunados, esterilizados y con certificación veterinaria municipal
-          </p>
+          <style jsx>{`
+            @keyframes pulse {
+              0%, 100% { opacity: 1; }
+              50% { opacity: 0.8; }
+            }
+          `}</style>
           
           <div style={{ textAlign: 'center' }}>
             <Link href="/catalogo" style={{
@@ -548,7 +526,7 @@ export default function Home() {
             }}>
               <Coffee size={48} style={{ color: '#ea580c', marginBottom: '16px' }} />
               <h3 style={{ fontSize: '20px', fontWeight: '700', color: '#0e312d', marginBottom: '12px' }}>
-                🏪 CAFETERÍAS Y RESTAURANTES
+                CAFETERÍAS Y RESTAURANTES
               </h3>
               <p style={{ color: '#666', fontSize: '14px' }}>
                 Café Central, Restaurante Luna, Bistró del Parque
@@ -563,7 +541,7 @@ export default function Home() {
             }}>
               <Hotel size={48} style={{ color: '#0891b2', marginBottom: '16px' }} />
               <h3 style={{ fontSize: '20px', fontWeight: '700', color: '#0e312d', marginBottom: '12px' }}>
-                🏨 HOTELES Y HOSPEDAJE
+                HOTELES Y HOSPEDAJE
               </h3>
               <p style={{ color: '#666', fontSize: '14px' }}>
                 Hotel Colonial, Posada Familiar, Casa de Huéspedes Villa
@@ -578,7 +556,7 @@ export default function Home() {
             }}>
               <ShoppingBag size={48} style={{ color: '#9333ea', marginBottom: '16px' }} />
               <h3 style={{ fontSize: '20px', fontWeight: '700', color: '#0e312d', marginBottom: '12px' }}>
-                🛍️ TIENDAS Y SERVICIOS
+                TIENDAS Y SERVICIOS
               </h3>
               <p style={{ color: '#666', fontSize: '14px' }}>
                 Pet Store Atlixco, Veterinaria San José, Farmacia del Centro
@@ -593,7 +571,7 @@ export default function Home() {
             }}>
               <Trees size={48} style={{ color: '#16a34a', marginBottom: '16px' }} />
               <h3 style={{ fontSize: '20px', fontWeight: '700', color: '#0e312d', marginBottom: '12px' }}>
-                🌳 ESPACIOS RECREATIVOS
+                ESPACIOS RECREATIVOS
               </h3>
               <p style={{ color: '#666', fontSize: '14px' }}>
                 Parque Central, Plaza de Armas, Sendero Ecoturístico
@@ -657,111 +635,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Protocolo Veterinario */}
-      <section style={{
-        backgroundColor: '#f8f9fa',
-        padding: '100px 20px'
-      }}>
-        <div style={{
-          maxWidth: '1200px',
-          margin: '0 auto'
-        }}>
-          <h2 style={{
-            fontSize: 'clamp(32px, 4vw, 48px)',
-            fontWeight: '800',
-            color: '#0e312d',
-            marginBottom: '16px',
-            textAlign: 'center'
-          }}>
-            Protocolo Veterinario Municipal Certificado
-          </h2>
-          <p style={{
-            fontSize: '24px',
-            color: '#666',
-            textAlign: 'center',
-            marginBottom: '60px',
-            fontWeight: '300'
-          }}>
-            Cada Rescate es una Promesa de Vida Digna
-          </p>
-          
-          <p style={{
-            fontSize: '18px',
-            color: '#666',
-            lineHeight: '1.8',
-            marginBottom: '40px',
-            textAlign: 'center',
-            maxWidth: '800px',
-            margin: '0 auto 40px'
-          }}>
-            Nuestro compromiso gubernamental incluye un protocolo veterinario integral ejecutado 
-            por profesionales de planta, garantizando que cada animal reciba la atención médica necesaria:
-          </p>
-          
-          <div style={{
-            display: 'grid',
-            gap: '24px',
-            maxWidth: '800px',
-            margin: '0 auto 40px'
-          }}>
-            {[
-              { num: '1', title: 'RECEPCIÓN Y EVALUACIÓN', desc: 'Evaluación veterinaria completa y plan de atención personalizado' },
-              { num: '2', title: 'PROTOCOLO DE VACUNACIÓN', desc: 'Esquema completo: séxtuple y antirrábica, más desparasitación integral' },
-              { num: '3', title: 'ESTERILIZACIÓN RESPONSABLE', desc: 'Control poblacional y mejora en calidad de vida' },
-              { num: '4', title: 'TRATAMIENTOS ESPECIALIZADOS', desc: 'Atención de sarna, TVT, ehrlichia y condiciones dermatológicas' },
-              { num: '5', title: 'REHABILITACIÓN Y SOCIALIZACIÓN', desc: 'Preparación conductual para la nueva vida familiar' }
-            ].map((paso, idx) => (
-              <div key={idx} style={{
-                display: 'flex',
-                gap: '20px',
-                alignItems: 'flex-start'
-              }}>
-                <div style={{
-                  width: '48px',
-                  height: '48px',
-                  backgroundColor: '#bfb591',
-                  color: '#0e312d',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontWeight: '700',
-                  fontSize: '20px',
-                  flexShrink: 0
-                }}>
-                  {paso.num}
-                </div>
-                <div style={{ flex: 1 }}>
-                  <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#0e312d', marginBottom: '8px' }}>
-                    {paso.title}
-                  </h3>
-                  <p style={{ color: '#666', lineHeight: '1.6' }}>
-                    {paso.desc}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-          
-          <div style={{
-            backgroundColor: '#16a34a',
-            color: 'white',
-            padding: '32px',
-            borderRadius: '16px',
-            textAlign: 'center',
-            maxWidth: '600px',
-            margin: '0 auto'
-          }}>
-            <CheckCircle size={48} style={{ marginBottom: '16px' }} />
-            <h3 style={{ fontSize: '24px', fontWeight: '700', marginBottom: '12px' }}>
-              ✅ Garantía Municipal
-            </h3>
-            <p style={{ fontSize: '16px', lineHeight: '1.6' }}>
-              Cada adoptado sale con cartilla de vacunación completa y certificación veterinaria municipal.
-            </p>
-          </div>
-        </div>
-      </section>
 
       {/* Nuestro Impacto */}
       <section style={{
@@ -769,78 +642,69 @@ export default function Home() {
         padding: '100px 20px'
       }}>
         <div style={{
-          maxWidth: '1200px',
+          maxWidth: '1000px',
           margin: '0 auto'
         }}>
           <h2 style={{
-            fontSize: 'clamp(32px, 4vw, 48px)',
-            fontWeight: '800',
+            fontSize: 'clamp(32px, 4vw, 42px)',
+            fontWeight: '700',
             color: '#0e312d',
-            marginBottom: '16px',
+            marginBottom: '60px',
             textAlign: 'center'
           }}>
             Nuestro Impacto en la Comunidad
           </h2>
-          <p style={{
-            fontSize: '24px',
-            color: '#666',
-            textAlign: 'center',
-            marginBottom: '60px',
-            fontWeight: '300'
-          }}>
-            Una Política Pública que Transforma Vidas
-          </p>
           
           <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
             gap: '40px',
-            marginBottom: '60px'
+            marginBottom: '40px'
           }}>
             <div style={{ textAlign: 'center' }}>
               <div style={{
-                fontSize: '56px',
-                fontWeight: '900',
-                color: '#dc2626',
+                fontSize: '48px',
+                fontWeight: '700',
+                color: '#0e312d',
                 marginBottom: '8px'
               }}>+500</div>
-              <div style={{ fontSize: '18px', color: '#666' }}>animales rescatados y rehabilitados</div>
+              <div style={{ fontSize: '16px', color: '#666', fontWeight: '400' }}>Animales rescatados</div>
             </div>
             <div style={{ textAlign: 'center' }}>
               <div style={{
-                fontSize: '56px',
-                fontWeight: '900',
-                color: '#16a34a',
+                fontSize: '48px',
+                fontWeight: '700',
+                color: '#0e312d',
                 marginBottom: '8px'
               }}>+350</div>
-              <div style={{ fontSize: '18px', color: '#666' }}>adopciones exitosas realizadas</div>
+              <div style={{ fontSize: '16px', color: '#666', fontWeight: '400' }}>Adopciones exitosas</div>
             </div>
             <div style={{ textAlign: 'center' }}>
               <div style={{
-                fontSize: '56px',
-                fontWeight: '900',
-                color: '#9333ea',
+                fontSize: '48px',
+                fontWeight: '700',
+                color: '#0e312d',
                 marginBottom: '8px'
               }}>50</div>
-              <div style={{ fontSize: '18px', color: '#666' }}>comercios certificados pet friendly</div>
+              <div style={{ fontSize: '16px', color: '#666', fontWeight: '400' }}>Comercios pet friendly</div>
             </div>
             <div style={{ textAlign: 'center' }}>
               <div style={{
-                fontSize: '56px',
-                fontWeight: '900',
-                color: '#0891b2',
+                fontSize: '48px',
+                fontWeight: '700',
+                color: '#0e312d',
                 marginBottom: '8px'
               }}>100%</div>
-              <div style={{ fontSize: '18px', color: '#666' }}>de animales esterilizados antes de la adopción</div>
+              <div style={{ fontSize: '16px', color: '#666', fontWeight: '400' }}>Esterilización garantizada</div>
             </div>
             <div style={{ textAlign: 'center' }}>
               <div style={{
-                fontSize: '56px',
-                fontWeight: '900',
-                color: '#f59e0b',
+                fontSize: '48px',
+                fontWeight: '700',
+                color: '#0e312d',
                 marginBottom: '8px'
               }}>24/7</div>
-              <div style={{ fontSize: '18px', color: '#666' }}>disponibilidad para emergencias de rescate</div>
+              <div style={{ fontSize: '16px', color: '#666', fontWeight: '400' }}>Atención de emergencias</div>
             </div>
           </div>
         </div>
@@ -881,7 +745,7 @@ export default function Home() {
           }}>
             <div>
               <MapPin size={32} style={{ marginBottom: '12px', color: '#bfb591' }} />
-              <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>📍 Dirección</h3>
+              <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>Dirección</h3>
               <p style={{ color: 'rgba(255,255,255,0.8)', lineHeight: '1.6' }}>
                 [Dirección del centro municipal]
               </p>
@@ -889,7 +753,7 @@ export default function Home() {
             
             <div>
               <Phone size={32} style={{ marginBottom: '12px', color: '#bfb591' }} />
-              <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>📞 Teléfono</h3>
+              <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>Teléfono</h3>
               <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '20px' }}>
                 244-XXX-XXXX
               </p>
@@ -897,7 +761,7 @@ export default function Home() {
             
             <div>
               <Mail size={32} style={{ marginBottom: '12px', color: '#bfb591' }} />
-              <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>📧 Email</h3>
+              <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>Email</h3>
               <p style={{ color: 'rgba(255,255,255,0.8)' }}>
                 adopciones@atlixco.gob.mx
               </p>
@@ -905,7 +769,7 @@ export default function Home() {
             
             <div>
               <Clock size={32} style={{ marginBottom: '12px', color: '#bfb591' }} />
-              <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>🕒 Horarios</h3>
+              <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>Horarios</h3>
               <p style={{ color: 'rgba(255,255,255,0.8)' }}>
                 Lunes a Domingo<br />
                 9:00 - 17:00 horas

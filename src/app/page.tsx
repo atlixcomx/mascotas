@@ -172,7 +172,7 @@ export default function Home() {
               boxShadow: '0 4px 14px rgba(191, 181, 145, 0.3)',
               transition: 'all 0.3s ease'
             }}>
-              <Dog size={20} /> Ver Perritos en Adopción
+              <Dog size={20} /> Ver Catálogo de Perritos en Adopción
             </Link>
             <Link href="/comercios-friendly" style={{
               backgroundColor: 'transparent',
@@ -188,7 +188,7 @@ export default function Home() {
               border: '2px solid rgba(255,255,255,0.3)',
               transition: 'all 0.3s ease'
             }}>
-              <Store size={20} /> Conocer Comercios Pet Friendly
+              <Store size={20} /> Ver Catálogo de Comercios Pet Friendly
             </Link>
           </div>
         </div>
@@ -502,7 +502,7 @@ export default function Home() {
               fontWeight: '600',
               transition: 'all 0.3s ease'
             }}>
-              Explorar Todos los Perritos Disponibles <ChevronRight size={20} />
+              Ver Catálogo Completo de Perritos <ChevronRight size={20} />
             </Link>
           </div>
         </div>
@@ -618,7 +618,7 @@ export default function Home() {
               color: '#0e312d',
               marginBottom: '16px'
             }}>
-              Explora la Red de Comercios Pet Friendly
+              Explora el Catálogo de Comercios Pet Friendly
             </h3>
             <p style={{
               fontSize: '18px',
@@ -645,7 +645,7 @@ export default function Home() {
               transition: 'all 0.3s ease',
               boxShadow: '0 4px 14px rgba(22, 163, 74, 0.3)'
             }}>
-              Ver Todos los Comercios Certificados <ChevronRight size={20} />
+              Ver Catálogo Completo de Comercios <ChevronRight size={20} />
             </Link>
           </div>
         </div>

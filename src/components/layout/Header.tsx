@@ -133,7 +133,7 @@ export default function Header() {
               transition: 'all 0.3s',
               border: '2px solid transparent'
             }}>
-              Comercios Pet Friendly
+              Catálogo de Comercios
             </a>
             <a href="/contacto" style={{
               color: '#0e312d',
@@ -161,7 +161,7 @@ export default function Header() {
               gap: '8px',
               boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
             }}>
-              <DogIcon size={18} color="white" /> Ver Catálogo
+              <DogIcon size={18} color="white" /> Catálogo de Perritos
             </a>
           </nav>
 

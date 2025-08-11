@@ -105,26 +105,14 @@ export default function Home() {
           <p style={{
             fontSize: 'clamp(18px, 2.5vw, 22px)',
             color: 'rgba(255,255,255,0.9)',
-            marginBottom: '20px',
+            marginBottom: '40px',
             lineHeight: '1.6',
             maxWidth: '800px',
-            margin: '0 auto 20px'
+            margin: '0 auto 40px'
           }}>
             Un compromiso del Gobierno Municipal con el bienestar animal y las familias de Atlixco
           </p>
           
-          <p style={{
-            fontSize: '18px',
-            color: 'rgba(255,255,255,0.8)',
-            marginBottom: '40px',
-            lineHeight: '1.8',
-            maxWidth: '700px',
-            margin: '0 auto 40px'
-          }}>
-            Somos el centro oficial del municipio dedicado al rescate, rehabilitación y adopción responsable 
-            de perros en situación vulnerable. Cada rescate es una promesa de vida digna, respaldada por 
-            protocolos veterinarios certificados y el compromiso del gobierno local.
-          </p>
 
           <div style={{
             display: 'flex',
@@ -313,10 +301,8 @@ export default function Home() {
             maxWidth: '800px',
             margin: '0 auto 60px'
           }}>
-            Rescatamos perritos en situación de calle para brindarles atención veterinaria integral, 
-            rehabilitación conductual y prepararlos para una adopción responsable. Cada rescate recibe 
-            vacunación completa, esterilización y tratamientos médicos necesarios, garantizando que 
-            estén listos para integrarse a una nueva familia.
+            Rescatamos y rehabilitamos perritos en situación de calle, brindándoles atención veterinaria 
+            completa para prepararlos para una nueva familia.
           </p>
           
           <div style={{
@@ -580,58 +566,91 @@ export default function Home() {
           </div>
           
           <div style={{
-            display: 'flex',
-            gap: '16px',
-            justifyContent: 'center',
-            flexWrap: 'wrap'
+            backgroundColor: '#f0fdf4',
+            padding: '32px',
+            borderRadius: '16px',
+            marginTop: '40px',
+            border: '1px solid #bbf7d0'
           }}>
-            <div>
-              <p style={{ fontSize: '16px', color: '#666', marginBottom: '16px' }}>Para el Público:</p>
-              <Link href="/comercios-friendly" style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                backgroundColor: '#16a34a',
-                color: 'white',
-                padding: '14px 28px',
-                borderRadius: '12px',
-                textDecoration: 'none',
-                fontSize: '16px',
-                fontWeight: '600'
-              }}>
-                Ver Todos los Comercios Certificados <ChevronRight size={20} />
-              </Link>
-            </div>
+            <h3 style={{
+              fontSize: '20px',
+              fontWeight: '700',
+              color: '#0e312d',
+              marginBottom: '24px',
+              textAlign: 'center'
+            }}>
+              Únete a la red oficial de comercios inclusivos del Municipio de Atlixco
+            </h3>
             
-            <div>
-              <p style={{ fontSize: '16px', color: '#666', marginBottom: '16px' }}>Para Comerciantes:</p>
-              <Link href="/comercios-friendly#certificar" style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                backgroundColor: 'transparent',
-                color: '#16a34a',
-                padding: '14px 28px',
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+              gap: '20px'
+            }}>
+              <div style={{
+                backgroundColor: 'white',
+                padding: '24px',
                 borderRadius: '12px',
-                textDecoration: 'none',
-                fontSize: '16px',
-                fontWeight: '600',
-                border: '2px solid #16a34a'
+                textAlign: 'center',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
               }}>
-                Certificar Mi Negocio como Pet Friendly <ChevronRight size={20} />
-              </Link>
+                <Store size={32} style={{ color: '#16a34a', marginBottom: '12px' }} />
+                <h4 style={{ fontSize: '16px', fontWeight: '600', color: '#0e312d', marginBottom: '12px' }}>
+                  Para el Público
+                </h4>
+                <p style={{ fontSize: '14px', color: '#666', marginBottom: '16px', lineHeight: '1.5' }}>
+                  Descubre lugares pet friendly certificados
+                </p>
+                <Link href="/comercios-friendly" style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  backgroundColor: '#16a34a',
+                  color: 'white',
+                  padding: '12px 24px',
+                  borderRadius: '8px',
+                  textDecoration: 'none',
+                  fontSize: '15px',
+                  fontWeight: '600',
+                  transition: 'all 0.3s ease'
+                }}>
+                  Ver Comercios <ChevronRight size={18} />
+                </Link>
+              </div>
+              
+              <div style={{
+                backgroundColor: 'white',
+                padding: '24px',
+                borderRadius: '12px',
+                textAlign: 'center',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+              }}>
+                <CheckCircle size={32} style={{ color: '#16a34a', marginBottom: '12px' }} />
+                <h4 style={{ fontSize: '16px', fontWeight: '600', color: '#0e312d', marginBottom: '12px' }}>
+                  Para Comerciantes
+                </h4>
+                <p style={{ fontSize: '14px', color: '#666', marginBottom: '16px', lineHeight: '1.5' }}>
+                  Certifica tu negocio como pet friendly
+                </p>
+                <Link href="/comercios-friendly#certificar" style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  backgroundColor: 'transparent',
+                  color: '#16a34a',
+                  padding: '12px 24px',
+                  borderRadius: '8px',
+                  textDecoration: 'none',
+                  fontSize: '15px',
+                  fontWeight: '600',
+                  border: '2px solid #16a34a',
+                  transition: 'all 0.3s ease'
+                }}>
+                  Certificar Negocio <ChevronRight size={18} />
+                </Link>
+              </div>
             </div>
           </div>
-          
-          <p style={{
-            textAlign: 'center',
-            fontSize: '16px',
-            color: '#666',
-            marginTop: '32px',
-            fontStyle: 'italic'
-          }}>
-            Únete a la red oficial de comercios inclusivos del Municipio de Atlixco
-          </p>
         </div>
       </section>
 
@@ -656,55 +675,52 @@ export default function Home() {
           </h2>
           
           <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-            gap: '40px',
+            display: 'flex',
+            justifyContent: 'space-around',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '32px',
             marginBottom: '40px'
           }}>
             <div style={{ textAlign: 'center' }}>
-              <div style={{
-                fontSize: '48px',
+              <span style={{
+                fontSize: '36px',
                 fontWeight: '700',
-                color: '#0e312d',
-                marginBottom: '8px'
-              }}>+500</div>
-              <div style={{ fontSize: '16px', color: '#666', fontWeight: '400' }}>Animales rescatados</div>
+                color: '#0e312d'
+              }}>+500</span>
+              <span style={{ fontSize: '14px', color: '#666', marginLeft: '8px' }}>Animales rescatados</span>
             </div>
             <div style={{ textAlign: 'center' }}>
-              <div style={{
-                fontSize: '48px',
+              <span style={{
+                fontSize: '36px',
                 fontWeight: '700',
-                color: '#0e312d',
-                marginBottom: '8px'
-              }}>+350</div>
-              <div style={{ fontSize: '16px', color: '#666', fontWeight: '400' }}>Adopciones exitosas</div>
+                color: '#0e312d'
+              }}>+350</span>
+              <span style={{ fontSize: '14px', color: '#666', marginLeft: '8px' }}>Adopciones exitosas</span>
             </div>
             <div style={{ textAlign: 'center' }}>
-              <div style={{
-                fontSize: '48px',
+              <span style={{
+                fontSize: '36px',
                 fontWeight: '700',
-                color: '#0e312d',
-                marginBottom: '8px'
-              }}>50</div>
-              <div style={{ fontSize: '16px', color: '#666', fontWeight: '400' }}>Comercios pet friendly</div>
+                color: '#0e312d'
+              }}>50</span>
+              <span style={{ fontSize: '14px', color: '#666', marginLeft: '8px' }}>Comercios pet friendly</span>
             </div>
             <div style={{ textAlign: 'center' }}>
-              <div style={{
-                fontSize: '48px',
+              <span style={{
+                fontSize: '36px',
                 fontWeight: '700',
-                color: '#0e312d',
-                marginBottom: '8px'
-              }}>100%</div>
-              <div style={{ fontSize: '16px', color: '#666', fontWeight: '400' }}>Esterilización garantizada</div>
+                color: '#0e312d'
+              }}>100%</span>
+              <span style={{ fontSize: '14px', color: '#666', marginLeft: '8px' }}>Esterilización garantizada</span>
             </div>
             <div style={{ textAlign: 'center' }}>
-              <div style={{
-                fontSize: '48px',
+              <span style={{
+                fontSize: '36px',
                 fontWeight: '700',
-                color: '#0e312d',
-                marginBottom: '8px'
-              }}>24/7</div>
-              <div style={{ fontSize: '16px', color: '#666', fontWeight: '400' }}>Atención de emergencias</div>
+                color: '#0e312d'
+              }}>24/7</span>
+              <span style={{ fontSize: '14px', color: '#666', marginLeft: '8px' }}>Atención de emergencias</span>
             </div>
           </div>
         </div>

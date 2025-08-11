@@ -61,7 +61,7 @@ export default function Header() {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          minHeight: '80px',
+          minHeight: '70px',
           position: 'relative'
         }}>
           {/* Logo y título */}
@@ -75,15 +75,15 @@ export default function Header() {
             minWidth: 'fit-content'
           }}>
             <div style={{
-              width: 'clamp(80px, 20vw, 207px)',
-              height: 'clamp(80px, 20vw, 207px)',
+              width: 'clamp(120px, 25vw, 207px)',
+              height: 'clamp(120px, 25vw, 207px)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              minWidth: 'clamp(80px, 20vw, 207px)',
+              minWidth: 'clamp(120px, 25vw, 207px)',
               position: 'relative',
               transition: 'transform 0.2s ease',
-              margin: 'clamp(10px, 5vw, 40px) 0'
+              margin: 'clamp(8px, 3vw, 20px) 0'
             }}>
               <Image 
                 src="/centro.png" 
@@ -103,18 +103,18 @@ export default function Header() {
           <nav className="desktop-nav" style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '24px',
+            gap: '20px',
             flexWrap: 'nowrap',
             flex: '1 1 auto',
-            justifyContent: 'center',
-            marginLeft: '20px'
+            justifyContent: 'flex-end',
+            marginLeft: '16px'
           }}>
             <a href="/" style={{
               color: '#0e312d',
               textDecoration: 'none',
               fontSize: '15px',
               fontWeight: '600',
-              padding: '8px 16px',
+              padding: '6px 14px',
               borderRadius: '6px',
               transition: 'all 0.3s',
               border: '2px solid transparent'
@@ -126,7 +126,7 @@ export default function Header() {
               textDecoration: 'none',
               fontSize: '15px',
               fontWeight: '600',
-              padding: '8px 16px',
+              padding: '6px 14px',
               borderRadius: '6px',
               transition: 'all 0.3s',
               border: '2px solid transparent'
@@ -138,7 +138,7 @@ export default function Header() {
               textDecoration: 'none',
               fontSize: '15px',
               fontWeight: '600',
-              padding: '8px 16px',
+              padding: '6px 14px',
               borderRadius: '6px',
               transition: 'all 0.3s',
               border: '2px solid transparent'
@@ -150,7 +150,7 @@ export default function Header() {
               textDecoration: 'none',
               fontSize: '15px',
               fontWeight: '600',
-              padding: '8px 16px',
+              padding: '6px 14px',
               borderRadius: '6px',
               transition: 'all 0.3s',
               border: '2px solid transparent'
@@ -160,7 +160,7 @@ export default function Header() {
             <a href="/catalogo" style={{
               backgroundColor: '#0e312d',
               color: 'white',
-              padding: '12px 24px',
+              padding: '8px 20px',
               borderRadius: '8px',
               textDecoration: 'none',
               fontSize: '15px',

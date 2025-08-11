@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { UploadButton } from '@/components/UploadButton'
 import { 
   Dog, 
   ChevronLeft, 
@@ -89,9 +90,10 @@ export default function NuevoPerrito() {
     tratamientos: []
   })
   
-  const [fotosInternas, setFotosInternas] = useState<File[]>([])
-  const [fotosCatalogo, setFotosCatalogo] = useState<File[]>([])
-  const [fotoPrincipal, setFotoPrincipal] = useState<File | null>(null)
+  const [fotosInternas, setFotosInternas] = useState<string[]>([])
+  const [fotosCatalogo, setFotosCatalogo] = useState<string[]>([])
+  const [fotoPrincipal, setFotoPrincipal] = useState<string | null>(null)
+  const [uploading, setUploading] = useState(false)
 
   const steps = [
     { id: 1, name: 'Datos Básicos', icon: Dog },
@@ -152,20 +154,7 @@ export default function NuevoPerrito() {
     }))
   }
 
-  const handleFileUpload = (
-    e: React.ChangeEvent<HTMLInputElement>, 
-    type: 'principal' | 'internas' | 'catalogo'
-  ) => {
-    const files = Array.from(e.target.files || [])
-    
-    if (type === 'principal') {
-      setFotoPrincipal(files[0] || null)
-    } else if (type === 'internas') {
-      setFotosInternas(prev => [...prev, ...files])
-    } else {
-      setFotosCatalogo(prev => [...prev, ...files])
-    }
-  }
+  // Función removida - ahora usamos Uploadthing directamente
 
   const handleSubmit = async () => {
     setLoading(true)
@@ -198,11 +187,11 @@ export default function NuevoPerrito() {
         aptoPerros: formData.aptoPerros,
         aptoGatos: formData.aptoGatos,
         caracter: formData.personalidad ? [formData.personalidad] : [], // Array, no string
-        // Fotos
-        fotoPrincipal: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1',
-        fotos: [], // Array, no string
-        fotosInternas: [],
-        fotosCatalogo: [],
+        // Fotos - usar las URLs reales de Uploadthing
+        fotoPrincipal: fotoPrincipal || '',
+        fotos: fotosCatalogo, // Usar las fotos del catálogo
+        fotosInternas: fotosInternas,
+        fotosCatalogo: fotosCatalogo,
         // Estado
         destacado: false,
         estado: 'disponible'
@@ -216,29 +205,7 @@ export default function NuevoPerrito() {
 
       if (response.ok) {
         const newPerrito = await response.json()
-        
-        // Si hay fotos, subirlas
-        if (fotoPrincipal || fotosInternas.length > 0 || fotosCatalogo.length > 0) {
-          const formData = new FormData()
-          
-          if (fotoPrincipal) {
-            formData.append('principal', fotoPrincipal)
-          }
-          
-          fotosInternas.forEach(file => {
-            formData.append('internas', file)
-          })
-          
-          fotosCatalogo.forEach(file => {
-            formData.append('catalogo', file)
-          })
-          
-          await fetch(`/api/admin/perritos/${newPerrito.id}/fotos`, {
-            method: 'POST',
-            body: formData
-          })
-        }
-        
+        // Las fotos ya fueron subidas por Uploadthing y enviadas con el perrito
         router.push('/admin/perritos')
       } else {
         const errorData = await response.json()
@@ -737,7 +704,7 @@ export default function NuevoPerrito() {
                 {fotoPrincipal ? (
                   <div style={{ position: 'relative', display: 'inline-block' }}>
                     <img
-                      src={URL.createObjectURL(fotoPrincipal)}
+                      src={fotoPrincipal}
                       alt="Foto principal"
                       style={{
                         maxWidth: '300px',
@@ -766,30 +733,43 @@ export default function NuevoPerrito() {
                   <>
                     <Camera style={{ width: '48px', height: '48px', color: '#cbd5e1', margin: '0 auto 12px' }} />
                     <p style={{ color: '#64748b', marginBottom: '12px' }}>
-                      Arrastra o selecciona la foto principal
+                      {uploading ? 'Subiendo foto...' : 'Arrastra o selecciona la foto principal'}
                     </p>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => handleFileUpload(e, 'principal')}
-                      style={{ display: 'none' }}
-                      id="foto-principal"
-                    />
-                    <label
-                      htmlFor="foto-principal"
-                      style={{
-                        display: 'inline-block',
-                        padding: '8px 16px',
-                        backgroundColor: '#af1731',
-                        color: 'white',
-                        borderRadius: '6px',
-                        cursor: 'pointer',
-                        fontSize: '0.875rem',
-                        fontWeight: '600'
-                      }}
-                    >
-                      Seleccionar Foto
-                    </label>
+                    <div style={{ display: 'inline-block' }}>
+                      <UploadButton
+                        endpoint="petImageUploader"
+                        onUploadBegin={() => setUploading(true)}
+                        onClientUploadComplete={(res) => {
+                          if (res && res[0]) {
+                            setFotoPrincipal(res[0].url)
+                          }
+                          setUploading(false)
+                        }}
+                        onUploadError={(error: Error) => {
+                          console.error('Error subiendo foto:', error)
+                          alert('Error al subir la foto. Por favor intenta de nuevo.')
+                          setUploading(false)
+                        }}
+                        appearance={{
+                          button: {
+                            backgroundColor: '#af1731',
+                            color: 'white',
+                            padding: '8px 16px',
+                            borderRadius: '6px',
+                            fontSize: '0.875rem',
+                            fontWeight: '600',
+                            cursor: uploading ? 'wait' : 'pointer',
+                            opacity: uploading ? 0.7 : 1
+                          },
+                          allowedContent: {
+                            display: 'none'
+                          }
+                        }}
+                        content={{
+                          button: uploading ? 'Subiendo...' : 'Seleccionar Foto'
+                        }}
+                      />
+                    </div>
                   </>
                 )}
               </div>
@@ -807,10 +787,10 @@ export default function NuevoPerrito() {
                 backgroundColor: '#f8fafc'
               }}>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '12px' }}>
-                  {fotosCatalogo.map((file, index) => (
+                  {fotosCatalogo.map((url, index) => (
                     <div key={index} style={{ position: 'relative' }}>
                       <img
-                        src={URL.createObjectURL(file)}
+                        src={url}
                         alt={`Foto catálogo ${index + 1}`}
                         style={{
                           width: '100%',
@@ -836,7 +816,7 @@ export default function NuevoPerrito() {
                       </button>
                     </div>
                   ))}
-                  <label style={{
+                  <div style={{
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
@@ -844,19 +824,43 @@ export default function NuevoPerrito() {
                     height: '150px',
                     border: '2px dashed #cbd5e1',
                     borderRadius: '8px',
-                    cursor: 'pointer',
-                    backgroundColor: 'white'
+                    backgroundColor: 'white',
+                    position: 'relative',
+                    overflow: 'hidden'
                   }}>
                     <Upload style={{ width: '24px', height: '24px', color: '#94a3b8', marginBottom: '4px' }} />
-                    <span style={{ fontSize: '0.75rem', color: '#64748b' }}>Agregar fotos</span>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      onChange={(e) => handleFileUpload(e, 'catalogo')}
-                      style={{ display: 'none' }}
-                    />
-                  </label>
+                    <span style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '8px' }}>
+                      {uploading ? 'Subiendo...' : 'Agregar fotos'}
+                    </span>
+                    <div style={{ position: 'absolute', inset: 0, opacity: 0 }}>
+                      <UploadButton
+                        endpoint="petImageUploader"
+                        onUploadBegin={() => setUploading(true)}
+                        onClientUploadComplete={(res) => {
+                          if (res && res[0]) {
+                            setFotosCatalogo(prev => [...prev, res[0].url])
+                          }
+                          setUploading(false)
+                        }}
+                        onUploadError={(error: Error) => {
+                          console.error('Error subiendo foto:', error)
+                          alert('Error al subir la foto. Por favor intenta de nuevo.')
+                          setUploading(false)
+                        }}
+                        appearance={{
+                          button: {
+                            width: '100%',
+                            height: '100%',
+                            backgroundColor: 'transparent',
+                            border: 'none'
+                          },
+                          allowedContent: {
+                            display: 'none'
+                          }
+                        }}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -876,10 +880,10 @@ export default function NuevoPerrito() {
                 backgroundColor: '#f8fafc'
               }}>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '12px' }}>
-                  {fotosInternas.map((file, index) => (
+                  {fotosInternas.map((url, index) => (
                     <div key={index} style={{ position: 'relative' }}>
                       <img
-                        src={URL.createObjectURL(file)}
+                        src={url}
                         alt={`Foto interna ${index + 1}`}
                         style={{
                           width: '100%',
@@ -905,7 +909,7 @@ export default function NuevoPerrito() {
                       </button>
                     </div>
                   ))}
-                  <label style={{
+                  <div style={{
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
@@ -913,19 +917,43 @@ export default function NuevoPerrito() {
                     height: '150px',
                     border: '2px dashed #cbd5e1',
                     borderRadius: '8px',
-                    cursor: 'pointer',
-                    backgroundColor: 'white'
+                    backgroundColor: 'white',
+                    position: 'relative',
+                    overflow: 'hidden'
                   }}>
                     <Upload style={{ width: '24px', height: '24px', color: '#94a3b8', marginBottom: '4px' }} />
-                    <span style={{ fontSize: '0.75rem', color: '#64748b' }}>Agregar fotos</span>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      onChange={(e) => handleFileUpload(e, 'internas')}
-                      style={{ display: 'none' }}
-                    />
-                  </label>
+                    <span style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '8px' }}>
+                      {uploading ? 'Subiendo...' : 'Agregar fotos'}
+                    </span>
+                    <div style={{ position: 'absolute', inset: 0, opacity: 0 }}>
+                      <UploadButton
+                        endpoint="petImageUploader"
+                        onUploadBegin={() => setUploading(true)}
+                        onClientUploadComplete={(res) => {
+                          if (res && res[0]) {
+                            setFotosInternas(prev => [...prev, res[0].url])
+                          }
+                          setUploading(false)
+                        }}
+                        onUploadError={(error: Error) => {
+                          console.error('Error subiendo foto:', error)
+                          alert('Error al subir la foto. Por favor intenta de nuevo.')
+                          setUploading(false)
+                        }}
+                        appearance={{
+                          button: {
+                            width: '100%',
+                            height: '100%',
+                            backgroundColor: 'transparent',
+                            border: 'none'
+                          },
+                          allowedContent: {
+                            display: 'none'
+                          }
+                        }}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1066,10 +1094,10 @@ export default function NuevoPerrito() {
                     • Foto principal: {fotoPrincipal ? '✓ Cargada' : '✗ Sin cargar'}
                   </p>
                   <p style={{ fontSize: '0.875rem' }}>
-                    • Fotos para catálogo: {fotosCatalogo.length} archivo(s)
+                    • Fotos para catálogo: {fotosCatalogo.length} foto(s)
                   </p>
                   <p style={{ fontSize: '0.875rem' }}>
-                    • Fotos internas: {fotosInternas.length} archivo(s)
+                    • Fotos internas: {fotosInternas.length} foto(s)
                   </p>
                 </div>
               </div>

@@ -634,51 +634,35 @@ export default function Home() {
           
           <div style={{
             display: 'flex',
-            justifyContent: 'space-around',
+            justifyContent: 'center',
             alignItems: 'center',
-            flexWrap: 'wrap',
-            gap: '32px',
-            marginBottom: '40px'
+            gap: '80px',
+            marginBottom: '40px',
+            flexWrap: 'wrap'
           }}>
             <div style={{ textAlign: 'center' }}>
               <span style={{
-                fontSize: '36px',
+                fontSize: '48px',
                 fontWeight: '700',
                 color: '#0e312d'
               }}>+500</span>
-              <span style={{ fontSize: '14px', color: '#666', marginLeft: '8px' }}>Animales rescatados</span>
+              <span style={{ fontSize: '16px', color: '#666', marginLeft: '8px' }}>Animales rescatados</span>
             </div>
             <div style={{ textAlign: 'center' }}>
               <span style={{
-                fontSize: '36px',
+                fontSize: '48px',
                 fontWeight: '700',
                 color: '#0e312d'
               }}>+350</span>
-              <span style={{ fontSize: '14px', color: '#666', marginLeft: '8px' }}>Adopciones exitosas</span>
+              <span style={{ fontSize: '16px', color: '#666', marginLeft: '8px' }}>Adopciones exitosas</span>
             </div>
             <div style={{ textAlign: 'center' }}>
               <span style={{
-                fontSize: '36px',
+                fontSize: '48px',
                 fontWeight: '700',
                 color: '#0e312d'
               }}>50</span>
-              <span style={{ fontSize: '14px', color: '#666', marginLeft: '8px' }}>Comercios pet friendly</span>
-            </div>
-            <div style={{ textAlign: 'center' }}>
-              <span style={{
-                fontSize: '36px',
-                fontWeight: '700',
-                color: '#0e312d'
-              }}>100%</span>
-              <span style={{ fontSize: '14px', color: '#666', marginLeft: '8px' }}>Esterilización garantizada</span>
-            </div>
-            <div style={{ textAlign: 'center' }}>
-              <span style={{
-                fontSize: '36px',
-                fontWeight: '700',
-                color: '#0e312d'
-              }}>24/7</span>
-              <span style={{ fontSize: '14px', color: '#666', marginLeft: '8px' }}>Atención de emergencias</span>
+              <span style={{ fontSize: '16px', color: '#666', marginLeft: '8px' }}>Comercios pet friendly</span>
             </div>
           </div>
         </div>

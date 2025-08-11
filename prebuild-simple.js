@@ -3,16 +3,14 @@ const path = require('path');
 
 console.log('🚀 Quick prebuild...');
 
-// Solo mover páginas que sabemos que causan problemas
+// Solo mover páginas que sabemos que causan problemas (mantenemos login habilitado)
 const problematicPages = [
-  'src/app/admin',
   'src/app/test',
   'src/app/debug-admin',
   'src/app/diagnostics',
   'src/app/simple-test',
   'src/app/test-deployment',
-  'src/app/ui-test',
-  'src/app/admin-login-direct'
+  'src/app/ui-test'
 ];
 
 problematicPages.forEach(dir => {

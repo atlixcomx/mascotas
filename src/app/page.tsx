@@ -42,7 +42,7 @@ export default function Home() {
         minHeight: '90vh',
         display: 'flex',
         alignItems: 'center',
-        padding: '40px 20px',
+        padding: 'clamp(60px, 15vw, 100px) 20px',
         position: 'relative',
         overflow: 'hidden'
       }}>
@@ -175,7 +175,7 @@ export default function Home() {
       {/* Nuestro Compromiso Gubernamental */}
       <section style={{
         backgroundColor: '#f8f9fa',
-        padding: '100px 20px'
+        padding: 'clamp(40px, 10vw, 100px) 20px'
       }}>
         <div style={{
           maxWidth: '1100px',
@@ -215,8 +215,8 @@ export default function Home() {
           
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(4, 1fr)',
-            gap: '24px'
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: 'clamp(16px, 4vw, 32px)'
           }}>
             <div style={{
               backgroundColor: 'white',
@@ -293,7 +293,7 @@ export default function Home() {
       {/* Programa de Rescate Animal */}
       <section style={{
         backgroundColor: '#f8f9fa',
-        padding: '100px 20px'
+        padding: 'clamp(40px, 10vw, 100px) 20px'
       }}>
         <div style={{
           maxWidth: '1200px',
@@ -323,7 +323,7 @@ export default function Home() {
           
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(320px, 100%), 1fr))',
             gap: '32px',
             marginBottom: '40px'
           }}>
@@ -472,7 +472,7 @@ export default function Home() {
       {/* Red de Comercios Certificados */}
       <section style={{
         backgroundColor: 'white',
-        padding: '100px 20px'
+        padding: 'clamp(40px, 10vw, 100px) 20px'
       }}>
         <div style={{
           maxWidth: '1200px',
@@ -499,7 +499,7 @@ export default function Home() {
           
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(250px, 100%), 1fr))',
             gap: '24px',
             marginBottom: '60px'
           }}>
@@ -616,7 +616,7 @@ export default function Home() {
       {/* Nuestro Impacto */}
       <section style={{
         backgroundColor: 'white',
-        padding: '100px 20px'
+        padding: 'clamp(40px, 10vw, 100px) 20px'
       }}>
         <div style={{
           maxWidth: '1000px',
@@ -636,13 +636,13 @@ export default function Home() {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            gap: '80px',
+            gap: 'clamp(20px, 8vw, 80px)',
             marginBottom: '40px',
             flexWrap: 'wrap'
           }}>
             <div style={{ textAlign: 'center' }}>
               <span style={{
-                fontSize: '48px',
+                fontSize: 'clamp(36px, 8vw, 48px)',
                 fontWeight: '700',
                 color: '#0e312d'
               }}>+500</span>
@@ -650,7 +650,7 @@ export default function Home() {
             </div>
             <div style={{ textAlign: 'center' }}>
               <span style={{
-                fontSize: '48px',
+                fontSize: 'clamp(36px, 8vw, 48px)',
                 fontWeight: '700',
                 color: '#0e312d'
               }}>+350</span>
@@ -658,7 +658,7 @@ export default function Home() {
             </div>
             <div style={{ textAlign: 'center' }}>
               <span style={{
-                fontSize: '48px',
+                fontSize: 'clamp(36px, 8vw, 48px)',
                 fontWeight: '700',
                 color: '#0e312d'
               }}>50</span>
@@ -671,7 +671,7 @@ export default function Home() {
       {/* Centro Municipal - Contacto */}
       <section style={{
         background: 'linear-gradient(135deg, #0e312d 0%, #1a4a45 100%)',
-        padding: '100px 20px',
+        padding: 'clamp(40px, 10vw, 100px) 20px',
         color: 'white'
       }}>
         <div style={{
@@ -697,7 +697,7 @@ export default function Home() {
           
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(250px, 100%), 1fr))',
             gap: '32px',
             marginBottom: '60px'
           }}>

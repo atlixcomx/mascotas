@@ -61,7 +61,7 @@ export default function Header() {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          height: '80px'
+          minHeight: '80px'
         }}>
           {/* Logo y título */}
           <a href="/" style={{
@@ -73,22 +73,26 @@ export default function Header() {
             cursor: 'pointer'
           }}>
             <div style={{
-              width: '207px',
-              height: '207px',
+              width: 'clamp(60px, 15vw, 207px)',
+              height: 'clamp(60px, 15vw, 207px)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              minWidth: '207px',
+              minWidth: 'clamp(60px, 15vw, 207px)',
               position: 'relative',
               transition: 'transform 0.2s ease',
-              margin: '40px 0 40px 0'
+              margin: 'clamp(10px, 5vw, 40px) 0'
             }}>
               <Image 
                 src="/centro.png" 
                 alt="Centro de Adopción y Bienestar Animal"
                 width={207}
                 height={207}
-                style={{ objectFit: 'contain' }}
+                style={{ 
+                  width: '100%', 
+                  height: '100%',
+                  objectFit: 'contain'
+                }}
               />
             </div>
           </a>

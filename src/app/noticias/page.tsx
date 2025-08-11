@@ -91,7 +91,7 @@ export default function NoticiasPage() {
       {/* Header de la página */}
       <section style={{
         background: 'linear-gradient(135deg, #0e312d 0%, #1a4a45 100%)',
-        padding: '80px 20px',
+        padding: 'clamp(40px, 10vw, 80px) 20px',
         color: 'white',
         textAlign: 'center'
       }}>
@@ -114,7 +114,7 @@ export default function NoticiasPage() {
       </section>
 
       {/* Filtros */}
-      <section style={{ padding: '40px 20px 20px' }}>
+      <section style={{ padding: 'clamp(20px, 5vw, 40px) 20px 20px' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <div style={{
             display: 'flex',
@@ -163,7 +163,7 @@ export default function NoticiasPage() {
       </section>
 
       {/* Grid de noticias */}
-      <section style={{ padding: '20px 20px 80px' }}>
+      <section style={{ padding: '20px 20px clamp(40px, 10vw, 80px)' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           {loading ? (
             <div style={{ textAlign: 'center', padding: '60px' }}>
@@ -176,7 +176,7 @@ export default function NoticiasPage() {
           ) : (
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(min(320px, 100%), 1fr))',
               gap: '32px'
             }}>
               {noticiasFiltradas.map((noticia) => (
@@ -314,7 +314,7 @@ export default function NoticiasPage() {
       <section style={{
         backgroundColor: '#0e312d',
         color: 'white',
-        padding: '60px 20px',
+        padding: 'clamp(40px, 8vw, 60px) 20px',
         textAlign: 'center'
       }}>
         <div style={{ maxWidth: '600px', margin: '0 auto' }}>

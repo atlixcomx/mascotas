@@ -22,6 +22,13 @@ interface Perrito {
 export default function Home() {
   const [perritosRecientes, setPerritosRecientes] = useState<Perrito[]>([])
   const [loading, setLoading] = useState(true)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  
+  const backgroundImages = [
+    '/images/centro/foto0.jpeg',
+    '/images/centro/foto1.jpeg',
+    '/images/centro/Foto2.jpeg'
+  ]
 
   useEffect(() => {
     fetch('/api/perritos?limit=3&orderBy=createdAt&order=desc')
@@ -34,26 +41,57 @@ export default function Home() {
       })
       .catch(() => setLoading(false))
   }, [])
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => 
+        prevIndex === backgroundImages.length - 1 ? 0 : prevIndex + 1
+      )
+    }, 5000) // Cambiar imagen cada 5 segundos
+    
+    return () => clearInterval(interval)
+  }, [backgroundImages.length])
 
   return (
     <div>
       {/* Hero Section */}
       <section style={{
         minHeight: '90vh',
-        background: 'linear-gradient(135deg, #0e312d 0%, #1a4a45 100%)',
         display: 'flex',
         alignItems: 'center',
         padding: '40px 20px',
-        position: 'relative'
+        position: 'relative',
+        overflow: 'hidden'
       }}>
+        {/* Imágenes de fondo */}
+        {backgroundImages.map((image, index) => (
+          <div
+            key={image}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              backgroundImage: `url(${image})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              opacity: currentImageIndex === index ? 1 : 0,
+              transition: 'opacity 1.5s ease-in-out',
+              zIndex: 0
+            }}
+          />
+        ))}
+        
+        {/* Overlay oscuro */}
         <div style={{
           position: 'absolute',
           top: 0,
-          right: 0,
+          left: 0,
           width: '100%',
           height: '100%',
-          opacity: 0.03,
-          backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,0.1) 35px, rgba(255,255,255,0.1) 70px)`
+          background: 'linear-gradient(135deg, rgba(14, 49, 45, 0.85) 0%, rgba(26, 74, 69, 0.85) 100%)',
+          zIndex: 1
         }} />
         
         <div style={{
@@ -62,7 +100,7 @@ export default function Home() {
           textAlign: 'center',
           color: 'white',
           position: 'relative',
-          zIndex: 1
+          zIndex: 2
         }}>
           <div style={{
             display: 'inline-flex',

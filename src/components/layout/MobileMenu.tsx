@@ -275,6 +275,7 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
           margin: 4px 0;
           font-size: 14px;
           color: #666666;
+          line-height: 1.4;
         }
 
         /* Responsive */

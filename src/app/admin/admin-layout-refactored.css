@@ -406,6 +406,11 @@
   width: 100%;
 }
 
+/* Desktop - sidebar visible by default */
+.admin-sidebar {
+  transform: translateX(0);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .admin-sidebar {

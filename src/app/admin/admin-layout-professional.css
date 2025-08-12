@@ -57,7 +57,7 @@
 
 /* Sidebar Profesional */
 .admin-sidebar {
-  width: 260px;
+  width: 240px; /* Reducido para acomodar elementos más pequeños */
   background: linear-gradient(180deg, var(--admin-gray-900) 0%, var(--admin-gray-800) 100%);
   height: 100vh;
   position: fixed;
@@ -74,7 +74,7 @@
 
 /* Header simplificado */
 .admin-sidebar-header {
-  padding: 24px 20px;
+  padding: 20px 17px; /* Reducido 15% de 24px 20px */
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(0, 0, 0, 0.2);
   text-align: center;
@@ -124,13 +124,13 @@
 }
 
 .admin-nav-header {
-  font-size: 11px;
+  font-size: 10px; /* Reducido 15% de 11px */
   font-weight: 600;
   color: rgba(255, 255, 255, 0.5);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  padding: 0 20px;
-  margin-bottom: 12px;
+  padding: 0 17px; /* Reducido 15% de 20px */
+  margin-bottom: 10px; /* Reducido 15% de 12px */
   line-height: 1.3;
 }
 
@@ -143,12 +143,12 @@
   position: relative;
   display: flex;
   align-items: center;
-  padding: 12px 20px;
-  margin: 0 12px 12px 12px; /* Agregamos margen inferior para 10% más de separación */
-  border-radius: 8px;
+  padding: 10px 17px; /* Reducido 15% de 12px 20px */
+  margin: 0 10px 10px 10px; /* Reducido 15% */
+  border-radius: 7px; /* Reducido 15% de 8px */
   color: rgba(255, 255, 255, 0.7);
   text-decoration: none;
-  font-size: 14px;
+  font-size: 12px; /* Reducido 15% de 14px */
   font-weight: 500;
   line-height: 1.4;
   transition: all 200ms ease;
@@ -185,9 +185,9 @@
 }
 
 .admin-nav-icon {
-  width: 20px;
-  height: 20px;
-  margin-right: 12px;
+  width: 17px; /* Reducido 15% de 20px */
+  height: 17px; /* Reducido 15% de 20px */
+  margin-right: 10px; /* Reducido 15% de 12px */
   flex-shrink: 0;
 }
 
@@ -196,8 +196,8 @@
 }
 
 .admin-nav-arrow {
-  width: 16px;
-  height: 16px;
+  width: 14px; /* Reducido 15% de 16px */
+  height: 14px; /* Reducido 15% de 16px */
   opacity: 0;
   transition: opacity var(--admin-transition-fast);
   color: var(--admin-primary-600);
@@ -209,7 +209,7 @@
 
 /* Sección de usuario simplificada */
 .admin-user-section {
-  padding: 20px;
+  padding: 17px; /* Reducido 15% de 20px */
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(0, 0, 0, 0.2);
 }
@@ -217,17 +217,17 @@
 .admin-user-info {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
-  padding: 12px;
+  gap: 10px; /* Reducido 15% de 12px */
+  margin-bottom: 14px; /* Reducido 15% de 16px */
+  padding: 10px; /* Reducido 15% de 12px */
   background: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
+  border-radius: 7px; /* Reducido 15% de 8px */
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .admin-user-avatar {
-  width: 36px;
-  height: 36px;
+  width: 31px; /* Reducido 15% de 36px */
+  height: 31px; /* Reducido 15% de 36px */
   background: linear-gradient(135deg, var(--admin-primary-600), var(--admin-primary-700));
   border-radius: 50%;
   display: flex;
@@ -238,7 +238,7 @@
 
 .user-initial {
   color: white;
-  font-size: 14px;
+  font-size: 12px; /* Reducido 15% de 14px */
   font-weight: 600;
 }
 
@@ -259,7 +259,7 @@
 }
 
 .admin-user-name {
-  font-size: 14px;
+  font-size: 12px; /* Reducido 15% de 14px */
   font-weight: 600;
   color: white;
   margin: 0 0 2px 0;
@@ -270,16 +270,16 @@
 }
 
 .admin-user-email {
-  font-size: 12px;
+  font-size: 10px; /* Reducido 15% de 12px */
   color: rgba(255, 255, 255, 0.6);
-  margin: 0 0 4px 0;
+  margin: 0 0 3px 0; /* Reducido 15% de 4px */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .admin-user-role {
-  font-size: 10px;
+  font-size: 9px; /* Reducido 15% de 10px */
   color: #f472b6; /* Rosa de la paleta original */
   font-weight: 600;
   text-transform: uppercase;
@@ -290,19 +290,19 @@
 /* Botón de logout minimalista */
 .admin-logout-button {
   width: 100%;
-  padding: 10px 16px;
+  padding: 8px 14px; /* Reducido 15% de 10px 16px */
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 6px;
+  border-radius: 5px; /* Reducido 15% de 6px */
   color: white;
-  font-size: 12px;
+  font-size: 10px; /* Reducido 15% de 12px */
   font-weight: 500;
   cursor: pointer;
   transition: all 200ms ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 7px; /* Reducido 15% de 8px */
 }
 
 .admin-logout-button:hover {
@@ -317,14 +317,14 @@
 }
 
 .logout-icon {
-  width: 14px;
-  height: 14px;
+  width: 12px; /* Reducido 15% de 14px */
+  height: 12px; /* Reducido 15% de 14px */
 }
 
 /* Main Content */
 .admin-main-content {
   flex: 1;
-  margin-left: 260px;
+  margin-left: 240px; /* Ajustado al nuevo ancho del sidebar */
   display: flex;
   flex-direction: column;
   min-height: 100vh;

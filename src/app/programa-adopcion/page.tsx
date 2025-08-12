@@ -103,7 +103,7 @@ export default function ProgramaAdopcion() {
           }} 
         />
 
-        <div style={{
+        <div className="hero-content" style={{
           maxWidth: '1200px',
           margin: '0 auto',
           position: 'relative',
@@ -182,8 +182,8 @@ export default function ProgramaAdopcion() {
             </div>
           </div>
 
-          {/* Ecosistema visual */}
-          <div style={{
+          {/* Ecosistema visual - oculto en móvil */}
+          <div className="ecosystem-grid" style={{
             animation: 'slideInRight 1s ease-out 0.4s both',
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
@@ -805,8 +805,16 @@ export default function ProgramaAdopcion() {
         /* Responsive para móvil */
         @media (max-width: 768px) {
           .decorative-elements,
-          .water-pattern {
+          .water-pattern,
+          .ecosystem-grid {
             display: none !important;
+          }
+          
+          .hero-content {
+            grid-template-columns: 1fr !important;
+            text-align: center !important;
+            max-width: 100% !important;
+            padding: 0 16px !important;
           }
           
           .process-card {
@@ -817,6 +825,12 @@ export default function ProgramaAdopcion() {
           
           .process-card > div:first-child {
             margin-bottom: 16px !important;
+          }
+        }
+        
+        @media (max-width: 480px) {
+          .hero-content {
+            gap: 20px !important;
           }
         }
 

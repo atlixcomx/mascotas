@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { MenuIcon, CloseIcon, DogIcon } from '../icons/Icons'
+import MobileMenu from './MobileMenu'
 
 export default function HeaderNew() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -78,45 +79,8 @@ export default function HeaderNew() {
         </div>
       </header>
 
-      {/* Overlay móvil */}
-      {isMobileMenuOpen && (
-        <div className="mobile-overlay" onClick={closeMenu} />
-      )}
-
-      {/* Menú móvil */}
-      <div className={`mobile-menu ${isMobileMenuOpen ? 'mobile-menu--open' : ''}`}>
-        <div className="mobile-menu-header">
-          <h2 className="mobile-menu-title">Menú</h2>
-          <button
-            className="mobile-menu-close"
-            onClick={closeMenu}
-            aria-label="Cerrar menú"
-          >
-            <CloseIcon size={24} color="#000000" />
-          </button>
-        </div>
-        
-        <nav className="mobile-menu-nav">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="mobile-menu-link"
-              onClick={closeMenu}
-            >
-              <span className="mobile-menu-text">{item.label}</span>
-            </Link>
-          ))}
-          <Link
-            href="/catalogo"
-            className="mobile-menu-cta"
-            onClick={closeMenu}
-          >
-            <DogIcon size={20} color="white" />
-            <span className="mobile-menu-cta-text">Ver Catálogo de Perritos</span>
-          </Link>
-        </nav>
-      </div>
+      {/* Menú móvil profesional */}
+      <MobileMenu isOpen={isMobileMenuOpen} onClose={closeMenu} />
 
       <style jsx>{`
         /* Forzar color negro en todos los enlaces */
@@ -223,26 +187,6 @@ export default function HeaderNew() {
           width: calc(100% - 32px);
         }
 
-        .header-cta-button {
-          background-color: var(--cta-color);
-          color: white;
-          padding: 10px 20px;
-          border-radius: 8px;
-          text-decoration: none;
-          font-size: 15px;
-          font-weight: 600;
-          transition: var(--transition);
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .header-cta-button:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-
         /* Botón menú móvil */
         .header-menu-button {
           display: flex;
@@ -258,156 +202,6 @@ export default function HeaderNew() {
 
         .header-menu-button:hover {
           background-color: #f3f4f6;
-        }
-
-        /* Overlay móvil */
-        .mobile-overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background-color: rgba(0, 0, 0, 0.5);
-          z-index: 1001;
-          opacity: 0;
-          animation: fadeIn 0.3s forwards;
-        }
-
-        /* Menú móvil */
-        .mobile-menu {
-          position: fixed;
-          top: 0;
-          right: -320px;
-          width: 320px;
-          height: 100vh;
-          background-color: #ffffff;
-          box-shadow: -4px 0 16px rgba(0,0,0,0.15);
-          z-index: 1002;
-          transition: right 0.3s ease;
-          overflow-y: auto;
-        }
-
-        .mobile-menu--open {
-          right: 0;
-        }
-
-        .mobile-menu-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 24px;
-          border-bottom: 2px solid #f0f0f0;
-          background-color: #fafafa;
-        }
-
-        .mobile-menu-title {
-          font-size: 24px;
-          font-weight: 800;
-          color: #000000;
-          margin: 0;
-          letter-spacing: -0.5px;
-        }
-
-        .mobile-menu-close {
-          background-color: #f0f0f0;
-          border: 2px solid #000000;
-          padding: 10px;
-          cursor: pointer;
-          border-radius: 8px;
-          transition: all 0.2s ease;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .mobile-menu-close:hover {
-          background-color: #000000;
-        }
-        
-        :global(.mobile-menu-close:hover svg) {
-          stroke: #ffffff;
-        }
-
-        .mobile-menu-nav {
-          padding: 24px 0;
-        }
-
-        .mobile-menu-link {
-          display: flex;
-          align-items: center;
-          padding: 20px 24px;
-          text-decoration: none;
-          border-bottom: 1px solid #f0f0f0;
-          transition: all 0.2s ease;
-          position: relative;
-        }
-        
-        .mobile-menu-text {
-          color: #000000;
-          font-size: 18px;
-          font-weight: 700;
-          letter-spacing: -0.3px;
-        }
-
-        .mobile-menu-link:hover {
-          background-color: #f5f5f5;
-        }
-        
-        .mobile-menu-link:hover .mobile-menu-text {
-          color: #af1731;
-          transform: translateX(8px);
-        }
-
-        .mobile-menu-cta {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 12px;
-          margin: 24px;
-          padding: 18px 24px;
-          background-color: #0e312d;
-          text-decoration: none;
-          border-radius: 12px;
-          transition: all 0.3s ease;
-          box-shadow: 0 4px 12px rgba(14, 49, 45, 0.25);
-        }
-        
-        .mobile-menu-cta-text {
-          color: #ffffff;
-          font-size: 18px;
-          font-weight: 700;
-          letter-spacing: -0.3px;
-        }
-
-        .mobile-menu-cta:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 6px 20px rgba(14, 49, 45, 0.35);
-          background-color: #1a4a45;
-        }
-
-        /* Animaciones */
-        @keyframes fadeIn {
-          to {
-            opacity: 1;
-          }
-        }
-        
-        /* Estilos adicionales para mejorar legibilidad móvil */
-        @media (max-width: 768px) {
-          .mobile-menu-text {
-            transition: transform 0.2s ease;
-          }
-          
-          /* Asegurar que el menú se vea correctamente en móviles pequeños */
-          .mobile-menu {
-            width: 100%;
-            max-width: 320px;
-            right: -100%;
-          }
-          
-          .mobile-menu--open {
-            right: 0;
-          }
         }
 
         /* Media Queries - Mobile First */
@@ -443,11 +237,6 @@ export default function HeaderNew() {
           .header-nav-link {
             font-size: 18px !important;
             color: #000000 !important;
-          }
-
-          .header-cta-button {
-            padding: 12px 24px;
-            font-size: 16px;
           }
         }
       `}</style>

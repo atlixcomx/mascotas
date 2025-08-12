@@ -2,18 +2,18 @@
 /* Gobierno de Atlixco - Centro de Adopción */
 
 :root {
-  /* Colores Primarios - Identidad Gubernamental */
-  --admin-primary-50: #fdf2f8;
-  --admin-primary-100: #fce7f3;
-  --admin-primary-200: #fbcfe8;
-  --admin-primary-300: #f9a8d4;
-  --admin-primary-400: #f472b6;
-  --admin-primary-500: #ec4899;
-  --admin-primary-600: #db2777;
-  --admin-primary-700: #be185d;
-  --admin-primary-800: #9d174d;
-  --admin-primary-900: #831843;
-  --admin-primary-950: #7d2447; /* Color principal gubernamental */
+  /* Colores Gubernamentales - Identidad Institucional */
+  --admin-primary-50: #eff6ff;
+  --admin-primary-100: #dbeafe;
+  --admin-primary-200: #bfdbfe;
+  --admin-primary-300: #93c5fd;
+  --admin-primary-400: #60a5fa;
+  --admin-primary-500: #3b82f6;
+  --admin-primary-600: #2563eb;
+  --admin-primary-700: #1d4ed8;
+  --admin-primary-800: #1e40af;
+  --admin-primary-900: #1e3a8a;
+  --admin-primary-950: #172554; /* Color principal gubernamental */
 
   /* Colores Secundarios */
   --admin-secondary-50: #f0fdf4;

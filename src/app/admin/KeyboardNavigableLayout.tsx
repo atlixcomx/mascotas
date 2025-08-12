@@ -8,7 +8,7 @@ import { useEffect, useState, useRef, KeyboardEvent } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import './admin-global.css'
-import './admin-layout-refactored.css'
+import './admin-layout-professional.css'
 import { 
   LayoutDashboard, 
   Dog, 

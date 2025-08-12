@@ -1,0 +1,139 @@
+{
+  "project": {
+    "name": "Centro de Adopción Atlixco",
+    "description": "Sitio web del Centro de Adopción y Bienestar Animal de Atlixco, Puebla",
+    "version": "1.0.0",
+    "url": "http://localhost:3000"
+  },
+  "design": {
+    "brand": {
+      "name": "Centro de Adopción Atlixco",
+      "colors": {
+        "primary": "#af1731",
+        "secondary": "#840f31",
+        "accent": "#c79b66",
+        "success": "#16a34a",
+        "warning": "#ea580c",
+        "error": "#dc2626",
+        "info": "#0891b2",
+        "background": "#ffffff",
+        "surface": "#f8f9fa",
+        "text": "#0e312d",
+        "textSecondary": "#6b7280"
+      },
+      "typography": {
+        "fontFamily": {
+          "primary": "Albert Sans, system-ui, sans-serif",
+          "secondary": "Poppins, system-ui, sans-serif"
+        },
+        "fontSizes": {
+          "xs": "0.75rem",
+          "sm": "0.875rem",
+          "base": "1rem",
+          "lg": "1.125rem",
+          "xl": "1.25rem",
+          "2xl": "1.5rem",
+          "3xl": "1.875rem",
+          "4xl": "2.25rem",
+          "5xl": "3rem",
+          "6xl": "3.75rem"
+        }
+      }
+    },
+    "components": {
+      "layout": {
+        "header": {
+          "path": "src/components/layout/Header.tsx",
+          "description": "Header principal con navegación"
+        },
+        "footer": {
+          "path": "src/components/layout/Footer.tsx",
+          "description": "Footer con información de contacto"
+        }
+      },
+      "ui": {
+        "button": {
+          "path": "src/components/ui/Button.tsx",
+          "description": "Botones con diferentes variantes"
+        },
+        "card": {
+          "path": "src/components/ui/Card.tsx",
+          "description": "Tarjetas para mostrar contenido"
+        },
+        "perritoCard": {
+          "path": "src/components/ui/PerritoCard.tsx",
+          "description": "Tarjeta específica para perritos"
+        },
+        "modal": {
+          "path": "src/components/ui/Modal.tsx",
+          "description": "Modales y diálogos"
+        }
+      },
+      "forms": {
+        "adoptionForm": {
+          "path": "src/components/forms/AdoptionForm.tsx",
+          "description": "Formulario de adopción"
+        },
+        "searchBar": {
+          "path": "src/components/search/SearchBar.tsx",
+          "description": "Barra de búsqueda"
+        }
+      }
+    }
+  },
+  "pages": {
+    "home": {
+      "path": "/",
+      "title": "Inicio - Centro de Adopción Atlixco",
+      "description": "Página principal del centro de adopción"
+    },
+    "catalog": {
+      "path": "/catalogo",
+      "title": "Catálogo de Perritos",
+      "description": "Galería de perritos disponibles para adopción"
+    },
+    "adoption": {
+      "path": "/solicitud-adopcion",
+      "title": "Solicitud de Adopción",
+      "description": "Formulario para solicitar adopción"
+    },
+    "businesses": {
+      "path": "/comercios-friendly",
+      "title": "Comercios Pet Friendly",
+      "description": "Directorio de comercios amigables con mascotas"
+    },
+    "admin": {
+      "path": "/admin",
+      "title": "Panel de Administración",
+      "description": "Panel de gestión del centro"
+    }
+  },
+  "assets": {
+    "images": {
+      "logo": "/centro.png",
+      "ayuntamiento": "/ayuntamientoB.png",
+      "hero": "/images/centro/foto1.jpeg"
+    },
+    "icons": {
+      "path": "src/components/icons/Icons.tsx"
+    }
+  },
+  "development": {
+    "server": {
+      "url": "http://localhost:3000",
+      "port": 3000
+    },
+    "build": {
+      "command": "npm run build",
+      "output": ".next"
+    }
+  },
+  "features": {
+    "authentication": true,
+    "database": true,
+    "fileUpload": true,
+    "search": true,
+    "responsive": true,
+    "accessibility": true
+  }
+}

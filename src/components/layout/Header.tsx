@@ -104,9 +104,10 @@ export default function Header() {
           <nav className="desktop-nav" style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '8px',
+            gap: '16px',
             flexWrap: 'nowrap',
-            marginLeft: '20px'
+            marginLeft: 'auto',
+            marginRight: '0'
           }}>
             <a href="/" style={{
               color: '#0e312d',
@@ -378,13 +379,15 @@ export default function Header() {
           
           .logo-container {
             margin: 0 !important;
-            height: 80px !important;
-            width: 80px !important;
-            min-width: 80px !important;
+            height: 130px !important;
+            width: 130px !important;
+            min-width: 130px !important;
           }
           
           .header-container {
-            min-height: 80px !important;
+            min-height: 140px !important;
+            justify-content: space-between !important;
+            padding: 10px 0 !important;
           }
         }
         

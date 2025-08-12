@@ -531,10 +531,10 @@ export default function HomeNew() {
             
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(min(320px, 100%), 1fr))',
-            gap: '32px',
-            marginBottom: '40px'
-          }}>
+              gridTemplateColumns: 'repeat(3, 1fr)',
+              gap: '32px',
+              marginBottom: '40px'
+            }}>
             {loading ? (
               [1, 2, 3].map((idx) => (
                 <div key={idx} style={{

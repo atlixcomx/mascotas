@@ -111,7 +111,7 @@
 }
 
 .admin-nav-section {
-  margin-bottom: var(--admin-spacing-xl);
+  margin-bottom: var(--admin-spacing-lg);
 }
 
 .admin-nav-header {
@@ -128,11 +128,11 @@
   position: relative;
   display: flex;
   align-items: center;
-  padding: var(--admin-spacing-md) var(--admin-spacing-lg);
+  padding: var(--admin-spacing-sm) var(--admin-spacing-md);
   color: rgba(255, 255, 255, 0.7);
   text-decoration: none;
   transition: all var(--admin-transition-fast);
-  font-size: var(--admin-font-size-base);
+  font-size: var(--admin-font-size-sm);
   font-weight: var(--admin-font-weight-medium);
   border: none;
   cursor: pointer;
@@ -165,9 +165,9 @@
 }
 
 .admin-nav-icon {
-  width: 24px;
-  height: 24px;
-  margin-right: var(--admin-spacing-md);
+  width: 20px;
+  height: 20px;
+  margin-right: var(--admin-spacing-sm);
   flex-shrink: 0;
 }
 
@@ -176,8 +176,8 @@
 }
 
 .admin-nav-arrow {
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   opacity: 0;
   transition: opacity var(--admin-transition-fast);
 }
@@ -188,7 +188,7 @@
 
 /* User Section */
 .admin-user-section {
-  padding: var(--admin-spacing-lg);
+  padding: var(--admin-spacing-md);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(0, 0, 0, 0.2);
 }
@@ -201,8 +201,8 @@
 }
 
 .admin-user-avatar {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   background: linear-gradient(135deg, var(--admin-primary-600) 0%, var(--admin-primary-700) 100%);
   border-radius: var(--admin-border-radius-full);
   display: flex;
@@ -214,7 +214,7 @@
 
 .user-initial {
   color: white;
-  font-size: var(--admin-font-size-lg);
+  font-size: var(--admin-font-size-base);
   font-weight: var(--admin-font-weight-bold);
 }
 
@@ -266,13 +266,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--admin-spacing-sm);
-  padding: var(--admin-spacing-sm) var(--admin-spacing-md);
+  gap: var(--admin-spacing-xs);
+  padding: var(--admin-spacing-xs) var(--admin-spacing-sm);
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: var(--admin-border-radius-md);
   color: white;
-  font-size: var(--admin-font-size-sm);
+  font-size: var(--admin-font-size-xs);
   font-weight: var(--admin-font-weight-medium);
   cursor: pointer;
   transition: all var(--admin-transition-fast);

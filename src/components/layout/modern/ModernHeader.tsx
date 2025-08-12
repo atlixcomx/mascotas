@@ -81,7 +81,7 @@ export default function ModernHeader() {
               aria-label="Ir al inicio - Centro de Bienestar Animal Atlixco"
             >
               <Image
-                src="/micasab.png"
+                src="/centroB.png"
                 alt="Centro de Bienestar Animal Atlixco"
                 width={headerConfig.logo.desktop.width}
                 height={headerConfig.logo.desktop.height}

@@ -16,21 +16,21 @@ export const navigationItems: NavigationItem[] = [
     icon: '🏠'
   },
   {
-    id: 'adoption-program',
-    label: 'Adopción',
+    id: 'animal-welfare',
+    label: 'Bienestar Animal',
     href: '/programa-adopcion',
     icon: '❤️'
   },
   {
     id: 'catalog',
-    label: 'Ver Perritos',
+    label: 'Catálogo Adopción',
     href: '/catalogo',
     icon: '🐕',
     highlight: true // CTA principal
   },
   {
     id: 'pet-friendly',
-    label: 'Pet Friendly',
+    label: 'Comercios Friendly',
     href: '/comercios-friendly',
     icon: '🏪'
   },

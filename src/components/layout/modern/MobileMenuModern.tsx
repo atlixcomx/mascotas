@@ -87,7 +87,7 @@ export default function MobileMenuModern({ isOpen, onClose }: MobileMenuModernPr
         {/* Header del menú */}
         <div className={styles.menuHeader}>
           <Image
-            src="/micasab.png"
+            src="/centroB.png"
             alt="Centro de Bienestar Animal"
             width={100}
             height={34}

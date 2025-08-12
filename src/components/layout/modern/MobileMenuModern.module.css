@@ -1,0 +1,287 @@
+/* Overlay */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0);
+  z-index: 1100;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.overlay.open {
+  opacity: 1;
+  visibility: visible;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+/* Menu Container */
+.menu {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  max-width: 400px;
+  background: white;
+  z-index: 1200;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.menu.open {
+  transform: translateX(0);
+  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Pull Indicator (para gestos) */
+.pullIndicator {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 36px;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 2px;
+  z-index: 10;
+}
+
+/* Menu Header */
+.menuHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 10;
+}
+
+.menuLogo {
+  height: auto;
+  width: auto;
+}
+
+.closeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  color: var(--foreground);
+}
+
+.closeButton:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.closeButton:focus-visible {
+  outline: 2px solid var(--puebla-primary);
+  outline-offset: 2px;
+}
+
+/* Navigation */
+.menuNav {
+  flex: 1;
+  padding: 1.5rem 0;
+}
+
+.menuList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.menuItem {
+  opacity: 0;
+  animation: slideIn 0.3s ease forwards;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.menuLink {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  color: var(--foreground);
+  text-decoration: none;
+  font-family: var(--font-heading);
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.menuLink:hover {
+  background: rgba(175, 23, 49, 0.05);
+  color: var(--puebla-primary);
+}
+
+.menuLink.active {
+  color: var(--puebla-primary);
+  font-weight: 600;
+  background: rgba(175, 23, 49, 0.05);
+}
+
+.menuIcon {
+  font-size: 20px;
+  width: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menuLabel {
+  flex: 1;
+}
+
+.activeIndicator {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 24px;
+  background: var(--puebla-primary);
+  border-radius: 0 2px 2px 0;
+}
+
+/* CTA Section */
+.ctaSection {
+  padding: 1.5rem;
+  background: linear-gradient(135deg, 
+    rgba(175, 23, 49, 0.05) 0%, 
+    rgba(199, 155, 102, 0.05) 100%
+  );
+}
+
+.ctaButton {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  padding: 1.25rem 1.5rem;
+  background: linear-gradient(135deg, 
+    var(--puebla-primary) 0%, 
+    var(--puebla-secondary) 100%
+  );
+  color: white;
+  text-decoration: none;
+  border-radius: 16px;
+  font-family: var(--font-heading);
+  font-size: 16px;
+  font-weight: 600;
+  box-shadow: 0 6px 20px rgba(175, 23, 49, 0.3);
+  transition: all 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ctaButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(175, 23, 49, 0.4);
+}
+
+.ctaIcon {
+  font-size: 24px;
+}
+
+.ctaText {
+  flex: 1;
+}
+
+.ctaArrow {
+  opacity: 0.8;
+  transition: transform 0.3s ease;
+}
+
+.ctaButton:hover .ctaArrow {
+  transform: translateX(4px);
+}
+
+/* Menu Footer */
+.menuFooter {
+  padding: 2rem 1.5rem;
+  text-align: center;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.footerText {
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0 0 0.5rem 0;
+}
+
+.footerSubtext {
+  font-size: 13px;
+  color: rgba(14, 49, 45, 0.6);
+  margin: 0;
+}
+
+/* Highlight item */
+.menuLink.highlight {
+  color: var(--puebla-primary);
+  font-weight: 600;
+}
+
+/* Mobile optimizations */
+@media (max-width: 400px) {
+  .menu {
+    max-width: 100%;
+  }
+}
+
+/* Tablet adjustments */
+@media (min-width: 768px) {
+  .menu {
+    max-width: 320px;
+  }
+  
+  .menuLink {
+    padding: 0.875rem 1.5rem;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .overlay,
+  .menu,
+  .menuLink,
+  .ctaButton {
+    transition: none;
+  }
+  
+  .menuItem {
+    animation: none;
+    opacity: 1;
+  }
+}

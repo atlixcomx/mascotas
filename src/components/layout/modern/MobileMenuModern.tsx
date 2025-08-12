@@ -16,6 +16,11 @@ export default function MobileMenuModern({ isOpen, onClose }: MobileMenuModernPr
   const pathname = usePathname()
   const menuRef = useRef<HTMLDivElement>(null)
   const lastTouchY = useRef(0)
+  
+  // Debug logging
+  useEffect(() => {
+    console.log('MobileMenuModern - isOpen:', isOpen)
+  }, [isOpen])
 
   // Deshabilitado temporalmente el gesto de arrastre para debugging
   // useEffect(() => {
@@ -48,6 +53,7 @@ export default function MobileMenuModern({ isOpen, onClose }: MobileMenuModernPr
         onClick={(e) => {
           e.preventDefault()
           e.stopPropagation()
+          console.log('Overlay clicked')
           onClose()
         }}
         aria-hidden="true"
@@ -67,15 +73,17 @@ export default function MobileMenuModern({ isOpen, onClose }: MobileMenuModernPr
           <Image
             src="/centroB.png"
             alt="Centro de Bienestar Animal"
-            width={100}
-            height={34}
+            width={80}
+            height={28}
             className={styles.menuLogo}
+            priority
           />
           
           <button
             onClick={(e) => {
               e.preventDefault()
               e.stopPropagation()
+              console.log('Close button clicked')
               onClose()
             }}
             className={styles.closeButton}
@@ -118,7 +126,9 @@ export default function MobileMenuModern({ isOpen, onClose }: MobileMenuModernPr
                     ${item.highlight ? styles.highlight : ''}
                   `}
                   onClick={(e) => {
+                    e.preventDefault()
                     e.stopPropagation()
+                    console.log('Menu link clicked:', item.href)
                     onClose()
                   }}
                 >
@@ -139,7 +149,9 @@ export default function MobileMenuModern({ isOpen, onClose }: MobileMenuModernPr
             href="/catalogo" 
             className={styles.ctaButton}
             onClick={(e) => {
+              e.preventDefault()
               e.stopPropagation()
+              console.log('CTA button clicked')
               onClose()
             }}
           >

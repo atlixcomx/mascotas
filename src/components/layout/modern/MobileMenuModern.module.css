@@ -68,19 +68,21 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 1.25rem;
+  padding: 0.75rem 1rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   position: sticky;
   top: 0;
   background: #0e312d;
   z-index: 10;
-  min-height: 60px;
+  min-height: 50px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .menuLogo {
-  height: auto;
+  height: 28px;
   width: auto;
+  max-width: 100px;
+  object-fit: contain;
   filter: brightness(1.2) contrast(1.1);
 }
 
@@ -88,14 +90,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   background: transparent;
   border: none;
   cursor: pointer;
   border-radius: 50%;
   transition: all 0.2s ease;
   color: white;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .closeButton:hover {

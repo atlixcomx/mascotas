@@ -238,9 +238,6 @@ export default function ComerciosFriendlyPage() {
       <div style={{
         backgroundColor: 'white',
         borderBottom: '1px solid #e5e7eb',
-        position: 'sticky',
-        top: '88px',
-        zIndex: 40,
         boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
       }}>
         <div style={{

@@ -103,6 +103,7 @@ export default function HeaderNew() {
               href={item.href}
               className="mobile-menu-link"
               onClick={closeMenu}
+              style={{ color: '#000000', fontWeight: 700 }}
             >
               {item.label}
             </Link>
@@ -286,6 +287,11 @@ export default function HeaderNew() {
           transition: right 0.3s ease;
           overflow-y: auto;
         }
+        
+        /* Forzar texto negro en todo el menú móvil */
+        :global(.mobile-menu *) {
+          color: #000000 !important;
+        }
 
         .mobile-menu--open {
           right: 0;
@@ -302,7 +308,7 @@ export default function HeaderNew() {
         .mobile-menu-title {
           font-size: 18px;
           font-weight: 700;
-          color: #000000;
+          color: #000000 !important;
         }
 
         .mobile-menu-close {
@@ -328,9 +334,9 @@ export default function HeaderNew() {
         .mobile-menu-link {
           display: block;
           padding: 16px 20px;
-          color: #000000;
+          color: #000000 !important;
           text-decoration: none;
-          font-weight: 500;
+          font-weight: 700;
           font-size: 16px;
           border-bottom: 1px solid #f3f4f6;
           transition: var(--transition);
@@ -349,13 +355,17 @@ export default function HeaderNew() {
           margin: 20px;
           padding: 14px 16px;
           background-color: var(--cta-color);
-          color: white;
+          color: white !important;
           text-decoration: none;
           font-weight: 600;
           font-size: 15px;
           border-radius: 8px;
           transition: var(--transition);
           box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        :global(.mobile-menu-cta span) {
+          color: white !important;
         }
 
         .mobile-menu-cta:hover {

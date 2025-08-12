@@ -86,13 +86,13 @@ export default function HeaderNew() {
       {/* Menú móvil */}
       <div className={`mobile-menu ${isMobileMenuOpen ? 'mobile-menu--open' : ''}`}>
         <div className="mobile-menu-header">
-          <span className="mobile-menu-title">Menú</span>
+          <h2 className="mobile-menu-title">Menú</h2>
           <button
             className="mobile-menu-close"
             onClick={closeMenu}
             aria-label="Cerrar menú"
           >
-            <CloseIcon size={20} color="#4a4a4a" />
+            <CloseIcon size={24} color="#000000" />
           </button>
         </div>
         
@@ -103,9 +103,8 @@ export default function HeaderNew() {
               href={item.href}
               className="mobile-menu-link"
               onClick={closeMenu}
-              style={{ color: '#000000', fontWeight: 700 }}
             >
-              {item.label}
+              <span className="mobile-menu-text">{item.label}</span>
             </Link>
           ))}
           <Link
@@ -113,8 +112,8 @@ export default function HeaderNew() {
             className="mobile-menu-cta"
             onClick={closeMenu}
           >
-            <DogIcon size={18} color="white" />
-            <span>Ver Catálogo de Perritos</span>
+            <DogIcon size={20} color="white" />
+            <span className="mobile-menu-cta-text">Ver Catálogo de Perritos</span>
           </Link>
         </nav>
       </div>
@@ -278,19 +277,14 @@ export default function HeaderNew() {
         .mobile-menu {
           position: fixed;
           top: 0;
-          right: -280px;
-          width: 280px;
+          right: -320px;
+          width: 320px;
           height: 100vh;
-          background-color: white;
-          box-shadow: -2px 0 8px rgba(0,0,0,0.1);
+          background-color: #ffffff;
+          box-shadow: -4px 0 16px rgba(0,0,0,0.15);
           z-index: 1002;
           transition: right 0.3s ease;
           overflow-y: auto;
-        }
-        
-        /* Forzar texto negro en todo el menú móvil */
-        :global(.mobile-menu *) {
-          color: #000000 !important;
         }
 
         .mobile-menu--open {
@@ -301,82 +295,118 @@ export default function HeaderNew() {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          padding: 20px;
-          border-bottom: 1px solid #e5e7eb;
+          padding: 24px;
+          border-bottom: 2px solid #f0f0f0;
+          background-color: #fafafa;
         }
 
         .mobile-menu-title {
-          font-size: 18px;
-          font-weight: 700;
-          color: #000000 !important;
+          font-size: 24px;
+          font-weight: 800;
+          color: #000000;
+          margin: 0;
+          letter-spacing: -0.5px;
         }
 
         .mobile-menu-close {
-          background: none;
-          border: none;
-          padding: 8px;
+          background-color: #f0f0f0;
+          border: 2px solid #000000;
+          padding: 10px;
           cursor: pointer;
-          border-radius: 4px;
-          transition: var(--transition);
+          border-radius: 8px;
+          transition: all 0.2s ease;
           display: flex;
           align-items: center;
           justify-content: center;
         }
 
         .mobile-menu-close:hover {
-          background-color: #f3f4f6;
+          background-color: #000000;
+        }
+        
+        :global(.mobile-menu-close:hover svg) {
+          stroke: #ffffff;
         }
 
         .mobile-menu-nav {
-          padding: 20px 0;
+          padding: 24px 0;
         }
 
         .mobile-menu-link {
-          display: block;
-          padding: 16px 20px;
-          color: #000000 !important;
+          display: flex;
+          align-items: center;
+          padding: 20px 24px;
           text-decoration: none;
+          border-bottom: 1px solid #f0f0f0;
+          transition: all 0.2s ease;
+          position: relative;
+        }
+        
+        .mobile-menu-text {
+          color: #000000;
+          font-size: 18px;
           font-weight: 700;
-          font-size: 16px;
-          border-bottom: 1px solid #f3f4f6;
-          transition: var(--transition);
+          letter-spacing: -0.3px;
         }
 
         .mobile-menu-link:hover {
-          background-color: #f9fafb;
-          padding-left: 24px;
+          background-color: #f5f5f5;
+        }
+        
+        .mobile-menu-link:hover .mobile-menu-text {
+          color: #af1731;
+          transform: translateX(8px);
         }
 
         .mobile-menu-cta {
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 8px;
-          margin: 20px;
-          padding: 14px 16px;
-          background-color: var(--cta-color);
-          color: white !important;
+          gap: 12px;
+          margin: 24px;
+          padding: 18px 24px;
+          background-color: #0e312d;
           text-decoration: none;
-          font-weight: 600;
-          font-size: 15px;
-          border-radius: 8px;
-          transition: var(--transition);
-          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+          border-radius: 12px;
+          transition: all 0.3s ease;
+          box-shadow: 0 4px 12px rgba(14, 49, 45, 0.25);
         }
         
-        :global(.mobile-menu-cta span) {
-          color: white !important;
+        .mobile-menu-cta-text {
+          color: #ffffff;
+          font-size: 18px;
+          font-weight: 700;
+          letter-spacing: -0.3px;
         }
 
         .mobile-menu-cta:hover {
           transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+          box-shadow: 0 6px 20px rgba(14, 49, 45, 0.35);
+          background-color: #1a4a45;
         }
 
         /* Animaciones */
         @keyframes fadeIn {
           to {
             opacity: 1;
+          }
+        }
+        
+        /* Estilos adicionales para mejorar legibilidad móvil */
+        @media (max-width: 768px) {
+          .mobile-menu-text {
+            transition: transform 0.2s ease;
+          }
+          
+          /* Asegurar que el menú se vea correctamente en móviles pequeños */
+          .mobile-menu {
+            width: 100%;
+            max-width: 320px;
+            right: -100%;
+          }
+          
+          .mobile-menu--open {
+            right: 0;
           }
         }
 

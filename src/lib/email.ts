@@ -1,3 +1,4 @@
+import { Resend } from 'resend'
 import { emailTemplates } from './email-templates'
 
 // Interface para el servicio de email
@@ -7,30 +8,52 @@ interface EmailOptions {
   html: string
 }
 
-// Servicio de email (puedes cambiar esto por SendGrid, AWS SES, etc.)
+// Inicializar Resend
+const resend = new Resend(process.env.RESEND_API_KEY)
+
+// Servicio de email con Resend
 export class EmailService {
   static async send(options: EmailOptions): Promise<boolean> {
     try {
-      // En producción, aquí irá la integración con tu servicio de email preferido
-      // Por ejemplo, con SendGrid:
-      // const sgMail = require('@sendgrid/mail')
-      // sgMail.setApiKey(process.env.SENDGRID_API_KEY)
-      // await sgMail.send({
-      //   to: options.to,
-      //   from: process.env.EMAIL_FROM,
-      //   subject: options.subject,
-      //   html: options.html
-      // })
+      // Verificar que tenemos la API key
+      if (!process.env.RESEND_API_KEY) {
+        console.error('❌ RESEND_API_KEY no está configurada')
+        return false
+      }
 
-      // Por ahora, solo logueamos el email
+      // En sandbox, redirigir todos los emails a una dirección de prueba
+      const recipientEmail = process.env.NODE_ENV === 'production' 
+        ? options.to 
+        : process.env.TEST_EMAIL || options.to
+
+      // Agregar prefijo al asunto en modo sandbox
+      const emailSubject = process.env.NODE_ENV === 'production'
+        ? options.subject
+        : `[TEST para: ${options.to}] ${options.subject}`
+
+      // Enviar email con Resend
+      const { data, error } = await resend.emails.send({
+        from: process.env.EMAIL_FROM || 'Centro de Adopción <onboarding@resend.dev>',
+        to: recipientEmail,
+        subject: emailSubject,
+        html: options.html,
+      })
+
+      if (error) {
+        console.error('Error al enviar email con Resend:', error)
+        return false
+      }
+
       if (process.env.NODE_ENV === 'development') {
-        console.log('📧 Email enviado:')
-        console.log('Para:', options.to)
-        console.log('Asunto:', options.subject)
+        console.log('✅ Email enviado exitosamente:')
+        console.log('ID:', data?.id)
+        console.log('De:', process.env.EMAIL_FROM || 'onboarding@resend.dev')
+        console.log('Para (original):', options.to)
+        console.log('Para (real):', recipientEmail)
+        console.log('Asunto:', emailSubject)
         console.log('---')
       }
 
-      // Simulamos el envío exitoso
       return true
     } catch (error) {
       console.error('Error al enviar email:', error)

@@ -12,6 +12,8 @@
       "NEXTAUTH_URL": "http://localhost:3000",
       "ADMIN_EMAIL": "admin@example.com",
       "ADMIN_PASSWORD": "dummy_password",
+      "RESEND_API_KEY": "dummy_resend_key",
+      "EMAIL_FROM": "noreply@example.com",
       "SKIP_ENV_VALIDATION": "1"
     }
   },

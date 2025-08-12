@@ -190,56 +190,41 @@ export default function NuevoSeguimiento() {
 
   async function fetchAdopciones(selectedId?: string) {
     try {
-      // Mock data - replace with actual API call
-      const mockData: Adopcion[] = [
-        {
-          id: '1',
-          folio: 'ADOP-2024-001',
-          fechaAdopcion: '2024-01-08',
-          adoptante: {
-            nombre: 'María González',
-            telefono: '222-123-4567',
-            email: 'maria.gonzalez@email.com',
-            direccion: 'Av. Reforma 123, Col. Centro'
-          },
-          mascota: {
-            id: 'perro1',
-            nombre: 'Luna',
-            codigo: 'PER-001',
-            foto: '/placeholder-dog.jpg',
-            raza: 'Mestizo',
-            edad: '2 años',
-            sexo: 'Hembra'
-          },
-          estado: 'adoptado'
+      // Obtener solicitudes aprobadas con toda la información necesaria
+      const response = await fetch('/api/admin/solicitudes?estado=aprobada&includePerrito=true')
+      if (!response.ok) throw new Error('Error al cargar adopciones')
+      
+      const data = await response.json()
+      
+      // Transformar las solicitudes aprobadas al formato de Adopcion
+      const adopcionesData: Adopcion[] = data.solicitudes.map((solicitud: any) => ({
+        id: solicitud.id,
+        folio: solicitud.codigo,
+        fechaAdopcion: solicitud.fechaAdopcion ? new Date(solicitud.fechaAdopcion).toISOString().split('T')[0] : new Date(solicitud.updatedAt).toISOString().split('T')[0],
+        adoptante: {
+          nombre: solicitud.nombre,
+          telefono: solicitud.telefono,
+          email: solicitud.email,
+          direccion: solicitud.direccion
         },
-        {
-          id: '2',
-          folio: 'ADOP-2024-002',
-          fechaAdopcion: '2024-01-12',
-          adoptante: {
-            nombre: 'Carlos Hernández',
-            telefono: '222-987-6543',
-            email: 'carlos.hernandez@email.com',
-            direccion: 'Calle 5 de Mayo 456, Col. San Miguel'
-          },
-          mascota: {
-            id: 'perro2',
-            nombre: 'Rocky',
-            codigo: 'PER-002',
-            foto: '/placeholder-dog.jpg',
-            raza: 'Pastor Alemán Mix',
-            edad: '3 años',
-            sexo: 'Macho'
-          },
-          estado: 'adoptado'
-        }
-      ]
+        mascota: {
+          id: solicitud.perrito.id,
+          nombre: solicitud.perrito.nombre,
+          codigo: solicitud.perrito.codigo,
+          foto: solicitud.perrito.fotos && solicitud.perrito.fotos.length > 0 
+            ? solicitud.perrito.fotos[0].url 
+            : '/default-dog.jpg',
+          raza: solicitud.perrito.raza,
+          edad: solicitud.perrito.edad,
+          sexo: solicitud.perrito.sexo
+        },
+        estado: 'adoptado'
+      }))
 
-      setAdopciones(mockData)
+      setAdopciones(adopcionesData)
       
       if (selectedId) {
-        const adopcion = mockData.find(a => a.id === selectedId)
+        const adopcion = adopcionesData.find(a => a.id === selectedId)
         if (adopcion) {
           setSelectedAdopcion(adopcion)
           setStep(2)

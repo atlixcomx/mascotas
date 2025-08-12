@@ -138,9 +138,8 @@ export default function HeaderNew() {
         .header {
           background-color: var(--bg-color);
           box-shadow: var(--shadow);
-          position: sticky;
-          top: 0;
-          z-index: 1000;
+          position: relative;
+          z-index: 100;
         }
 
         .header-container {
@@ -293,7 +292,7 @@ export default function HeaderNew() {
         .mobile-menu-title {
           font-size: 18px;
           font-weight: 700;
-          color: var(--text-color);
+          color: #000000;
         }
 
         .mobile-menu-close {
@@ -319,7 +318,7 @@ export default function HeaderNew() {
         .mobile-menu-link {
           display: block;
           padding: 16px 20px;
-          color: var(--text-color);
+          color: #000000;
           text-decoration: none;
           font-weight: 500;
           font-size: 16px;

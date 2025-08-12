@@ -17,20 +17,36 @@ export default function MobileMenuModern({ isOpen, onClose }: MobileMenuModernPr
   const menuRef = useRef<HTMLDivElement>(null)
   const lastTouchY = useRef(0)
 
-  // Manejo de gestos táctiles para cerrar
+  // Manejo de gestos táctiles para cerrar (mejorado)
   useEffect(() => {
     if (!isOpen) return
 
+    let startY = 0
+    let startTime = 0
+
     const handleTouchStart = (e: TouchEvent) => {
-      lastTouchY.current = e.touches[0].clientY
+      startY = e.touches[0].clientY
+      startTime = Date.now()
+      lastTouchY.current = startY
     }
 
     const handleTouchMove = (e: TouchEvent) => {
-      const currentY = e.touches[0].clientY
-      const deltaY = currentY - lastTouchY.current
+      if (!menuRef.current) return
       
-      // Si el usuario desliza hacia abajo desde la parte superior, cerrar
-      if (menuRef.current && deltaY > 50 && menuRef.current.scrollTop === 0) {
+      const currentY = e.touches[0].clientY
+      const deltaY = currentY - startY
+      const elapsedTime = Date.now() - startTime
+      const velocity = deltaY / elapsedTime
+      
+      // Solo cerrar si:
+      // 1. El gesto comienza en el 20% superior del menú
+      // 2. El desplazamiento es mayor a 80px hacia abajo
+      // 3. La velocidad es suficiente (>0.5 px/ms)
+      // 4. El menú está en la parte superior (no ha scrolleado)
+      const menuRect = menuRef.current.getBoundingClientRect()
+      const startInTopArea = startY < menuRect.top + (menuRect.height * 0.2)
+      
+      if (startInTopArea && deltaY > 80 && velocity > 0.5 && menuRef.current.scrollTop === 0) {
         onClose()
       }
     }
@@ -134,7 +150,10 @@ export default function MobileMenuModern({ isOpen, onClose }: MobileMenuModernPr
                     ${isActiveRoute(item.href) ? styles.active : ''}
                     ${item.highlight ? styles.highlight : ''}
                   `}
-                  onClick={onClose}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onClose()
+                  }}
                 >
                   <span className={styles.menuIcon}>{item.icon}</span>
                   <span className={styles.menuLabel}>{item.label}</span>
@@ -152,7 +171,10 @@ export default function MobileMenuModern({ isOpen, onClose }: MobileMenuModernPr
           <Link 
             href="/catalogo" 
             className={styles.ctaButton}
-            onClick={onClose}
+            onClick={(e) => {
+              e.stopPropagation()
+              onClose()
+            }}
           >
             <span className={styles.ctaIcon}>🐕</span>
             <span className={styles.ctaText}>Conoce a nuestros perritos</span>

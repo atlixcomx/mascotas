@@ -57,9 +57,10 @@
   transform: translateX(-50%);
   width: 36px;
   height: 4px;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.5);
   border-radius: 2px;
   z-index: 10;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Menu Header */
@@ -68,17 +69,19 @@
   align-items: center;
   justify-content: space-between;
   padding: 1rem 1.25rem;
-  border-bottom: 1px solid #e5e5e5;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   position: sticky;
   top: 0;
-  background: #ffffff;
+  background: linear-gradient(135deg, #2d5a27 0%, #4a7c59 100%);
   z-index: 10;
   min-height: 60px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .menuLogo {
   height: auto;
   width: auto;
+  filter: brightness(1.1);
 }
 
 .closeButton {
@@ -92,15 +95,20 @@
   cursor: pointer;
   border-radius: 50%;
   transition: all 0.2s ease;
-  color: var(--foreground);
+  color: white;
 }
 
 .closeButton:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.closeButton:active {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(0.95);
 }
 
 .closeButton:focus-visible {
-  outline: 2px solid var(--puebla-primary);
+  outline: 2px solid white;
   outline-offset: 2px;
 }
 

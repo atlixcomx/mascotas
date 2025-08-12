@@ -6,17 +6,21 @@
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0);
-  z-index: 1100;
+  z-index: 99998;
   opacity: 0;
   visibility: hidden;
   transition: all 0.3s ease;
   -webkit-tap-highlight-color: transparent;
+  -webkit-backdrop-filter: blur(0px);
+  backdrop-filter: blur(0px);
 }
 
 .overlay.open {
   opacity: 1;
   visibility: visible;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.75);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
 }
 
 /* Menu Container */
@@ -25,10 +29,10 @@
   top: 0;
   right: 0;
   bottom: 0;
-  width: 100%;
-  max-width: 400px;
-  background: white;
-  z-index: 1200;
+  width: 85%;
+  max-width: 320px;
+  background: #ffffff;
+  z-index: 99999;
   transform: translateX(100%);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
@@ -36,11 +40,13 @@
   overflow-y: auto;
   overscroll-behavior-y: contain;
   -webkit-overflow-scrolling: touch;
+  -webkit-transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
 }
 
 .menu.open {
   transform: translateX(0);
-  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
+  box-shadow: -12px 0 40px rgba(0, 0, 0, 0.3);
 }
 
 /* Pull Indicator (para gestos) */
@@ -61,12 +67,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 1.5rem;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #e5e5e5;
   position: sticky;
   top: 0;
-  background: white;
+  background: #ffffff;
   z-index: 10;
+  min-height: 60px;
 }
 
 .menuLogo {
@@ -128,39 +135,47 @@
 .menuLink {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 1rem 1.5rem;
-  color: var(--foreground);
+  gap: 0.875rem;
+  padding: 0.875rem 1.25rem;
+  color: #1a1a1a;
   text-decoration: none;
-  font-family: var(--font-heading);
-  font-size: 16px;
-  font-weight: 500;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 15px;
+  font-weight: 600;
   transition: all 0.2s ease;
   position: relative;
   -webkit-tap-highlight-color: transparent;
+  margin: 0 0.75rem 0.5rem;
+  border-radius: 10px;
+  background: #f8f8f8;
 }
 
-.menuLink:hover {
-  background: rgba(175, 23, 49, 0.05);
-  color: var(--puebla-primary);
+.menuLink:active {
+  background: #f0f0f0;
+  transform: scale(0.98);
 }
 
 .menuLink.active {
-  color: var(--puebla-primary);
-  font-weight: 600;
-  background: rgba(175, 23, 49, 0.05);
+  color: #af1731;
+  font-weight: 700;
+  background: rgba(175, 23, 49, 0.08);
 }
 
 .menuIcon {
-  font-size: 20px;
-  width: 32px;
+  font-size: 18px;
+  width: 30px;
+  height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
 }
 
 .menuLabel {
   flex: 1;
+  line-height: 1.3;
 }
 
 .activeIndicator {
@@ -176,37 +191,32 @@
 
 /* CTA Section */
 .ctaSection {
-  padding: 1.5rem;
-  background: linear-gradient(135deg, 
-    rgba(175, 23, 49, 0.05) 0%, 
-    rgba(199, 155, 102, 0.05) 100%
-  );
+  padding: 1rem 1.25rem 1.25rem;
+  background: #ffffff;
+  border-top: 1px solid #e5e5e5;
 }
 
 .ctaButton {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.75rem;
   width: 100%;
-  padding: 1.25rem 1.5rem;
-  background: linear-gradient(135deg, 
-    var(--puebla-primary) 0%, 
-    var(--puebla-secondary) 100%
-  );
+  padding: 1rem 1.25rem;
+  background: #af1731;
   color: white;
   text-decoration: none;
-  border-radius: 16px;
-  font-family: var(--font-heading);
-  font-size: 16px;
-  font-weight: 600;
-  box-shadow: 0 6px 20px rgba(175, 23, 49, 0.3);
-  transition: all 0.3s ease;
+  border-radius: 12px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(175, 23, 49, 0.25);
+  transition: all 0.2s ease;
   -webkit-tap-highlight-color: transparent;
 }
 
-.ctaButton:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(175, 23, 49, 0.4);
+.ctaButton:active {
+  transform: scale(0.98);
+  box-shadow: 0 2px 8px rgba(175, 23, 49, 0.2);
 }
 
 .ctaIcon {
@@ -231,32 +241,47 @@
   padding: 2rem 1.5rem;
   text-align: center;
   border-top: 1px solid rgba(0, 0, 0, 0.05);
+  background: #ffffff;
 }
 
 .footerText {
   font-family: var(--font-heading);
   font-size: 14px;
   font-weight: 600;
-  color: var(--foreground);
+  color: #1a1a1a;
   margin: 0 0 0.5rem 0;
+  line-height: 1.5;
 }
 
 .footerSubtext {
   font-size: 13px;
-  color: rgba(14, 49, 45, 0.6);
+  color: #666666;
   margin: 0;
+  line-height: 1.4;
 }
 
 /* Highlight item */
 .menuLink.highlight {
-  color: var(--puebla-primary);
-  font-weight: 600;
+  color: #af1731;
+  font-weight: 700;
+  background: rgba(175, 23, 49, 0.1);
 }
 
 /* Mobile optimizations */
 @media (max-width: 400px) {
   .menu {
+    width: 90%;
     max-width: 100%;
+  }
+  
+  .menuLink {
+    font-size: 14px;
+    padding: 0.75rem 1rem;
+  }
+  
+  .ctaButton {
+    font-size: 14px;
+    padding: 0.875rem 1rem;
   }
 }
 

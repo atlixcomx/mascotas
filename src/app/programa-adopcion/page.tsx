@@ -64,38 +64,44 @@ export default function ProgramaAdopcion() {
     }}>
       {/* Hero Section */}
       <section style={{
-        minHeight: '85vh',
+        minHeight: 'clamp(70vh, 85vh, 90vh)',
         background: 'linear-gradient(135deg, #0e312d 0%, #1a4a45 50%, #246257 100%)',
         position: 'relative',
         overflow: 'hidden',
         display: 'flex',
         alignItems: 'center',
-        padding: 'clamp(40px, 10vw, 80px) 20px'
+        padding: 'clamp(20px, 8vw, 80px) clamp(16px, 5vw, 20px)'
       }}>
-        {/* Elementos decorativos del escudo - Popocatépetl */}
-        <div style={{
-          position: 'absolute',
-          bottom: 0,
-          right: 0,
-          width: '60%',
-          height: '60%',
-          opacity: 0.05,
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M100 20L40 180L160 180Z' fill='white'/%3E%3C/svg%3E")`,
-          backgroundRepeat: 'no-repeat',
-          backgroundPosition: 'bottom right',
-          backgroundSize: 'contain'
-        }} />
+        {/* Elementos decorativos - solo en desktop */}
+        <div 
+          className="decorative-elements"
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            right: 0,
+            width: '60%',
+            height: '60%',
+            opacity: 0.05,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M100 20L40 180L160 180Z' fill='white'/%3E%3C/svg%3E")`,
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'bottom right',
+            backgroundSize: 'contain'
+          }} 
+        />
 
-        {/* Patrón de agua */}
-        <div style={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          width: '100%',
-          height: '200px',
-          opacity: 0.1,
-          background: 'repeating-linear-gradient(0deg, transparent, transparent 10px, rgba(255,255,255,0.1) 10px, rgba(255,255,255,0.1) 20px)'
-        }} />
+        {/* Patrón de agua - solo en desktop */}
+        <div 
+          className="water-pattern"
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            width: '100%',
+            height: '200px',
+            opacity: 0.1,
+            background: 'repeating-linear-gradient(0deg, transparent, transparent 10px, rgba(255,255,255,0.1) 10px, rgba(255,255,255,0.1) 20px)'
+          }} 
+        />
 
         <div style={{
           maxWidth: '1200px',
@@ -103,8 +109,8 @@ export default function ProgramaAdopcion() {
           position: 'relative',
           zIndex: 1,
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-          gap: '60px',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+          gap: 'clamp(24px, 8vw, 60px)',
           alignItems: 'center'
         }}>
           <div style={{
@@ -180,8 +186,8 @@ export default function ProgramaAdopcion() {
           <div style={{
             animation: 'slideInRight 1s ease-out 0.4s both',
             display: 'grid',
-            gridTemplateColumns: 'repeat(2, 1fr)',
-            gap: '24px'
+            gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+            gap: 'clamp(16px, 4vw, 24px)'
           }}>
             {[
               { Icon: MountainIcon, title: 'Fortaleza', desc: 'Popocatépetl representa nuestra solidez institucional' },
@@ -462,11 +468,11 @@ export default function ProgramaAdopcion() {
                 desc: 'Trabajamos el comportamiento y socialización. Cada animal recibe atención personalizada para superar traumas y prepararse para su nueva vida.'
               }
             ].map((step, idx) => (
-              <div key={idx} style={{
+              <div key={idx} className="process-card" style={{
                 display: 'flex',
                 alignItems: 'flex-start',
-                gap: '20px',
-                padding: '24px',
+                gap: 'clamp(16px, 4vw, 20px)',
+                padding: 'clamp(16px, 4vw, 24px)',
                 background: '#f8f9fa',
                 borderRadius: '16px',
                 border: '1px solid #e9ecef'
@@ -796,6 +802,24 @@ export default function ProgramaAdopcion() {
       
       {/* Animaciones CSS */}
       <style jsx>{`
+        /* Responsive para móvil */
+        @media (max-width: 768px) {
+          .decorative-elements,
+          .water-pattern {
+            display: none !important;
+          }
+          
+          .process-card {
+            flex-direction: column !important;
+            text-align: center !important;
+            align-items: center !important;
+          }
+          
+          .process-card > div:first-child {
+            margin-bottom: 16px !important;
+          }
+        }
+
         @keyframes slideInLeft {
           from {
             opacity: 0;

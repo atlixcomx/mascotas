@@ -1,4 +1,4 @@
-import Header from './Header';
+import HeaderNew from './HeaderNew';
 import Footer from './Footer';
 
 interface LayoutProps {
@@ -14,7 +14,7 @@ export default function Layout({ children }: LayoutProps) {
       backgroundColor: '#f8f8f8',
       fontFamily: 'system-ui, -apple-system, sans-serif'
     }}>
-      <Header />
+      <HeaderNew />
       <main style={{ flex: 1 }}>
         {children}
       </main>

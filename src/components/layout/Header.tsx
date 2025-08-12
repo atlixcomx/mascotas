@@ -59,7 +59,6 @@ export default function Header() {
       }}>
         <div style={{
           display: 'flex',
-          justifyContent: 'space-between',
           alignItems: 'center',
           minHeight: '60px',
           position: 'relative'
@@ -105,9 +104,7 @@ export default function Header() {
             alignItems: 'center',
             gap: '8px',
             flexWrap: 'nowrap',
-            flex: '1 1 auto',
-            justifyContent: 'flex-end',
-            marginLeft: '4px'
+            marginLeft: '20px'
           }}>
             <a href="/" style={{
               color: '#0e312d',

@@ -126,7 +126,6 @@ export default function MobileMenuModern({ isOpen, onClose }: MobileMenuModernPr
                     ${item.highlight ? styles.highlight : ''}
                   `}
                   onClick={(e) => {
-                    e.preventDefault()
                     e.stopPropagation()
                     console.log('Menu link clicked:', item.href)
                     onClose()
@@ -149,7 +148,6 @@ export default function MobileMenuModern({ isOpen, onClose }: MobileMenuModernPr
             href="/catalogo" 
             className={styles.ctaButton}
             onClick={(e) => {
-              e.preventDefault()
               e.stopPropagation()
               console.log('CTA button clicked')
               onClose()

@@ -115,6 +115,7 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
           width: 100%;
           max-width: 380px;
           height: 100vh;
+          height: 100dvh;
           background-color: #ffffff;
           z-index: 1000;
           transition: right 0.3s ease;
@@ -174,6 +175,7 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
           flex: 1;
           overflow-y: auto;
           padding: 24px 0;
+          -webkit-overflow-scrolling: touch;
         }
 
         .mobile-nav-item {
@@ -217,6 +219,8 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
           font-weight: 600;
           color: #000000;
           letter-spacing: -0.3px;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
         }
 
         .mobile-nav-arrow {

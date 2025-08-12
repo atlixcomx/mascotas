@@ -213,7 +213,7 @@ const ActivityItem = memo(({
           margin: '0 0 4px 0',
           lineHeight: 1.5
         }}>
-          {descripcion}
+          {descripcion || 'Sin descripción'}
         </p>
         <p style={{ 
           fontSize: '0.75rem', 
@@ -316,8 +316,8 @@ export function RealtimeDashboardOptimized() {
           metrics={[
             { value: metrics.actividad.accionesUltimaHora, label: 'Últ. hora', color: '#1f2937' },
             { value: metrics.actividad.usuariosActivos, label: 'Usuarios activos', color: '#3b82f6' },
-            { value: `${metrics.actividad.tiempoPromedioPagina}s`, label: 'T. promedio', color: '#8b5cf6' },
-            { value: metrics.actividad.paginasVistas, label: 'Páginas vistas', color: '#f59e0b' }
+            { value: metrics.actividad.solicitudesUltimaHora, label: 'Solicitudes últ. hora', color: '#8b5cf6' },
+            { value: metrics.actividad.visitasHoy, label: 'Visitas hoy', color: '#f59e0b' }
           ]}
         />
       </div>
@@ -379,7 +379,7 @@ export function RealtimeDashboardOptimized() {
                 key={event.id}
                 tipo={event.tipo}
                 descripcion={event.descripcion}
-                timestamp={event.timestamp}
+                timestamp={new Date(event.timestamp)}
               />
             ))
           )}

@@ -1,0 +1,2 @@
+Trigger deploy at: 2025-08-12 10:46:00
+Purpose: Force Vercel to detect new changes after UI/UX implementation

@@ -52,3 +52,4 @@ Mejorar visibilidad mediante QRs en comercios
 
 👥 Equipo
 Centro Municipal de Adopción y Bienestar Animal de Atlixco, Puebla
+chore: Trigger Vercel deployment - mobile menu contrast fixes

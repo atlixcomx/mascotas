@@ -116,8 +116,8 @@ export default function HeaderNew() {
       <style jsx>{`
         /* Variables CSS */
         :root {
-          --header-height-mobile: 80px;
-          --header-height-desktop: 120px;
+          --header-height-mobile: 120px;
+          --header-height-desktop: 180px;
           --primary-color: #0e312d;
           --accent-color: #af1731;
           --cta-color: #0e312d;
@@ -168,8 +168,8 @@ export default function HeaderNew() {
         }
 
         :global(.header-logo-img) {
-          width: 60px;
-          height: 60px;
+          width: 100px;
+          height: 100px;
           object-fit: contain;
         }
 
@@ -181,11 +181,11 @@ export default function HeaderNew() {
         }
 
         .header-nav-link {
-          color: #000000;
+          color: #000000 !important;
           text-decoration: none;
-          font-size: 15px;
-          font-weight: 600;
-          padding: 8px 12px;
+          font-size: 18px;
+          font-weight: 700;
+          padding: 12px 20px;
           border-radius: 6px;
           transition: var(--transition);
           position: relative;
@@ -367,8 +367,8 @@ export default function HeaderNew() {
           }
 
           :global(.header-logo-img) {
-            width: 90px;
-            height: 90px;
+            width: 140px;
+            height: 140px;
           }
 
           .header-nav-desktop {
@@ -382,8 +382,8 @@ export default function HeaderNew() {
 
         @media (min-width: 1024px) {
           :global(.header-logo-img) {
-            width: 100px;
-            height: 100px;
+            width: 160px;
+            height: 160px;
           }
 
           .header-nav-desktop {
@@ -391,7 +391,8 @@ export default function HeaderNew() {
           }
 
           .header-nav-link {
-            font-size: 16px;
+            font-size: 18px !important;
+            color: #000000 !important;
           }
 
           .header-cta-button {

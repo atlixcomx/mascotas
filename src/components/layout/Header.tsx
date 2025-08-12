@@ -378,11 +378,13 @@ export default function Header() {
           
           .logo-container {
             margin: 0 !important;
-            height: 207px !important;
+            height: 80px !important;
+            width: 80px !important;
+            min-width: 80px !important;
           }
           
           .header-container {
-            min-height: 207px !important;
+            min-height: 80px !important;
           }
         }
         

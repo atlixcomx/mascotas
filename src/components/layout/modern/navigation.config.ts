@@ -16,12 +16,6 @@ export const navigationItems: NavigationItem[] = [
     icon: '🏠'
   },
   {
-    id: 'animal-welfare',
-    label: 'Bienestar Animal',
-    href: '/programa-adopcion',
-    icon: '❤️'
-  },
-  {
     id: 'catalog',
     label: 'Catálogo Adopción',
     href: '/catalogo',

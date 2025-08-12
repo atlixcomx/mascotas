@@ -6,8 +6,7 @@ import {
   Heart, Dog, Building2, Search, FileText, Home as HomeIcon, 
   HeartHandshake, Shield, Stethoscope, Star, Users, Phone,
   Mail, Clock, MapPin, ChevronRight, CheckCircle, Store,
-  Coffee, Hotel, ShoppingBag, Trees, Sparkles, Activity,
-  Baby, UserCheck, ClipboardCheck, Calendar, ArrowRight
+  Coffee, Hotel, ShoppingBag, Trees
 } from 'lucide-react'
 
 interface Perrito {
@@ -20,39 +19,11 @@ interface Perrito {
   raza: string
 }
 
-// Componente contador animado
-function AnimatedCounter({ value, suffix = '' }: { value: number; suffix?: string }) {
-  const [count, setCount] = useState(0)
-  
-  useEffect(() => {
-    const duration = 2000 // 2 segundos
-    const steps = 60
-    const increment = value / steps
-    let current = 0
-    
-    const timer = setInterval(() => {
-      current += increment
-      if (current >= value) {
-        setCount(value)
-        clearInterval(timer)
-      } else {
-        setCount(Math.floor(current))
-      }
-    }, duration / steps)
-    
-    return () => clearInterval(timer)
-  }, [value])
-  
-  return <span>{count}{suffix}</span>
-}
-
-export default function HomeNew() {
+export default function Home() {
   const [perritosRecientes, setPerritosRecientes] = useState<Perrito[]>([])
   const [loading, setLoading] = useState(true)
-  const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
-    // Cargar perritos
     fetch('/api/perritos?limit=3&orderBy=createdAt&order=desc')
       .then(res => res.json())
       .then(data => {
@@ -62,28 +33,11 @@ export default function HomeNew() {
         setLoading(false)
       })
       .catch(() => setLoading(false))
-
-    // Activar animaciones cuando sea visible
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true)
-        }
-      },
-      { threshold: 0.1 }
-    )
-
-    const element = document.getElementById('stats-section')
-    if (element) observer.observe(element)
-
-    return () => {
-      if (element) observer.unobserve(element)
-    }
   }, [])
 
   return (
     <div>
-      {/* Hero Section Mejorado */}
+      {/* Hero Section */}
       <section style={{
         minHeight: '90vh',
         display: 'flex',
@@ -92,7 +46,7 @@ export default function HomeNew() {
         position: 'relative',
         overflow: 'hidden'
       }}>
-        {/* Imagen de fondo */}
+        {/* Imagen de fondo fija */}
         <div
           style={{
             position: 'absolute',
@@ -107,7 +61,7 @@ export default function HomeNew() {
           }}
         />
         
-        {/* Overlay con gradiente */}
+        {/* Overlay oscuro */}
         <div style={{
           position: 'absolute',
           top: 0,
@@ -117,17 +71,6 @@ export default function HomeNew() {
           background: 'linear-gradient(135deg, rgba(14, 49, 45, 0.85) 0%, rgba(26, 74, 69, 0.85) 100%)',
           zIndex: 1
         }} />
-
-        {/* Elementos decorativos del ecosistema */}
-        <div style={{
-          position: 'absolute',
-          bottom: '20px',
-          right: '20px',
-          opacity: 0.2,
-          zIndex: 1
-        }}>
-          <Sparkles size={200} color="#bfb591" />
-        </div>
         
         <div style={{
           maxWidth: '1200px',
@@ -148,7 +91,7 @@ export default function HomeNew() {
           }}>
             <Building2 size={20} style={{ color: '#bfb591' }} />
             <span style={{ color: '#bfb591', fontSize: '14px', fontWeight: '600' }}>
-              GOBIERNO DE ATLIXCO 2024-2027
+              GOBIERNO DE ATLIXCO
             </span>
           </div>
 
@@ -183,17 +126,17 @@ export default function HomeNew() {
             maxWidth: '800px',
             margin: '0 auto 40px'
           }}>
-            Un compromiso del Gobierno Municipal con el bienestar animal, 
-            rescatando vidas y transformando familias en nuestra comunidad
+            Un compromiso del Gobierno Municipal con el bienestar animal y las familias de Atlixco
           </p>
           
+
           <div style={{
             display: 'flex',
             gap: '16px',
             justifyContent: 'center',
             flexWrap: 'wrap'
           }}>
-            <Link href="/catalogo" style={{
+            <Link href="/comercios-friendly" style={{
               backgroundColor: '#bfb591',
               color: '#0e312d',
               padding: '16px 32px',
@@ -207,9 +150,9 @@ export default function HomeNew() {
               boxShadow: '0 4px 14px rgba(191, 181, 145, 0.3)',
               transition: 'all 0.3s ease'
             }}>
-              <Dog size={20} /> Ver Catálogo de Adopción
+              <Store size={20} /> Ver Catálogo de Comercios Pet Friendly
             </Link>
-            <Link href="/comercios-friendly" style={{
+            <Link href="/noticias" style={{
               backgroundColor: 'transparent',
               color: 'white',
               padding: '16px 32px',
@@ -223,13 +166,13 @@ export default function HomeNew() {
               border: '2px solid rgba(255,255,255,0.3)',
               transition: 'all 0.3s ease'
             }}>
-              <Store size={20} /> Comercios Pet Friendly
+              <Dog size={20} /> Ver Noticias y Eventos
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Nuestro Compromiso Gubernamental + Proceso Veterinario */}
+      {/* Nuestro Compromiso Gubernamental */}
       <section style={{
         backgroundColor: '#f8f9fa',
         padding: 'clamp(40px, 10vw, 100px) 20px'
@@ -254,14 +197,26 @@ export default function HomeNew() {
             marginBottom: '60px',
             fontWeight: '300'
           }}>
-            Transformando Vidas con Protocolo Veterinario Certificado
+            Transformando Vidas, Fortaleciendo Comunidades
+          </p>
+          
+          <p style={{
+            fontSize: '18px',
+            color: '#666',
+            lineHeight: '1.8',
+            marginBottom: '40px',
+            textAlign: 'center',
+            maxWidth: '800px',
+            margin: '0 auto 40px'
+          }}>
+            Como parte de las políticas públicas de bienestar animal del Municipio de Atlixco, 
+            nuestro centro representa el compromiso gubernamental con:
           </p>
           
           <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: 'clamp(16px, 4vw, 32px)',
-            marginBottom: '60px'
+            gap: 'clamp(16px, 4vw, 32px)'
           }}>
             <div style={{
               backgroundColor: 'white',
@@ -276,7 +231,7 @@ export default function HomeNew() {
                 Rescate responsable
               </h3>
               <p style={{ color: '#666', lineHeight: '1.6' }}>
-                Protocolos de rescate seguros y humanitarios
+                de animales en situación de calle
               </p>
             </div>
             
@@ -293,7 +248,7 @@ export default function HomeNew() {
                 Atención veterinaria integral
               </h3>
               <p style={{ color: '#666', lineHeight: '1.6' }}>
-                5 etapas de cuidado médico especializado
+                con protocolos certificados
               </p>
             </div>
             
@@ -310,7 +265,7 @@ export default function HomeNew() {
                 Adopciones transparentes
               </h3>
               <p style={{ color: '#666', lineHeight: '1.6' }}>
-                Proceso claro con seguimiento post-adopción
+                que garantizan el bienestar animal
               </p>
             </div>
             
@@ -324,182 +279,18 @@ export default function HomeNew() {
             }}>
               <Store size={48} style={{ color: '#9333ea', marginBottom: '16px' }} />
               <h3 style={{ fontSize: '20px', fontWeight: '700', color: '#0e312d', marginBottom: '12px' }}>
-                Ciudad pet friendly
+                Promoción de espacios pet friendly
               </h3>
               <p style={{ color: '#666', lineHeight: '1.6' }}>
-                Red de comercios certificados para familias
+                para una ciudad más inclusiva
               </p>
             </div>
           </div>
-
-          {/* Proceso Veterinario Detallado */}
-          <div style={{
-            backgroundColor: 'white',
-            padding: '40px',
-            borderRadius: '20px',
-            boxShadow: '0 8px 30px rgba(0,0,0,0.08)'
-          }}>
-            <h3 style={{
-              fontSize: '28px',
-              fontWeight: '700',
-              color: '#0e312d',
-              marginBottom: '32px',
-              textAlign: 'center'
-            }}>
-              <Stethoscope size={32} style={{ display: 'inline', marginRight: '12px', color: '#0891b2' }} />
-              Nuestro Protocolo Veterinario de 5 Etapas
-            </h3>
-            
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-              gap: '24px'
-            }}>
-              {[
-                { icon: Search, title: 'Evaluación inicial', desc: 'Diagnóstico completo' },
-                { icon: Activity, title: 'Desparasitación', desc: 'Interna y externa' },
-                { icon: Shield, title: 'Vacunación', desc: 'Esquema completo' },
-                { icon: Heart, title: 'Esterilización', desc: 'Cirugía responsable' },
-                { icon: CheckCircle, title: 'Alta médica', desc: 'Listo para adopción' }
-              ].map((step, idx) => (
-                <div key={idx} style={{
-                  textAlign: 'center',
-                  padding: '20px'
-                }}>
-                  <div style={{
-                    width: '60px',
-                    height: '60px',
-                    backgroundColor: '#e0f2fe',
-                    borderRadius: '50%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    margin: '0 auto 16px'
-                  }}>
-                    <step.icon size={28} color="#0891b2" />
-                  </div>
-                  <h4 style={{
-                    fontSize: '16px',
-                    fontWeight: '600',
-                    color: '#0e312d',
-                    marginBottom: '4px'
-                  }}>
-                    {step.title}
-                  </h4>
-                  <p style={{
-                    fontSize: '14px',
-                    color: '#666'
-                  }}>
-                    {step.desc}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       </section>
 
-      {/* Proceso de Adopción Simplificado */}
-      <section style={{
-        backgroundColor: 'white',
-        padding: 'clamp(40px, 10vw, 80px) 20px'
-      }}>
-        <div style={{
-          maxWidth: '1000px',
-          margin: '0 auto'
-        }}>
-          <h2 style={{
-            fontSize: 'clamp(32px, 4vw, 42px)',
-            fontWeight: '800',
-            color: '#0e312d',
-            marginBottom: '48px',
-            textAlign: 'center'
-          }}>
-            Tu Camino Hacia la Adopción
-          </h2>
-          
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-            gap: '32px',
-            marginBottom: '48px'
-          }}>
-            {[
-              { icon: Search, title: 'Explora', desc: 'Conoce a nuestros perritos en el catálogo' },
-              { icon: UserCheck, title: 'Solicita', desc: 'Llena el formulario de adopción' },
-              { icon: ClipboardCheck, title: 'Entrevista', desc: 'Plática con nuestro equipo' },
-              { icon: Baby, title: 'Adopta', desc: '¡Lleva a tu nuevo amigo a casa!' }
-            ].map((step, idx) => (
-              <div key={idx} style={{
-                textAlign: 'center',
-                position: 'relative'
-              }}>
-                <div style={{
-                  width: '80px',
-                  height: '80px',
-                  backgroundColor: '#fef3c7',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  margin: '0 auto 20px',
-                  boxShadow: '0 4px 12px rgba(251, 191, 36, 0.2)'
-                }}>
-                  <step.icon size={36} color="#f59e0b" />
-                </div>
-                <h3 style={{
-                  fontSize: '20px',
-                  fontWeight: '700',
-                  color: '#0e312d',
-                  marginBottom: '8px'
-                }}>
-                  {idx + 1}. {step.title}
-                </h3>
-                <p style={{
-                  fontSize: '16px',
-                  color: '#666',
-                  lineHeight: '1.5'
-                }}>
-                  {step.desc}
-                </p>
-                {idx < 3 && (
-                  <ArrowRight 
-                    size={24} 
-                    style={{
-                      position: 'absolute',
-                      right: '-28px',
-                      top: '40px',
-                      color: '#e5e7eb',
-                      display: 'none'
-                    }}
-                  />
-                )}
-              </div>
-            ))}
-          </div>
-          
-          <div style={{ textAlign: 'center' }}>
-            <Link href="/catalogo" style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              backgroundColor: '#f59e0b',
-              color: 'white',
-              padding: '16px 40px',
-              borderRadius: '12px',
-              textDecoration: 'none',
-              fontSize: '18px',
-              fontWeight: '700',
-              transition: 'all 0.3s ease',
-              boxShadow: '0 4px 14px rgba(245, 158, 11, 0.3)'
-            }}>
-              Comenzar mi Adopción <ChevronRight size={20} />
-            </Link>
-          </div>
-        </div>
-      </section>
 
-      {/* Programa de Rescate con Perritos */}
+      {/* Programa de Rescate Animal */}
       <section style={{
         backgroundColor: '#f8f9fa',
         padding: 'clamp(40px, 10vw, 100px) 20px'
@@ -515,7 +306,7 @@ export default function HomeNew() {
             marginBottom: '16px',
             textAlign: 'center'
           }}>
-            Conoce a Nuestros Rescatados
+            Programa de Rescate Animal
           </h2>
           <p style={{
             fontSize: '20px',
@@ -526,7 +317,8 @@ export default function HomeNew() {
             maxWidth: '800px',
             margin: '0 auto 60px'
           }}>
-            Cada uno con una historia de superación, esperando llenar tu hogar de amor
+            Rescatamos y rehabilitamos perritos en situación de calle, brindándoles atención veterinaria 
+            completa para prepararlos para una nueva familia.
           </p>
           
           <div style={{
@@ -536,6 +328,7 @@ export default function HomeNew() {
             marginBottom: '40px'
           }}>
             {loading ? (
+              // Mostrar placeholders mientras carga
               [1, 2, 3].map((idx) => (
                 <div key={idx} style={{
                   backgroundColor: 'white',
@@ -560,12 +353,20 @@ export default function HomeNew() {
                       height: '16px',
                       backgroundColor: '#f3f4f6',
                       borderRadius: '4px',
+                      marginBottom: '8px',
                       width: '40%'
+                    }} />
+                    <div style={{
+                      height: '16px',
+                      backgroundColor: '#f3f4f6',
+                      borderRadius: '4px',
+                      width: '80%'
                     }} />
                   </div>
                 </div>
               ))
             ) : perritosRecientes.length > 0 ? (
+              // Mostrar perritos reales
               perritosRecientes.map((perro) => (
                 <Link 
                   key={perro.id}
@@ -610,19 +411,6 @@ export default function HomeNew() {
                           }}
                         />
                       )}
-                      <div style={{
-                        position: 'absolute',
-                        top: '12px',
-                        right: '12px',
-                        backgroundColor: '#16a34a',
-                        color: 'white',
-                        padding: '6px 12px',
-                        borderRadius: '20px',
-                        fontSize: '12px',
-                        fontWeight: '600'
-                      }}>
-                        DISPONIBLE
-                      </div>
                     </div>
                     <div style={{ padding: '24px' }}>
                       <h3 style={{
@@ -634,26 +422,31 @@ export default function HomeNew() {
                         alignItems: 'center',
                         gap: '8px'
                       }}>
-                        {perro.nombre}
+                        <Dog size={20} /> {perro.nombre}
                       </h3>
                       <p style={{ fontSize: '14px', color: '#666', marginBottom: '12px' }}>
-                        {perro.sexo} • {perro.edad} • {perro.raza}
+                        {perro.sexo} • {perro.edad}
+                      </p>
+                      <p style={{ color: '#666', lineHeight: '1.6', fontSize: '14px' }}>
+                        {perro.raza}
                       </p>
                       <p style={{
                         color: '#16a34a',
                         fontSize: '14px',
                         fontWeight: '600',
+                        marginTop: '12px',
                         display: 'flex',
                         alignItems: 'center',
                         gap: '4px'
                       }}>
-                        Conocer más <ChevronRight size={16} />
+                        Ver más información <ChevronRight size={16} />
                       </p>
                     </div>
                   </div>
                 </Link>
               ))
             ) : (
+              // Mostrar mensaje si no hay perritos
               <div style={{
                 gridColumn: '1 / -1',
                 textAlign: 'center',
@@ -661,28 +454,22 @@ export default function HomeNew() {
                 color: '#666'
               }}>
                 <Dog size={48} style={{ marginBottom: '16px', opacity: 0.5 }} />
-                <p>Pronto tendremos nuevos amigos disponibles</p>
+                <p>No hay perritos disponibles en este momento</p>
               </div>
             )}
           </div>
           
-          <div style={{ textAlign: 'center' }}>
-            <Link href="/catalogo" style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              color: '#0891b2',
-              fontSize: '18px',
-              fontWeight: '600',
-              textDecoration: 'none'
-            }}>
-              Ver todos los perritos disponibles <ArrowRight size={20} />
-            </Link>
-          </div>
+          <style jsx>{`
+            @keyframes pulse {
+              0%, 100% { opacity: 1; }
+              50% { opacity: 0.8; }
+            }
+          `}</style>
+          
         </div>
       </section>
 
-      {/* Red de Comercios Pet Friendly */}
+      {/* Red de Comercios Certificados */}
       <section style={{
         backgroundColor: 'white',
         padding: 'clamp(40px, 10vw, 100px) 20px'
@@ -717,63 +504,62 @@ export default function HomeNew() {
             marginBottom: '60px'
           }}>
             <div style={{
-              backgroundColor: '#fef3c7',
+              backgroundColor: '#f8f9fa',
               padding: '32px',
               borderRadius: '16px',
-              textAlign: 'center',
-              transition: 'all 0.3s ease'
+              textAlign: 'center'
             }}>
               <Coffee size={48} style={{ color: '#ea580c', marginBottom: '16px' }} />
               <h3 style={{ fontSize: '20px', fontWeight: '700', color: '#0e312d', marginBottom: '12px' }}>
-                Cafeterías
+                Cafeterías y restaurantes
               </h3>
               <p style={{ color: '#666', fontSize: '14px' }}>
-                Disfruta un café mientras tu mascota descansa
+                Café Central, Restaurante Luna, Bistró del Parque
               </p>
             </div>
             
             <div style={{
-              backgroundColor: '#dbeafe',
+              backgroundColor: '#f8f9fa',
               padding: '32px',
               borderRadius: '16px',
               textAlign: 'center'
             }}>
               <Hotel size={48} style={{ color: '#0891b2', marginBottom: '16px' }} />
               <h3 style={{ fontSize: '20px', fontWeight: '700', color: '#0e312d', marginBottom: '12px' }}>
-                Hoteles
+                Hoteles y hospedaje
               </h3>
               <p style={{ color: '#666', fontSize: '14px' }}>
-                Hospedaje que acepta a toda tu familia
+                Hotel Colonial, Posada Familiar, Casa de Huéspedes Villa
               </p>
             </div>
             
             <div style={{
-              backgroundColor: '#f3e8ff',
+              backgroundColor: '#f8f9fa',
               padding: '32px',
               borderRadius: '16px',
               textAlign: 'center'
             }}>
               <ShoppingBag size={48} style={{ color: '#9333ea', marginBottom: '16px' }} />
               <h3 style={{ fontSize: '20px', fontWeight: '700', color: '#0e312d', marginBottom: '12px' }}>
-                Tiendas
+                Tiendas y servicios
               </h3>
               <p style={{ color: '#666', fontSize: '14px' }}>
-                Compras con tu compañero peludo
+                Pet Store Atlixco, Veterinaria San José, Farmacia del Centro
               </p>
             </div>
             
             <div style={{
-              backgroundColor: '#dcfce7',
+              backgroundColor: '#f8f9fa',
               padding: '32px',
               borderRadius: '16px',
               textAlign: 'center'
             }}>
               <Trees size={48} style={{ color: '#16a34a', marginBottom: '16px' }} />
               <h3 style={{ fontSize: '20px', fontWeight: '700', color: '#0e312d', marginBottom: '12px' }}>
-                Parques
+                Espacios recreativos
               </h3>
               <p style={{ color: '#666', fontSize: '14px' }}>
-                Espacios verdes para pasear y jugar
+                Parque Central, Plaza de Armas, Sendero Ecoturístico
               </p>
             </div>
           </div>
@@ -793,7 +579,7 @@ export default function HomeNew() {
               color: '#0e312d',
               marginBottom: '16px'
             }}>
-              Explora el Catálogo Completo
+              Explora el Catálogo de Comercios Pet Friendly
             </h3>
             <p style={{
               fontSize: '18px',
@@ -803,8 +589,8 @@ export default function HomeNew() {
               maxWidth: '600px',
               margin: '0 auto 24px'
             }}>
-              Más de 50 comercios certificados te esperan. Restaurantes, cafeterías, 
-              hoteles y más espacios que aman a los animales tanto como tú.
+              Descubre todos los lugares certificados donde tú y tu mascota serán bienvenidos. 
+              Restaurantes, cafeterías, hoteles y más espacios inclusivos en Atlixco.
             </p>
             <Link href="/comercios-friendly" style={{
               display: 'inline-flex',
@@ -820,20 +606,18 @@ export default function HomeNew() {
               transition: 'all 0.3s ease',
               boxShadow: '0 4px 14px rgba(22, 163, 74, 0.3)'
             }}>
-              Ver Todos los Comercios <ChevronRight size={20} />
+              Ver Catálogo Completo de Comercios <ChevronRight size={20} />
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Nuestro Impacto con Contadores Animados */}
-      <section 
-        id="stats-section"
-        style={{
-          backgroundColor: '#f8f9fa',
-          padding: 'clamp(40px, 10vw, 100px) 20px'
-        }}
-      >
+
+      {/* Nuestro Impacto */}
+      <section style={{
+        backgroundColor: 'white',
+        padding: 'clamp(40px, 10vw, 100px) 20px'
+      }}>
         <div style={{
           maxWidth: '1000px',
           margin: '0 auto'
@@ -849,349 +633,47 @@ export default function HomeNew() {
           </h2>
           
           <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-            gap: '40px',
-            marginBottom: '40px'
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: 'clamp(20px, 8vw, 80px)',
+            marginBottom: '40px',
+            flexWrap: 'wrap'
           }}>
-            <div style={{ 
-              textAlign: 'center',
-              padding: '32px',
-              backgroundColor: 'white',
-              borderRadius: '16px',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
-            }}>
-              <Heart size={40} style={{ color: '#dc2626', marginBottom: '16px' }} />
-              <div style={{
+            <div style={{ textAlign: 'center' }}>
+              <span style={{
                 fontSize: 'clamp(36px, 8vw, 48px)',
                 fontWeight: '700',
                 color: '#0e312d'
-              }}>
-                {isVisible && <AnimatedCounter value={500} suffix="+" />}
-              </div>
-              <p style={{ fontSize: '16px', color: '#666', marginTop: '8px' }}>
-                Animales rescatados
-              </p>
+              }}>+500</span>
+              <span style={{ fontSize: '16px', color: '#666', marginLeft: '8px' }}>Animales rescatados</span>
             </div>
-            
-            <div style={{ 
-              textAlign: 'center',
-              padding: '32px',
-              backgroundColor: 'white',
-              borderRadius: '16px',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
-            }}>
-              <HeartHandshake size={40} style={{ color: '#16a34a', marginBottom: '16px' }} />
-              <div style={{
+            <div style={{ textAlign: 'center' }}>
+              <span style={{
                 fontSize: 'clamp(36px, 8vw, 48px)',
                 fontWeight: '700',
                 color: '#0e312d'
-              }}>
-                {isVisible && <AnimatedCounter value={350} suffix="+" />}
-              </div>
-              <p style={{ fontSize: '16px', color: '#666', marginTop: '8px' }}>
-                Adopciones exitosas
-              </p>
+              }}>+350</span>
+              <span style={{ fontSize: '16px', color: '#666', marginLeft: '8px' }}>Adopciones exitosas</span>
             </div>
-            
-            <div style={{ 
-              textAlign: 'center',
-              padding: '32px',
-              backgroundColor: 'white',
-              borderRadius: '16px',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
-            }}>
-              <Users size={40} style={{ color: '#0891b2', marginBottom: '16px' }} />
-              <div style={{
+            <div style={{ textAlign: 'center' }}>
+              <span style={{
                 fontSize: 'clamp(36px, 8vw, 48px)',
                 fontWeight: '700',
                 color: '#0e312d'
-              }}>
-                {isVisible && <AnimatedCounter value={1200} suffix="+" />}
-              </div>
-              <p style={{ fontSize: '16px', color: '#666', marginTop: '8px' }}>
-                Familias felices
-              </p>
-            </div>
-            
-            <div style={{ 
-              textAlign: 'center',
-              padding: '32px',
-              backgroundColor: 'white',
-              borderRadius: '16px',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
-            }}>
-              <Store size={40} style={{ color: '#9333ea', marginBottom: '16px' }} />
-              <div style={{
-                fontSize: 'clamp(36px, 8vw, 48px)',
-                fontWeight: '700',
-                color: '#0e312d'
-              }}>
-                {isVisible && <AnimatedCounter value={50} />}
-              </div>
-              <p style={{ fontSize: '16px', color: '#666', marginTop: '8px' }}>
-                Comercios pet friendly
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Formas de Participar */}
-      <section style={{
-        backgroundColor: 'white',
-        padding: 'clamp(40px, 10vw, 80px) 20px'
-      }}>
-        <div style={{
-          maxWidth: '1000px',
-          margin: '0 auto',
-          textAlign: 'center'
-        }}>
-          <h2 style={{
-            fontSize: 'clamp(32px, 4vw, 42px)',
-            fontWeight: '700',
-            color: '#0e312d',
-            marginBottom: '48px'
-          }}>
-            Formas de Participar
-          </h2>
-          
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: '32px',
-            marginBottom: '48px'
-          }}>
-            <div style={{
-              padding: '40px',
-              backgroundColor: '#fef3c7',
-              borderRadius: '20px',
-              transition: 'all 0.3s ease'
-            }}>
-              <Dog size={56} style={{ color: '#f59e0b', marginBottom: '20px' }} />
-              <h3 style={{
-                fontSize: '24px',
-                fontWeight: '700',
-                color: '#0e312d',
-                marginBottom: '16px'
-              }}>
-                Adopta
-              </h3>
-              <p style={{
-                fontSize: '16px',
-                color: '#666',
-                lineHeight: '1.6',
-                marginBottom: '24px'
-              }}>
-                Dale una segunda oportunidad a un perrito que necesita amor
-              </p>
-              <Link href="/catalogo" style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                color: '#f59e0b',
-                fontSize: '16px',
-                fontWeight: '600',
-                textDecoration: 'none'
-              }}>
-                Ver catálogo <ArrowRight size={18} />
-              </Link>
-            </div>
-            
-            <div style={{
-              padding: '40px',
-              backgroundColor: '#dbeafe',
-              borderRadius: '20px'
-            }}>
-              <Users size={56} style={{ color: '#0891b2', marginBottom: '20px' }} />
-              <h3 style={{
-                fontSize: '24px',
-                fontWeight: '700',
-                color: '#0e312d',
-                marginBottom: '16px'
-              }}>
-                Sé Voluntario
-              </h3>
-              <p style={{
-                fontSize: '16px',
-                color: '#666',
-                lineHeight: '1.6',
-                marginBottom: '24px'
-              }}>
-                Únete a nuestro equipo y ayuda en el cuidado de los rescatados
-              </p>
-              <a href="#contacto" style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                color: '#0891b2',
-                fontSize: '16px',
-                fontWeight: '600',
-                textDecoration: 'none'
-              }}>
-                Contáctanos <ArrowRight size={18} />
-              </a>
-            </div>
-            
-            <div style={{
-              padding: '40px',
-              backgroundColor: '#dcfce7',
-              borderRadius: '20px'
-            }}>
-              <Heart size={56} style={{ color: '#16a34a', marginBottom: '20px' }} />
-              <h3 style={{
-                fontSize: '24px',
-                fontWeight: '700',
-                color: '#0e312d',
-                marginBottom: '16px'
-              }}>
-                Apadrina
-              </h3>
-              <p style={{
-                fontSize: '16px',
-                color: '#666',
-                lineHeight: '1.6',
-                marginBottom: '24px'
-              }}>
-                Apoya con alimento y cuidados médicos a nuestros rescatados
-              </p>
-              <a href="#contacto" style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                color: '#16a34a',
-                fontSize: '16px',
-                fontWeight: '600',
-                textDecoration: 'none'
-              }}>
-                Más información <ArrowRight size={18} />
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Nuestro Compromiso Post-Adopción */}
-      <section style={{
-        backgroundColor: '#f8f9fa',
-        padding: 'clamp(40px, 10vw, 80px) 20px'
-      }}>
-        <div style={{
-          maxWidth: '1000px',
-          margin: '0 auto'
-        }}>
-          <h2 style={{
-            fontSize: 'clamp(32px, 4vw, 42px)',
-            fontWeight: '700',
-            color: '#0e312d',
-            marginBottom: '16px',
-            textAlign: 'center'
-          }}>
-            Nuestro Compromiso Contigo
-          </h2>
-          <p style={{
-            fontSize: '20px',
-            color: '#666',
-            textAlign: 'center',
-            marginBottom: '48px',
-            maxWidth: '700px',
-            margin: '0 auto 48px'
-          }}>
-            La adopción es solo el inicio. Te acompañamos en cada paso del camino
-          </p>
-          
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: '32px'
-          }}>
-            <div style={{
-              backgroundColor: 'white',
-              padding: '32px',
-              borderRadius: '16px',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-              borderTop: '4px solid #16a34a'
-            }}>
-              <Calendar size={32} style={{ color: '#16a34a', marginBottom: '16px' }} />
-              <h3 style={{
-                fontSize: '20px',
-                fontWeight: '700',
-                color: '#0e312d',
-                marginBottom: '12px'
-              }}>
-                Seguimiento personalizado
-              </h3>
-              <p style={{
-                fontSize: '16px',
-                color: '#666',
-                lineHeight: '1.6'
-              }}>
-                Llamadas y visitas durante los primeros meses para asegurar una adaptación exitosa
-              </p>
-            </div>
-            
-            <div style={{
-              backgroundColor: 'white',
-              padding: '32px',
-              borderRadius: '16px',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-              borderTop: '4px solid #0891b2'
-            }}>
-              <Stethoscope size={32} style={{ color: '#0891b2', marginBottom: '16px' }} />
-              <h3 style={{
-                fontSize: '20px',
-                fontWeight: '700',
-                color: '#0e312d',
-                marginBottom: '12px'
-              }}>
-                Apoyo veterinario
-              </h3>
-              <p style={{
-                fontSize: '16px',
-                color: '#666',
-                lineHeight: '1.6'
-              }}>
-                Orientación médica y descuentos en clínicas veterinarias asociadas
-              </p>
-            </div>
-            
-            <div style={{
-              backgroundColor: 'white',
-              padding: '32px',
-              borderRadius: '16px',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-              borderTop: '4px solid #f59e0b'
-            }}>
-              <Users size={32} style={{ color: '#f59e0b', marginBottom: '16px' }} />
-              <h3 style={{
-                fontSize: '20px',
-                fontWeight: '700',
-                color: '#0e312d',
-                marginBottom: '12px'
-              }}>
-                Comunidad adoptante
-              </h3>
-              <p style={{
-                fontSize: '16px',
-                color: '#666',
-                lineHeight: '1.6'
-              }}>
-                Grupo de familias adoptantes para compartir experiencias y consejos
-              </p>
+              }}>50</span>
+              <span style={{ fontSize: '16px', color: '#666', marginLeft: '8px' }}>Comercios pet friendly</span>
             </div>
           </div>
         </div>
       </section>
 
       {/* Centro Municipal - Contacto */}
-      <section 
-        id="contacto"
-        style={{
-          background: 'linear-gradient(135deg, #0e312d 0%, #1a4a45 100%)',
-          padding: 'clamp(40px, 10vw, 100px) 20px',
-          color: 'white'
-        }}
-      >
+      <section style={{
+        background: 'linear-gradient(135deg, #0e312d 0%, #1a4a45 100%)',
+        padding: 'clamp(40px, 10vw, 100px) 20px',
+        color: 'white'
+      }}>
         <div style={{
           maxWidth: '1200px',
           margin: '0 auto',
@@ -1210,7 +692,7 @@ export default function HomeNew() {
             marginBottom: '60px',
             fontWeight: '300'
           }}>
-            Visítanos y Conoce Nuestro Trabajo
+            Visítanos en Nuestras Instalaciones
           </p>
           
           <div style={{
@@ -1223,8 +705,7 @@ export default function HomeNew() {
               <MapPin size={32} style={{ marginBottom: '12px', color: '#bfb591' }} />
               <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>Dirección</h3>
               <p style={{ color: 'rgba(255,255,255,0.8)', lineHeight: '1.6' }}>
-                Boulevard Niños Héroes #1003<br />
-                Col. Centro, Atlixco, Puebla
+                [Dirección del centro municipal]
               </p>
             </div>
             
@@ -1232,7 +713,7 @@ export default function HomeNew() {
               <Phone size={32} style={{ marginBottom: '12px', color: '#bfb591' }} />
               <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>Teléfono</h3>
               <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '20px' }}>
-                244-445-8765
+                244-XXX-XXXX
               </p>
             </div>
             
@@ -1274,7 +755,22 @@ export default function HomeNew() {
               gap: '8px',
               boxShadow: '0 4px 14px rgba(191, 181, 145, 0.3)'
             }}>
-              <Dog size={20} /> Ver Catálogo de Adopción
+              Ver Catálogo de Adopción
+            </Link>
+            <Link href="/programa-adopcion" style={{
+              backgroundColor: 'transparent',
+              color: 'white',
+              padding: '16px 32px',
+              borderRadius: '12px',
+              textDecoration: 'none',
+              fontSize: '17px',
+              fontWeight: '600',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              border: '2px solid rgba(255,255,255,0.3)'
+            }}>
+              Proceso de Adopción
             </Link>
             <Link href="/noticias" style={{
               backgroundColor: 'transparent',
@@ -1310,24 +806,24 @@ export default function HomeNew() {
               fontSize: '16px',
               color: 'rgba(255,255,255,0.8)',
               lineHeight: '1.8',
-              maxWidth: '700px',
-              margin: '0 auto',
+              maxWidth: '600px',
+              margin: '0 auto 24px',
               fontStyle: 'italic'
             }}>
-              El Centro Municipal de Adopción y Bienestar Animal es testimonio del compromiso 
-              del Gobierno de Atlixco con el bienestar animal y la construcción de una comunidad 
-              más compasiva e inclusiva. Juntos, transformamos vidas.
+              El Centro Municipal de Adopción y Bienestar Animal es una iniciativa del Gobierno de Atlixco 
+              comprometida con el bienestar animal y la construcción de una comunidad más compasiva e inclusiva.
             </p>
+            <Link href="/programa-adopcion" style={{
+              color: '#bfb591',
+              textDecoration: 'underline',
+              fontSize: '16px',
+              fontWeight: '600'
+            }}>
+              Conocer más sobre nuestros programas gubernamentales
+            </Link>
           </div>
         </div>
       </section>
-
-      <style jsx>{`
-        @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.8; }
-        }
-      `}</style>
     </div>
   )
 }

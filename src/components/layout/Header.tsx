@@ -103,18 +103,18 @@ export default function Header() {
           <nav className="desktop-nav" style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '20px',
+            gap: '12px',
             flexWrap: 'nowrap',
             flex: '1 1 auto',
             justifyContent: 'flex-end',
-            marginLeft: '16px'
+            marginLeft: '8px'
           }}>
             <a href="/" style={{
               color: '#0e312d',
               textDecoration: 'none',
-              fontSize: '15px',
+              fontSize: '14px',
               fontWeight: '600',
-              padding: '6px 14px',
+              padding: '4px 12px',
               borderRadius: '6px',
               transition: 'all 0.3s',
               border: '2px solid transparent'
@@ -124,9 +124,9 @@ export default function Header() {
             <a href="/programa-adopcion" style={{
               color: '#0e312d',
               textDecoration: 'none',
-              fontSize: '15px',
+              fontSize: '14px',
               fontWeight: '600',
-              padding: '6px 14px',
+              padding: '4px 12px',
               borderRadius: '6px',
               transition: 'all 0.3s',
               border: '2px solid transparent'
@@ -136,9 +136,9 @@ export default function Header() {
             <a href="/noticias" style={{
               color: '#0e312d',
               textDecoration: 'none',
-              fontSize: '15px',
+              fontSize: '14px',
               fontWeight: '600',
-              padding: '6px 14px',
+              padding: '4px 12px',
               borderRadius: '6px',
               transition: 'all 0.3s',
               border: '2px solid transparent'
@@ -148,9 +148,9 @@ export default function Header() {
             <a href="/comercios-friendly" style={{
               color: '#0e312d',
               textDecoration: 'none',
-              fontSize: '15px',
+              fontSize: '14px',
               fontWeight: '600',
-              padding: '6px 14px',
+              padding: '4px 12px',
               borderRadius: '6px',
               transition: 'all 0.3s',
               border: '2px solid transparent'
@@ -160,10 +160,10 @@ export default function Header() {
             <a href="/catalogo" style={{
               backgroundColor: '#0e312d',
               color: 'white',
-              padding: '8px 20px',
+              padding: '6px 16px',
               borderRadius: '8px',
               textDecoration: 'none',
-              fontSize: '15px',
+              fontSize: '14px',
               fontWeight: '600',
               transition: 'all 0.3s',
               display: 'flex',
@@ -355,7 +355,7 @@ export default function Header() {
               color: 'white',
               textDecoration: 'none',
               fontWeight: '600',
-              fontSize: '15px',
+              fontSize: '14px',
               borderRadius: '8px',
               textAlign: 'center',
               transition: 'background-color 0.2s',

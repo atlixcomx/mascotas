@@ -76,8 +76,8 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
         {/* CTA Button */}
         <div className="mobile-cta-container">
           <Link href="/catalogo" className="mobile-cta" onClick={onClose}>
-            <DogIcon size={24} color="white" />
-            <span>Ver Catálogo de Perritos</span>
+            <DogIcon size={20} color="white" />
+            <span>Conoce a nuestros perritos</span>
           </Link>
         </div>
 
@@ -97,14 +97,18 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
           right: 0;
           bottom: 0;
           background-color: rgba(0, 0, 0, 0);
-          z-index: 999;
+          z-index: 9998;
           pointer-events: none;
           transition: background-color 0.3s ease;
+          -webkit-backdrop-filter: blur(0px);
+          backdrop-filter: blur(0px);
         }
 
         .mobile-overlay.active {
-          background-color: rgba(0, 0, 0, 0.5);
+          background-color: rgba(0, 0, 0, 0.7);
           pointer-events: auto;
+          -webkit-backdrop-filter: blur(4px);
+          backdrop-filter: blur(4px);
         }
 
         /* Menu Panel */
@@ -112,16 +116,17 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
           position: fixed;
           top: 0;
           right: -100%;
-          width: 100%;
-          max-width: 380px;
+          width: 85%;
+          max-width: 320px;
           height: 100vh;
           height: 100dvh;
           background-color: #ffffff;
-          z-index: 1000;
+          z-index: 9999;
           transition: right 0.3s ease;
           display: flex;
           flex-direction: column;
-          box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+          box-shadow: -8px 0 32px rgba(0, 0, 0, 0.25);
+          overflow: hidden;
         }
 
         .mobile-menu.active {
@@ -133,14 +138,15 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 20px 24px;
-          border-bottom: 2px solid #f0f0f0;
-          background-color: #fafafa;
+          padding: 16px 20px;
+          border-bottom: 1px solid #e5e5e5;
+          background-color: #ffffff;
+          min-height: 64px;
         }
 
         .mobile-logo {
-          width: 60px;
-          height: 60px;
+          width: 50px;
+          height: 50px;
         }
 
         .mobile-logo img {
@@ -150,148 +156,169 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
         }
 
         .mobile-close {
-          width: 48px;
-          height: 48px;
+          width: 40px;
+          height: 40px;
           display: flex;
           align-items: center;
           justify-content: center;
-          background-color: #ffffff;
-          border: 2px solid #000000;
-          border-radius: 12px;
+          background-color: #f5f5f5;
+          border: none;
+          border-radius: 10px;
           cursor: pointer;
           transition: all 0.2s ease;
+          -webkit-tap-highlight-color: transparent;
         }
 
-        .mobile-close:hover {
-          background-color: #000000;
-        }
-
-        :global(.mobile-close:hover svg) {
-          stroke: #ffffff;
+        .mobile-close:hover,
+        .mobile-close:active {
+          background-color: #e5e5e5;
+          transform: scale(0.95);
         }
 
         /* Navigation */
         .mobile-nav {
           flex: 1;
           overflow-y: auto;
-          padding: 24px 0;
+          padding: 16px 0;
           -webkit-overflow-scrolling: touch;
+          background-color: #ffffff;
         }
 
         .mobile-nav-item {
           display: flex;
           align-items: center;
-          padding: 20px 24px;
+          padding: 16px 20px;
           text-decoration: none;
           transition: all 0.2s ease;
-          border-bottom: 1px solid #f5f5f5;
+          margin: 0 12px 8px;
+          border-radius: 12px;
           position: relative;
+          background-color: #fafafa;
+          -webkit-tap-highlight-color: transparent;
         }
 
-        .mobile-nav-item:hover {
-          background-color: #f8f8f8;
+        .mobile-nav-item:active {
+          transform: scale(0.98);
+          background-color: #f0f0f0;
         }
 
         .mobile-nav-icon {
-          width: 40px;
-          height: 40px;
+          width: 36px;
+          height: 36px;
           display: flex;
           align-items: center;
           justify-content: center;
-          background-color: #f0f0f0;
+          background-color: #ffffff;
           border-radius: 10px;
-          margin-right: 16px;
+          margin-right: 14px;
           transition: all 0.2s ease;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
         }
 
-        .mobile-nav-item:hover .mobile-nav-icon {
+        .mobile-nav-item:active .mobile-nav-icon {
           background-color: #af1731;
         }
 
-        :global(.mobile-nav-item:hover .mobile-nav-icon svg) {
+        :global(.mobile-nav-item:active .mobile-nav-icon svg) {
           stroke: #ffffff;
           fill: #ffffff;
         }
 
         .mobile-nav-label {
           flex: 1;
-          font-size: 18px;
+          font-size: 16px;
           font-weight: 600;
-          color: #000000;
-          letter-spacing: -0.3px;
+          color: #1a1a1a;
+          letter-spacing: -0.2px;
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
+          line-height: 1.3;
         }
 
         .mobile-nav-arrow {
-          font-size: 20px;
-          color: #999999;
+          font-size: 18px;
+          color: #cccccc;
           transition: all 0.2s ease;
         }
 
-        .mobile-nav-item:hover .mobile-nav-arrow {
+        .mobile-nav-item:active .mobile-nav-arrow {
           color: #af1731;
-          transform: translateX(4px);
+          transform: translateX(2px);
         }
 
         /* CTA Container */
         .mobile-cta-container {
-          padding: 24px;
-          border-top: 2px solid #f0f0f0;
+          padding: 16px 20px 20px;
+          border-top: 1px solid #e5e5e5;
+          background-color: #ffffff;
         }
 
         .mobile-cta {
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 12px;
+          gap: 10px;
           width: 100%;
-          padding: 18px 24px;
-          background-color: #0e312d;
+          padding: 14px 20px;
+          background-color: #af1731;
           color: #ffffff;
           text-decoration: none;
-          font-size: 18px;
+          font-size: 16px;
           font-weight: 700;
-          border-radius: 16px;
-          transition: all 0.3s ease;
-          box-shadow: 0 4px 16px rgba(14, 49, 45, 0.2);
+          border-radius: 12px;
+          transition: all 0.2s ease;
+          box-shadow: 0 4px 12px rgba(175, 23, 49, 0.25);
+          -webkit-tap-highlight-color: transparent;
         }
 
-        .mobile-cta:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 8px 24px rgba(14, 49, 45, 0.3);
-          background-color: #1a4a45;
+        .mobile-cta:active {
+          transform: scale(0.98);
+          box-shadow: 0 2px 8px rgba(175, 23, 49, 0.2);
         }
 
         /* Footer */
         .mobile-footer {
-          padding: 20px 24px;
+          padding: 16px 20px;
           text-align: center;
-          background-color: #fafafa;
-          border-top: 1px solid #f0f0f0;
+          background-color: #f8f8f8;
+          border-top: 1px solid #e5e5e5;
         }
 
         .mobile-footer p {
-          margin: 4px 0;
-          font-size: 14px;
+          margin: 2px 0;
+          font-size: 12px;
           color: #666666;
-          line-height: 1.4;
+          line-height: 1.5;
+          font-weight: 500;
         }
 
         /* Responsive */
         @media (max-width: 380px) {
           .mobile-menu {
+            width: 90%;
             max-width: 100%;
           }
 
           .mobile-nav-label {
-            font-size: 16px;
+            font-size: 15px;
+          }
+
+          .mobile-nav-item {
+            padding: 14px 16px;
           }
 
           .mobile-cta {
-            font-size: 16px;
-            padding: 16px 20px;
+            font-size: 15px;
+            padding: 12px 16px;
           }
+        }
+
+        /* Force hardware acceleration */
+        .mobile-menu,
+        .mobile-overlay {
+          -webkit-transform: translateZ(0);
+          -webkit-backface-visibility: hidden;
+          -webkit-perspective: 1000;
         }
       `}</style>
     </>

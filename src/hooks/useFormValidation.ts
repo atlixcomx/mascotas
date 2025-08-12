@@ -225,35 +225,9 @@ export function useValidationMessage(fieldName: string, error?: string, touched?
   const shouldShowError = error && touched
   const messageId = `${fieldName}-error`
 
-  const ValidationMessage = () => {
-    if (!shouldShowError) return null
-
-    return (
-      <span
-        id={messageId}
-        role="alert"
-        aria-live="polite"
-        className="text-sm text-red-600 mt-1 flex items-center gap-1"
-      >
-        <svg
-          className="w-4 h-4"
-          fill="none"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="2"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          aria-hidden="true"
-        >
-          <path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        {error}
-      </span>
-    )
-  }
-
   return {
     messageId: shouldShowError ? messageId : undefined,
-    ValidationMessage
+    shouldShowError,
+    error
   }
 }

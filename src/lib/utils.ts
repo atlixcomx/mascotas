@@ -1,3 +1,8 @@
+// Utility function to merge class names
+export function cn(...inputs: (string | undefined | null | false)[]) {
+  return inputs.filter(Boolean).join(' ')
+}
+
 // Helper function to safely parse photos field
 export function parsePhotosField(fotos: string | null): string[] {
   if (!fotos || fotos === '[]') return []

@@ -35,7 +35,7 @@ export function AccessibleFormField({
 }: AccessibleFormFieldProps & { formProps: any }) {
   const fieldProps = formProps.getFieldProps(name)
   const fieldState = formProps.getFieldState(name)
-  const { ValidationMessage, messageId } = useValidationMessage(name, fieldState.error, fieldState.isTouched)
+  const { messageId, shouldShowError, error } = useValidationMessage(name, fieldState.error, fieldState.isTouched)
 
   const inputClasses = `
     w-full px-4 py-2 
@@ -120,7 +120,28 @@ export function AccessibleFormField({
         </p>
       )}
       
-      <ValidationMessage />
+      {shouldShowError && (
+        <span
+          id={messageId}
+          role="alert"
+          aria-live="polite"
+          className="text-sm text-red-600 mt-1 flex items-center gap-1"
+        >
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            aria-hidden="true"
+          >
+            <path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          {error}
+        </span>
+      )}
       
       {fieldState.isValid && (
         <span className="text-sm text-green-600 mt-1 flex items-center gap-1" role="status">

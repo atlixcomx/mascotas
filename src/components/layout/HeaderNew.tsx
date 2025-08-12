@@ -25,9 +25,10 @@ export default function HeaderNew() {
 
   const navItems = [
     { href: '/', label: 'Inicio' },
-    { href: '/programa-adopcion', label: 'Cómo Adoptar' },
-    { href: '/noticias', label: 'Noticias y Eventos' },
+    { href: '/programa-adopcion', label: 'Bienestar Animal' },
+    { href: '/catalogo', label: 'Catálogo Adopción' },
     { href: '/comercios-friendly', label: 'Comercios Pet Friendly' },
+    { href: '/noticias', label: 'Noticias' },
   ]
 
   return (
@@ -58,10 +59,6 @@ export default function HeaderNew() {
                   {item.label}
                 </Link>
               ))}
-              <Link href="/catalogo" className="header-cta-button">
-                <DogIcon size={18} color="white" />
-                <span>Catálogo de Perritos</span>
-              </Link>
             </nav>
 
             {/* Botón menú móvil */}
@@ -119,12 +116,12 @@ export default function HeaderNew() {
       <style jsx>{`
         /* Variables CSS */
         :root {
-          --header-height-mobile: 70px;
-          --header-height-desktop: 100px;
+          --header-height-mobile: 100px;
+          --header-height-desktop: 140px;
           --primary-color: #0e312d;
           --accent-color: #af1731;
           --cta-color: #0e312d;
-          --text-color: #0e312d;
+          --text-color: #000000;
           --bg-color: white;
           --shadow: 0 2px 4px rgba(0,0,0,0.1);
           --max-width: 1200px;
@@ -172,8 +169,8 @@ export default function HeaderNew() {
         }
 
         :global(.header-logo-img) {
-          width: 50px;
-          height: 50px;
+          width: 80px;
+          height: 80px;
           object-fit: contain;
         }
 
@@ -185,9 +182,9 @@ export default function HeaderNew() {
         }
 
         .header-nav-link {
-          color: var(--text-color);
+          color: #000000;
           text-decoration: none;
-          font-size: 15px;
+          font-size: 16px;
           font-weight: 600;
           padding: 8px 16px;
           border-radius: 6px;
@@ -369,8 +366,8 @@ export default function HeaderNew() {
           }
 
           :global(.header-logo-img) {
-            width: 80px;
-            height: 80px;
+            width: 128px;
+            height: 128px;
           }
 
           .header-nav-desktop {
@@ -384,8 +381,8 @@ export default function HeaderNew() {
 
         @media (min-width: 1024px) {
           :global(.header-logo-img) {
-            width: 100px;
-            height: 100px;
+            width: 160px;
+            height: 160px;
           }
 
           .header-nav-desktop {

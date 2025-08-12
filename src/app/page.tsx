@@ -140,13 +140,11 @@ export default function HomeNew() {
           <div style={{
             display: 'inline-flex',
             alignItems: 'center',
-            gap: '12px',
             backgroundColor: 'rgba(191, 181, 145, 0.2)',
             padding: '8px 20px',
             borderRadius: '24px',
             marginBottom: '16px'
           }}>
-            <Building2 size={20} style={{ color: '#bfb591' }} />
             <span style={{ color: '#bfb591', fontSize: '14px', fontWeight: '600' }}>
               GOBIERNO DE ATLIXCO 2024-2027
             </span>
@@ -259,78 +257,91 @@ export default function HomeNew() {
           
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: 'clamp(16px, 4vw, 32px)',
-            marginBottom: '60px'
+            gridTemplateColumns: 'repeat(4, 1fr)',
+            gap: '16px',
+            marginBottom: '40px'
           }}>
             <div style={{
               backgroundColor: 'white',
-              padding: '32px',
-              borderRadius: '16px',
+              padding: '24px 16px',
+              borderRadius: '12px',
               textAlign: 'center',
               boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
               transition: 'all 0.3s ease'
             }}>
-              <Shield size={48} style={{ color: '#dc2626', marginBottom: '16px' }} />
-              <h3 style={{ fontSize: '20px', fontWeight: '700', color: '#0e312d', marginBottom: '12px' }}>
+              <Shield size={36} style={{ color: '#dc2626', marginBottom: '12px' }} />
+              <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#0e312d', marginBottom: '8px' }}>
                 Rescate responsable
               </h3>
-              <p style={{ color: '#666', lineHeight: '1.6' }}>
+              <p style={{ color: '#666', lineHeight: '1.4', fontSize: '14px' }}>
                 Protocolos de rescate seguros y humanitarios
               </p>
             </div>
             
             <div style={{
               backgroundColor: 'white',
-              padding: '32px',
-              borderRadius: '16px',
+              padding: '24px 16px',
+              borderRadius: '12px',
               textAlign: 'center',
               boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
               transition: 'all 0.3s ease'
             }}>
-              <Stethoscope size={48} style={{ color: '#0891b2', marginBottom: '16px' }} />
-              <h3 style={{ fontSize: '20px', fontWeight: '700', color: '#0e312d', marginBottom: '12px' }}>
+              <Stethoscope size={36} style={{ color: '#0891b2', marginBottom: '12px' }} />
+              <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#0e312d', marginBottom: '8px' }}>
                 Atención veterinaria integral
               </h3>
-              <p style={{ color: '#666', lineHeight: '1.6' }}>
+              <p style={{ color: '#666', lineHeight: '1.4', fontSize: '14px' }}>
                 5 etapas de cuidado médico especializado
               </p>
             </div>
             
             <div style={{
               backgroundColor: 'white',
-              padding: '32px',
-              borderRadius: '16px',
+              padding: '24px 16px',
+              borderRadius: '12px',
               textAlign: 'center',
               boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
               transition: 'all 0.3s ease'
             }}>
-              <HeartHandshake size={48} style={{ color: '#16a34a', marginBottom: '16px' }} />
-              <h3 style={{ fontSize: '20px', fontWeight: '700', color: '#0e312d', marginBottom: '12px' }}>
+              <HeartHandshake size={36} style={{ color: '#16a34a', marginBottom: '12px' }} />
+              <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#0e312d', marginBottom: '8px' }}>
                 Adopciones transparentes
               </h3>
-              <p style={{ color: '#666', lineHeight: '1.6' }}>
+              <p style={{ color: '#666', lineHeight: '1.4', fontSize: '14px' }}>
                 Proceso claro con seguimiento post-adopción
               </p>
             </div>
             
             <div style={{
               backgroundColor: 'white',
-              padding: '32px',
-              borderRadius: '16px',
+              padding: '24px 16px',
+              borderRadius: '12px',
               textAlign: 'center',
               boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
               transition: 'all 0.3s ease'
             }}>
-              <Store size={48} style={{ color: '#9333ea', marginBottom: '16px' }} />
-              <h3 style={{ fontSize: '20px', fontWeight: '700', color: '#0e312d', marginBottom: '12px' }}>
+              <Store size={36} style={{ color: '#9333ea', marginBottom: '12px' }} />
+              <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#0e312d', marginBottom: '8px' }}>
                 Ciudad pet friendly
               </h3>
-              <p style={{ color: '#666', lineHeight: '1.6' }}>
+              <p style={{ color: '#666', lineHeight: '1.4', fontSize: '14px' }}>
                 Red de comercios certificados para familias
               </p>
             </div>
           </div>
+
+          {/* Texto de transición */}
+          <p style={{
+            fontSize: '18px',
+            color: '#666',
+            textAlign: 'center',
+            marginBottom: '40px',
+            maxWidth: '800px',
+            margin: '0 auto 40px',
+            lineHeight: '1.6'
+          }}>
+            Para lograr esto creamos un protocolo de bienestar animal que consta de las siguientes etapas
+          </p>
 
           {/* Proceso Veterinario Detallado */}
           <div style={{
@@ -352,8 +363,8 @@ export default function HomeNew() {
             
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-              gap: '24px'
+              gridTemplateColumns: 'repeat(5, 1fr)',
+              gap: '16px'
             }}>
               {[
                 { icon: Search, title: 'Evaluación inicial', desc: 'Diagnóstico completo' },
@@ -412,11 +423,24 @@ export default function HomeNew() {
             fontSize: 'clamp(32px, 4vw, 42px)',
             fontWeight: '800',
             color: '#0e312d',
-            marginBottom: '48px',
+            marginBottom: '16px',
             textAlign: 'center'
           }}>
             Tu Camino Hacia la Adopción
           </h2>
+          
+          <p style={{
+            fontSize: '18px',
+            color: '#666',
+            textAlign: 'center',
+            marginBottom: '48px',
+            maxWidth: '800px',
+            margin: '0 auto 48px',
+            lineHeight: '1.6'
+          }}>
+            Nuestro objetivo es que cada mascota encuentre un lugar seguro, 
+            estos son los pasos que debes seguir para solicitar una mascota
+          </p>
           
           <div style={{
             display: 'grid',
@@ -478,60 +502,36 @@ export default function HomeNew() {
             ))}
           </div>
           
-          <div style={{ textAlign: 'center' }}>
-            <Link href="/catalogo" style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              backgroundColor: '#f59e0b',
-              color: 'white',
-              padding: '16px 40px',
-              borderRadius: '12px',
-              textDecoration: 'none',
-              fontSize: '18px',
-              fontWeight: '700',
-              transition: 'all 0.3s ease',
-              boxShadow: '0 4px 14px rgba(245, 158, 11, 0.3)'
-            }}>
-              Comenzar mi Adopción <ChevronRight size={20} />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Programa de Rescate con Perritos */}
-      <section style={{
-        backgroundColor: '#f8f9fa',
-        padding: 'clamp(40px, 10vw, 100px) 20px'
-      }}>
-        <div style={{
-          maxWidth: '1200px',
-          margin: '0 auto'
-        }}>
-          <h2 style={{
-            fontSize: 'clamp(32px, 4vw, 48px)',
-            fontWeight: '800',
-            color: '#0e312d',
-            marginBottom: '16px',
-            textAlign: 'center'
-          }}>
-            Conoce a Nuestros Rescatados
-          </h2>
-          <p style={{
-            fontSize: '20px',
-            color: '#666',
-            textAlign: 'center',
-            marginBottom: '60px',
-            lineHeight: '1.8',
-            maxWidth: '800px',
-            margin: '0 auto 60px'
-          }}>
-            Cada uno con una historia de superación, esperando llenar tu hogar de amor
-          </p>
-          
+          {/* Integración de Conoce a Nuestros Rescatados */}
           <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(min(320px, 100%), 1fr))',
+            marginTop: '60px',
+            borderTop: '2px solid #e5e7eb',
+            paddingTop: '60px'
+          }}>
+            <h3 style={{
+              fontSize: 'clamp(28px, 3.5vw, 36px)',
+              fontWeight: '700',
+              color: '#0e312d',
+              marginBottom: '16px',
+              textAlign: 'center'
+            }}>
+              Conoce a Nuestros Rescatados
+            </h3>
+            <p style={{
+              fontSize: '18px',
+              color: '#666',
+              textAlign: 'center',
+              marginBottom: '40px',
+              lineHeight: '1.6',
+              maxWidth: '600px',
+              margin: '0 auto 40px'
+            }}>
+              Cada uno con una historia de superación, esperando llenar tu hogar de amor
+            </p>
+            
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(320px, 100%), 1fr))',
             gap: '32px',
             marginBottom: '40px'
           }}>
@@ -666,18 +666,39 @@ export default function HomeNew() {
             )}
           </div>
           
-          <div style={{ textAlign: 'center' }}>
-            <Link href="/catalogo" style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              color: '#0891b2',
-              fontSize: '18px',
-              fontWeight: '600',
-              textDecoration: 'none'
-            }}>
-              Ver todos los perritos disponibles <ArrowRight size={20} />
-            </Link>
+            <div style={{ textAlign: 'center' }}>
+              <Link href="/catalogo" style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                color: '#0891b2',
+                fontSize: '18px',
+                fontWeight: '600',
+                textDecoration: 'none'
+              }}>
+                Ver todos los perritos disponibles <ArrowRight size={20} />
+              </Link>
+            </div>
+            
+            {/* CTA Principal */}
+            <div style={{ textAlign: 'center', marginTop: '48px' }}>
+              <Link href="/catalogo" style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                backgroundColor: '#f59e0b',
+                color: 'white',
+                padding: '16px 40px',
+                borderRadius: '12px',
+                textDecoration: 'none',
+                fontSize: '18px',
+                fontWeight: '700',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 4px 14px rgba(245, 158, 11, 0.3)'
+              }}>
+                Comenzar mi Adopción <ChevronRight size={20} />
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -937,251 +958,6 @@ export default function HomeNew() {
         </div>
       </section>
 
-      {/* Formas de Participar */}
-      <section style={{
-        backgroundColor: 'white',
-        padding: 'clamp(40px, 10vw, 80px) 20px'
-      }}>
-        <div style={{
-          maxWidth: '1000px',
-          margin: '0 auto',
-          textAlign: 'center'
-        }}>
-          <h2 style={{
-            fontSize: 'clamp(32px, 4vw, 42px)',
-            fontWeight: '700',
-            color: '#0e312d',
-            marginBottom: '48px'
-          }}>
-            Formas de Participar
-          </h2>
-          
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: '32px',
-            marginBottom: '48px'
-          }}>
-            <div style={{
-              padding: '40px',
-              backgroundColor: '#fef3c7',
-              borderRadius: '20px',
-              transition: 'all 0.3s ease'
-            }}>
-              <Dog size={56} style={{ color: '#f59e0b', marginBottom: '20px' }} />
-              <h3 style={{
-                fontSize: '24px',
-                fontWeight: '700',
-                color: '#0e312d',
-                marginBottom: '16px'
-              }}>
-                Adopta
-              </h3>
-              <p style={{
-                fontSize: '16px',
-                color: '#666',
-                lineHeight: '1.6',
-                marginBottom: '24px'
-              }}>
-                Dale una segunda oportunidad a un perrito que necesita amor
-              </p>
-              <Link href="/catalogo" style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                color: '#f59e0b',
-                fontSize: '16px',
-                fontWeight: '600',
-                textDecoration: 'none'
-              }}>
-                Ver catálogo <ArrowRight size={18} />
-              </Link>
-            </div>
-            
-            <div style={{
-              padding: '40px',
-              backgroundColor: '#dbeafe',
-              borderRadius: '20px'
-            }}>
-              <Users size={56} style={{ color: '#0891b2', marginBottom: '20px' }} />
-              <h3 style={{
-                fontSize: '24px',
-                fontWeight: '700',
-                color: '#0e312d',
-                marginBottom: '16px'
-              }}>
-                Sé Voluntario
-              </h3>
-              <p style={{
-                fontSize: '16px',
-                color: '#666',
-                lineHeight: '1.6',
-                marginBottom: '24px'
-              }}>
-                Únete a nuestro equipo y ayuda en el cuidado de los rescatados
-              </p>
-              <a href="#contacto" style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                color: '#0891b2',
-                fontSize: '16px',
-                fontWeight: '600',
-                textDecoration: 'none'
-              }}>
-                Contáctanos <ArrowRight size={18} />
-              </a>
-            </div>
-            
-            <div style={{
-              padding: '40px',
-              backgroundColor: '#dcfce7',
-              borderRadius: '20px'
-            }}>
-              <Heart size={56} style={{ color: '#16a34a', marginBottom: '20px' }} />
-              <h3 style={{
-                fontSize: '24px',
-                fontWeight: '700',
-                color: '#0e312d',
-                marginBottom: '16px'
-              }}>
-                Apadrina
-              </h3>
-              <p style={{
-                fontSize: '16px',
-                color: '#666',
-                lineHeight: '1.6',
-                marginBottom: '24px'
-              }}>
-                Apoya con alimento y cuidados médicos a nuestros rescatados
-              </p>
-              <a href="#contacto" style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                color: '#16a34a',
-                fontSize: '16px',
-                fontWeight: '600',
-                textDecoration: 'none'
-              }}>
-                Más información <ArrowRight size={18} />
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Nuestro Compromiso Post-Adopción */}
-      <section style={{
-        backgroundColor: '#f8f9fa',
-        padding: 'clamp(40px, 10vw, 80px) 20px'
-      }}>
-        <div style={{
-          maxWidth: '1000px',
-          margin: '0 auto'
-        }}>
-          <h2 style={{
-            fontSize: 'clamp(32px, 4vw, 42px)',
-            fontWeight: '700',
-            color: '#0e312d',
-            marginBottom: '16px',
-            textAlign: 'center'
-          }}>
-            Nuestro Compromiso Contigo
-          </h2>
-          <p style={{
-            fontSize: '20px',
-            color: '#666',
-            textAlign: 'center',
-            marginBottom: '48px',
-            maxWidth: '700px',
-            margin: '0 auto 48px'
-          }}>
-            La adopción es solo el inicio. Te acompañamos en cada paso del camino
-          </p>
-          
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: '32px'
-          }}>
-            <div style={{
-              backgroundColor: 'white',
-              padding: '32px',
-              borderRadius: '16px',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-              borderTop: '4px solid #16a34a'
-            }}>
-              <Calendar size={32} style={{ color: '#16a34a', marginBottom: '16px' }} />
-              <h3 style={{
-                fontSize: '20px',
-                fontWeight: '700',
-                color: '#0e312d',
-                marginBottom: '12px'
-              }}>
-                Seguimiento personalizado
-              </h3>
-              <p style={{
-                fontSize: '16px',
-                color: '#666',
-                lineHeight: '1.6'
-              }}>
-                Llamadas y visitas durante los primeros meses para asegurar una adaptación exitosa
-              </p>
-            </div>
-            
-            <div style={{
-              backgroundColor: 'white',
-              padding: '32px',
-              borderRadius: '16px',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-              borderTop: '4px solid #0891b2'
-            }}>
-              <Stethoscope size={32} style={{ color: '#0891b2', marginBottom: '16px' }} />
-              <h3 style={{
-                fontSize: '20px',
-                fontWeight: '700',
-                color: '#0e312d',
-                marginBottom: '12px'
-              }}>
-                Apoyo veterinario
-              </h3>
-              <p style={{
-                fontSize: '16px',
-                color: '#666',
-                lineHeight: '1.6'
-              }}>
-                Orientación médica y descuentos en clínicas veterinarias asociadas
-              </p>
-            </div>
-            
-            <div style={{
-              backgroundColor: 'white',
-              padding: '32px',
-              borderRadius: '16px',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-              borderTop: '4px solid #f59e0b'
-            }}>
-              <Users size={32} style={{ color: '#f59e0b', marginBottom: '16px' }} />
-              <h3 style={{
-                fontSize: '20px',
-                fontWeight: '700',
-                color: '#0e312d',
-                marginBottom: '12px'
-              }}>
-                Comunidad adoptante
-              </h3>
-              <p style={{
-                fontSize: '16px',
-                color: '#666',
-                lineHeight: '1.6'
-              }}>
-                Grupo de familias adoptantes para compartir experiencias y consejos
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Centro Municipal - Contacto */}
       <section 

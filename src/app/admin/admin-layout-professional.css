@@ -58,9 +58,7 @@
 /* Sidebar Profesional */
 .admin-sidebar {
   width: 260px;
-  background: #ffffff;
-  border-right: 1px solid var(--admin-gray-200);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  background: linear-gradient(180deg, var(--admin-gray-900) 0%, var(--admin-gray-800) 100%);
   height: 100vh;
   position: fixed;
   left: 0;
@@ -77,8 +75,8 @@
 /* Header simplificado */
 .admin-sidebar-header {
   padding: 24px 20px;
-  border-bottom: 1px solid var(--admin-gray-100);
-  background: var(--admin-gray-50);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
   text-align: center;
   position: relative;
 }
@@ -128,7 +126,7 @@
 .admin-nav-header {
   font-size: 11px;
   font-weight: 600;
-  color: var(--admin-gray-500);
+  color: rgba(255, 255, 255, 0.5);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   padding: 0 20px;
@@ -146,9 +144,9 @@
   display: flex;
   align-items: center;
   padding: 12px 20px;
-  margin: 0 12px;
+  margin: 0 12px 12px 12px; /* Agregamos margen inferior para 10% más de separación */
   border-radius: 8px;
-  color: var(--admin-gray-700);
+  color: rgba(255, 255, 255, 0.7);
   text-decoration: none;
   font-size: 14px;
   font-weight: 500;
@@ -160,8 +158,8 @@
 }
 
 .admin-nav-item:hover {
-  background: var(--admin-primary-50);
-  color: var(--admin-primary-700);
+  background: rgba(125, 36, 71, 0.1); /* Rojo/magenta de la paleta original */
+  color: #f472b6; /* Rosa claro para hover */
 }
 
 .admin-nav-item:focus-visible {
@@ -170,8 +168,8 @@
 }
 
 .admin-nav-item-active {
-  background: var(--admin-primary-100);
-  color: var(--admin-primary-800);
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
   font-weight: 600;
 }
 
@@ -182,7 +180,7 @@
   top: 0;
   bottom: 0;
   width: 3px;
-  background: var(--admin-primary-600);
+  background: #ec4899; /* Rosa/magenta de la paleta original */
   border-radius: 0 2px 2px 0;
 }
 
@@ -212,8 +210,8 @@
 /* Sección de usuario simplificada */
 .admin-user-section {
   padding: 20px;
-  border-top: 1px solid var(--admin-gray-200);
-  background: var(--admin-gray-50);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
 }
 
 .admin-user-info {
@@ -222,9 +220,9 @@
   gap: 12px;
   margin-bottom: 16px;
   padding: 12px;
-  background: white;
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 8px;
-  border: 1px solid var(--admin-gray-200);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .admin-user-avatar {
@@ -263,7 +261,7 @@
 .admin-user-name {
   font-size: 14px;
   font-weight: 600;
-  color: var(--admin-gray-900);
+  color: white;
   margin: 0 0 2px 0;
   white-space: nowrap;
   overflow: hidden;
@@ -273,7 +271,7 @@
 
 .admin-user-email {
   font-size: 12px;
-  color: var(--admin-gray-500);
+  color: rgba(255, 255, 255, 0.6);
   margin: 0 0 4px 0;
   white-space: nowrap;
   overflow: hidden;
@@ -282,7 +280,7 @@
 
 .admin-user-role {
   font-size: 10px;
-  color: var(--admin-primary-600);
+  color: #f472b6; /* Rosa de la paleta original */
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.03em;
@@ -293,10 +291,10 @@
 .admin-logout-button {
   width: 100%;
   padding: 10px 16px;
-  background: transparent;
-  border: 1px solid var(--admin-gray-300);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 6px;
-  color: var(--admin-gray-600);
+  color: white;
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
@@ -308,9 +306,9 @@
 }
 
 .admin-logout-button:hover {
-  background: var(--admin-gray-100);
-  border-color: var(--admin-gray-400);
-  color: var(--admin-gray-700);
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: white;
 }
 
 .admin-logout-button:focus-visible {

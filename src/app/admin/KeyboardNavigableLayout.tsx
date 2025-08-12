@@ -193,7 +193,7 @@ export default function KeyboardNavigableLayout({
         {/* Navegación principal */}
         <nav className="admin-navigation" role="menubar">
           <div className="admin-nav-section">
-            <h3 className="admin-nav-header" id="nav-heading">GESTIÓN ADMINISTRATIVA</h3>
+            <h3 className="admin-nav-header" id="nav-heading">Gestión Administrativa</h3>
             <div className="admin-nav-items" role="group" aria-labelledby="nav-heading">
               {navigation.map((item, index) => {
                 const isActive = pathname === item.href
@@ -234,7 +234,7 @@ export default function KeyboardNavigableLayout({
             <div className="admin-user-details">
               <p className="admin-user-name">{session?.user?.name}</p>
               <p className="admin-user-email">{session?.user?.email}</p>
-              <p className="admin-user-role">ADMINISTRADOR DEL SISTEMA</p>
+              <p className="admin-user-role">Administrador del Sistema</p>
             </div>
           </div>
           <button
@@ -246,7 +246,7 @@ export default function KeyboardNavigableLayout({
             aria-label="Cerrar sesión del sistema"
           >
             <LogOut className="logout-icon" aria-hidden="true" />
-            <span>CERRAR SESIÓN SEGURA</span>
+            <span>Cerrar Sesión Segura</span>
           </button>
         </div>
       </aside>

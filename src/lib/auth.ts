@@ -16,27 +16,48 @@ export const authOptions: NextAuthOptions = {
           return null
         }
 
-        const user = await prisma.usuario.findUnique({
-          where: {
-            email: credentials.email
+        // Check admin credentials from environment variables first
+        const adminEmail = process.env.ADMIN_EMAIL
+        const adminPassword = process.env.ADMIN_PASSWORD
+        
+        if (adminEmail && adminPassword && 
+            credentials.email === adminEmail && 
+            credentials.password === adminPassword) {
+          return {
+            id: 'admin',
+            email: adminEmail,
+            name: 'Administrador del Sistema',
+            role: 'admin'
           }
-        })
-
-        if (!user || !user.password) {
-          return null
         }
 
-        const passwordMatch = await bcrypt.compare(credentials.password, user.password)
+        // Fallback to database users
+        try {
+          const user = await prisma.usuario.findUnique({
+            where: {
+              email: credentials.email
+            }
+          })
 
-        if (!passwordMatch) {
+          if (!user || !user.password) {
+            return null
+          }
+
+          const passwordMatch = await bcrypt.compare(credentials.password, user.password)
+
+          if (!passwordMatch) {
+            return null
+          }
+
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.nombre,
+            role: user.rol
+          }
+        } catch (error) {
+          console.error('Database auth error:', error)
           return null
-        }
-
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.nombre,
-          role: user.rol
         }
       }
     })

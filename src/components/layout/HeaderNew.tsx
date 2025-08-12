@@ -45,8 +45,8 @@ export default function HeaderNew() {
               <Image
                 src="/centro.png"
                 alt="Centro de Adopción y Bienestar Animal"
-                width={120}
-                height={120}
+                width={180}
+                height={180}
                 className="header-logo-img"
                 priority
               />
@@ -116,8 +116,8 @@ export default function HeaderNew() {
       <style jsx>{`
         /* Variables CSS */
         :root {
-          --header-height-mobile: 100px;
-          --header-height-desktop: 140px;
+          --header-height-mobile: 80px;
+          --header-height-desktop: 120px;
           --primary-color: #0e312d;
           --accent-color: #af1731;
           --cta-color: #0e312d;
@@ -169,8 +169,8 @@ export default function HeaderNew() {
         }
 
         :global(.header-logo-img) {
-          width: 80px;
-          height: 80px;
+          width: 60px;
+          height: 60px;
           object-fit: contain;
         }
 
@@ -178,22 +178,24 @@ export default function HeaderNew() {
         .header-nav-desktop {
           display: none;
           align-items: center;
-          gap: 24px;
+          gap: 12px;
         }
 
         .header-nav-link {
           color: #000000;
           text-decoration: none;
-          font-size: 16px;
+          font-size: 15px;
           font-weight: 600;
-          padding: 8px 16px;
+          padding: 8px 12px;
           border-radius: 6px;
           transition: var(--transition);
           position: relative;
+          white-space: nowrap;
         }
 
         .header-nav-link:hover {
           background-color: #f3f4f6;
+          color: #af1731;
         }
 
         .header-nav-link::after {
@@ -366,8 +368,8 @@ export default function HeaderNew() {
           }
 
           :global(.header-logo-img) {
-            width: 128px;
-            height: 128px;
+            width: 90px;
+            height: 90px;
           }
 
           .header-nav-desktop {
@@ -381,12 +383,12 @@ export default function HeaderNew() {
 
         @media (min-width: 1024px) {
           :global(.header-logo-img) {
-            width: 160px;
-            height: 160px;
+            width: 100px;
+            height: 100px;
           }
 
           .header-nav-desktop {
-            gap: 32px;
+            gap: 20px;
           }
 
           .header-nav-link {

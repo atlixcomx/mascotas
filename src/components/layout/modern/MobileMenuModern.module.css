@@ -29,8 +29,8 @@
   top: 0;
   right: 0;
   bottom: 0;
-  width: 85%;
-  max-width: 320px;
+  width: 280px;
+  max-width: 85%;
   background: #ffffff;
   z-index: 99999;
   transform: translateX(100%);
@@ -72,7 +72,7 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   position: sticky;
   top: 0;
-  background: linear-gradient(135deg, #2d5a27 0%, #4a7c59 100%);
+  background: #0e312d;
   z-index: 10;
   min-height: 60px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -81,7 +81,7 @@
 .menuLogo {
   height: auto;
   width: auto;
-  filter: brightness(1.1);
+  filter: brightness(1.2) contrast(1.1);
 }
 
 .closeButton {
@@ -278,8 +278,8 @@
 /* Mobile optimizations */
 @media (max-width: 400px) {
   .menu {
-    width: 90%;
-    max-width: 100%;
+    width: 280px;
+    max-width: 90%;
   }
   
   .menuLink {
@@ -296,7 +296,7 @@
 /* Tablet adjustments */
 @media (min-width: 768px) {
   .menu {
-    max-width: 320px;
+    width: 280px;
   }
   
   .menuLink {

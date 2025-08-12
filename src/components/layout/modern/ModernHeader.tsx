@@ -114,10 +114,15 @@ export default function ModernHeader() {
             {/* Mobile Menu Button */}
             <button
               className={styles.mobileMenuButton}
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                setIsMobileMenuOpen(!isMobileMenuOpen)
+              }}
               aria-label={isMobileMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
               aria-expanded={isMobileMenuOpen}
               aria-controls="mobile-menu"
+              type="button"
             >
               <span className={styles.menuIcon}>
                 <span className={`${styles.menuLine} ${isMobileMenuOpen ? styles.open : ''}`} />

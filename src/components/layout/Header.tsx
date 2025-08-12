@@ -57,11 +57,13 @@ export default function Header() {
         margin: '0 auto',
         padding: '0 20px'
       }}>
-        <div style={{
+        <div className="header-container" style={{
           display: 'flex',
           alignItems: 'center',
           minHeight: '60px',
-          position: 'relative'
+          position: 'relative',
+          justifyContent: 'flex-start',
+          gap: '0'
         }}>
           {/* Logo y título */}
           <a href="/" style={{
@@ -73,7 +75,7 @@ export default function Header() {
             cursor: 'pointer',
             minWidth: 'fit-content'
           }}>
-            <div style={{
+            <div className="logo-container" style={{
               width: 'clamp(120px, 25vw, 207px)',
               height: 'clamp(120px, 25vw, 207px)',
               display: 'flex',
@@ -372,6 +374,15 @@ export default function Header() {
           
           .mobile-menu-button {
             display: none !important;
+          }
+          
+          .logo-container {
+            margin: 0 !important;
+            height: 207px !important;
+          }
+          
+          .header-container {
+            min-height: 207px !important;
           }
         }
         

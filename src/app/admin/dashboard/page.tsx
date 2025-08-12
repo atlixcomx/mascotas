@@ -1,6 +1,6 @@
 'use client'
 
-import { RealtimeDashboard } from '../../../components/admin/RealtimeDashboard'
+import { RealtimeDashboardOptimized } from '../../../components/admin/RealtimeDashboardOptimized'
 
 export default function DashboardPage() {
   return (
@@ -9,7 +9,7 @@ export default function DashboardPage() {
       maxWidth: '1400px',
       margin: '0 auto'
     }}>
-      <RealtimeDashboard />
+      <RealtimeDashboardOptimized />
     </div>
   )
 }

@@ -1,0 +1,354 @@
+/* Login Module Styles - Usando Design Tokens */
+
+/* Container principal */
+.loginContainer {
+  background: linear-gradient(135deg, var(--admin-gray-100) 0%, var(--admin-gray-200) 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--admin-spacing-lg);
+  font-family: var(--admin-font-family);
+}
+
+/* Card de login */
+.loginCard {
+  background: var(--admin-bg-primary);
+  border-radius: var(--admin-border-radius-xl);
+  box-shadow: var(--admin-shadow-2xl);
+  padding: var(--admin-spacing-2xl);
+  max-width: 480px;
+  width: 100%;
+  border: 1px solid var(--admin-gray-200);
+}
+
+/* Logo container */
+.logoContainer {
+  width: 88px;
+  height: 88px;
+  background: linear-gradient(135deg, var(--admin-primary-950) 0%, var(--admin-primary-700) 100%);
+  border-radius: var(--admin-border-radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  margin: 0 auto var(--admin-spacing-lg);
+  box-shadow: var(--admin-shadow-lg);
+}
+
+/* Títulos */
+.title {
+  font-size: var(--admin-font-size-3xl);
+  font-weight: var(--admin-font-weight-extrabold);
+  color: var(--admin-primary-950);
+  text-align: center;
+  margin-bottom: var(--admin-spacing-sm);
+  letter-spacing: -0.05em;
+}
+
+.subtitle {
+  font-size: var(--admin-font-size-base);
+  color: var(--admin-gray-600);
+  text-align: center;
+  margin-bottom: var(--admin-spacing-xl);
+}
+
+/* Status banner */
+.statusBanner {
+  border-radius: var(--admin-border-radius-lg);
+  padding: var(--admin-spacing-lg);
+  text-align: center;
+  margin-bottom: var(--admin-spacing-xl);
+  transition: all var(--admin-transition-base);
+}
+
+.statusBanner.success {
+  background: linear-gradient(135deg, var(--admin-success-light) 0%, #bbf7d0 100%);
+  border: 2px solid var(--admin-success);
+}
+
+.statusBanner.loading {
+  background: linear-gradient(135deg, var(--admin-warning-light) 0%, #fde68a 100%);
+  border: 2px solid var(--admin-warning);
+}
+
+.statusTitle {
+  font-weight: var(--admin-font-weight-bold);
+  font-size: var(--admin-font-size-lg);
+  margin-bottom: var(--admin-spacing-xs);
+}
+
+.statusTitle.success {
+  color: var(--admin-success);
+}
+
+.statusTitle.loading {
+  color: var(--admin-warning);
+}
+
+.statusText {
+  font-size: var(--admin-font-size-sm);
+}
+
+.statusText.success {
+  color: var(--admin-secondary-800);
+}
+
+.statusText.loading {
+  color: #92400e;
+}
+
+/* Form styles */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--admin-spacing-lg);
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--admin-spacing-sm);
+}
+
+.label {
+  font-size: var(--admin-font-size-sm);
+  font-weight: var(--admin-font-weight-semibold);
+  color: var(--admin-gray-700);
+}
+
+.input {
+  width: 100%;
+  padding: var(--admin-spacing-md) var(--admin-spacing-lg);
+  border: 2px solid var(--admin-gray-300);
+  border-radius: var(--admin-border-radius-md);
+  font-size: var(--admin-font-size-base);
+  background: var(--admin-bg-primary);
+  color: var(--admin-text-primary);
+  outline: none;
+  transition: all var(--admin-transition-fast);
+}
+
+.input:focus {
+  border-color: var(--admin-primary-950);
+  box-shadow: 0 0 0 4px rgba(125, 36, 71, 0.1);
+}
+
+.input:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Password container */
+.passwordContainer {
+  position: relative;
+}
+
+.passwordInput {
+  padding-right: 50px;
+}
+
+.passwordToggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: var(--admin-gray-600);
+  padding: var(--admin-spacing-sm);
+  border-radius: var(--admin-border-radius-sm);
+  transition: all var(--admin-transition-fast);
+}
+
+.passwordToggle:hover {
+  background: var(--admin-gray-100);
+}
+
+.passwordToggle:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Error message */
+.errorContainer {
+  background: linear-gradient(135deg, var(--admin-error-light) 0%, #fecaca 100%);
+  border: 2px solid var(--admin-error);
+  border-radius: var(--admin-border-radius-md);
+  padding: var(--admin-spacing-md);
+  text-align: center;
+}
+
+.errorText {
+  color: var(--admin-error);
+  font-weight: var(--admin-font-weight-semibold);
+  font-size: var(--admin-font-size-base);
+}
+
+/* Submit button */
+.submitButton {
+  width: 100%;
+  padding: var(--admin-spacing-md) var(--admin-spacing-lg);
+  border: none;
+  border-radius: var(--admin-border-radius-md);
+  font-size: var(--admin-font-size-lg);
+  font-weight: var(--admin-font-weight-bold);
+  cursor: pointer;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--admin-spacing-sm);
+  transition: all var(--admin-transition-base);
+}
+
+.submitButton.idle {
+  background: linear-gradient(135deg, var(--admin-primary-950) 0%, var(--admin-primary-700) 100%);
+  color: white;
+  box-shadow: 0 8px 16px rgba(125, 36, 71, 0.3);
+}
+
+.submitButton.idle:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 20px rgba(125, 36, 71, 0.4);
+}
+
+.submitButton.loading {
+  background: linear-gradient(135deg, var(--admin-gray-400) 0%, var(--admin-gray-600) 100%);
+  color: white;
+  cursor: not-allowed;
+  box-shadow: 0 4px 8px rgba(156, 163, 175, 0.3);
+}
+
+.submitButton:disabled {
+  cursor: not-allowed;
+}
+
+/* Spinner */
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: var(--admin-border-radius-full);
+  animation: spin 1s linear infinite;
+}
+
+/* Info box */
+.infoBox {
+  margin-top: var(--admin-spacing-xl);
+  padding: var(--admin-spacing-lg);
+  background: linear-gradient(135deg, var(--admin-info-light) 0%, #b3e5fc 100%);
+  border: 1px solid var(--admin-info);
+  border-radius: var(--admin-border-radius-lg);
+  text-align: center;
+}
+
+.infoTitle {
+  font-size: var(--admin-font-size-xs);
+  color: #01579b;
+  font-weight: var(--admin-font-weight-bold);
+  margin-bottom: var(--admin-spacing-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.infoText {
+  font-size: var(--admin-font-size-sm);
+  color: #0277bd;
+  line-height: 1.5;
+}
+
+/* Footer */
+.footer {
+  margin-top: var(--admin-spacing-xl);
+  text-align: center;
+  color: var(--admin-gray-400);
+  font-size: var(--admin-font-size-xs);
+  line-height: 1.6;
+}
+
+.footer strong {
+  color: var(--admin-gray-600);
+}
+
+/* Loading fallback */
+.loadingFallback {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--admin-gray-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loadingCard {
+  text-align: center;
+  padding: var(--admin-spacing-2xl);
+  background-color: white;
+  border-radius: var(--admin-border-radius-xl);
+  box-shadow: var(--admin-shadow-xl);
+}
+
+.loadingSpinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid var(--admin-gray-200);
+  border-top-color: var(--admin-primary-950);
+  border-radius: var(--admin-border-radius-full);
+  margin: 0 auto var(--admin-spacing-lg);
+  animation: spin 1s linear infinite;
+}
+
+.loadingText {
+  color: var(--admin-gray-600);
+  font-size: var(--admin-font-size-base);
+}
+
+/* Animations */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .loginCard {
+    padding: var(--admin-spacing-lg);
+  }
+  
+  .title {
+    font-size: var(--admin-font-size-2xl);
+  }
+  
+  .submitButton {
+    font-size: var(--admin-font-size-base);
+  }
+}
+
+/* Accessibility - Focus visible */
+.input:focus-visible,
+.passwordToggle:focus-visible,
+.submitButton:focus-visible {
+  outline: 2px solid var(--admin-primary-600);
+  outline-offset: 2px;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .loginContainer *,
+  .loginCard *,
+  .form *,
+  .submitButton,
+  .passwordToggle,
+  .loadingSpinner,
+  .spinner {
+    animation: none !important;
+    transition: none !important;
+  }
+}

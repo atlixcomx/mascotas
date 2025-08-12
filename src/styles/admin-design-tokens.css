@@ -1,0 +1,168 @@
+/* Sistema de Design Tokens para el Módulo Admin */
+/* Gobierno de Atlixco - Centro de Adopción */
+
+:root {
+  /* Colores Primarios - Identidad Gubernamental */
+  --admin-primary-50: #fdf2f8;
+  --admin-primary-100: #fce7f3;
+  --admin-primary-200: #fbcfe8;
+  --admin-primary-300: #f9a8d4;
+  --admin-primary-400: #f472b6;
+  --admin-primary-500: #ec4899;
+  --admin-primary-600: #db2777;
+  --admin-primary-700: #be185d;
+  --admin-primary-800: #9d174d;
+  --admin-primary-900: #831843;
+  --admin-primary-950: #7d2447; /* Color principal gubernamental */
+
+  /* Colores Secundarios */
+  --admin-secondary-50: #f0fdf4;
+  --admin-secondary-100: #dcfce7;
+  --admin-secondary-200: #bbf7d0;
+  --admin-secondary-300: #86efac;
+  --admin-secondary-400: #4ade80;
+  --admin-secondary-500: #22c55e;
+  --admin-secondary-600: #16a34a;
+  --admin-secondary-700: #15803d;
+  --admin-secondary-800: #166534;
+  --admin-secondary-900: #14532d;
+
+  /* Grises Neutros */
+  --admin-gray-50: #f9fafb;
+  --admin-gray-100: #f3f4f6;
+  --admin-gray-200: #e5e7eb;
+  --admin-gray-300: #d1d5db;
+  --admin-gray-400: #9ca3af;
+  --admin-gray-500: #6b7280;
+  --admin-gray-600: #4b5563;
+  --admin-gray-700: #374151;
+  --admin-gray-800: #1f2937;
+  --admin-gray-900: #111827;
+
+  /* Estados y Alertas */
+  --admin-success: #16a34a;
+  --admin-success-light: #dcfce7;
+  --admin-warning: #f59e0b;
+  --admin-warning-light: #fef3c7;
+  --admin-error: #dc2626;
+  --admin-error-light: #fee2e2;
+  --admin-info: #0891b2;
+  --admin-info-light: #e0f2fe;
+
+  /* Espaciado */
+  --admin-spacing-xs: 0.25rem;   /* 4px */
+  --admin-spacing-sm: 0.5rem;    /* 8px */
+  --admin-spacing-md: 1rem;      /* 16px */
+  --admin-spacing-lg: 1.5rem;    /* 24px */
+  --admin-spacing-xl: 2rem;      /* 32px */
+  --admin-spacing-2xl: 3rem;     /* 48px */
+  --admin-spacing-3xl: 4rem;     /* 64px */
+
+  /* Tipografía */
+  --admin-font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 
+                       Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --admin-font-size-xs: 0.75rem;    /* 12px */
+  --admin-font-size-sm: 0.875rem;   /* 14px */
+  --admin-font-size-base: 1rem;     /* 16px */
+  --admin-font-size-lg: 1.125rem;   /* 18px */
+  --admin-font-size-xl: 1.25rem;    /* 20px */
+  --admin-font-size-2xl: 1.5rem;    /* 24px */
+  --admin-font-size-3xl: 1.875rem;  /* 30px */
+  --admin-font-size-4xl: 2.25rem;   /* 36px */
+
+  /* Pesos de fuente */
+  --admin-font-weight-normal: 400;
+  --admin-font-weight-medium: 500;
+  --admin-font-weight-semibold: 600;
+  --admin-font-weight-bold: 700;
+  --admin-font-weight-extrabold: 800;
+
+  /* Bordes y Radio */
+  --admin-border-radius-sm: 0.25rem;   /* 4px */
+  --admin-border-radius-md: 0.5rem;    /* 8px */
+  --admin-border-radius-lg: 0.75rem;   /* 12px */
+  --admin-border-radius-xl: 1rem;      /* 16px */
+  --admin-border-radius-2xl: 1.5rem;   /* 24px */
+  --admin-border-radius-full: 9999px;
+
+  /* Sombras */
+  --admin-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --admin-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --admin-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --admin-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --admin-shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+
+  /* Transiciones */
+  --admin-transition-fast: 150ms ease-in-out;
+  --admin-transition-base: 200ms ease-in-out;
+  --admin-transition-slow: 300ms ease-in-out;
+
+  /* Z-index */
+  --admin-z-dropdown: 1000;
+  --admin-z-sticky: 1020;
+  --admin-z-fixed: 1030;
+  --admin-z-modal-backdrop: 1040;
+  --admin-z-modal: 1050;
+  --admin-z-popover: 1060;
+  --admin-z-tooltip: 1070;
+
+  /* Breakpoints */
+  --admin-breakpoint-sm: 640px;
+  --admin-breakpoint-md: 768px;
+  --admin-breakpoint-lg: 1024px;
+  --admin-breakpoint-xl: 1280px;
+  --admin-breakpoint-2xl: 1536px;
+
+  /* Layout específico */
+  --admin-sidebar-width: 280px;
+  --admin-sidebar-collapsed: 64px;
+  --admin-header-height: 64px;
+  --admin-content-max-width: 1200px;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --admin-bg-primary: var(--admin-gray-900);
+    --admin-bg-secondary: var(--admin-gray-800);
+    --admin-text-primary: var(--admin-gray-50);
+    --admin-text-secondary: var(--admin-gray-300);
+  }
+}
+
+/* Light mode (default) */
+:root {
+  --admin-bg-primary: #ffffff;
+  --admin-bg-secondary: var(--admin-gray-50);
+  --admin-text-primary: var(--admin-gray-900);
+  --admin-text-secondary: var(--admin-gray-600);
+}
+
+/* Utility classes basadas en tokens */
+.admin-text-primary { color: var(--admin-text-primary); }
+.admin-text-secondary { color: var(--admin-text-secondary); }
+.admin-bg-primary { background-color: var(--admin-bg-primary); }
+.admin-bg-secondary { background-color: var(--admin-bg-secondary); }
+
+/* Focus styles para accesibilidad */
+.admin-focus:focus {
+  outline: 2px solid var(--admin-primary-600);
+  outline-offset: 2px;
+}
+
+.admin-focus-visible:focus-visible {
+  outline: 2px solid var(--admin-primary-600);
+  outline-offset: 2px;
+}
+
+/* Animaciones accesibles */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

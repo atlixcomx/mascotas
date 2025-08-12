@@ -55,7 +55,12 @@ export default function HeaderNew() {
             {/* Navegación Desktop */}
             <nav className="header-nav-desktop">
               {navItems.map((item) => (
-                <Link key={item.href} href={item.href} className="header-nav-link">
+                <Link 
+                  key={item.href} 
+                  href={item.href} 
+                  className="header-nav-link"
+                  style={{ color: '#000000', fontWeight: 700 }}
+                >
                   {item.label}
                 </Link>
               ))}
@@ -114,6 +119,11 @@ export default function HeaderNew() {
       </div>
 
       <style jsx>{`
+        /* Forzar color negro en todos los enlaces */
+        :global(.header-nav-link) {
+          color: #000000 !important;
+        }
+        
         /* Variables CSS */
         :root {
           --header-height-mobile: 120px;

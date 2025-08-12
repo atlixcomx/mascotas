@@ -10,6 +10,8 @@
       "SKIP_BUILD_STATIC_GENERATION": "1",
       "DATABASE_URL": "postgresql://dummy:dummy@localhost:5432/dummy",
       "NEXTAUTH_URL": "http://localhost:3000",
+      "ADMIN_EMAIL": "admin@example.com",
+      "ADMIN_PASSWORD": "dummy_password",
       "SKIP_ENV_VALIDATION": "1"
     }
   },

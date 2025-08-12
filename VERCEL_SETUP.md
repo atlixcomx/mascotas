@@ -1,5 +1,7 @@
 # Configuración de Variables de Entorno en Vercel
 
+> **Actualizado:** Variables de admin agregadas al build de Vercel
+
 ## Variables Requeridas para el Deploy
 
 Para que el módulo admin funcione correctamente en Vercel, necesitas configurar las siguientes variables de entorno en el Dashboard de Vercel:

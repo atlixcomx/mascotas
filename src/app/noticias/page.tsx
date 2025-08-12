@@ -332,7 +332,7 @@ export default function NoticiasPage() {
           }}>
             Únete como voluntario o asiste a nuestras ferias de adopción
           </p>
-          <Link href="/contacto" style={{
+          <Link href="/programa-adopcion" style={{
             display: 'inline-flex',
             alignItems: 'center',
             gap: '8px',
@@ -345,7 +345,7 @@ export default function NoticiasPage() {
             fontWeight: '600',
             transition: 'all 0.3s ease'
           }}>
-            Contáctanos
+            Conocer Más
           </Link>
         </div>
       </section>

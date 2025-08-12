@@ -742,7 +742,7 @@ export default function Home() {
             flexWrap: 'wrap',
             marginBottom: '60px'
           }}>
-            <Link href="/solicitud" style={{
+            <Link href="/catalogo" style={{
               backgroundColor: '#bfb591',
               color: '#0e312d',
               padding: '16px 32px',
@@ -755,9 +755,9 @@ export default function Home() {
               gap: '8px',
               boxShadow: '0 4px 14px rgba(191, 181, 145, 0.3)'
             }}>
-              Agendar Visita
+              Ver Catálogo de Adopción
             </Link>
-            <Link href="/solicitud" style={{
+            <Link href="/programa-adopcion" style={{
               backgroundColor: 'transparent',
               color: 'white',
               padding: '16px 32px',
@@ -770,9 +770,9 @@ export default function Home() {
               gap: '8px',
               border: '2px solid rgba(255,255,255,0.3)'
             }}>
-              Solicitar Adopción
+              Proceso de Adopción
             </Link>
-            <Link href="/contacto" style={{
+            <Link href="/noticias" style={{
               backgroundColor: 'transparent',
               color: 'white',
               padding: '16px 32px',
@@ -785,7 +785,7 @@ export default function Home() {
               gap: '8px',
               border: '2px solid rgba(255,255,255,0.3)'
             }}>
-              Reportar Rescate
+              Noticias y Eventos
             </Link>
           </div>
           

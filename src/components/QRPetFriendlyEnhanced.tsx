@@ -94,33 +94,26 @@ export default function QRPetFriendlyEnhanced({
         ctx.fillText(`Código: ${codigo}`, canvasWidth/2, 92)
       }
 
-      // Contenedor del QR con borde decorativo
+      // Contenedor del QR con medidas exactas
+      const qrSize = size - 40 // QR real será más pequeño para dejar margen
       const qrContainer = {
-        x: 50,
+        x: (canvasWidth - qrSize) / 2, // Centrado horizontalmente
         y: 110,
-        width: size,
-        height: size
+        width: qrSize,
+        height: qrSize
       }
 
-      // Fondo del QR con patrón sutil
+      // Fondo del QR
       ctx.fillStyle = '#fafafa'
-      ctx.fillRect(qrContainer.x - 10, qrContainer.y - 10, 
-                   qrContainer.width + 20, qrContainer.height + 20)
+      ctx.fillRect(qrContainer.x - 8, qrContainer.y - 8, 
+                   qrContainer.width + 16, qrContainer.height + 16)
 
-      // Marco decorativo del QR
-      ctx.strokeStyle = color
-      ctx.lineWidth = 3
-      ctx.setLineDash([10, 5])
-      ctx.strokeRect(qrContainer.x - 10, qrContainer.y - 10, 
-                     qrContainer.width + 20, qrContainer.height + 20)
-      ctx.setLineDash([])
-
-      // Generar QR Code de alta calidad
+      // Generar QR Code con tamaño exacto
       try {
         const qrCanvas = document.createElement('canvas')
         await QRCode.toCanvas(qrCanvas, url, {
-          width: size - 20,
-          margin: 1,
+          width: qrSize,
+          margin: 0, // Sin margen interno
           color: {
             dark: '#1f2937',
             light: '#ffffff'
@@ -128,13 +121,20 @@ export default function QRPetFriendlyEnhanced({
           errorCorrectionLevel: 'H'
         })
 
-        // Dibujar QR en el canvas principal
+        // Dibujar QR centrado exactamente
         ctx.drawImage(qrCanvas, qrContainer.x, qrContainer.y)
 
-        // Logo central perfectamente centrado
-        const logoSize = 80
-        const logoCenterX = canvasWidth/2
-        const logoCenterY = qrContainer.y + qrContainer.height/2
+        // Marco decorativo alineado EXACTAMENTE con el QR
+        ctx.strokeStyle = color
+        ctx.lineWidth = 2
+        ctx.setLineDash([8, 4])
+        ctx.strokeRect(qrContainer.x, qrContainer.y, qrContainer.width, qrContainer.height)
+        ctx.setLineDash([])
+
+        // Logo central con coordenadas EXACTAS del centro del QR
+        const logoSize = 70
+        const logoCenterX = qrContainer.x + qrContainer.width / 2  // Centro exacto del QR
+        const logoCenterY = qrContainer.y + qrContainer.height / 2 // Centro exacto del QR
 
         // Fondo blanco circular para el logo con sombra sutil
         ctx.shadowColor = 'rgba(0, 0, 0, 0.1)'
@@ -249,7 +249,7 @@ export default function QRPetFriendlyEnhanced({
     return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`
   }
 
-  // Función para dibujar logo de perro centrado profesional
+  // Función para dibujar logo de perro simple y centrado
   function drawCenteredDogLogo(
     ctx: CanvasRenderingContext2D, 
     centerX: number, 
@@ -257,61 +257,58 @@ export default function QRPetFriendlyEnhanced({
     radius: number, 
     color: string
   ) {
-    const scale = radius / 40 // Escala basada en el radio del círculo
+    const scale = radius / 35 // Escala ajustada
     
     ctx.fillStyle = color
     
-    // Cabeza principal (perfectamente centrada)
+    // Cabeza principal (circular, centrada)
     ctx.beginPath()
-    ctx.arc(centerX, centerY - 2 * scale, 24 * scale, 0, Math.PI * 2)
+    ctx.arc(centerX, centerY - 3 * scale, 20 * scale, 0, Math.PI * 2)
     ctx.fill()
     
-    // Orejas simétricas
+    // Orejas triangulares simétricas (más simples)
     ctx.beginPath()
-    // Oreja izquierda
-    ctx.ellipse(centerX - 18 * scale, centerY - 16 * scale, 12 * scale, 18 * scale, -0.3, 0, Math.PI * 2)
+    ctx.moveTo(centerX - 15 * scale, centerY - 18 * scale) // Punto superior izquierdo
+    ctx.lineTo(centerX - 8 * scale, centerY - 8 * scale)   // Punto base izquierdo
+    ctx.lineTo(centerX - 22 * scale, centerY - 8 * scale)  // Punto base externo
+    ctx.closePath()
     ctx.fill()
     
     ctx.beginPath()
-    // Oreja derecha
-    ctx.ellipse(centerX + 18 * scale, centerY - 16 * scale, 12 * scale, 18 * scale, 0.3, 0, Math.PI * 2)
+    ctx.moveTo(centerX + 15 * scale, centerY - 18 * scale) // Punto superior derecho
+    ctx.lineTo(centerX + 8 * scale, centerY - 8 * scale)   // Punto base derecho
+    ctx.lineTo(centerX + 22 * scale, centerY - 8 * scale)  // Punto base externo
+    ctx.closePath()
     ctx.fill()
     
-    // Hocico centrado
+    // Hocico oval
     ctx.beginPath()
-    ctx.ellipse(centerX, centerY + 8 * scale, 14 * scale, 10 * scale, 0, 0, Math.PI * 2)
+    ctx.ellipse(centerX, centerY + 5 * scale, 12 * scale, 8 * scale, 0, 0, Math.PI * 2)
     ctx.fill()
     
-    // Cuerpo simple
+    // Cuerpo oval simple
     ctx.beginPath()
-    ctx.ellipse(centerX, centerY + 20 * scale, 16 * scale, 12 * scale, 0, 0, Math.PI * 2)
+    ctx.ellipse(centerX, centerY + 18 * scale, 14 * scale, 10 * scale, 0, 0, Math.PI * 2)
     ctx.fill()
     
-    // Detalles en blanco para contraste
+    // Detalles en blanco
     ctx.fillStyle = '#ffffff'
     
-    // Nariz pequeña
+    // Nariz triangular pequeña
     ctx.beginPath()
-    ctx.ellipse(centerX, centerY + 4 * scale, 3 * scale, 2.5 * scale, 0, 0, Math.PI * 2)
+    ctx.moveTo(centerX, centerY + 1 * scale)           // Punto superior
+    ctx.lineTo(centerX - 2.5 * scale, centerY + 4 * scale) // Punto inferior izquierdo
+    ctx.lineTo(centerX + 2.5 * scale, centerY + 4 * scale) // Punto inferior derecho
+    ctx.closePath()
     ctx.fill()
     
-    // Ojos pequeños
+    // Ojos simples
     ctx.beginPath()
-    ctx.arc(centerX - 8 * scale, centerY - 6 * scale, 2.5 * scale, 0, Math.PI * 2)
-    ctx.fill()
-    
-    ctx.beginPath()
-    ctx.arc(centerX + 8 * scale, centerY - 6 * scale, 2.5 * scale, 0, Math.PI * 2)
-    ctx.fill()
-    
-    // Punto de brillo en los ojos
-    ctx.fillStyle = color
-    ctx.beginPath()
-    ctx.arc(centerX - 8 * scale, centerY - 6 * scale, 1 * scale, 0, Math.PI * 2)
+    ctx.arc(centerX - 6 * scale, centerY - 6 * scale, 2 * scale, 0, Math.PI * 2)
     ctx.fill()
     
     ctx.beginPath()
-    ctx.arc(centerX + 8 * scale, centerY - 6 * scale, 1 * scale, 0, Math.PI * 2)
+    ctx.arc(centerX + 6 * scale, centerY - 6 * scale, 2 * scale, 0, Math.PI * 2)
     ctx.fill()
   }
 

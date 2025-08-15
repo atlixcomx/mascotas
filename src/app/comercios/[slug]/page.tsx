@@ -111,6 +111,7 @@ export default function ComercioPage({ params }: { params: { slug: string } }) {
   useEffect(() => {
     fetchComercio()
     fetchMascotas()
+    trackQRScan() // Trackear si llegó via QR
   }, [params.slug])
 
   const fetchComercio = async () => {
@@ -150,6 +151,30 @@ export default function ComercioPage({ params }: { params: { slug: string } }) {
       }
     } catch (error) {
       console.error('Error fetching mascotas:', error)
+    }
+  }
+
+  const trackQRScan = async () => {
+    // Solo trackear si viene de un QR scan (puede ser por referrer o parámetro)
+    const urlParams = new URLSearchParams(window.location.search)
+    const referrer = document.referrer
+    
+    // Verificar si viene de QR (sin referrer o con parámetro específico)
+    if (!referrer || referrer === '' || urlParams.get('qr') === '1') {
+      try {
+        await fetch(`/api/comercios/${params.slug}/track`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            source: 'qr_scan',
+            timestamp: new Date().toISOString()
+          })
+        })
+      } catch (error) {
+        console.error('Error tracking QR scan:', error)
+      }
     }
   }
 

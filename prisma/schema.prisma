@@ -110,6 +110,7 @@ model Comercio {
   activo        Boolean   @default(true)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+  qrScans       QrScan[]
 }
 
 model Usuario {
@@ -307,4 +308,14 @@ model VisitaCampania {
   referer      String?
   createdAt    DateTime          @default(now())
   campania     CampaniaDifusion  @relation(fields: [campaniaId], references: [id])
+}
+
+model QrScan {
+  id         String    @id @default(cuid())
+  comercioId String
+  ipAddress  String?
+  userAgent  String?
+  referer    String?
+  timestamp  DateTime  @default(now())
+  comercio   Comercio  @relation(fields: [comercioId], references: [id])
 }

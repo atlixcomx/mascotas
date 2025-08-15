@@ -579,7 +579,7 @@ export default function QRModalAdmin({
                         fontWeight: '700',
                         color: '#3b82f6'
                       }}>
-                        {comercio.qrEscaneos.toLocaleString()}
+                        {comercio.qrEscaneos?.toLocaleString() || 0}
                       </div>
                       <div style={{
                         fontSize: '0.75rem',
@@ -604,7 +604,7 @@ export default function QRModalAdmin({
                         fontWeight: '700',
                         color: '#10b981'
                       }}>
-                        {comercio.conversiones}
+                        {comercio.conversiones?.toLocaleString() || 0}
                       </div>
                       <div style={{
                         fontSize: '0.75rem',

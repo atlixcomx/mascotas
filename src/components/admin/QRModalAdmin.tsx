@@ -8,8 +8,9 @@ import {
   Image as ImageIcon, Code, Palette
 } from 'lucide-react'
 
-// Importar componente QR dinámicamente
+// Importar componentes QR dinámicamente
 const QRPetFriendly = dynamic(() => import('@/components/QRPetFriendly'), { ssr: false })
+const QRPetFriendlyEnhanced = dynamic(() => import('@/components/QRPetFriendlyEnhanced'), { ssr: false })
 
 interface Comercio {
   id: string
@@ -82,18 +83,29 @@ export default function QRModalAdmin({
 
   function downloadQR(format: 'png' | 'svg' | 'pdf') {
     if (qrStyle === 'petfriendly' && format === 'png') {
-      const canvas = document.querySelector('#qr-canvas canvas') as HTMLCanvasElement
+      // Buscar el canvas dentro del componente QRPetFriendlyEnhanced
+      const canvases = document.querySelectorAll('#qr-canvas canvas')
+      const canvas = canvases[canvases.length - 1] as HTMLCanvasElement // Tomar el último canvas generado
       if (canvas) {
         canvas.toBlob((blob) => {
           if (blob) {
             const url = URL.createObjectURL(blob)
             const link = document.createElement('a')
-            link.download = `QR-${comercio.codigo}-${comercio.nombre.replace(/\s+/g, '-')}-PetFriendly.png`
+            link.download = `QR-${comercio.codigo}-${comercio.nombre.replace(/\s+/g, '-')}-PetFriendly-Enhanced.png`
             link.href = url
             link.click()
             URL.revokeObjectURL(url)
           }
         })
+      } else {
+        // Fallback: usar la imagen generada
+        const img = document.querySelector('#qr-canvas img') as HTMLImageElement
+        if (img) {
+          const link = document.createElement('a')
+          link.download = `QR-${comercio.codigo}-${comercio.nombre.replace(/\s+/g, '-')}-PetFriendly-Enhanced.png`
+          link.href = img.src
+          link.click()
+        }
       }
     } else if (qrData) {
       if (format === 'png') {
@@ -314,12 +326,14 @@ export default function QRModalAdmin({
                     marginBottom: '16px'
                   }}>
                     {qrStyle === 'petfriendly' ? (
-                      <QRPetFriendly
+                      <QRPetFriendlyEnhanced
                         url={`${process.env.NEXT_PUBLIC_URL || 'https://4tlixco.vercel.app'}/comercios/${comercio.slug}`}
-                        size={280}
+                        size={260}
                         color={categoria.color}
-                        backgroundColor={categoria.bg}
+                        backgroundColor={categoria.lightBg || categoria.bg}
                         comercioNombre={comercio.nombre}
+                        codigo={comercio.codigo}
+                        categoria={comercio.categoria}
                       />
                     ) : qrData && (
                       <img

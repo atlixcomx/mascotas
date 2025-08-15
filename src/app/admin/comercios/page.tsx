@@ -8,7 +8,7 @@ import dynamic from 'next/dynamic'
 
 // Importar componentes dinámicamente para evitar SSR
 const QRPetFriendly = dynamic(() => import('@/components/QRPetFriendly'), { ssr: false })
-const QRModalEnhanced = dynamic(() => import('@/components/admin/QRModalEnhanced'), { ssr: false })
+const QRModalAdmin = dynamic(() => import('@/components/admin/QRModalAdmin'), { ssr: false })
 import { 
   Search, 
   Plus,
@@ -761,9 +761,9 @@ export default function ComerciosPage() {
         )}
       </div>
 
-      {/* QR Modal Enhanced */}
+      {/* QR Modal Admin */}
       {selectedComercio && (
-        <QRModalEnhanced
+        <QRModalAdmin
           comercio={selectedComercio}
           isOpen={showQRModal}
           onClose={closeQRModal}

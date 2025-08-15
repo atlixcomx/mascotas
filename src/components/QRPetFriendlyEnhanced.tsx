@@ -131,26 +131,37 @@ export default function QRPetFriendlyEnhanced({
         // Dibujar QR en el canvas principal
         ctx.drawImage(qrCanvas, qrContainer.x, qrContainer.y)
 
-        // Logo central mejorado
-        const logoSize = 90
-        const logoX = canvasWidth/2 - logoSize/2
-        const logoY = qrContainer.y + qrContainer.height/2 - logoSize/2
+        // Logo central perfectamente centrado
+        const logoSize = 80
+        const logoCenterX = canvasWidth/2
+        const logoCenterY = qrContainer.y + qrContainer.height/2
 
-        // Fondo blanco circular para el logo
+        // Fondo blanco circular para el logo con sombra sutil
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.1)'
+        ctx.shadowBlur = 8
+        ctx.shadowOffsetX = 0
+        ctx.shadowOffsetY = 2
+        
         ctx.fillStyle = '#ffffff'
         ctx.beginPath()
-        ctx.arc(canvasWidth/2, qrContainer.y + qrContainer.height/2, logoSize/2 + 5, 0, Math.PI * 2)
+        ctx.arc(logoCenterX, logoCenterY, logoSize/2 + 8, 0, Math.PI * 2)
         ctx.fill()
 
-        // Borde del logo
+        // Resetear sombra
+        ctx.shadowColor = 'transparent'
+        ctx.shadowBlur = 0
+        ctx.shadowOffsetX = 0
+        ctx.shadowOffsetY = 0
+
+        // Borde del logo más grueso
         ctx.strokeStyle = color
-        ctx.lineWidth = 3
+        ctx.lineWidth = 4
         ctx.beginPath()
-        ctx.arc(canvasWidth/2, qrContainer.y + qrContainer.height/2, logoSize/2 + 5, 0, Math.PI * 2)
+        ctx.arc(logoCenterX, logoCenterY, logoSize/2 + 8, 0, Math.PI * 2)
         ctx.stroke()
 
-        // Dibujar logo de mascota mejorado
-        drawEnhancedPetLogo(ctx, canvasWidth/2, qrContainer.y + qrContainer.height/2, logoSize/2, color)
+        // Dibujar logo de perro centrado y mejorado
+        drawCenteredDogLogo(ctx, logoCenterX, logoCenterY, logoSize/2, color)
 
       } catch (error) {
         console.error('Error generating QR:', error)
@@ -238,38 +249,69 @@ export default function QRPetFriendlyEnhanced({
     return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`
   }
 
-  // Función para dibujar logo de mascota mejorado
-  function drawEnhancedPetLogo(
+  // Función para dibujar logo de perro centrado profesional
+  function drawCenteredDogLogo(
     ctx: CanvasRenderingContext2D, 
-    x: number, 
-    y: number, 
-    size: number, 
+    centerX: number, 
+    centerY: number, 
+    radius: number, 
     color: string
   ) {
+    const scale = radius / 40 // Escala basada en el radio del círculo
+    
     ctx.fillStyle = color
     
-    // Cabeza más detallada
+    // Cabeza principal (perfectamente centrada)
     ctx.beginPath()
-    ctx.ellipse(x, y - 5, size * 0.6, size * 0.55, 0, 0, Math.PI * 2)
+    ctx.arc(centerX, centerY - 2 * scale, 24 * scale, 0, Math.PI * 2)
     ctx.fill()
     
-    // Orejas mejoradas
+    // Orejas simétricas
     ctx.beginPath()
-    ctx.ellipse(x - size * 0.45, y - size * 0.4, size * 0.25, size * 0.35, -0.4, 0, Math.PI * 2)
-    ctx.fill()
-    ctx.beginPath()
-    ctx.ellipse(x + size * 0.45, y - size * 0.4, size * 0.25, size * 0.35, 0.4, 0, Math.PI * 2)
+    // Oreja izquierda
+    ctx.ellipse(centerX - 18 * scale, centerY - 16 * scale, 12 * scale, 18 * scale, -0.3, 0, Math.PI * 2)
     ctx.fill()
     
-    // Hocico
     ctx.beginPath()
-    ctx.ellipse(x, y + size * 0.15, size * 0.35, size * 0.25, 0, 0, Math.PI * 2)
+    // Oreja derecha
+    ctx.ellipse(centerX + 18 * scale, centerY - 16 * scale, 12 * scale, 18 * scale, 0.3, 0, Math.PI * 2)
     ctx.fill()
     
-    // Nariz (pequeño detalle)
+    // Hocico centrado
+    ctx.beginPath()
+    ctx.ellipse(centerX, centerY + 8 * scale, 14 * scale, 10 * scale, 0, 0, Math.PI * 2)
+    ctx.fill()
+    
+    // Cuerpo simple
+    ctx.beginPath()
+    ctx.ellipse(centerX, centerY + 20 * scale, 16 * scale, 12 * scale, 0, 0, Math.PI * 2)
+    ctx.fill()
+    
+    // Detalles en blanco para contraste
     ctx.fillStyle = '#ffffff'
+    
+    // Nariz pequeña
     ctx.beginPath()
-    ctx.ellipse(x, y + size * 0.1, size * 0.08, size * 0.06, 0, 0, Math.PI * 2)
+    ctx.ellipse(centerX, centerY + 4 * scale, 3 * scale, 2.5 * scale, 0, 0, Math.PI * 2)
+    ctx.fill()
+    
+    // Ojos pequeños
+    ctx.beginPath()
+    ctx.arc(centerX - 8 * scale, centerY - 6 * scale, 2.5 * scale, 0, Math.PI * 2)
+    ctx.fill()
+    
+    ctx.beginPath()
+    ctx.arc(centerX + 8 * scale, centerY - 6 * scale, 2.5 * scale, 0, Math.PI * 2)
+    ctx.fill()
+    
+    // Punto de brillo en los ojos
+    ctx.fillStyle = color
+    ctx.beginPath()
+    ctx.arc(centerX - 8 * scale, centerY - 6 * scale, 1 * scale, 0, Math.PI * 2)
+    ctx.fill()
+    
+    ctx.beginPath()
+    ctx.arc(centerX + 8 * scale, centerY - 6 * scale, 1 * scale, 0, Math.PI * 2)
     ctx.fill()
   }
 

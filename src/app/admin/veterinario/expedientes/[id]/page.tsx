@@ -454,13 +454,18 @@ export default function ExpedienteMedicoDetallePage() {
             <FileText size={20} />
             Historial Médico ({expediente.historialMedico.length})
           </h2>
-          <Link 
-            href={`/admin/veterinario/nueva-consulta?mascotaId=${expediente.mascotaId}`}
+          <button 
+            onClick={() => {
+              console.log('Button clicked, expediente:', expediente)
+              console.log('mascotaId:', expediente?.mascotaId)
+              window.location.href = `/admin/veterinario/nueva-consulta?mascotaId=${expediente.mascotaId}`
+            }}
             className={styles.primaryButton}
+            style={{ border: 'none' }}
           >
             <Plus size={20} />
             Nueva Consulta
-          </Link>
+          </button>
         </div>
 
         <div className={styles.historialList}>

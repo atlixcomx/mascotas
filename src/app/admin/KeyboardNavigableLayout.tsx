@@ -24,7 +24,8 @@ import {
   Sparkles,
   ChevronRight,
   Activity,
-  Share2
+  Share2,
+  Stethoscope
 } from 'lucide-react'
 import { NotificationPanel } from '../../components/ui/NotificationPanel'
 
@@ -32,6 +33,7 @@ const navigation = [
   { name: 'Dashboard en Vivo', href: '/admin/dashboard', icon: Activity },
   { name: 'Gestión de Mascotas', href: '/admin/perritos', icon: Dog },
   { name: 'Solicitudes de Adopción', href: '/admin/solicitudes', icon: FileText },
+  { name: 'Módulo Veterinario', href: '/admin/veterinario', icon: Stethoscope },
   { name: 'Recordatorios', href: '/admin/recordatorios', icon: Bell },
   { name: 'Comercios Aliados', href: '/admin/comercios', icon: Building2 },
   { name: 'Módulo de Difusión', href: '/admin/difusion', icon: Share2 },

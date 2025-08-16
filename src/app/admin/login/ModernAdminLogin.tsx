@@ -30,7 +30,7 @@ export default function ModernAdminLogin() {
     const img1 = new window.Image()
     img1.src = '/centroB.png'
     const img2 = new window.Image()
-    img2.src = '/logo/ayuntamiento.png'
+    img2.src = '/ayuntamientoB.png'
   }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -76,7 +76,7 @@ export default function ModernAdminLogin() {
             <div className={styles.logoContainer}>
               <div className={styles.logoGradient}>
                 <Image
-                  src="/logo/ayuntamiento.png"
+                  src="/ayuntamientoB.png"
                   alt="H. Ayuntamiento de Atlixco"
                   width={60}
                   height={60}

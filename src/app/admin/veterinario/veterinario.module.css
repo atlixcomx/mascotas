@@ -457,6 +457,7 @@
   color: #4b5563;
   font-weight: 500;
   transition: all 0.2s;
+  cursor: pointer;
 }
 
 .actionCard:hover {

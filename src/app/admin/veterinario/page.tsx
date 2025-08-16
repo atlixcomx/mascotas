@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { 
   Stethoscope, Plus, Search, Calendar, FileText, 
@@ -39,6 +40,7 @@ interface ConsultaReciente {
 
 export default function VeterinarioPage() {
   const { data: session } = useSession()
+  const router = useRouter()
   const [mascotas, setMascotas] = useState<Mascota[]>([])
   const [consultasRecientes, setConsultasRecientes] = useState<ConsultaReciente[]>([])
   const [searchTerm, setSearchTerm] = useState('')
@@ -290,22 +292,34 @@ export default function VeterinarioPage() {
       <div className={styles.quickActions}>
         <h2 className={styles.sectionTitle}>Acciones Rápidas</h2>
         <div className={styles.actionsGrid}>
-          <Link href="/admin/veterinario/calendario" className={styles.actionCard}>
+          <button 
+            onClick={() => router.push('/admin/veterinario/calendario')}
+            className={styles.actionCard}
+          >
             <Calendar size={24} />
             <span>Calendario de Citas</span>
-          </Link>
-          <Link href="/admin/veterinario/vacunacion" className={styles.actionCard}>
+          </button>
+          <button 
+            onClick={() => router.push('/admin/veterinario/vacunacion')}
+            className={styles.actionCard}
+          >
             <Syringe size={24} />
             <span>Programa de Vacunación</span>
-          </Link>
-          <Link href="/admin/veterinario/expedientes" className={styles.actionCard}>
+          </button>
+          <button 
+            onClick={() => router.push('/admin/veterinario/expedientes')}
+            className={styles.actionCard}
+          >
             <FileText size={24} />
             <span>Expedientes Médicos</span>
-          </Link>
-          <Link href="/admin/veterinario/reportes" className={styles.actionCard}>
+          </button>
+          <button 
+            onClick={() => router.push('/admin/veterinario/reportes')}
+            className={styles.actionCard}
+          >
             <TrendingUp size={24} />
             <span>Reportes de Salud</span>
-          </Link>
+          </button>
         </div>
       </div>
     </div>

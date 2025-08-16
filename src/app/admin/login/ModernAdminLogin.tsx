@@ -26,9 +26,11 @@ export default function ModernAdminLogin() {
 
   useEffect(() => {
     setMounted(true)
-    // Precargar la imagen del fondo
-    const img = new window.Image()
-    img.src = '/centroB.png'
+    // Precargar las imágenes
+    const img1 = new window.Image()
+    img1.src = '/centroB.png'
+    const img2 = new window.Image()
+    img2.src = '/logo/ayuntamiento.png'
   }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -73,7 +75,13 @@ export default function ModernAdminLogin() {
           <div className={styles.header}>
             <div className={styles.logoContainer}>
               <div className={styles.logoGradient}>
-                <Shield className={styles.logoIcon} />
+                <Image
+                  src="/logo/ayuntamiento.png"
+                  alt="H. Ayuntamiento de Atlixco"
+                  width={60}
+                  height={60}
+                  className={styles.logoImage}
+                />
               </div>
             </div>
             <h1 className={styles.title}>Panel Administrativo</h1>

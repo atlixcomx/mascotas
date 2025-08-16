@@ -50,27 +50,29 @@
 }
 
 .logoGradient {
-  width: 80px;
-  height: 80px;
-  background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
-  border-radius: 20px;
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(135deg, #0e312d 0%, #1a4d45 100%);
+  border-radius: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 10px 25px rgba(220, 38, 38, 0.25);
+  box-shadow: 0 12px 30px rgba(14, 49, 45, 0.3);
   transform: rotate(-5deg);
   transition: transform 0.3s ease;
+  padding: 8px;
 }
 
 .logoGradient:hover {
   transform: rotate(0deg) scale(1.05);
 }
 
-.logoIcon {
-  width: 40px;
-  height: 40px;
-  color: white;
+.logoImage {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
   transform: rotate(5deg);
+  filter: brightness(0) invert(1);
 }
 
 .title {
@@ -97,10 +99,10 @@
   align-items: center;
   gap: 0.75rem;
   padding: 1rem;
-  background: #fee2e2;
+  background: #fef2f2;
   border: 1px solid #fecaca;
   border-radius: 12px;
-  color: #991b1b;
+  color: #7f1d1d;
   margin-bottom: 1.5rem;
   font-size: 0.875rem;
   animation: slideDown 0.3s ease;
@@ -145,8 +147,8 @@
 
 .input:focus {
   outline: none;
-  border-color: #dc2626;
-  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+  border-color: #0e312d;
+  box-shadow: 0 0 0 3px rgba(14, 49, 45, 0.1);
 }
 
 .input:disabled {
@@ -193,27 +195,27 @@
 .checkbox input {
   width: 18px;
   height: 18px;
-  accent-color: #dc2626;
+  accent-color: #0e312d;
   cursor: pointer;
 }
 
 .forgotLink {
   font-size: 0.875rem;
-  color: #dc2626;
+  color: #0e312d;
   text-decoration: none;
   font-weight: 500;
   transition: color 0.2s;
 }
 
 .forgotLink:hover {
-  color: #991b1b;
+  color: #1a4d45;
   text-decoration: underline;
 }
 
 .submitButton {
   width: 100%;
   padding: 1rem;
-  background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+  background: linear-gradient(135deg, #0e312d 0%, #1a4d45 100%);
   color: white;
   border: none;
   border-radius: 12px;
@@ -225,12 +227,12 @@
   justify-content: center;
   gap: 0.75rem;
   transition: all 0.3s;
-  box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+  box-shadow: 0 4px 15px rgba(14, 49, 45, 0.3);
 }
 
 .submitButton:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+  box-shadow: 0 6px 20px rgba(14, 49, 45, 0.4);
 }
 
 .submitButton:disabled {
@@ -274,7 +276,7 @@
 /* Panel Derecho - Visual */
 .rightPanel {
   flex: 1;
-  background: linear-gradient(135deg, #dc2626 0%, #7f1d1d 100%);
+  background: linear-gradient(135deg, #0e312d 0%, #1a4d45 100%);
   position: relative;
   overflow: hidden;
   display: none;
@@ -306,7 +308,7 @@
   flex-direction: column;
   justify-content: space-between;
   padding: 3rem;
-  background: linear-gradient(135deg, rgba(220, 38, 38, 0.95) 0%, rgba(127, 29, 29, 0.95) 100%);
+  background: linear-gradient(135deg, rgba(14, 49, 45, 0.95) 0%, rgba(26, 77, 69, 0.95) 100%);
 }
 
 .rightContent {
@@ -390,6 +392,6 @@
 /* Responsive */
 @media (max-width: 1023px) {
   .leftPanel {
-    background: linear-gradient(135deg, white 0%, #fef2f2 100%);
+    background: linear-gradient(135deg, white 0%, #f0f9ff 100%);
   }
 }

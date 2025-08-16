@@ -11,6 +11,9 @@ import {
 } from 'lucide-react'
 import styles from '../../veterinario.module.css'
 
+// Imagen por defecto para mascotas
+const defaultDogImage = 'https://somosmaka.com/cdn/shop/articles/perro_mestizo.jpg?v=1697855331'
+
 interface ExpedienteDetalle {
   id: string
   mascotaId: string
@@ -67,13 +70,24 @@ export default function ExpedienteMedicoDetallePage() {
 
   const fetchExpediente = async (id: string) => {
     try {
-      // Datos mock para demostrar funcionalidad
+      // Intentar obtener datos reales de la mascota primero
+      let realPetData = null
+      try {
+        const response = await fetch(`/api/admin/perritos/${id}`)
+        if (response.ok) {
+          realPetData = await response.json()
+        }
+      } catch (error) {
+        console.log('No se pudieron obtener datos reales, usando mock data')
+      }
+
+      // Datos mock para demostrar funcionalidad, con datos reales si están disponibles
       const expedienteMock: ExpedienteDetalle = {
         id,
-        mascotaId: '1',
-        mascotaNombre: 'Max',
-        mascotaCodigo: 'P001',
-        fotoPrincipal: '/images/placeholder-dog.jpg',
+        mascotaId: realPetData?.id || '1',
+        mascotaNombre: realPetData?.nombre || 'Max',
+        mascotaCodigo: realPetData?.codigo || 'P001',
+        fotoPrincipal: realPetData?.fotoPrincipal || defaultDogImage,
         edad: '3 años',
         sexo: 'Macho',
         raza: 'Labrador Retriever',
@@ -256,9 +270,13 @@ export default function ExpedienteMedicoDetallePage() {
         <div className={styles.expedienteCard}>
           <div className={styles.expedienteFotoSection}>
             <img 
-              src={expediente.fotoPrincipal} 
+              src={expediente.fotoPrincipal || defaultDogImage} 
               alt={expediente.mascotaNombre}
               className={styles.expedienteFotoLarge}
+              onError={(e) => {
+                const target = e.target as HTMLImageElement
+                target.src = defaultDogImage
+              }}
             />
             <div 
               className={styles.expedienteEstadoLarge}

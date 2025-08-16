@@ -11,6 +11,9 @@ import {
 } from 'lucide-react'
 import styles from '../veterinario.module.css'
 
+// Imagen por defecto para mascotas
+const defaultDogImage = 'https://somosmaka.com/cdn/shop/articles/perro_mestizo.jpg?v=1697855331'
+
 interface ExpedienteMedico {
   id: string
   mascotaId: string
@@ -66,7 +69,7 @@ export default function ExpedientesMedicosPage() {
           mascotaId: '1',
           mascotaNombre: 'Max',
           mascotaCodigo: 'P001',
-          fotoPrincipal: '/images/placeholder-dog.jpg',
+          fotoPrincipal: defaultDogImage,
           edad: '3 años',
           sexo: 'Macho',
           raza: 'Labrador Retriever',
@@ -86,7 +89,7 @@ export default function ExpedientesMedicosPage() {
           mascotaId: '2',
           mascotaNombre: 'Luna',
           mascotaCodigo: 'P002',
-          fotoPrincipal: '/images/placeholder-dog.jpg',
+          fotoPrincipal: defaultDogImage,
           edad: '2 años',
           sexo: 'Hembra',
           raza: 'Golden Retriever',
@@ -106,7 +109,7 @@ export default function ExpedientesMedicosPage() {
           mascotaId: '3',
           mascotaNombre: 'Rocky',
           mascotaCodigo: 'P003',
-          fotoPrincipal: '/images/placeholder-dog.jpg',
+          fotoPrincipal: defaultDogImage,
           edad: '5 años',
           sexo: 'Macho',
           raza: 'Pastor Alemán',
@@ -309,9 +312,13 @@ export default function ExpedientesMedicosPage() {
           >
             <div className={styles.expedienteHeader}>
               <img 
-                src={expediente.fotoPrincipal} 
+                src={expediente.fotoPrincipal || defaultDogImage} 
                 alt={expediente.mascotaNombre}
                 className={styles.expedienteFoto}
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement
+                  target.src = defaultDogImage
+                }}
               />
               <div className={styles.expedienteInfo}>
                 <h3 className={styles.expedienteNombre}>{expediente.mascotaNombre}</h3>

@@ -1542,3 +1542,269 @@
   font-weight: 500;
   color: #374151;
 }
+
+/* Detalle de Expediente Médico */
+.expedienteDetailGrid {
+  display: grid;
+  grid-template-columns: 300px 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+@media (max-width: 1200px) {
+  .expedienteDetailGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .expedienteDetailGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.expedienteCard {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.expedienteFotoSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.expedienteFotoLarge {
+  width: 200px;
+  height: 200px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 3px solid #e5e7eb;
+}
+
+.expedienteEstadoLarge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.cardTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.infoItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.infoLabel {
+  font-weight: 500;
+  color: #6b7280;
+  min-width: 80px;
+}
+
+.infoValue {
+  color: #1f2937;
+  font-weight: 500;
+}
+
+.healthStatus {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.healthItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.healthItem.positive {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.healthItem.negative {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.proximaCita {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 12px;
+  background: #fef3c7;
+  color: #d97706;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.alertasGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.alertCard {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  border-left: 4px solid #f97316;
+}
+
+.alertCard h4 {
+  margin: 0 0 12px 0;
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.tagsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.alertTag {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: #fee2e2;
+  color: #dc2626;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.notasContent {
+  line-height: 1.6;
+  color: #4b5563;
+  margin: 0;
+}
+
+.historialList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.historialItem {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.historialHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.historialTipo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: #0e312d;
+  text-transform: capitalize;
+}
+
+.historialFecha {
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.historialContent h4 {
+  margin: 0 0 12px 0;
+  color: #1f2937;
+  font-size: 16px;
+}
+
+.historialDetalle {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.historialDetalle > div {
+  color: #4b5563;
+}
+
+.historialDetalle strong {
+  color: #1f2937;
+}
+
+.notFound {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 20px;
+  color: #6b7280;
+}
+
+.notFound h2 {
+  margin: 16px 0 8px 0;
+  color: #1f2937;
+  font-size: 24px;
+}
+
+.notFound p {
+  margin: 0 0 24px 0;
+  font-size: 16px;
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: #f3f4f6;
+  color: #4b5563;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+.backButton:hover {
+  background: #e5e7eb;
+  color: #1f2937;
+}

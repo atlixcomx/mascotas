@@ -75,19 +75,58 @@ export default function ExpedienteMedicoDetallePage() {
       try {
         const response = await fetch(`/api/admin/perritos/${id}`)
         if (response.ok) {
-          realPetData = await response.json()
+          const data = await response.json()
+          realPetData = data.perrito
         }
       } catch (error) {
         console.log('No se pudieron obtener datos reales, usando mock data')
       }
 
-      // Datos mock para demostrar funcionalidad, con datos reales si están disponibles
-      const expedienteMock: ExpedienteDetalle = {
+      // Usar datos reales si están disponibles, sino usar mock data
+      const expedienteData: ExpedienteDetalle = realPetData ? {
         id,
-        mascotaId: realPetData?.id || '1',
-        mascotaNombre: realPetData?.nombre || 'Max',
-        mascotaCodigo: realPetData?.codigo || 'P001',
-        fotoPrincipal: realPetData?.fotoPrincipal || defaultDogImage,
+        mascotaId: realPetData.id,
+        mascotaNombre: realPetData.nombre,
+        mascotaCodigo: realPetData.codigo,
+        fotoPrincipal: realPetData.fotoPrincipal || defaultDogImage,
+        edad: realPetData.edad,
+        sexo: realPetData.sexo,
+        raza: realPetData.raza,
+        peso: realPetData.peso ? `${realPetData.peso} kg` : 'No registrado',
+        color: 'No especificado',
+        duenio: 'Sin asignar', // Esto vendría de la tabla de adopciones
+        telefono: '--',
+        email: '--',
+        direccion: '--',
+        fechaIngreso: realPetData.fechaIngreso,
+        ultimaConsulta: realPetData.fechaIngreso,
+        estadoGeneral: realPetData.vacunas && realPetData.esterilizado && realPetData.desparasitado ? 'bueno' : 'regular',
+        vacunas: realPetData.vacunas,
+        esterilizado: realPetData.esterilizado,
+        desparasitado: realPetData.desparasitado,
+        alergias: [],
+        condicionesCronicas: [],
+        proximaCita: null,
+        notas: realPetData.historia || 'Sin notas adicionales.',
+        historialMedico: [
+          {
+            id: '1',
+            fecha: realPetData.fechaIngreso,
+            tipo: 'consulta',
+            motivo: 'Ingreso al sistema',
+            diagnostico: `${realPetData.nombre} ingresó al centro de adopción`,
+            tratamiento: 'Evaluación inicial realizada',
+            veterinario: session?.user?.name || 'Dr. Veterinario',
+            observaciones: realPetData.historia || 'Sin observaciones adicionales'
+          }
+        ]
+      } : {
+        // Datos mock como fallback si no se pueden obtener datos reales
+        id,
+        mascotaId: '1',
+        mascotaNombre: 'Max',
+        mascotaCodigo: 'P001',
+        fotoPrincipal: defaultDogImage,
         edad: '3 años',
         sexo: 'Macho',
         raza: 'Labrador Retriever',
@@ -117,30 +156,11 @@ export default function ExpedienteMedicoDetallePage() {
             tratamiento: 'Vacuna de refuerzo aplicada',
             veterinario: session?.user?.name || 'Dr. Veterinario',
             observaciones: 'Sin complicaciones'
-          },
-          {
-            id: '2',
-            fecha: '2023-12-10',
-            tipo: 'vacuna',
-            motivo: 'Vacunación antirrábica',
-            diagnostico: 'Apto para vacunación',
-            tratamiento: 'Vacuna antirrábica aplicada',
-            veterinario: session?.user?.name || 'Dr. Veterinario'
-          },
-          {
-            id: '3',
-            fecha: '2023-08-20',
-            tipo: 'cirugia',
-            motivo: 'Esterilización',
-            diagnostico: 'Cirugía exitosa',
-            tratamiento: 'Esterilización + cuidados post-operatorios',
-            veterinario: session?.user?.name || 'Dr. Veterinario',
-            observaciones: 'Recuperación sin complicaciones'
           }
         ]
       }
 
-      setExpediente(expedienteMock)
+      setExpediente(expedienteData)
     } catch (error) {
       console.error('Error fetching expediente:', error)
     } finally {

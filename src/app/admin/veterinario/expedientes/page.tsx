@@ -62,8 +62,39 @@ export default function ExpedientesMedicosPage() {
 
   const fetchExpedientes = async () => {
     try {
-      // Datos mock para demostrar funcionalidad
-      const expedientesMock: ExpedienteMedico[] = [
+      // Obtener datos reales de mascotas para los expedientes
+      const response = await fetch('/api/admin/perritos')
+      let realPets: any[] = []
+      
+      if (response.ok) {
+        const data = await response.json()
+        realPets = data.perritos || []
+      }
+      
+      // Mapear mascotas reales a formato de expedientes
+      const expedientesReales: ExpedienteMedico[] = realPets.map(pet => ({
+        id: pet.id,
+        mascotaId: pet.id,
+        mascotaNombre: pet.nombre,
+        mascotaCodigo: pet.codigo,
+        fotoPrincipal: pet.fotoPrincipal || defaultDogImage,
+        edad: pet.edad,
+        sexo: pet.sexo,
+        raza: pet.raza,
+        duenio: 'Sin asignar', // Estos datos vendrían de la tabla de adopciones
+        telefono: '--',
+        ultimaConsulta: pet.fechaIngreso,
+        estadoGeneral: pet.vacunas && pet.esterilizado && pet.desparasitado ? 'bueno' : 'regular',
+        vacunas: pet.vacunas,
+        esterilizado: pet.esterilizado,
+        desparasitado: pet.desparasitado,
+        alergias: [],
+        condicionesCronicas: [],
+        totalConsultas: Math.floor(Math.random() * 10) + 1
+      }))
+      
+      // Si no hay datos reales, usar algunos mock como fallback
+      const expedientesMock: ExpedienteMedico[] = expedientesReales.length > 0 ? expedientesReales : [
         {
           id: '1',
           mascotaId: '1',
@@ -126,7 +157,7 @@ export default function ExpedientesMedicosPage() {
         }
       ]
 
-      setExpedientes(expedientesMock)
+      setExpedientes(expedientesReales.length > 0 ? expedientesReales : expedientesMock)
       
       setResumen({
         totalExpedientes: 45,

@@ -78,8 +78,8 @@ export default function ModernAdminLogin() {
                 <Image
                   src="/ayuntamientoB.png"
                   alt="H. Ayuntamiento de Atlixco"
-                  width={60}
-                  height={60}
+                  width={100}
+                  height={100}
                   className={styles.logoImage}
                 />
               </div>

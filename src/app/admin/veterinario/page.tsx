@@ -222,7 +222,7 @@ export default function VeterinarioPage() {
                   </div>
                 </div>
                 <Link 
-                  href={`/admin/veterinario/consulta/${consulta.id}`}
+                  href={`/admin/veterinario/nueva-consulta?mascotaId=${consulta.mascotaId}`}
                   className={styles.consultaAction}
                 >
                   <ChevronRight size={20} />
@@ -275,7 +275,7 @@ export default function VeterinarioPage() {
                   </div>
                 </div>
                 <Link 
-                  href={`/admin/veterinario/consulta/nueva?mascotaId=${mascota.id}`}
+                  href={`/admin/veterinario/nueva-consulta?mascotaId=${mascota.id}`}
                   className={styles.mascotaAction}
                 >
                   Crear Consulta

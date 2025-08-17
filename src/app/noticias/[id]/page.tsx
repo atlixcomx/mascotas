@@ -149,15 +149,33 @@ export default function NoticiaDetallePage() {
   const [copied, setCopied] = useState(false)
 
   useEffect(() => {
-    // Simular carga de datos
-    setTimeout(() => {
+    fetchNoticia()
+  }, [params.id])
+
+  const fetchNoticia = async () => {
+    try {
+      const response = await fetch(`/api/noticias/${params.id}`)
+      if (response.ok) {
+        const data = await response.json()
+        setNoticia(data.noticia)
+      } else {
+        // Si no se encuentra, buscar en los ejemplos como fallback
+        const noticiaEncontrada = noticiasEjemplo.find(n => n.id === params.id)
+        if (noticiaEncontrada) {
+          setNoticia(noticiaEncontrada)
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching noticia:', error)
+      // Usar datos de ejemplo como fallback
       const noticiaEncontrada = noticiasEjemplo.find(n => n.id === params.id)
       if (noticiaEncontrada) {
         setNoticia(noticiaEncontrada)
       }
+    } finally {
       setLoading(false)
-    }, 500)
-  }, [params.id])
+    }
+  }
 
   const formatearFecha = (fecha: string) => {
     return new Date(fecha).toLocaleDateString('es-MX', {

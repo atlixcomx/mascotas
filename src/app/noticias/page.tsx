@@ -67,12 +67,27 @@ export default function NoticiasPage() {
   const [categoriaFiltro, setCategoriaFiltro] = useState<string>('todas')
 
   useEffect(() => {
-    // Simular carga de datos
-    setTimeout(() => {
-      setNoticias(noticiasEjemplo)
-      setLoading(false)
-    }, 500)
+    fetchNoticias()
   }, [])
+
+  const fetchNoticias = async () => {
+    try {
+      const response = await fetch('/api/noticias')
+      if (response.ok) {
+        const data = await response.json()
+        setNoticias(data.noticias || [])
+      } else {
+        // Si no hay datos, usar los de ejemplo como fallback
+        setNoticias(noticiasEjemplo)
+      }
+    } catch (error) {
+      console.error('Error fetching noticias:', error)
+      // Usar datos de ejemplo como fallback
+      setNoticias(noticiasEjemplo)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const noticiasFiltradas = categoriaFiltro === 'todas' 
     ? noticias 

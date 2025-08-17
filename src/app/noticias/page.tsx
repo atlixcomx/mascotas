@@ -180,27 +180,35 @@ export default function NoticiasPage() {
               gap: '32px'
             }}>
               {noticiasFiltradas.map((noticia) => (
-                <article
+                <Link
                   key={noticia.id}
+                  href={`/noticias/${noticia.id}`}
                   style={{
-                    backgroundColor: 'white',
-                    borderRadius: '16px',
-                    overflow: 'hidden',
-                    boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-                    transition: 'all 0.3s ease',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    flexDirection: 'column'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-4px)'
-                    e.currentTarget.style.boxShadow = '0 8px 30px rgba(0,0,0,0.12)'
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'translateY(0)'
-                    e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.08)'
+                    textDecoration: 'none',
+                    color: 'inherit'
                   }}
                 >
+                  <article
+                    style={{
+                      backgroundColor: 'white',
+                      borderRadius: '16px',
+                      overflow: 'hidden',
+                      boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+                      transition: 'all 0.3s ease',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      height: '100%'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-4px)'
+                      e.currentTarget.style.boxShadow = '0 8px 30px rgba(0,0,0,0.12)'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'translateY(0)'
+                      e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.08)'
+                    }}
+                  >
                   {/* Imagen */}
                   <div style={{
                     height: '240px',
@@ -303,7 +311,8 @@ export default function NoticiasPage() {
                       Leer más <ChevronRight size={18} />
                     </div>
                   </div>
-                </article>
+                  </article>
+                </Link>
               ))}
             </div>
           )}

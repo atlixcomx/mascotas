@@ -246,18 +246,19 @@ export default function HomeNew() {
             Nuestro Compromiso Gubernamental
           </h2>
           <p style={{
-            fontSize: '24px',
+            fontSize: 'clamp(18px, 3vw, 24px)',
             color: '#666',
             textAlign: 'center',
-            marginBottom: '60px',
-            fontWeight: '300'
+            marginBottom: 'clamp(32px, 8vw, 60px)',
+            fontWeight: '300',
+            padding: '0 16px'
           }}>
             Transformando Vidas con Protocolo Veterinario Certificado
           </p>
           
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(4, 1fr)',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
             gap: '16px',
             marginBottom: '40px'
           }}>
@@ -346,25 +347,30 @@ export default function HomeNew() {
           {/* Proceso Veterinario Detallado */}
           <div style={{
             backgroundColor: 'white',
-            padding: '40px',
+            padding: 'clamp(24px, 4vw, 40px)',
             borderRadius: '20px',
             boxShadow: '0 8px 30px rgba(0,0,0,0.08)'
           }}>
             <h3 style={{
-              fontSize: '28px',
+              fontSize: 'clamp(20px, 3vw, 28px)',
               fontWeight: '700',
               color: '#0e312d',
-              marginBottom: '32px',
-              textAlign: 'center'
+              marginBottom: 'clamp(24px, 3vw, 32px)',
+              textAlign: 'center',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexWrap: 'wrap',
+              gap: '8px'
             }}>
-              <Stethoscope size={32} style={{ display: 'inline', marginRight: '12px', color: '#0891b2' }} />
-              Nuestro Protocolo Veterinario de 5 Etapas
+              <Stethoscope size={28} style={{ color: '#0891b2' }} />
+              <span>Nuestro Protocolo Veterinario de 5 Etapas</span>
             </h3>
             
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(5, 1fr)',
-              gap: '16px'
+              gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+              gap: 'clamp(8px, 2vw, 16px)'
             }}>
               {[
                 { icon: Search, title: 'Evaluación inicial', desc: 'Diagnóstico completo' },
@@ -375,22 +381,22 @@ export default function HomeNew() {
               ].map((step, idx) => (
                 <div key={idx} style={{
                   textAlign: 'center',
-                  padding: '20px'
+                  padding: 'clamp(12px, 2vw, 20px)'
                 }}>
                   <div style={{
-                    width: '60px',
-                    height: '60px',
+                    width: 'clamp(48px, 8vw, 60px)',
+                    height: 'clamp(48px, 8vw, 60px)',
                     backgroundColor: '#e0f2fe',
                     borderRadius: '50%',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    margin: '0 auto 16px'
+                    margin: '0 auto clamp(8px, 2vw, 16px)'
                   }}>
-                    <step.icon size={28} color="#0891b2" />
+                    <step.icon size={24} color="#0891b2" />
                   </div>
                   <h4 style={{
-                    fontSize: '16px',
+                    fontSize: 'clamp(14px, 2vw, 16px)',
                     fontWeight: '600',
                     color: '#0e312d',
                     marginBottom: '4px'
@@ -398,8 +404,9 @@ export default function HomeNew() {
                     {step.title}
                   </h4>
                   <p style={{
-                    fontSize: '14px',
-                    color: '#666'
+                    fontSize: 'clamp(12px, 1.5vw, 14px)',
+                    color: '#666',
+                    lineHeight: '1.3'
                   }}>
                     {step.desc}
                   </p>
@@ -531,7 +538,7 @@ export default function HomeNew() {
             
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
               gap: '32px',
               marginBottom: '40px'
             }}>
@@ -722,11 +729,12 @@ export default function HomeNew() {
             Red de Comercios Certificados Pet Friendly
           </h2>
           <p style={{
-            fontSize: '24px',
+            fontSize: 'clamp(18px, 3vw, 24px)',
             color: '#666',
             textAlign: 'center',
-            marginBottom: '60px',
-            fontWeight: '300'
+            marginBottom: 'clamp(32px, 8vw, 60px)',
+            fontWeight: '300',
+            padding: '0 16px'
           }}>
             Espacios oficialmente verificados para ti y tu mascota
           </p>
@@ -981,10 +989,11 @@ export default function HomeNew() {
             Centro Municipal de Adopción
           </h2>
           <p style={{
-            fontSize: '24px',
+            fontSize: 'clamp(18px, 3vw, 24px)',
             color: 'rgba(255,255,255,0.8)',
-            marginBottom: '60px',
-            fontWeight: '300'
+            marginBottom: 'clamp(32px, 8vw, 60px)',
+            fontWeight: '300',
+            padding: '0 16px'
           }}>
             Visítanos y Conoce Nuestro Trabajo
           </p>

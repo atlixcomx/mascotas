@@ -25,7 +25,8 @@ import {
   ChevronRight,
   Activity,
   Share2,
-  Stethoscope
+  Stethoscope,
+  Newspaper
 } from 'lucide-react'
 import { NotificationPanel } from '../../components/ui/NotificationPanel'
 
@@ -34,6 +35,7 @@ const navigation = [
   { name: 'Gestión de Mascotas', href: '/admin/perritos', icon: Dog },
   { name: 'Solicitudes de Adopción', href: '/admin/solicitudes', icon: FileText },
   { name: 'Módulo Veterinario', href: '/admin/veterinario', icon: Stethoscope },
+  { name: 'Noticias y Eventos', href: '/admin/noticias', icon: Newspaper },
   { name: 'Recordatorios', href: '/admin/recordatorios', icon: Bell },
   { name: 'Comercios Aliados', href: '/admin/comercios', icon: Building2 },
   { name: 'Módulo de Difusión', href: '/admin/difusion', icon: Share2 },

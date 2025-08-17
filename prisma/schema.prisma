@@ -237,6 +237,24 @@ model SeguimientoAdopcion {
   solicitud       Solicitud? @relation(fields: [solicitudId], references: [id])
 }
 
+model Noticia {
+  id          String   @id @default(cuid())
+  titulo      String
+  resumen     String   @db.Text
+  contenido   String   @db.Text
+  imagen      String
+  categoria   String
+  ubicacion   String?
+  hora        String?
+  aforo       Int?
+  autor       String?
+  publicada   Boolean  @default(true)
+  destacada   Boolean  @default(false)
+  vistas      Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 model Evento {
   id          String   @id @default(cuid())
   nombre      String

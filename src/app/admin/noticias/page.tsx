@@ -7,8 +7,9 @@ import Link from 'next/link'
 import { 
   Newspaper, Plus, Search, Filter, Edit, Trash2, Eye, EyeOff,
   Calendar, Tag, MapPin, Users, Clock, ChevronLeft, Image,
-  Save, X, AlertCircle, CheckCircle, TrendingUp
+  Save, X, AlertCircle, CheckCircle, TrendingUp, Upload
 } from 'lucide-react'
+import { NewsImageUploader } from '../../../components/admin/NewsImageUploader'
 
 interface Noticia {
   id: string
@@ -471,43 +472,125 @@ export default function AdminNoticiasPage() {
                   color: '#374151',
                   marginBottom: '8px'
                 }}>
-                  URL de la imagen *
+                  Imagen de la noticia *
                 </label>
-                <input
-                  type="text"
-                  value={formData.imagen}
-                  onChange={(e) => setFormData({ ...formData, imagen: e.target.value })}
-                  required
-                  placeholder="/images/centro/foto1.jpeg"
-                  style={{
-                    width: '100%',
-                    padding: '10px',
-                    borderRadius: '8px',
-                    border: '1px solid #d1d5db',
-                    fontSize: '16px'
-                  }}
-                />
-                {formData.imagen && (
-                  <div style={{
-                    marginTop: '12px',
-                    height: '200px',
-                    backgroundColor: '#f3f4f6',
-                    borderRadius: '8px',
-                    overflow: 'hidden'
+                
+                {/* Opción 1: Subir imagen con UploadThing */}
+                <div style={{
+                  marginBottom: '16px',
+                  padding: '16px',
+                  backgroundColor: '#f9fafb',
+                  borderRadius: '8px',
+                  border: '1px solid #e5e7eb'
+                }}>
+                  <p style={{
+                    fontSize: '14px',
+                    color: '#6b7280',
+                    marginBottom: '12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
                   }}>
-                    <img
-                      src={formData.imagen}
-                      alt="Vista previa"
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover'
-                      }}
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement
-                        target.style.display = 'none'
-                      }}
-                    />
+                    <Upload size={16} />
+                    Subir nueva imagen
+                  </p>
+                  <NewsImageUploader 
+                    onImageUploaded={(url) => setFormData({ ...formData, imagen: url })}
+                    onError={(error) => {
+                      setMessage({
+                        type: 'error',
+                        text: `Error al subir imagen: ${error}`
+                      })
+                      setTimeout(() => setMessage(null), 5000)
+                    }}
+                    currentImage={formData.imagen}
+                  />
+                </div>
+
+                {/* Opción 2: URL directa */}
+                <div style={{
+                  padding: '16px',
+                  backgroundColor: '#f9fafb',
+                  borderRadius: '8px',
+                  border: '1px solid #e5e7eb'
+                }}>
+                  <p style={{
+                    fontSize: '14px',
+                    color: '#6b7280',
+                    marginBottom: '8px'
+                  }}>
+                    O usar URL de imagen existente:
+                  </p>
+                  <input
+                    type="text"
+                    value={formData.imagen}
+                    onChange={(e) => setFormData({ ...formData, imagen: e.target.value })}
+                    placeholder="/images/centro/foto1.jpeg o https://..."
+                    style={{
+                      width: '100%',
+                      padding: '10px',
+                      borderRadius: '8px',
+                      border: '1px solid #d1d5db',
+                      fontSize: '14px',
+                      backgroundColor: 'white'
+                    }}
+                  />
+                </div>
+
+                {/* Vista previa */}
+                {formData.imagen && (
+                  <div style={{ marginTop: '16px' }}>
+                    <p style={{
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      color: '#374151',
+                      marginBottom: '8px'
+                    }}>
+                      Vista previa:
+                    </p>
+                    <div style={{
+                      height: '200px',
+                      backgroundColor: '#f3f4f6',
+                      borderRadius: '8px',
+                      overflow: 'hidden',
+                      position: 'relative'
+                    }}>
+                      <img
+                        src={formData.imagen}
+                        alt="Vista previa"
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover'
+                        }}
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement
+                          target.style.display = 'none'
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setFormData({ ...formData, imagen: '' })}
+                        style={{
+                          position: 'absolute',
+                          top: '8px',
+                          right: '8px',
+                          width: '32px',
+                          height: '32px',
+                          borderRadius: '50%',
+                          backgroundColor: 'rgba(0,0,0,0.7)',
+                          color: 'white',
+                          border: 'none',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}
+                        title="Eliminar imagen"
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>

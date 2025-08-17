@@ -6,7 +6,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { 
   Calendar, MapPin, Clock, ChevronLeft, Tag, Users, 
-  Share2, Heart, Facebook, Twitter, Copy, Check
+  Share2, Facebook, Copy, Check, Instagram
 } from 'lucide-react'
 
 interface Noticia {
@@ -146,7 +146,6 @@ export default function NoticiaDetallePage() {
   const router = useRouter()
   const [noticia, setNoticia] = useState<Noticia | null>(null)
   const [loading, setLoading] = useState(true)
-  const [liked, setLiked] = useState(false)
   const [copied, setCopied] = useState(false)
 
   useEffect(() => {
@@ -168,16 +167,23 @@ export default function NoticiaDetallePage() {
     })
   }
 
-  const compartir = (red: 'facebook' | 'twitter' | 'copiar') => {
-    const url = window.location.href
+  const compartir = (red: 'facebook' | 'x' | 'instagram' | 'copiar') => {
+    const url = typeof window !== 'undefined' ? window.location.href : ''
     const texto = noticia?.titulo || ''
     
     switch (red) {
       case 'facebook':
-        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank')
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank', 'width=600,height=400')
         break
-      case 'twitter':
-        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(texto)}&url=${encodeURIComponent(url)}`, '_blank')
+      case 'x':
+        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(texto)}&url=${encodeURIComponent(url)}`, '_blank', 'width=600,height=400')
+        break
+      case 'instagram':
+        // Instagram no tiene API de compartir directo, copiamos el enlace
+        navigator.clipboard.writeText(url)
+        setCopied(true)
+        setTimeout(() => setCopied(false), 2000)
+        alert('Enlace copiado. Puedes pegarlo en tu historia de Instagram.')
         break
       case 'copiar':
         navigator.clipboard.writeText(url)
@@ -229,111 +235,24 @@ export default function NoticiaDetallePage() {
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f8f9fa' }}>
-      {/* Navegación superior */}
-      <div style={{
-        backgroundColor: 'white',
-        borderBottom: '1px solid #e5e7eb',
-        position: 'sticky',
-        top: '72px',
-        zIndex: 100
-      }}>
-        <div style={{
-          maxWidth: '1200px',
-          margin: '0 auto',
-          padding: '16px 20px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between'
-        }}>
-          <Link href="/noticias" style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            color: '#0e312d',
-            textDecoration: 'none',
-            fontWeight: '600',
-            transition: 'all 0.2s ease'
-          }}>
-            <ChevronLeft size={20} />
-            Volver a noticias
-          </Link>
-
-          {/* Botones de compartir */}
-          <div style={{
-            display: 'flex',
-            gap: '12px',
-            alignItems: 'center'
-          }}>
-            <button
-              onClick={() => setLiked(!liked)}
-              style={{
-                padding: '8px',
-                backgroundColor: liked ? '#fee2e2' : 'transparent',
-                border: '1px solid #e5e7eb',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transition: 'all 0.2s ease'
-              }}
-            >
-              <Heart size={20} fill={liked ? '#dc2626' : 'none'} color={liked ? '#dc2626' : '#6b7280'} />
-            </button>
-            <button
-              onClick={() => compartir('facebook')}
-              style={{
-                padding: '8px',
-                backgroundColor: 'transparent',
-                border: '1px solid #e5e7eb',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transition: 'all 0.2s ease'
-              }}
-            >
-              <Facebook size={20} color="#6b7280" />
-            </button>
-            <button
-              onClick={() => compartir('twitter')}
-              style={{
-                padding: '8px',
-                backgroundColor: 'transparent',
-                border: '1px solid #e5e7eb',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transition: 'all 0.2s ease'
-              }}
-            >
-              <Twitter size={20} color="#6b7280" />
-            </button>
-            <button
-              onClick={() => compartir('copiar')}
-              style={{
-                padding: '8px',
-                backgroundColor: copied ? '#dcfce7' : 'transparent',
-                border: '1px solid #e5e7eb',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transition: 'all 0.2s ease'
-              }}
-            >
-              {copied ? <Check size={20} color="#16a34a" /> : <Copy size={20} color="#6b7280" />}
-            </button>
-          </div>
-        </div>
-      </div>
 
       {/* Contenido principal */}
       <article style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 20px' }}>
+        {/* Link de regreso */}
+        <Link href="/noticias" style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '8px',
+          color: '#0e312d',
+          textDecoration: 'none',
+          fontWeight: '600',
+          marginBottom: '32px',
+          transition: 'all 0.2s ease'
+        }}>
+          <ChevronLeft size={20} />
+          Volver a noticias
+        </Link>
+
         {/* Categoría y fecha */}
         <div style={{
           display: 'flex',
@@ -448,9 +367,119 @@ export default function NoticiaDetallePage() {
           fontSize: '18px',
           color: '#374151',
           lineHeight: '1.8',
-          whiteSpace: 'pre-wrap'
+          whiteSpace: 'pre-wrap',
+          marginBottom: '40px'
         }}>
           {noticia.contenido}
+        </div>
+
+        {/* Botones de compartir */}
+        <div style={{
+          padding: '24px',
+          backgroundColor: 'white',
+          borderRadius: '12px',
+          marginBottom: '40px',
+          textAlign: 'center'
+        }}>
+          <p style={{
+            fontSize: '16px',
+            color: '#6b7280',
+            marginBottom: '16px'
+          }}>
+            Comparte esta noticia
+          </p>
+          <div style={{
+            display: 'flex',
+            gap: '12px',
+            justifyContent: 'center',
+            flexWrap: 'wrap'
+          }}>
+            <button
+              onClick={() => compartir('facebook')}
+              style={{
+                padding: '12px 24px',
+                backgroundColor: '#1877f2',
+                color: 'white',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontSize: '15px',
+                fontWeight: '600',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.opacity = '0.9'}
+              onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
+            >
+              <Facebook size={20} />
+              Facebook
+            </button>
+            <button
+              onClick={() => compartir('x')}
+              style={{
+                padding: '12px 24px',
+                backgroundColor: '#000000',
+                color: 'white',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontSize: '15px',
+                fontWeight: '600',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.opacity = '0.9'}
+              onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
+            >
+              <span style={{ fontWeight: 'bold', fontSize: '18px' }}>X</span>
+            </button>
+            <button
+              onClick={() => compartir('instagram')}
+              style={{
+                padding: '12px 24px',
+                background: 'linear-gradient(45deg, #833AB4, #FD1D1D, #F77737)',
+                color: 'white',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontSize: '15px',
+                fontWeight: '600',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.opacity = '0.9'}
+              onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
+            >
+              <Instagram size={20} />
+              Instagram
+            </button>
+            <button
+              onClick={() => compartir('copiar')}
+              style={{
+                padding: '12px 24px',
+                backgroundColor: copied ? '#dcfce7' : '#f3f4f6',
+                color: copied ? '#16a34a' : '#374151',
+                border: `1px solid ${copied ? '#16a34a' : '#e5e7eb'}`,
+                borderRadius: '8px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontSize: '15px',
+                fontWeight: '600',
+                transition: 'all 0.2s ease'
+              }}
+            >
+              {copied ? <Check size={20} /> : <Copy size={20} />}
+              {copied ? 'Copiado' : 'Copiar enlace'}
+            </button>
+          </div>
         </div>
 
         {/* Galería adicional */}

@@ -9,7 +9,7 @@ import {
   Calendar, Tag, MapPin, Users, Clock, ChevronLeft, Image,
   Save, X, AlertCircle, CheckCircle, TrendingUp, Upload
 } from 'lucide-react'
-import { NewsImageUploader } from '../../../components/admin/NewsImageUploader'
+import { ImageUploader } from '../../../components/admin/ImageUploader'
 
 interface Noticia {
   id: string
@@ -494,7 +494,8 @@ export default function AdminNoticiasPage() {
                     <Upload size={16} />
                     Subir nueva imagen
                   </p>
-                  <NewsImageUploader 
+                  <ImageUploader 
+                    endpoint="newsImageUploader"
                     onImageUploaded={(url) => setFormData({ ...formData, imagen: url })}
                     onError={(error) => {
                       setMessage({
@@ -503,7 +504,6 @@ export default function AdminNoticiasPage() {
                       })
                       setTimeout(() => setMessage(null), 5000)
                     }}
-                    currentImage={formData.imagen}
                   />
                 </div>
 

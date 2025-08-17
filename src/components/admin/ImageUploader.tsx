@@ -7,9 +7,10 @@ import { Upload, X, AlertCircle } from 'lucide-react'
 interface ImageUploaderProps {
   onImageUploaded: (url: string) => void
   onError?: (error: string) => void
+  endpoint?: 'petImageUploader' | 'newsImageUploader'
 }
 
-export function ImageUploader({ onImageUploaded, onError }: ImageUploaderProps) {
+export function ImageUploader({ onImageUploaded, onError, endpoint = 'petImageUploader' }: ImageUploaderProps) {
   const [isUploading, setIsUploading] = useState(false)
   const [uploadError, setUploadError] = useState<string | null>(null)
 
@@ -41,10 +42,10 @@ export function ImageUploader({ onImageUploaded, onError }: ImageUploaderProps) 
   }
 
   return (
-    <div className="space-y-2">
-      <div className="relative">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+      <div style={{ position: 'relative' }}>
         <UploadButton
-          endpoint="petImageUploader"
+          endpoint={endpoint}
           onClientUploadComplete={handleUploadComplete}
           onUploadError={handleUploadError}
           onUploadBegin={handleUploadBegin}
@@ -76,13 +77,25 @@ export function ImageUploader({ onImageUploaded, onError }: ImageUploaderProps) 
       </div>
 
       {uploadError && (
-        <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-          <AlertCircle className="h-4 w-4 text-red-500 mt-0.5 flex-shrink-0" />
-          <div className="text-sm text-red-700">
-            <p className="font-medium">Error al subir la imagen</p>
-            <p className="text-xs mt-1">{uploadError}</p>
+        <div style={{
+          display: 'flex',
+          alignItems: 'flex-start',
+          gap: '8px',
+          padding: '12px',
+          backgroundColor: '#fef2f2',
+          border: '1px solid #fecaca',
+          borderRadius: '8px'
+        }}>
+          <AlertCircle size={16} style={{ 
+            color: '#ef4444', 
+            marginTop: '2px', 
+            flexShrink: 0 
+          }} />
+          <div style={{ fontSize: '14px', color: '#991b1b' }}>
+            <p style={{ fontWeight: '500', marginBottom: '4px' }}>Error al subir la imagen</p>
+            <p style={{ fontSize: '12px', marginBottom: '4px' }}>{uploadError}</p>
             {uploadError.includes('UploadThing') && (
-              <p className="text-xs mt-1">
+              <p style={{ fontSize: '12px' }}>
                 Verifica que las credenciales de UploadThing estén configuradas correctamente.
               </p>
             )}
@@ -91,8 +104,14 @@ export function ImageUploader({ onImageUploaded, onError }: ImageUploaderProps) 
       )}
 
       {isUploading && (
-        <div className="text-sm text-slate-600 flex items-center gap-2">
-          <div className="animate-spin rounded-full h-3 w-3 border-2 border-slate-600 border-t-transparent"></div>
+        <div style={{
+          fontSize: '14px',
+          color: '#64748b',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px'
+        }}>
+          <span>⏳</span>
           Subiendo imagen...
         </div>
       )}

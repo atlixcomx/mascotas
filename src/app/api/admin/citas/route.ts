@@ -34,10 +34,14 @@ export async function GET(request: NextRequest) {
     } else if (desde || hasta) {
       where.fecha = {}
       if (desde) {
-        where.fecha.gte = new Date(desde)
+        const fechaDesde = new Date(desde)
+        fechaDesde.setHours(0, 0, 0, 0)
+        where.fecha.gte = fechaDesde
       }
       if (hasta) {
-        where.fecha.lte = new Date(hasta)
+        const fechaHasta = new Date(hasta)
+        fechaHasta.setHours(23, 59, 59, 999)
+        where.fecha.lte = fechaHasta
       }
     }
 

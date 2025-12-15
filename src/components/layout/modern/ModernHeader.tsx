@@ -60,13 +60,17 @@ export default function ModernHeader() {
 
   return (
     <>
-      <header 
+      <header
         className={`
-          ${styles.header} 
-          ${isScrolled ? styles.scrolled : ''} 
+          ${styles.header}
+          ${isScrolled ? styles.scrolled : ''}
           ${!isVisible ? styles.hidden : ''}
         `}
         role="banner"
+        style={{
+          backgroundColor: 'rgba(14, 49, 45, 0.98)',
+          background: 'rgba(14, 49, 45, 0.98)'
+        }}
       >
         <nav 
           className={styles.nav} 

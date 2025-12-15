@@ -76,7 +76,7 @@ export default function Footer() {
             fontSize: '14px'
           }}>
             <PhoneIcon size={16} color="rgba(255,255,255,0.6)" />
-            <span>244-445-8765</span>
+            <span>244-761-9323</span>
           </div>
           <div style={{
             display: 'flex',

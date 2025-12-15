@@ -96,7 +96,7 @@ Requisitos para acceder al programa:
 
 El procedimiento es completamente seguro y es realizado por nuestro equipo de veterinarios certificados. La recuperación es rápida y tu mascota podrá regresar a casa el mismo día con indicaciones claras para su cuidado post-operatorio.
 
-Agenda tu cita llamando al 244-445-8765 o visitando nuestras instalaciones. Los espacios son limitados, así que te recomendamos apartar tu lugar lo antes posible.
+Agenda tu cita llamando al 244-761-9323 o visitando nuestras instalaciones. Los espacios son limitados, así que te recomendamos apartar tu lugar lo antes posible.
 
 ¡Juntos podemos hacer de Atlixco una ciudad más responsable con los animales!`,
     imagen: '/images/centro/Foto2.jpeg',
@@ -596,7 +596,7 @@ export default function NoticiaDetallePage() {
               }}>
                 Contáctanos para más información sobre este evento
               </p>
-              <a href="tel:2444458765" style={{
+              <a href="tel:2447619323" style={{
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '8px',

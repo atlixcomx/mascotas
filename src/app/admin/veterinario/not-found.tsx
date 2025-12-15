@@ -54,17 +54,6 @@ export default function VeterinarioNotFound() {
               </Link>
 
               <Link
-                href="/admin/veterinario/vacunacion"
-                className="flex items-center gap-3 p-4 bg-purple-50 border border-purple-200 rounded-lg hover:bg-purple-100 transition-colors"
-              >
-                <Syringe className="w-6 h-6 text-purple-600" />
-                <div>
-                  <div className="font-medium text-purple-900">Programa de Vacunación</div>
-                  <div className="text-sm text-purple-600">Control de vacunas</div>
-                </div>
-              </Link>
-
-              <Link
                 href="/admin/veterinario/expedientes"
                 className="flex items-center gap-3 p-4 bg-orange-50 border border-orange-200 rounded-lg hover:bg-orange-100 transition-colors"
               >

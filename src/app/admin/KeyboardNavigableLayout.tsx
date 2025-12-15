@@ -30,7 +30,6 @@ import {
   PlusCircle,
   FolderOpen,
   Calendar,
-  Syringe,
   ClipboardCheck,
   PartyPopper
 } from 'lucide-react'
@@ -46,7 +45,6 @@ const navigationGroups = [
       { name: 'Nuevo Ingreso', href: '/admin/veterinario/nuevo-ingreso', icon: PlusCircle },
       { name: 'Expedientes Médicos', href: '/admin/veterinario/expedientes', icon: FolderOpen },
       { name: 'Calendario Citas', href: '/admin/veterinario/calendario', icon: Calendar },
-      { name: 'Vacunación', href: '/admin/veterinario/vacunacion', icon: Syringe },
     ]
   },
   {

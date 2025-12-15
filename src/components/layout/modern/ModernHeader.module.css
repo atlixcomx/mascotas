@@ -20,25 +20,14 @@
   transform: translateY(-100%);
 }
 
-/* Barra de progreso superior */
+/* Línea de acento superior */
 .progressBar {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, 
-    var(--puebla-primary) 0%, 
-    var(--accent-gold) 50%, 
-    var(--puebla-primary) 100%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 2s ease-in-out infinite;
-}
-
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  background: rgba(255, 255, 255, 0.3);
 }
 
 /* Navegación */
@@ -80,7 +69,7 @@
   max-height: 48px;
 }
 
-/* Desktop Navigation */
+/* Desktop Navigation - Estilo Institucional */
 .desktopNav {
   display: none;
 }
@@ -88,36 +77,55 @@
 .navList {
   display: flex;
   align-items: center;
-  gap: 2.5rem;
+  gap: 0;
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
+.navList li {
+  display: flex;
+  align-items: center;
+  padding: 0 1.75rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.navList li:first-child {
+  border-left: none;
+  padding-left: 0;
+}
+
+.navList li:last-child {
+  padding-right: 0;
+}
+
 .navLink {
   position: relative;
   font-family: var(--font-heading);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 500;
-  color: var(--foreground);
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.85);
   text-decoration: none;
-  padding: 0.5rem 0;
-  transition: all 0.2s ease;
+  padding: 0.625rem 0;
+  transition: color 0.2s ease;
 }
 
+/* Indicador inferior para active/hover */
 .navLink::after {
   content: '';
   position: absolute;
-  bottom: -2px;
-  left: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
   width: 0;
   height: 2px;
-  background: var(--puebla-primary);
-  transition: width 0.3s ease;
+  background: white;
+  transition: width 0.25s ease;
 }
 
 .navLink:hover {
-  color: var(--puebla-primary);
+  color: white;
 }
 
 .navLink:hover::after {
@@ -125,7 +133,7 @@
 }
 
 .navLink.active {
-  color: var(--puebla-primary);
+  color: white;
   font-weight: 600;
 }
 
@@ -133,28 +141,27 @@
   width: 100%;
 }
 
-/* CTA Highlight */
+/* CTA Institucional - Botón con borde elegante */
 .navLink.highlight {
-  background: linear-gradient(135deg, 
-    var(--puebla-primary) 0%, 
-    var(--puebla-secondary) 100%
-  );
   color: white;
-  padding: 0.5rem 1.5rem;
-  border-radius: 24px;
+  padding: 0.5rem 1.25rem;
+  border: 1.5px solid rgba(255, 255, 255, 0.8);
+  border-radius: 6px;
   font-weight: 600;
-  box-shadow: 0 4px 12px rgba(175, 23, 49, 0.3);
-  transition: all 0.3s ease;
+  letter-spacing: 0.01em;
+  transition: all 0.25s ease;
+  margin-left: 0.5rem;
 }
 
 .navLink.highlight:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(175, 23, 49, 0.4);
+  background: white;
+  color: var(--puebla-primary);
 }
 
 .navLink.highlight::after {
   display: none;
 }
+
 
 /* Mobile Menu Button */
 .mobileMenuButton {
@@ -190,7 +197,7 @@
   display: block;
   width: 100%;
   height: 2.5px;
-  background: var(--foreground);
+  background: white;
   border-radius: 2px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   transform-origin: center;
@@ -237,13 +244,25 @@
   .nav {
     padding: 0 4rem;
   }
-  
-  .navList {
-    gap: 3rem;
+
+  .navList li {
+    padding: 0 2.25rem;
   }
-  
+
+  .navList li:first-child {
+    padding-left: 0;
+  }
+
+  .navList li:last-child {
+    padding-right: 0;
+  }
+
   .navLink {
-    font-size: 16px;
+    font-size: 15px;
+  }
+
+  .navLink.highlight {
+    padding: 0.625rem 1.5rem;
   }
 }
 
@@ -265,9 +284,5 @@
   .navLink::after,
   .menuLine {
     transition: none;
-  }
-  
-  .progressBar {
-    animation: none;
   }
 }

@@ -60,66 +60,58 @@ export default function ProgramaVacunacionPage() {
 
   useEffect(() => {
     fetchVacunaciones()
-  }, [])
+  }, [filterStatus, filterVaccine])
 
   const fetchVacunaciones = async () => {
     try {
-      // Datos mock para demostrar funcionalidad
-      const vacunacionesMock: VacunacionRecord[] = [
-        {
-          id: '1',
-          mascotaId: '1',
-          mascotaNombre: 'Max',
-          mascotaCodigo: 'P001',
-          tipoVacuna: 'Antirrábica',
-          fechaAplicacion: '2024-01-15',
-          fechaVencimiento: '2025-01-15',
-          estado: 'aplicada',
-          lote: 'VAC-2024-001',
-          veterinario: session?.user?.name,
-          notas: 'Aplicada sin complicaciones'
-        },
-        {
-          id: '2',
-          mascotaId: '2',
-          mascotaNombre: 'Luna',
-          mascotaCodigo: 'P002',
-          tipoVacuna: 'DHPP (Quíntuple)',
-          fechaVencimiento: '2024-01-25',
-          estado: 'pendiente'
-        },
-        {
-          id: '3',
-          mascotaId: '3',
-          mascotaNombre: 'Rocky',
-          mascotaCodigo: 'P003',
-          tipoVacuna: 'Antirrábica',
-          fechaVencimiento: '2024-01-22',
-          estado: 'proxima'
-        },
-        {
-          id: '4',
-          mascotaId: '4',
-          mascotaNombre: 'Bella',
-          mascotaCodigo: 'P004',
-          tipoVacuna: 'Parvovirus',
-          fechaVencimiento: '2024-01-18',
-          estado: 'vencida'
-        }
-      ]
+      setLoading(true)
+      const params = new URLSearchParams()
 
-      setVacunaciones(vacunacionesMock)
-      
-      // Calcular estadísticas
-      setStats({
-        totalMascotas: 45,
-        alDia: 32,
-        pendientes: 8,
-        vencidas: 3,
-        proximasVencer: 2
-      })
+      if (filterStatus && filterStatus !== 'todas') {
+        params.append('estado', filterStatus)
+      }
+      if (filterVaccine && filterVaccine !== 'todas') {
+        params.append('tipoVacuna', filterVaccine)
+      }
+      if (searchTerm) {
+        params.append('search', searchTerm)
+      }
+
+      const response = await fetch(`/api/admin/vacunacion?${params}`)
+
+      if (response.ok) {
+        const data = await response.json()
+
+        // Mapear datos de la API al formato de la UI
+        const vacunacionesData: VacunacionRecord[] = (data.vacunaciones || []).map((v: any) => ({
+          id: v.id,
+          mascotaId: v.mascotaId,
+          mascotaNombre: v.mascotaNombre,
+          mascotaCodigo: v.mascotaCodigo,
+          tipoVacuna: v.tipoVacuna,
+          fechaAplicacion: v.fechaAplicacion?.split('T')[0],
+          fechaVencimiento: v.fechaVencimiento?.split('T')[0] || '',
+          estado: v.estado,
+          lote: v.lote,
+          veterinario: v.veterinario,
+          notas: v.notas
+        }))
+
+        setVacunaciones(vacunacionesData)
+        setStats(data.stats || {
+          totalMascotas: 0,
+          alDia: 0,
+          pendientes: 0,
+          vencidas: 0,
+          proximasVencer: 0
+        })
+      } else {
+        console.error('Error en respuesta:', response.status)
+        setVacunaciones([])
+      }
     } catch (error) {
       console.error('Error fetching vacunaciones:', error)
+      setVacunaciones([])
     } finally {
       setLoading(false)
     }

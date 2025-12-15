@@ -131,78 +131,63 @@ export default function SeguimientoDetalle() {
 
   async function fetchSeguimiento() {
     try {
-      // Mock data - replace with actual API call
-      const mockData: Seguimiento = {
-        id: params.id as string,
-        folio: 'SEG-2024-001',
-        fechaSeguimiento: '2024-01-15',
-        tipoSeguimiento: 'inicial',
-        adopcion: {
-          id: 'adop1',
-          folio: 'ADOP-2024-001',
-          fechaAdopcion: '2024-01-08'
-        },
-        adoptante: {
-          nombre: 'María González Rodríguez',
-          telefono: '222-123-4567',
-          email: 'maria.gonzalez@email.com',
-          direccion: 'Av. Reforma 123, Col. Centro, Atlixco, Puebla',
-          ocupacion: 'Maestra'
-        },
-        mascota: {
-          id: 'perro1',
-          nombre: 'Luna',
-          codigo: 'PER-001',
-          foto: '/placeholder-dog.jpg',
-          raza: 'Mestizo',
-          edad: '2 años',
-          sexo: 'Hembra'
-        },
-        estado: 'completado',
-        estadoMascota: 'excelente',
-        satisfaccionAdoptante: 5,
-        detalles: {
-          alimentacion: {
-            tipo: 'Alimento premium para perros adultos',
-            frecuencia: '2 veces al día',
-            cantidad: '1 taza por comida',
-            apetito: 'excelente'
-          },
-          salud: {
-            peso: 15.5,
-            vacunas: true,
-            desparasitacion: true,
-            visitas_veterinario: 1,
-            problemas_salud: []
-          },
-          comportamiento: {
-            adaptacion: 'excelente',
-            socializacion: 'buena',
-            obediencia: 'buena',
-            problemas_comportamiento: []
-          },
-          ambiente: {
-            espacio_adecuado: true,
-            ejercicio_diario: 'suficiente',
-            tiempo_solo: 6,
-            interaccion_familia: 'excelente'
-          }
-        },
-        observaciones: 'Luna se ha adaptado perfectamente a su nuevo hogar. La familia está muy satisfecha y comprometida con su cuidado. Se observa una excelente relación entre la mascota y todos los miembros de la familia.',
-        problemas: [],
-        recomendaciones: [
-          'Continuar con la rutina de ejercicio actual',
-          'Mantener las citas veterinarias programadas',
-          'Considerar entrenamiento básico de obediencia'
-        ],
-        proximoSeguimiento: '2024-02-15',
-        responsable: 'Dr. Carlos Méndez',
-        fotos: ['/placeholder-dog.jpg', '/placeholder-dog-2.jpg']
-      }
+      setLoading(true)
+      const response = await fetch(`/api/admin/seguimientos/${params.id}`)
 
-      setSeguimiento(mockData)
+      if (response.ok) {
+        const data = await response.json()
+        // Mapear datos de la API al formato esperado por la UI
+        const seguimientoData: Seguimiento = {
+          id: data.id,
+          folio: data.folio || `SEG-${data.id.slice(-6).toUpperCase()}`,
+          fechaSeguimiento: data.fecha,
+          tipoSeguimiento: data.tipo,
+          adopcion: data.solicitud ? {
+            id: data.solicitud.id,
+            folio: data.solicitud.codigo,
+            fechaAdopcion: data.solicitud.fechaAdopcion
+          } : null,
+          adoptante: data.adoptante || {
+            nombre: 'No disponible',
+            telefono: '',
+            email: '',
+            direccion: ''
+          },
+          mascota: {
+            id: data.perrito?.id || '',
+            nombre: data.perrito?.nombre || 'Sin nombre',
+            codigo: data.perrito?.codigo || '',
+            foto: data.perrito?.fotoPrincipal || '/placeholder-dog.jpg',
+            raza: data.perrito?.raza || 'Desconocida',
+            edad: data.perrito?.edad || '',
+            sexo: data.perrito?.sexo || ''
+          },
+          estado: data.realizado ? 'completado' :
+                  data.estadoMascota === 'preocupante' ? 'problema_detectado' :
+                  data.estadoMascota === 'regular' ? 'requiere_atencion' : 'pendiente',
+          estadoMascota: data.estadoMascota || 'bueno',
+          satisfaccionAdoptante: 4,
+          detalles: {
+            alimentacion: { tipo: '', frecuencia: '', cantidad: '', apetito: '' },
+            salud: { peso: 0, vacunas: false, desparasitacion: false, visitas_veterinario: 0, problemas_salud: [] },
+            comportamiento: { adaptacion: '', socializacion: '', obediencia: '', problemas_comportamiento: [] },
+            ambiente: { espacio_adecuado: true, ejercicio_diario: '', tiempo_solo: 0, interaccion_familia: '' }
+          },
+          observaciones: data.observaciones || '',
+          problemas: data.respuesta ? [data.respuesta] : [],
+          recomendaciones: [],
+          proximoSeguimiento: data.proximoContacto,
+          responsable: data.responsable || 'Sin asignar',
+          fotos: data.fotos ? (typeof data.fotos === 'string' ? JSON.parse(data.fotos) : data.fotos) : []
+        }
+        setSeguimiento(seguimientoData)
+      } else {
+        console.error('Error fetching seguimiento:', response.status)
+        router.push('/admin/seguimientos')
+      }
     } catch (error) {
       console.error('Error fetching seguimiento:', error)
+      router.push('/admin/seguimientos')
     } finally {
       setLoading(false)
     }

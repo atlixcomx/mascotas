@@ -2,6 +2,11 @@
 /* Gobierno de Atlixco - Centro de Adopción */
 
 :root {
+  /* Color de Marca - Botones de Acción */
+  --admin-brand: #7d2447;
+  --admin-brand-hover: #5a1a33;
+  --admin-brand-light: #fce7f3;
+
   /* Colores Gubernamentales - Identidad Institucional */
   --admin-primary-50: #eff6ff;
   --admin-primary-100: #dbeafe;

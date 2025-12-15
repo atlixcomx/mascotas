@@ -1,260 +1,126 @@
 'use client'
 
-export const dynamic = 'force-dynamic'
-
-import { useState, useEffect } from 'react'
+import { useState, useEffect, use } from 'react'
 import { useRouter } from 'next/navigation'
 import { notFound } from 'next/navigation'
-import { useToastContext } from '../../../providers/ToastProvider'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePerrito } from '../../../hooks/usePerritos'
 import LoadingSpinner from '../../../components/ui/LoadingSpinner'
-import ErrorMessage from '../../../components/ui/ErrorMessage'
-import { 
-  CloseIcon, HomeIcon, FormIcon, DogIcon, CheckCircleIcon, ArrowLeftIcon, ArrowRightIcon
-} from '../../../components/icons/Icons'
-import { FileUpload } from '../../../components/FileUpload'
-import { FileAttachment } from '../../../lib/attachments'
-import { FileText } from 'lucide-react'
+import { ArrowLeftIcon, CheckCircleIcon } from '../../../components/icons/Icons'
+import { Phone, Mail, User, Heart, MessageCircle } from 'lucide-react'
 
 interface PageProps {
-  params: { slug: string }
+  params: Promise<{ slug: string }>
 }
 
 const defaultDogImage = 'https://somosmaka.com/cdn/shop/articles/perro_mestizo.jpg?v=1697855331'
 
 export default function SolicitudAdopcionPage({ params }: PageProps) {
+  const { slug } = use(params)
   const router = useRouter()
-  const toast = useToastContext()
-  const [currentStep, setCurrentStep] = useState(0)
   const [formData, setFormData] = useState({
-    // Información personal
     nombre: '',
-    apellidos: '',
-    edad: '',
-    telefono: '',
-    email: '',
-    direccion: '',
-    ciudad: '',
-    codigoPostal: '',
-    
-    // Información del hogar
-    tipoVivienda: '',
-    espacioExterior: '',
-    tiempoSolo: '',
-    experienciaPerros: '',
-    otrasMascotas: '',
-    
-    // Motivación
-    motivacion: '',
-    comprometimiento: false,
-    visitasVeterinario: false,
-    tiempoDisponible: ''
+    apellido: '',
+    whatsapp: '',
+    email: ''
   })
-
   const [errors, setErrors] = useState<{[key: string]: string}>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [uploadedFiles, setUploadedFiles] = useState<FileAttachment[]>([])
+  const [submitError, setSubmitError] = useState('')
 
   const {
     perrito,
     loading,
     error,
     notFound: perritoNotFound
-  } = usePerrito(params.slug)
+  } = usePerrito(slug)
 
-  const steps = [
-    {
-      title: "Información Personal",
-      icon: FormIcon,
-      fields: ['nombre', 'apellidos', 'edad', 'telefono', 'email', 'direccion', 'ciudad', 'codigoPostal']
-    },
-    {
-      title: "Tu Hogar",
-      icon: HomeIcon, 
-      fields: ['tipoVivienda', 'espacioExterior', 'tiempoSolo', 'experienciaPerros', 'otrasMascotas']
-    },
-    {
-      title: "Motivación y Compromiso",
-      icon: DogIcon,
-      fields: ['motivacion', 'comprometimiento', 'visitasVeterinario', 'tiempoDisponible']
-    }
-  ]
+  const validatePhone = (phone: string) => {
+    const cleaned = phone.replace(/\D/g, '')
+    return cleaned.length === 10
+  }
 
   const validateEmail = (email: string) => {
+    if (!email) return true // Email es opcional
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     return emailRegex.test(email)
   }
 
-  const validatePhone = (phone: string) => {
-    const phoneRegex = /^[\d\s\-\+\(\)]{10,}$/
-    return phoneRegex.test(phone.replace(/\s/g, ''))
+  const handleInputChange = (field: string, value: string) => {
+    // Para WhatsApp, solo permitir números y limitar a 10 dígitos
+    if (field === 'whatsapp') {
+      const onlyNumbers = value.replace(/\D/g, '')
+      if (onlyNumbers.length <= 10) {
+        setFormData(prev => ({ ...prev, [field]: onlyNumbers }))
+      }
+    } else {
+      setFormData(prev => ({ ...prev, [field]: value }))
+    }
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: '' }))
+    }
+    setSubmitError('')
   }
 
-  const validateStep = (step: number) => {
+  const getDigitCount = () => {
+    return formData.whatsapp.replace(/\D/g, '').length
+  }
+
+  const validateForm = () => {
     const newErrors: {[key: string]: string} = {}
-    
-    if (step === 0) {
-      // Validar información personal
-      if (!formData.nombre.trim()) newErrors.nombre = 'El nombre es requerido'
-      if (!formData.apellidos.trim()) newErrors.apellidos = 'Los apellidos son requeridos'
-      
-      const edad = parseInt(formData.edad)
-      if (!formData.edad || edad < 18 || edad > 100) {
-        newErrors.edad = 'La edad debe estar entre 18 y 100 años'
-      }
-      
-      if (!formData.telefono.trim()) {
-        newErrors.telefono = 'El teléfono es requerido'
-      } else if (!validatePhone(formData.telefono)) {
-        newErrors.telefono = 'Formato de teléfono inválido'
-      }
-      
-      if (!formData.email.trim()) {
-        newErrors.email = 'El email es requerido'
-      } else if (!validateEmail(formData.email)) {
-        newErrors.email = 'Formato de email inválido'
-      }
-      
-      if (!formData.direccion.trim()) newErrors.direccion = 'La dirección es requerida'
-      if (!formData.ciudad.trim()) newErrors.ciudad = 'La ciudad es requerida'
-      if (!formData.codigoPostal.trim()) {
-        newErrors.codigoPostal = 'El código postal es requerido'
-      } else if (!/^\d{5}$/.test(formData.codigoPostal)) {
-        newErrors.codigoPostal = 'El código postal debe tener 5 dígitos'
-      }
+
+    if (!formData.nombre.trim()) {
+      newErrors.nombre = 'El nombre es requerido'
     }
-    
-    if (step === 1) {
-      // Validar información del hogar
-      if (!formData.tipoVivienda) newErrors.tipoVivienda = 'Selecciona el tipo de vivienda'
-      if (!formData.espacioExterior) newErrors.espacioExterior = 'Indica si tienes espacio exterior'
-      if (!formData.tiempoSolo) newErrors.tiempoSolo = 'Indica cuánto tiempo estaría solo'
-      if (!formData.experienciaPerros.trim() || formData.experienciaPerros.length < 2) {
-        newErrors.experienciaPerros = 'Describe tu experiencia con perros (mínimo 2 caracteres)'
-      }
+
+    if (!formData.apellido.trim()) {
+      newErrors.apellido = 'El apellido es requerido'
     }
-    
-    if (step === 2) {
-      // Validar motivación y compromiso
-      if (!formData.motivacion.trim() || formData.motivacion.length < 2) {
-        newErrors.motivacion = 'Explica tu motivación (mínimo 2 caracteres)'
-      }
-      if (!formData.comprometimiento) {
-        newErrors.comprometimiento = 'Debes comprometerte a cuidar al perrito'
-      }
-      if (!formData.visitasVeterinario) {
-        newErrors.visitasVeterinario = 'Debes comprometerte a llevarlo al veterinario'
-      }
-      if (!formData.tiempoDisponible) {
-        newErrors.tiempoDisponible = 'Indica cuánto tiempo puedes dedicarle'
-      }
+
+    if (!formData.whatsapp.trim()) {
+      newErrors.whatsapp = 'El WhatsApp es requerido'
+    } else if (!validatePhone(formData.whatsapp)) {
+      newErrors.whatsapp = 'Ingresa exactamente 10 dígitos'
     }
-    
+
+    if (formData.email && !validateEmail(formData.email)) {
+      newErrors.email = 'Ingresa un email válido'
+    }
+
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
 
-  const handleInputChange = (field: string, value: string | boolean) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
-    // Limpiar error del campo cuando el usuario empiece a escribir
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }))
-    }
-  }
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
 
-  const handleFileUpload = async (file: File, category: string): Promise<FileAttachment> => {
-    const formData = new FormData()
-    formData.append('file', file)
-    formData.append('category', category)
-    formData.append('solicitudId', 'temp-' + Date.now()) // ID temporal antes de crear la solicitud
-
-    const response = await fetch('/api/attachments/upload', {
-      method: 'POST',
-      body: formData
-    })
-
-    if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.error || 'Error al subir archivo')
-    }
-
-    const data = await response.json()
-    const newFile = data.attachment
-    setUploadedFiles(prev => [...prev, newFile])
-    return newFile
-  }
-
-  const handleFileRemove = async (fileId: string) => {
-    // En este caso solo removemos de la lista local
-    setUploadedFiles(prev => prev.filter(f => f.id !== fileId))
-  }
-
-  const handleNext = () => {
-    if (validateStep(currentStep) && currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-      toast.success('¡Paso completado!', `Has completado el paso ${currentStep + 1} exitosamente`)
-    } else if (!validateStep(currentStep)) {
-      toast.error('Formulario incompleto', 'Por favor completa todos los campos requeridos antes de continuar')
-    }
-  }
-
-  const handlePrev = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    }
-  }
-
-  const handleSubmit = async () => {
-    if (!validateStep(currentStep)) {
-      return
-    }
+    if (!validateForm()) return
 
     setIsSubmitting(true)
-    
+    setSubmitError('')
+
     try {
-      const response = await fetch('/api/solicitud-adopcion', {
+      const response = await fetch('/api/contacto-adopcion', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          nombre: formData.nombre,
-          email: formData.email,
-          telefono: formData.telefono,
-          direccion: formData.direccion,
-          edad: parseInt(formData.edad), // Convert to number
-          ciudad: formData.ciudad,
-          codigoPostal: formData.codigoPostal,
-          tipoVivienda: formData.tipoVivienda,
-          tienePatio: formData.espacioExterior !== 'no', // Convert to boolean
-          experiencia: formData.experienciaPerros,
-          otrasMascotas: formData.otrasMascotas,
-          motivoAdopcion: formData.motivacion,
-          perritoId: perrito.id,
+          ...formData,
+          perritoId: perrito.id
         })
       })
 
+      const data = await response.json()
+
       if (response.ok) {
-        toast.success('¡Solicitud enviada!', `Tu solicitud para adoptar a ${perrito.nombre} ha sido enviada exitosamente`)
-        
-        // Redirigir a página de agradecimiento con datos del perrito
-        const thankYouUrl = `/solicitud-adopcion/gracias?dog=${encodeURIComponent(perrito.nombre)}&image=${encodeURIComponent(perrito.fotoPrincipal || defaultDogImage)}`
+        // Redirigir a página de gracias con URL de WhatsApp
+        const thankYouUrl = `/solicitud-adopcion/gracias?dog=${encodeURIComponent(perrito.nombre)}&image=${encodeURIComponent(perrito.fotoPrincipal || defaultDogImage)}&whatsapp=${encodeURIComponent(data.whatsappUrl || '')}`
         router.push(thankYouUrl)
       } else {
-        const errorData = await response.json()
-        const errorMessage = errorData.error || 'Error al enviar la solicitud'
-        console.error('Error al enviar solicitud:', errorData)
-        setErrors({ submit: errorMessage })
-        toast.error('Error al enviar solicitud', errorMessage)
+        setSubmitError(data.error || 'Error al enviar la solicitud')
       }
     } catch (error) {
-      const errorMessage = 'Error de conexión. Intenta nuevamente.'
-      setErrors({ submit: errorMessage })
-      toast.error('Error de conexión', errorMessage)
+      setSubmitError('Error de conexión. Intenta nuevamente.')
     } finally {
       setIsSubmitting(false)
     }
@@ -275,807 +141,373 @@ export default function SolicitudAdopcionPage({ params }: PageProps) {
     )
   }
 
-  if (error) {
-    return (
-      <div style={{
-        minHeight: '100vh',
-        backgroundColor: '#f8f9fa',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '20px'
-      }}>
-        <ErrorMessage error={error} />
-      </div>
-    )
-  }
-
-  if (perritoNotFound || !perrito) {
+  if (error || perritoNotFound || !perrito) {
     notFound()
   }
 
-  const getFieldStyle = (fieldName: string, baseStyle: any) => ({
-    ...baseStyle,
-    borderColor: errors[fieldName] ? '#ef4444' : '#e5e7eb',
-    boxShadow: errors[fieldName] ? '0 0 0 3px rgba(239, 68, 68, 0.1)' : 'none'
-  })
-
-  const ErrorMessage = ({ error }: { error?: string }) => {
-    if (!error) return null
-    return (
-      <p style={{
-        fontSize: '0.875rem',
-        color: '#ef4444',
-        marginTop: '4px',
-        marginBottom: '0'
-      }}>
-        {error}
-      </p>
-    )
-  }
-
   return (
-    <div style={{ 
-      minHeight: '100vh', 
-      backgroundColor: '#f8f9fa'
-    }}>
-      {/* Header con información del perrito */}
+    <div style={{ minHeight: '100vh', backgroundColor: '#f8f9fa' }}>
+      {/* Header */}
       <div style={{
-        background: 'linear-gradient(135deg, #6b3838 0%, #8b4848 100%)',
+        background: 'linear-gradient(135deg, #0e312d 0%, #1a4a45 100%)',
         color: 'white',
-        position: 'sticky',
-        top: 0,
-        zIndex: 10,
-        boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
+        padding: 'clamp(24px, 5vw, 40px) 20px'
       }}>
         <div style={{
-          maxWidth: '1000px',
-          margin: '0 auto',
-          padding: '20px 24px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '20px'
+          maxWidth: '600px',
+          margin: '0 auto'
         }}>
           <Link
-            href={`/catalogo/${params.slug}`}
+            href={`/catalogo/${slug}`}
             style={{
-              display: 'flex',
+              display: 'inline-flex',
               alignItems: 'center',
-              justifyContent: 'center',
-              width: '48px',
-              height: '48px',
-              borderRadius: '50%',
-              background: 'rgba(255,255,255,0.2)',
-              border: 'none',
-              cursor: 'pointer',
+              gap: '8px',
+              color: 'rgba(255,255,255,0.8)',
               textDecoration: 'none',
-              transition: 'all 0.2s'
+              fontSize: '14px',
+              marginBottom: '20px'
             }}
           >
-            <ArrowLeftIcon size={24} color="white" />
+            <ArrowLeftIcon size={18} color="rgba(255,255,255,0.8)" />
+            Volver al perfil
           </Link>
 
           <div style={{
-            width: '60px',
-            height: '60px',
-            borderRadius: '12px',
-            overflow: 'hidden',
-            border: '2px solid rgba(255,255,255,0.3)',
-            flexShrink: 0
-          }}>
-            <Image 
-              src={perrito.fotoPrincipal || defaultDogImage}
-              alt={perrito.nombre}
-              width={60}
-              height={60}
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover'
-              }}
-            />
-          </div>
-
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <h1 style={{
-              fontSize: 'clamp(20px, 4vw, 28px)',
-              fontWeight: '700',
-              margin: 0,
-              marginBottom: '4px'
-            }}>
-              Solicitud de Adopción
-            </h1>
-            <p style={{
-              fontSize: '16px',
-              opacity: 0.9,
-              margin: 0
-            }}>
-              Quiero adoptar a {perrito.nombre}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Progress Stepper */}
-      <div style={{
-        background: 'white',
-        borderBottom: '1px solid #e5e7eb',
-        position: 'sticky',
-        top: '88px',
-        zIndex: 9
-      }}>
-        <div style={{
-          maxWidth: '1000px',
-          margin: '0 auto',
-          padding: '24px'
-        }}>
-          <div style={{
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between',
-            maxWidth: '600px',
-            margin: '0 auto',
-            position: 'relative'
+            gap: '20px'
           }}>
-            {/* Progress bar background */}
             <div style={{
-              position: 'absolute',
-              top: '20px',
-              left: '20px',
-              right: '20px',
-              height: '3px',
-              background: '#e5e7eb',
-              borderRadius: '2px',
-              zIndex: 1
-            }} />
-            
-            {/* Progress bar fill */}
-            <div style={{
-              position: 'absolute',
-              top: '20px',
-              left: '20px',
-              width: `calc(${(currentStep / (steps.length - 1)) * 100}% - 20px + ${20 * currentStep / (steps.length - 1)}px)`,
-              height: '3px',
-              background: '#6b3838',
-              borderRadius: '2px',
-              zIndex: 2,
-              transition: 'width 0.3s ease'
-            }} />
+              width: '80px',
+              height: '80px',
+              borderRadius: '16px',
+              overflow: 'hidden',
+              border: '3px solid rgba(255,255,255,0.3)',
+              flexShrink: 0
+            }}>
+              <Image
+                src={perrito.fotoPrincipal || defaultDogImage}
+                alt={perrito.nombre}
+                width={80}
+                height={80}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            </div>
 
-            {steps.map((step, index) => (
-              <div 
-                key={index}
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  position: 'relative',
-                  zIndex: 3
-                }}
-              >
-                <div style={{
-                  width: '40px',
-                  height: '40px',
-                  borderRadius: '50%',
-                  background: index <= currentStep ? '#6b3838' : 'white',
-                  border: `3px solid ${index <= currentStep ? '#6b3838' : '#e5e7eb'}`,
-                  color: index <= currentStep ? 'white' : '#9ca3af',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '14px',
-                  fontWeight: '700',
-                  transition: 'all 0.3s',
-                  marginBottom: '8px'
-                }}>
-                  {index < currentStep ? (
-                    <CheckCircleIcon size={18} color="white" />
-                  ) : (
-                    index + 1
-                  )}
-                </div>
-                <span style={{
-                  fontSize: 'clamp(10px, 2vw, 12px)',
-                  fontWeight: '600',
-                  color: index <= currentStep ? '#6b3838' : '#9ca3af',
-                  textAlign: 'center',
-                  maxWidth: '80px',
-                  lineHeight: '1.2'
-                }}>
-                  {step.title}
-                </span>
-              </div>
-            ))}
+            <div>
+              <h1 style={{
+                fontSize: 'clamp(24px, 5vw, 32px)',
+                fontWeight: '700',
+                margin: 0,
+                marginBottom: '4px'
+              }}>
+                Adoptar a {perrito.nombre}
+              </h1>
+              <p style={{
+                fontSize: '16px',
+                color: '#bfb591',
+                margin: 0
+              }}>
+                Completa tus datos y te contactaremos
+              </p>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Main Content */}
+      {/* Formulario Simple */}
       <div style={{
-        maxWidth: '800px',
+        maxWidth: '600px',
         margin: '0 auto',
-        padding: '40px 24px'
+        padding: '40px 20px'
       }}>
         <div style={{
           background: 'white',
-          borderRadius: '24px',
-          padding: '40px',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
-          marginBottom: '24px'
+          borderRadius: '20px',
+          padding: 'clamp(24px, 5vw, 40px)',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
         }}>
-          {/* Step 1: Información Personal */}
-          {currentStep === 0 && (
-            <div>
-              <h2 style={{
-                fontSize: '24px',
-                fontWeight: '700',
-                color: '#0e312d',
-                marginBottom: '32px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px'
-              }}>
-                <FormIcon size={28} color="#6b3838" />
-                Información Personal
-              </h2>
-              
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-                gap: '24px',
-                marginBottom: '24px'
-              }}>
-                <div>
-                  <label style={{ fontSize: '14px', fontWeight: '600', color: '#374151', marginBottom: '8px', display: 'block' }}>
-                    Nombre *
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.nombre}
-                    onChange={(e) => handleInputChange('nombre', e.target.value)}
-                    style={getFieldStyle('nombre', {
-                      width: '100%',
-                      padding: '12px',
-                      border: '2px solid #e5e7eb',
-                      borderRadius: '8px',
-                      fontSize: '16px',
-                      transition: 'all 0.2s'
-                    })}
-                    placeholder="Tu nombre"
-                  />
-                  <ErrorMessage error={errors.nombre} />
-                </div>
-                <div>
-                  <label style={{ fontSize: '14px', fontWeight: '600', color: '#374151', marginBottom: '8px', display: 'block' }}>
-                    Apellidos *
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.apellidos}
-                    onChange={(e) => handleInputChange('apellidos', e.target.value)}
-                    style={{
-                      width: '100%',
-                      padding: '12px',
-                      border: '2px solid #e5e7eb',
-                      borderRadius: '8px',
-                      fontSize: '16px'
-                    }}
-                    placeholder="Tus apellidos"
-                  />
-                </div>
-                <div>
-                  <label style={{ fontSize: '14px', fontWeight: '600', color: '#374151', marginBottom: '8px', display: 'block' }}>
-                    Edad *
-                  </label>
-                  <input
-                    type="number"
-                    value={formData.edad}
-                    onChange={(e) => handleInputChange('edad', e.target.value)}
-                    style={{
-                      width: '100%',
-                      padding: '12px',
-                      border: '2px solid #e5e7eb',
-                      borderRadius: '8px',
-                      fontSize: '16px'
-                    }}
-                    placeholder="Tu edad"
-                  />
-                </div>
-                <div>
-                  <label style={{ fontSize: '14px', fontWeight: '600', color: '#374151', marginBottom: '8px', display: 'block' }}>
-                    Teléfono *
-                  </label>
-                  <input
-                    type="tel"
-                    value={formData.telefono}
-                    onChange={(e) => handleInputChange('telefono', e.target.value)}
-                    style={{
-                      width: '100%',
-                      padding: '12px',
-                      border: '2px solid #e5e7eb',
-                      borderRadius: '8px',
-                      fontSize: '16px'
-                    }}
-                    placeholder="Tu teléfono"
-                  />
-                </div>
-              </div>
-              <div style={{ marginBottom: '24px' }}>
-                <label style={{ fontSize: '14px', fontWeight: '600', color: '#374151', marginBottom: '8px', display: 'block' }}>
-                  Email *
-                </label>
-                <input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => handleInputChange('email', e.target.value)}
-                  style={getFieldStyle('email', {
-                    width: '100%',
-                    padding: '12px',
-                    border: '2px solid #e5e7eb',
-                    borderRadius: '8px',
-                    fontSize: '16px',
-                    transition: 'all 0.2s'
-                  })}
-                  placeholder="tu@email.com"
-                />
-                <ErrorMessage error={errors.email} />
-              </div>
-              <div>
-                <label style={{ fontSize: '14px', fontWeight: '600', color: '#374151', marginBottom: '8px', display: 'block' }}>
-                  Dirección *
-                </label>
-                <textarea
-                  value={formData.direccion}
-                  onChange={(e) => handleInputChange('direccion', e.target.value)}
-                  rows={2}
-                  style={getFieldStyle('direccion', {
-                    width: '100%',
-                    padding: '12px',
-                    border: '2px solid #e5e7eb',
-                    borderRadius: '8px',
-                    fontSize: '16px',
-                    resize: 'vertical'
-                  })}
-                  placeholder="Calle y número"
-                />
-                <ErrorMessage error={errors.direccion} />
-              </div>
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                gap: '24px'
-              }}>
-                <div>
-                  <label style={{ fontSize: '14px', fontWeight: '600', color: '#374151', marginBottom: '8px', display: 'block' }}>
-                    Ciudad *
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.ciudad}
-                    onChange={(e) => handleInputChange('ciudad', e.target.value)}
-                    style={getFieldStyle('ciudad', {
-                      width: '100%',
-                      padding: '12px',
-                      border: '2px solid #e5e7eb',
-                      borderRadius: '8px',
-                      fontSize: '16px',
-                      transition: 'all 0.2s'
-                    })}
-                    placeholder="Tu ciudad"
-                  />
-                  <ErrorMessage error={errors.ciudad} />
-                </div>
-                <div>
-                  <label style={{ fontSize: '14px', fontWeight: '600', color: '#374151', marginBottom: '8px', display: 'block' }}>
-                    Código Postal *
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.codigoPostal}
-                    onChange={(e) => handleInputChange('codigoPostal', e.target.value)}
-                    style={getFieldStyle('codigoPostal', {
-                      width: '100%',
-                      padding: '12px',
-                      border: '2px solid #e5e7eb',
-                      borderRadius: '8px',
-                      fontSize: '16px',
-                      transition: 'all 0.2s'
-                    })}
-                    placeholder="C.P."
-                    maxLength={5}
-                  />
-                  <ErrorMessage error={errors.codigoPostal} />
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Step 2: Tu Hogar */}
-          {currentStep === 1 && (
-            <div>
-              <h2 style={{
-                fontSize: '24px',
-                fontWeight: '700',
-                color: '#0e312d',
-                marginBottom: '32px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px'
-              }}>
-                <HomeIcon size={28} color="#6b3838" />
-                Tu Hogar
-              </h2>
-              
-              <div style={{ marginBottom: '24px' }}>
-                <label style={{ fontSize: '14px', fontWeight: '600', color: '#374151', marginBottom: '8px', display: 'block' }}>
-                  Tipo de vivienda *
-                </label>
-                <select
-                  value={formData.tipoVivienda}
-                  onChange={(e) => handleInputChange('tipoVivienda', e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '12px',
-                    border: '2px solid #e5e7eb',
-                    borderRadius: '8px',
-                    fontSize: '16px'
-                  }}
-                >
-                  <option value="">Selecciona...</option>
-                  <option value="casa">Casa</option>
-                  <option value="departamento">Departamento</option>
-                  <option value="condominio">Condominio</option>
-                </select>
-              </div>
-              <div style={{ marginBottom: '24px' }}>
-                <label style={{ fontSize: '14px', fontWeight: '600', color: '#374151', marginBottom: '8px', display: 'block' }}>
-                  ¿Tienes patio o jardín? *
-                </label>
-                <select
-                  value={formData.espacioExterior}
-                  onChange={(e) => handleInputChange('espacioExterior', e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '12px',
-                    border: '2px solid #e5e7eb',
-                    borderRadius: '8px',
-                    fontSize: '16px'
-                  }}
-                >
-                  <option value="">Selecciona...</option>
-                  <option value="patio-grande">Patio grande</option>
-                  <option value="patio-pequeno">Patio pequeño</option>
-                  <option value="balcon">Balcón</option>
-                  <option value="no">No tengo espacio exterior</option>
-                </select>
-              </div>
-              <div style={{ marginBottom: '24px' }}>
-                <label style={{ fontSize: '14px', fontWeight: '600', color: '#374151', marginBottom: '8px', display: 'block' }}>
-                  ¿Cuánto tiempo estaría solo el perro al día? *
-                </label>
-                <select
-                  value={formData.tiempoSolo}
-                  onChange={(e) => handleInputChange('tiempoSolo', e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '12px',
-                    border: '2px solid #e5e7eb',
-                    borderRadius: '8px',
-                    fontSize: '16px'
-                  }}
-                >
-                  <option value="">Selecciona...</option>
-                  <option value="nunca">Nunca, siempre hay alguien</option>
-                  <option value="1-4-horas">1-4 horas</option>
-                  <option value="4-8-horas">4-8 horas</option>
-                  <option value="mas-8-horas">Más de 8 horas</option>
-                </select>
-              </div>
-              <div style={{ marginBottom: '24px' }}>
-                <label style={{ fontSize: '14px', fontWeight: '600', color: '#374151', marginBottom: '8px', display: 'block' }}>
-                  ¿Has tenido perros antes? *
-                </label>
-                <textarea
-                  value={formData.experienciaPerros}
-                  onChange={(e) => handleInputChange('experienciaPerros', e.target.value)}
-                  rows={3}
-                  style={{
-                    width: '100%',
-                    padding: '12px',
-                    border: '2px solid #e5e7eb',
-                    borderRadius: '8px',
-                    fontSize: '16px',
-                    resize: 'vertical'
-                  }}
-                  placeholder="Cuéntanos sobre tu experiencia con perros..."
-                />
-              </div>
-              <div>
-                <label style={{ fontSize: '14px', fontWeight: '600', color: '#374151', marginBottom: '8px', display: 'block' }}>
-                  ¿Tienes otras mascotas?
-                </label>
-                <textarea
-                  value={formData.otrasMascotas}
-                  onChange={(e) => handleInputChange('otrasMascotas', e.target.value)}
-                  rows={2}
-                  style={{
-                    width: '100%',
-                    padding: '12px',
-                    border: '2px solid #e5e7eb',
-                    borderRadius: '8px',
-                    fontSize: '16px',
-                    resize: 'vertical'
-                  }}
-                  placeholder="Describe tus otras mascotas (si las tienes)..."
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Step 3: Motivación y Compromiso */}
-          {currentStep === 2 && (
-            <div>
-              <h2 style={{
-                fontSize: '24px',
-                fontWeight: '700',
-                color: '#0e312d',
-                marginBottom: '32px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px'
-              }}>
-                <DogIcon size={28} color="#6b3838" />
-                Motivación y Compromiso
-              </h2>
-              
-              <div style={{ marginBottom: '24px' }}>
-                <label style={{ fontSize: '14px', fontWeight: '600', color: '#374151', marginBottom: '8px', display: 'block' }}>
-                  ¿Por qué quieres adoptar a {perrito.nombre}? *
-                </label>
-                <textarea
-                  value={formData.motivacion}
-                  onChange={(e) => handleInputChange('motivacion', e.target.value)}
-                  rows={4}
-                  style={{
-                    width: '100%',
-                    padding: '12px',
-                    border: '2px solid #e5e7eb',
-                    borderRadius: '8px',
-                    fontSize: '16px',
-                    resize: 'vertical'
-                  }}
-                  placeholder="Cuéntanos tu motivación para adoptar..."
-                />
-              </div>
-              <div style={{ marginBottom: '32px' }}>
-                <label style={{ fontSize: '14px', fontWeight: '600', color: '#374151', marginBottom: '8px', display: 'block' }}>
-                  ¿Cuánto tiempo puedes dedicarle diariamente?
-                </label>
-                <select
-                  value={formData.tiempoDisponible}
-                  onChange={(e) => handleInputChange('tiempoDisponible', e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '12px',
-                    border: '2px solid #e5e7eb',
-                    borderRadius: '8px',
-                    fontSize: '16px'
-                  }}
-                >
-                  <option value="">Selecciona...</option>
-                  <option value="1-2-horas">1-2 horas</option>
-                  <option value="2-4-horas">2-4 horas</option>
-                  <option value="4-6-horas">4-6 horas</option>
-                  <option value="todo-el-dia">Todo el día</option>
-                </select>
-              </div>
-              
-              <div style={{
-                background: '#f8f9fa',
-                padding: '24px',
-                borderRadius: '16px',
-                border: '2px solid #e5e7eb'
-              }}>
-                <h3 style={{
-                  fontSize: '20px',
-                  fontWeight: '700',
-                  color: '#374151',
-                  marginBottom: '20px'
-                }}>
-                  Compromisos de Adopción
-                </h3>
-                <div style={{ marginBottom: '20px' }}>
-                  <label style={{
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    gap: '16px',
-                    fontSize: '16px',
-                    fontWeight: '500',
-                    cursor: 'pointer',
-                    color: '#374151',
-                    lineHeight: '1.5'
-                  }}>
-                    <input
-                      type="checkbox"
-                      checked={formData.comprometimiento}
-                      onChange={(e) => handleInputChange('comprometimiento', e.target.checked)}
-                      style={{
-                        width: '20px',
-                        height: '20px',
-                        accentColor: '#6b3838',
-                        marginTop: '2px',
-                        flexShrink: 0
-                      }}
-                    />
-                    <span style={{ flex: 1 }}>
-                      Me comprometo a cuidar a <strong>{perrito.nombre}</strong> de por vida, proporcionándole amor, cuidados y un hogar estable. *
-                    </span>
-                  </label>
-                </div>
-                <div>
-                  <label style={{
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    gap: '16px',
-                    fontSize: '16px',
-                    fontWeight: '500',
-                    cursor: 'pointer',
-                    color: '#374151',
-                    lineHeight: '1.5'
-                  }}>
-                    <input
-                      type="checkbox"
-                      checked={formData.visitasVeterinario}
-                      onChange={(e) => handleInputChange('visitasVeterinario', e.target.checked)}
-                      style={{
-                        width: '20px',
-                        height: '20px',
-                        accentColor: '#6b3838',
-                        marginTop: '2px',
-                        flexShrink: 0
-                      }}
-                    />
-                    <span style={{ flex: 1 }}>
-                      Me comprometo a llevarlo al veterinario cuando sea necesario y mantener su salud al día. *
-                    </span>
-                  </label>
-                </div>
-              </div>
-            </div>
-          )}
-
-        </div>
-
-        {/* Error general */}
-        {errors.submit && (
           <div style={{
-            marginBottom: '24px',
-            padding: '16px',
-            backgroundColor: '#fef2f2',
-            border: '1px solid #fecaca',
-            borderRadius: '12px'
+            textAlign: 'center',
+            marginBottom: '32px'
           }}>
-            <p style={{
-              fontSize: '0.875rem',
-              color: '#dc2626',
-              margin: 0,
-              fontWeight: '500'
+            <div style={{
+              width: '64px',
+              height: '64px',
+              borderRadius: '50%',
+              backgroundColor: '#f0fdf4',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 16px'
             }}>
-              {errors.submit}
+              <Heart size={32} color="#22c55e" />
+            </div>
+            <h2 style={{
+              fontSize: '20px',
+              fontWeight: '700',
+              color: '#0e312d',
+              margin: 0,
+              marginBottom: '8px'
+            }}>
+              Deja tus datos de contacto
+            </h2>
+            <p style={{
+              fontSize: '15px',
+              color: '#6b7280',
+              margin: 0
+            }}>
+              El equipo del centro te contactará por WhatsApp para continuar con el proceso
             </p>
           </div>
-        )}
 
-        {/* Navigation Buttons - Always visible at bottom */}
-        <div style={{
-          background: 'white',
-          borderRadius: '16px',
-          padding: '24px',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
-          position: 'sticky',
-          bottom: '24px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          gap: '16px'
-        }}>
-          <div>
-            {currentStep > 0 && (
-              <button
-                onClick={handlePrev}
+          <form onSubmit={handleSubmit}>
+            {/* Nombre */}
+            <div style={{ marginBottom: '20px' }}>
+              <label style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontSize: '14px',
+                fontWeight: '600',
+                color: '#374151',
+                marginBottom: '8px'
+              }}>
+                <User size={16} />
+                Nombre *
+              </label>
+              <input
+                type="text"
+                value={formData.nombre}
+                onChange={(e) => handleInputChange('nombre', e.target.value)}
+                placeholder="Tu nombre"
                 style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  padding: '14px 24px',
-                  background: 'white',
-                  border: '2px solid #6b3838',
-                  color: '#6b3838',
+                  width: '100%',
+                  padding: '14px 16px',
+                  border: `2px solid ${errors.nombre ? '#ef4444' : '#e5e7eb'}`,
                   borderRadius: '12px',
                   fontSize: '16px',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s'
+                  outline: 'none',
+                  transition: 'border-color 0.2s'
                 }}
-              >
-                <ArrowLeftIcon size={18} />
-                Anterior
-              </button>
+                onFocus={(e) => e.target.style.borderColor = '#0e312d'}
+                onBlur={(e) => e.target.style.borderColor = errors.nombre ? '#ef4444' : '#e5e7eb'}
+              />
+              {errors.nombre && (
+                <p style={{ color: '#ef4444', fontSize: '13px', marginTop: '4px', margin: '4px 0 0' }}>
+                  {errors.nombre}
+                </p>
+              )}
+            </div>
+
+            {/* Apellido */}
+            <div style={{ marginBottom: '20px' }}>
+              <label style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontSize: '14px',
+                fontWeight: '600',
+                color: '#374151',
+                marginBottom: '8px'
+              }}>
+                <User size={16} />
+                Apellido *
+              </label>
+              <input
+                type="text"
+                value={formData.apellido}
+                onChange={(e) => handleInputChange('apellido', e.target.value)}
+                placeholder="Tu apellido"
+                style={{
+                  width: '100%',
+                  padding: '14px 16px',
+                  border: `2px solid ${errors.apellido ? '#ef4444' : '#e5e7eb'}`,
+                  borderRadius: '12px',
+                  fontSize: '16px',
+                  outline: 'none',
+                  transition: 'border-color 0.2s'
+                }}
+                onFocus={(e) => e.target.style.borderColor = '#0e312d'}
+                onBlur={(e) => e.target.style.borderColor = errors.apellido ? '#ef4444' : '#e5e7eb'}
+              />
+              {errors.apellido && (
+                <p style={{ color: '#ef4444', fontSize: '13px', marginTop: '4px', margin: '4px 0 0' }}>
+                  {errors.apellido}
+                </p>
+              )}
+            </div>
+
+            {/* WhatsApp */}
+            <div style={{ marginBottom: '20px' }}>
+              <label style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                fontSize: '14px',
+                fontWeight: '600',
+                color: '#374151',
+                marginBottom: '8px'
+              }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <MessageCircle size={16} />
+                  WhatsApp *
+                </span>
+                <span style={{
+                  fontSize: '12px',
+                  fontWeight: '500',
+                  color: getDigitCount() === 10 ? '#22c55e' : '#9ca3af'
+                }}>
+                  {getDigitCount()}/10 dígitos
+                </span>
+              </label>
+              <input
+                type="tel"
+                inputMode="numeric"
+                value={formData.whatsapp}
+                onChange={(e) => handleInputChange('whatsapp', e.target.value)}
+                placeholder="Ej: 2441234567"
+                maxLength={10}
+                style={{
+                  width: '100%',
+                  padding: '14px 16px',
+                  border: `2px solid ${errors.whatsapp ? '#ef4444' : getDigitCount() === 10 ? '#22c55e' : '#e5e7eb'}`,
+                  borderRadius: '12px',
+                  fontSize: '16px',
+                  outline: 'none',
+                  transition: 'border-color 0.2s',
+                  letterSpacing: '1px'
+                }}
+                onFocus={(e) => e.target.style.borderColor = getDigitCount() === 10 ? '#22c55e' : '#0e312d'}
+                onBlur={(e) => e.target.style.borderColor = errors.whatsapp ? '#ef4444' : getDigitCount() === 10 ? '#22c55e' : '#e5e7eb'}
+              />
+              {errors.whatsapp && (
+                <p style={{ color: '#ef4444', fontSize: '13px', marginTop: '4px', margin: '4px 0 0' }}>
+                  {errors.whatsapp}
+                </p>
+              )}
+            </div>
+
+            {/* Email (opcional) */}
+            <div style={{ marginBottom: '28px' }}>
+              <label style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontSize: '14px',
+                fontWeight: '600',
+                color: '#374151',
+                marginBottom: '8px'
+              }}>
+                <Mail size={16} />
+                Correo electrónico <span style={{ fontWeight: '400', color: '#9ca3af' }}>(opcional)</span>
+              </label>
+              <input
+                type="email"
+                value={formData.email}
+                onChange={(e) => handleInputChange('email', e.target.value)}
+                placeholder="tu@correo.com"
+                style={{
+                  width: '100%',
+                  padding: '14px 16px',
+                  border: `2px solid ${errors.email ? '#ef4444' : '#e5e7eb'}`,
+                  borderRadius: '12px',
+                  fontSize: '16px',
+                  outline: 'none',
+                  transition: 'border-color 0.2s'
+                }}
+                onFocus={(e) => e.target.style.borderColor = '#0e312d'}
+                onBlur={(e) => e.target.style.borderColor = errors.email ? '#ef4444' : '#e5e7eb'}
+              />
+              {errors.email && (
+                <p style={{ color: '#ef4444', fontSize: '13px', marginTop: '4px', margin: '4px 0 0' }}>
+                  {errors.email}
+                </p>
+              )}
+            </div>
+
+            {/* Error general */}
+            {submitError && (
+              <div style={{
+                padding: '12px 16px',
+                backgroundColor: '#fef2f2',
+                border: '1px solid #fecaca',
+                borderRadius: '12px',
+                marginBottom: '20px'
+              }}>
+                <p style={{ color: '#dc2626', fontSize: '14px', margin: 0 }}>
+                  {submitError}
+                </p>
+              </div>
             )}
-          </div>
-          
-          <div>
-            {currentStep < steps.length - 1 ? (
-              <button
-                onClick={handleNext}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  padding: '14px 24px',
-                  background: '#6b3838',
-                  border: 'none',
-                  color: 'white',
-                  borderRadius: '12px',
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s'
-                }}
-              >
-                Siguiente
-                <ArrowRightIcon size={18} />
-              </button>
-            ) : (
-              <button
-                onClick={handleSubmit}
-                disabled={isSubmitting}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  padding: '14px 24px',
-                  background: isSubmitting ? '#94a3b8' : '#22c55e',
-                  border: 'none',
-                  color: 'white',
-                  borderRadius: '12px',
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                  transition: 'all 0.2s'
-                }}
-              >
-                <CheckCircleIcon size={18} color="white" />
-                {isSubmitting ? 'Enviando...' : 'Enviar Solicitud'}
-              </button>
-            )}
+
+            {/* Botón de envío */}
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              style={{
+                width: '100%',
+                padding: '16px 24px',
+                backgroundColor: isSubmitting ? '#94a3b8' : '#0e312d',
+                color: 'white',
+                border: 'none',
+                borderRadius: '12px',
+                fontSize: '16px',
+                fontWeight: '600',
+                cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                transition: 'all 0.2s'
+              }}
+            >
+              {isSubmitting ? (
+                <>
+                  <div style={{
+                    width: '20px',
+                    height: '20px',
+                    border: '2px solid rgba(255,255,255,0.3)',
+                    borderTopColor: 'white',
+                    borderRadius: '50%',
+                    animation: 'spin 1s linear infinite'
+                  }} />
+                  Enviando...
+                </>
+              ) : (
+                <>
+                  <CheckCircleIcon size={20} color="white" />
+                  Enviar solicitud
+                </>
+              )}
+            </button>
+          </form>
+
+          {/* Nota informativa */}
+          <div style={{
+            marginTop: '24px',
+            padding: '16px',
+            backgroundColor: '#f0fdf4',
+            borderRadius: '12px',
+            border: '1px solid #bbf7d0'
+          }}>
+            <p style={{
+              fontSize: '13px',
+              color: '#166534',
+              margin: 0,
+              lineHeight: '1.5'
+            }}>
+              <strong>Siguiente paso:</strong> Una vez enviada tu solicitud, el equipo del Centro Municipal de Adopción te contactará por WhatsApp para agendar una visita y conocer a {perrito.nombre}.
+            </p>
           </div>
         </div>
       </div>
 
-      {/* Global Styles */}
       <style jsx>{`
-        input:focus, textarea:focus, select:focus {
-          outline: none;
-          border-color: #6b3838 !important;
-          box-shadow: 0 0 0 3px rgba(107, 56, 56, 0.1);
-        }
-        
-        button:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
-        }
-        
-        @media (max-width: 768px) {
-          .navigation-buttons {
-            flex-direction: column-reverse !important;
-            gap: 12px !important;
-          }
-          
-          .navigation-buttons button {
-            width: 100% !important;
-            justify-content: center !important;
-          }
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
         }
       `}</style>
     </div>

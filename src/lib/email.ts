@@ -8,22 +8,34 @@ interface EmailOptions {
   html: string
 }
 
-// Inicializar Resend
-const resend = new Resend(process.env.RESEND_API_KEY)
+// Lazy initialization of Resend client to avoid errors when API key is not set
+let resend: Resend | null = null
+
+function getResendClient(): Resend | null {
+  if (!process.env.RESEND_API_KEY) {
+    console.warn('RESEND_API_KEY not configured - email sending disabled')
+    return null
+  }
+  if (!resend) {
+    resend = new Resend(process.env.RESEND_API_KEY)
+  }
+  return resend
+}
 
 // Servicio de email con Resend
 export class EmailService {
   static async send(options: EmailOptions): Promise<boolean> {
     try {
-      // Verificar que tenemos la API key
-      if (!process.env.RESEND_API_KEY) {
-        console.error('❌ RESEND_API_KEY no está configurada')
+      // Get the Resend client (lazy initialization)
+      const client = getResendClient()
+      if (!client) {
+        console.warn('Email not sent - Resend client not available')
         return false
       }
 
       // En sandbox, redirigir todos los emails a una dirección de prueba
-      const recipientEmail = process.env.NODE_ENV === 'production' 
-        ? options.to 
+      const recipientEmail = process.env.NODE_ENV === 'production'
+        ? options.to
         : process.env.TEST_EMAIL || options.to
 
       // Agregar prefijo al asunto en modo sandbox
@@ -32,7 +44,7 @@ export class EmailService {
         : `[TEST para: ${options.to}] ${options.subject}`
 
       // Enviar email con Resend
-      const { data, error } = await resend.emails.send({
+      const { data, error } = await client.emails.send({
         from: process.env.EMAIL_FROM || 'Centro de Adopción <onboarding@resend.dev>',
         to: recipientEmail,
         subject: emailSubject,

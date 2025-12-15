@@ -14,8 +14,8 @@ import {
   CheckCircleIcon, ArrowRightIcon, ClockIcon
 } from './icons/Icons'
 
-// URL de imagen estándar para todos los perritos
-const defaultDogImage = 'https://somosmaka.com/cdn/shop/articles/perro_mestizo.jpg?v=1697855331'
+// Imagen placeholder local para perritos sin foto
+const defaultDogImage = '/images/placeholder-dog.svg'
 
 export default function CatalogoPerritos() {
   const searchParams = useSearchParams()
@@ -196,7 +196,7 @@ export default function CatalogoPerritos() {
           gap: '16px',
           marginBottom: '24px'
         }}>
-          <SearchIcon size={24} color="#6b3838" />
+          <SearchIcon size={24} color="#0e312d" />
           <h2 style={{
             fontSize: '24px',
             fontWeight: '700',
@@ -205,47 +205,122 @@ export default function CatalogoPerritos() {
           }}>Buscar tu compañero ideal</h2>
         </div>
         
-        <SearchBar 
+        <SearchBar
           value={filters.search}
           onSearch={handleSearch}
           placeholder="Buscar por nombre, raza o características..."
-          style={{ marginBottom: '20px' }}
         />
-        
+
         {/* Filtros rápidos */}
         <div style={{
           display: 'flex',
           flexWrap: 'wrap',
-          gap: '12px'
+          gap: '10px',
+          alignItems: 'center',
+          justifyContent: 'flex-start',
+          marginTop: '24px',
+          paddingTop: '20px',
+          borderTop: '1px solid #f0f0f0'
         }}>
-          {['Cachorro', 'Pequeño', 'Mediano', 'Grande', 'Tranquilo', 'Apto niños'].map((filter) => (
+          <span style={{
+            fontSize: '14px',
+            color: '#666',
+            fontWeight: '500',
+            marginRight: '4px'
+          }}>
+            Filtrar por:
+          </span>
+          {[
+            { label: 'Cachorro', key: 'edad', value: 'cachorro' },
+            { label: 'Pequeño', key: 'tamano', value: 'chico' },
+            { label: 'Mediano', key: 'tamano', value: 'mediano' },
+            { label: 'Grande', key: 'tamano', value: 'grande' },
+            { label: 'Tranquilo', key: 'energia', value: 'baja' },
+            { label: 'Apto niños', key: 'aptoNinos', value: true },
+          ].map((filter) => {
+            const isActive = filter.key === 'aptoNinos'
+              ? filters.aptoNinos === true
+              : filters[filter.key as keyof FilterOptions] === filter.value
+
+            return (
+              <button
+                key={filter.label}
+                onClick={() => {
+                  if (filter.key === 'aptoNinos') {
+                    handleFilterChange('aptoNinos', !filters.aptoNinos)
+                  } else {
+                    const currentValue = filters[filter.key as keyof FilterOptions]
+                    handleFilterChange(
+                      filter.key as keyof FilterOptions,
+                      currentValue === filter.value ? '' : filter.value
+                    )
+                  }
+                }}
+                style={{
+                  padding: '8px 18px',
+                  borderRadius: '8px',
+                  border: `2px solid ${isActive ? '#0e312d' : '#e0e0e0'}`,
+                  background: isActive ? '#0e312d' : '#fafafa',
+                  color: isActive ? 'white' : '#333',
+                  fontSize: '13px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                {isActive && '✓ '}{filter.label}
+              </button>
+            )
+          })}
+
+          {/* Botón limpiar filtros */}
+          {(filters.tamano || filters.edad || filters.energia || filters.aptoNinos) && (
             <button
-              key={filter}
+              onClick={handleClearFilters}
               style={{
-                padding: '8px 16px',
-                borderRadius: '20px',
-                border: '2px solid #e9ecef',
-                background: 'white',
-                color: '#4a4a4a',
-                fontSize: '14px',
-                fontWeight: '500',
+                padding: '8px 18px',
+                borderRadius: '8px',
+                border: '2px solid #dc2626',
+                background: '#fef2f2',
+                color: '#dc2626',
+                fontSize: '13px',
+                fontWeight: '600',
                 cursor: 'pointer',
-                transition: 'all 0.2s'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = '#6b3838'
-                e.currentTarget.style.color = '#6b3838'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = '#e9ecef'
-                e.currentTarget.style.color = '#4a4a4a'
+                transition: 'all 0.2s',
+                whiteSpace: 'nowrap',
+                marginLeft: '8px'
               }}
             >
-              {filter}
+              ✕ Limpiar
             </button>
-          ))}
+          )}
         </div>
       </div>
+
+      {/* Contador de resultados */}
+      {!isEmpty && (
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '24px',
+          padding: '16px 20px',
+          background: 'white',
+          borderRadius: '12px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
+        }}>
+          <p style={{ margin: 0, color: '#666', fontSize: '15px' }}>
+            Mostrando <strong style={{ color: '#0e312d' }}>{perritos.length}</strong> de{' '}
+            <strong style={{ color: '#0e312d' }}>{pagination.total}</strong> perritos disponibles
+          </p>
+          {pagination.totalPages > 1 && (
+            <p style={{ margin: 0, color: '#999', fontSize: '14px' }}>
+              Página {pagination.page} de {pagination.totalPages}
+            </p>
+          )}
+        </div>
+      )}
 
       {/* Grid de Perritos */}
       {!isEmpty ? (
@@ -450,7 +525,7 @@ export default function CatalogoPerritos() {
                       gap: '8px',
                       width: '100%',
                       padding: '14px',
-                      background: '#6b3838',
+                      background: '#0e312d',
                       color: 'white',
                       borderRadius: '12px',
                       textDecoration: 'none',
@@ -459,11 +534,11 @@ export default function CatalogoPerritos() {
                       transition: 'all 0.2s'
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.background = '#7d4040'
+                      e.currentTarget.style.background = '#1a4a45'
                       e.currentTarget.style.transform = 'translateY(-2px)'
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.background = '#6b3838'
+                      e.currentTarget.style.background = '#0e312d'
                       e.currentTarget.style.transform = 'translateY(0)'
                     }}
                   >

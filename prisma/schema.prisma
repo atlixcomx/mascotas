@@ -45,6 +45,8 @@ model Perrito {
   notas              NotaPerrito[]
   seguimientos       SeguimientoAdopcion[]
   solicitudes        Solicitud[]
+  contactos          ContactoAdopcion[]
+  citas              CitaVeterinaria[]
 }
 
 model Solicitud {
@@ -336,4 +338,33 @@ model QrScan {
   referer    String?
   timestamp  DateTime  @default(now())
   comercio   Comercio  @relation(fields: [comercioId], references: [id])
+}
+
+model ContactoAdopcion {
+  id          String   @id @default(cuid())
+  perritoId   String
+  nombre      String
+  apellido    String
+  whatsapp    String
+  email       String?
+  notificado  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  perrito     Perrito  @relation(fields: [perritoId], references: [id])
+}
+
+model CitaVeterinaria {
+  id          String   @id @default(cuid())
+  perritoId   String
+  fecha       DateTime
+  hora        String
+  motivo      String
+  descripcion String?
+  estado      String   @default("programada")
+  veterinario String?
+  duenio      String?
+  telefono    String?
+  notas       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  perrito     Perrito  @relation(fields: [perritoId], references: [id])
 }

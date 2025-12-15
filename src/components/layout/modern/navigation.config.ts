@@ -3,7 +3,7 @@ export interface NavigationItem {
   id: string
   label: string
   href: string
-  icon?: string
+  iconName?: 'home' | 'dog' | 'store' | 'newspaper'
   highlight?: boolean
   external?: boolean
 }
@@ -13,26 +13,26 @@ export const navigationItems: NavigationItem[] = [
     id: 'home',
     label: 'Inicio',
     href: '/',
-    icon: '🏠'
+    iconName: 'home'
   },
   {
     id: 'catalog',
     label: 'Catálogo Adopción',
     href: '/catalogo',
-    icon: '🐕',
+    iconName: 'dog',
     highlight: true // CTA principal
   },
   {
     id: 'pet-friendly',
     label: 'Comercios Friendly',
     href: '/comercios-friendly',
-    icon: '🏪'
+    iconName: 'store'
   },
   {
     id: 'news',
     label: 'Noticias',
     href: '/noticias',
-    icon: '📰'
+    iconName: 'newspaper'
   }
 ]
 

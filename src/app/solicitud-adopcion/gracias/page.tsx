@@ -4,10 +4,7 @@ import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { 
-  CheckCircleIcon, HeartIcon, DogIcon, ShareIcon, 
-  HomeIcon, BirdIcon, FlowerIcon, WaveIcon, MountainIcon
-} from '../../../components/icons/Icons'
+import { CheckCircle, Phone, Calendar, Heart, ArrowRight, Sparkles } from 'lucide-react'
 
 const defaultDogImage = 'https://somosmaka.com/cdn/shop/articles/perro_mestizo.jpg?v=1697855331'
 
@@ -21,413 +18,411 @@ function GraciasContent() {
     setIsVisible(true)
   }, [])
 
-  const shareText = `¡Acabo de solicitar adoptar a ${dogName}! 🐕❤️ El Centro de Adopción y Bienestar Animal de Atlixco está haciendo un trabajo increíble rescatando vidas. ¡Conoce más perritos esperando un hogar!`
-  const siteUrl = 'https://4tlixco.vercel.app'
-
-  const shareLinks = {
-    whatsapp: `https://wa.me/?text=${encodeURIComponent(shareText + ' ' + siteUrl)}`,
-    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(siteUrl)}&quote=${encodeURIComponent(shareText)}`,
-    twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(siteUrl)}`,
-    copy: siteUrl
-  }
-
-  const handleCopyLink = async () => {
-    try {
-      await navigator.clipboard.writeText(siteUrl)
-      alert('¡Enlace copiado al portapapeles!')
-    } catch (err) {
-      console.error('Error al copiar:', err)
+  const steps = [
+    {
+      icon: CheckCircle,
+      title: 'Solicitud recibida',
+      description: 'Tu información ha sido registrada',
+      done: true
+    },
+    {
+      icon: Phone,
+      title: 'Te contactaremos',
+      description: 'Por WhatsApp en las próximas 24-48 hrs',
+      done: false
+    },
+    {
+      icon: Calendar,
+      title: 'Agendar visita',
+      description: 'Coordinaremos una cita para conocer a ' + dogName,
+      done: false
+    },
+    {
+      icon: Heart,
+      title: '¡Adopción!',
+      description: 'Si todo sale bien, tendrás un nuevo miembro en la familia',
+      done: false
     }
-  }
+  ]
 
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'linear-gradient(135deg, #0e312d 0%, #1a4a45 50%, #246257 100%)',
-      position: 'relative',
-      overflow: 'hidden',
+      background: 'linear-gradient(135deg, #0e312d 0%, #1a4a45 100%)',
       display: 'flex',
       alignItems: 'center',
+      justifyContent: 'center',
       padding: '40px 20px',
-      opacity: isVisible ? 1 : 0,
-      transform: isVisible ? 'translateY(0)' : 'translateY(20px)',
-      transition: 'all 0.8s ease-out'
+      position: 'relative',
+      overflow: 'hidden'
     }}>
-      {/* Elementos decorativos del escudo de Atlixco */}
+      {/* Elementos decorativos de fondo */}
       <div style={{
         position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        opacity: 0.05,
-        backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,0.1) 35px, rgba(255,255,255,0.1) 70px)`
+        top: '10%',
+        left: '5%',
+        width: '300px',
+        height: '300px',
+        background: 'radial-gradient(circle, rgba(191,181,145,0.1) 0%, transparent 70%)',
+        borderRadius: '50%',
+        filter: 'blur(40px)'
       }} />
-
-      {/* Elementos de montaña y agua del escudo */}
       <div style={{
         position: 'absolute',
-        bottom: 0,
-        right: 0,
-        width: '40%',
-        height: '40%',
-        opacity: 0.03,
-        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M100 20L40 180L160 180Z' fill='white'/%3E%3C/svg%3E")`,
-        backgroundRepeat: 'no-repeat',
-        backgroundPosition: 'bottom right',
-        backgroundSize: 'contain'
+        bottom: '10%',
+        right: '5%',
+        width: '400px',
+        height: '400px',
+        background: 'radial-gradient(circle, rgba(34,197,94,0.08) 0%, transparent 70%)',
+        borderRadius: '50%',
+        filter: 'blur(60px)'
       }} />
 
+      {/* Partículas flotantes */}
+      {[...Array(6)].map((_, i) => (
+        <div
+          key={i}
+          style={{
+            position: 'absolute',
+            width: '8px',
+            height: '8px',
+            background: i % 2 === 0 ? '#bfb591' : '#22c55e',
+            borderRadius: '50%',
+            opacity: 0.3,
+            top: `${15 + i * 15}%`,
+            left: `${10 + i * 15}%`,
+            animation: `float ${3 + i * 0.5}s ease-in-out infinite`,
+            animationDelay: `${i * 0.3}s`
+          }}
+        />
+      ))}
+
       <div style={{
-        maxWidth: '800px',
-        margin: '0 auto',
+        maxWidth: '500px',
+        width: '100%',
+        textAlign: 'center',
         position: 'relative',
         zIndex: 1,
-        textAlign: 'center',
-        color: 'white'
+        opacity: isVisible ? 1 : 0,
+        transform: isVisible ? 'translateY(0)' : 'translateY(20px)',
+        transition: 'all 0.6s ease-out'
       }}>
-        {/* Icono de éxito */}
+        {/* Badge de celebración */}
         <div style={{
           display: 'inline-flex',
           alignItems: 'center',
-          justifyContent: 'center',
-          width: '120px',
-          height: '120px',
-          background: 'rgba(34, 197, 94, 0.2)',
-          border: '4px solid #22c55e',
-          borderRadius: '50%',
-          marginBottom: '32px',
-          animation: 'scaleIn 0.6s ease-out 0.2s both'
+          gap: '6px',
+          background: 'rgba(34, 197, 94, 0.15)',
+          border: '1px solid rgba(34, 197, 94, 0.3)',
+          borderRadius: '20px',
+          padding: '8px 16px',
+          marginBottom: '24px'
         }}>
-          <CheckCircleIcon size={60} color="#22c55e" />
+          <Sparkles size={16} color="#22c55e" />
+          <span style={{ fontSize: '13px', color: '#22c55e', fontWeight: '600' }}>
+            ¡Felicidades!
+          </span>
         </div>
 
-        {/* Título principal */}
-        <h1 style={{
-          fontSize: 'clamp(32px, 5vw, 56px)',
-          fontWeight: '800',
-          marginBottom: '16px',
-          letterSpacing: '-2px',
-          animation: 'slideInUp 0.8s ease-out 0.4s both'
-        }}>
-          ¡Gracias por Tu Gran Corazón!
-        </h1>
-
-        {/* Mensaje personalizado */}
-        <p style={{
-          fontSize: 'clamp(18px, 3vw, 24px)',
-          opacity: 0.9,
-          marginBottom: '32px',
-          lineHeight: '1.6',
-          animation: 'slideInUp 0.8s ease-out 0.6s both'
-        }}>
-          Tu solicitud para adoptar a <strong style={{ color: '#bfb591' }}>{dogName}</strong> ha sido enviada exitosamente.
-          <br />Nuestro equipo se pondrá en contacto contigo muy pronto.
-        </p>
-
-        {/* Foto del perrito */}
+        {/* Foto del perrito con anillo animado */}
         <div style={{
+          position: 'relative',
           width: '160px',
           height: '160px',
-          borderRadius: '50%',
-          overflow: 'hidden',
-          border: '4px solid rgba(255,255,255,0.3)',
-          margin: '0 auto 40px',
-          animation: 'scaleIn 0.8s ease-out 0.8s both'
+          margin: '0 auto 28px'
         }}>
-          <Image
-            src={dogImage}
-            alt={dogName}
-            width={160}
-            height={160}
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover'
-            }}
-          />
+          {/* Anillo exterior animado */}
+          <div style={{
+            position: 'absolute',
+            top: '-8px',
+            left: '-8px',
+            right: '-8px',
+            bottom: '-8px',
+            borderRadius: '50%',
+            border: '2px solid transparent',
+            borderTopColor: '#bfb591',
+            borderRightColor: '#bfb591',
+            animation: 'spin 3s linear infinite',
+            opacity: 0.5
+          }} />
+
+          {/* Glow effect */}
+          <div style={{
+            position: 'absolute',
+            top: '-4px',
+            left: '-4px',
+            right: '-4px',
+            bottom: '-4px',
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(191,181,145,0.2) 0%, transparent 70%)',
+            animation: 'pulse 2s ease-in-out infinite'
+          }} />
+
+          <div style={{
+            width: '160px',
+            height: '160px',
+            borderRadius: '50%',
+            overflow: 'hidden',
+            border: '4px solid rgba(255,255,255,0.2)',
+            position: 'relative',
+            zIndex: 1
+          }}>
+            <Image
+              src={dogImage}
+              alt={dogName}
+              width={160}
+              height={160}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover'
+              }}
+            />
+          </div>
+
+          {/* Check badge */}
+          <div style={{
+            position: 'absolute',
+            bottom: '4px',
+            right: '4px',
+            width: '48px',
+            height: '48px',
+            background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            border: '3px solid #0e312d',
+            boxShadow: '0 4px 12px rgba(34, 197, 94, 0.4)',
+            zIndex: 2
+          }}>
+            <CheckCircle size={26} color="white" />
+          </div>
         </div>
 
-        {/* Mensaje motivacional */}
+        {/* Título */}
+        <h1 style={{
+          fontSize: '32px',
+          fontWeight: '700',
+          color: 'white',
+          marginBottom: '12px',
+          letterSpacing: '-0.5px'
+        }}>
+          ¡Solicitud Enviada!
+        </h1>
+
+        <p style={{
+          fontSize: '17px',
+          color: 'rgba(255,255,255,0.8)',
+          marginBottom: '36px',
+          lineHeight: '1.6'
+        }}>
+          Gracias por tu interés en adoptar a{' '}
+          <strong style={{
+            color: '#bfb591',
+            borderBottom: '2px solid rgba(191,181,145,0.3)',
+            paddingBottom: '2px'
+          }}>
+            {dogName}
+          </strong>
+        </p>
+
+        {/* Timeline de pasos */}
         <div style={{
-          background: 'rgba(255,255,255,0.1)',
+          background: 'rgba(255,255,255,0.06)',
           borderRadius: '20px',
-          padding: '32px',
-          marginBottom: '40px',
-          backdropFilter: 'blur(10px)',
-          border: '1px solid rgba(255,255,255,0.2)',
-          animation: 'slideInUp 0.8s ease-out 1s both'
+          padding: '28px',
+          marginBottom: '28px',
+          textAlign: 'left',
+          border: '1px solid rgba(255,255,255,0.08)',
+          backdropFilter: 'blur(10px)'
         }}>
           <h2 style={{
-            fontSize: 'clamp(24px, 4vw, 32px)',
+            fontSize: '12px',
             fontWeight: '700',
-            marginBottom: '16px',
-            color: '#bfb591'
-          }}>
-            Estás Cambiando Una Vida
-          </h2>
-          <p style={{
-            fontSize: '18px',
-            lineHeight: '1.6',
+            color: '#bfb591',
+            textTransform: 'uppercase',
+            letterSpacing: '2px',
             marginBottom: '24px',
-            opacity: 0.9
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
           }}>
-            Al elegir adoptar, no solo le das una segunda oportunidad a {dogName}, 
-            sino que también haces espacio para que podamos rescatar y cuidar a otro animal necesitado.
-          </p>
+            <div style={{
+              width: '20px',
+              height: '2px',
+              background: '#bfb591',
+              borderRadius: '1px'
+            }} />
+            Siguientes pasos
+          </h2>
 
-          {/* Íconos del escudo de Atlixco */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
-            gap: '20px',
-            marginTop: '24px'
-          }}>
-            {[
-              { Icon: MountainIcon, text: 'Fortaleza' },
-              { Icon: BirdIcon, text: 'Vida Nueva' },
-              { Icon: FlowerIcon, text: 'Esperanza' },
-              { Icon: WaveIcon, text: 'Abundancia' }
-            ].map((item, idx) => (
-              <div key={idx} style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: '8px'
-              }}>
-                <item.Icon size={32} color="#bfb591" />
-                <span style={{ fontSize: '14px', opacity: 0.8 }}>{item.text}</span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            {steps.map((step, index) => (
+              <div
+                key={index}
+                style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: '16px',
+                  opacity: step.done ? 1 : 0.7
+                }}
+              >
+                <div style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '12px',
+                  background: step.done
+                    ? 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)'
+                    : 'rgba(255,255,255,0.08)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                  boxShadow: step.done ? '0 4px 12px rgba(34, 197, 94, 0.3)' : 'none'
+                }}>
+                  <step.icon
+                    size={20}
+                    color={step.done ? 'white' : 'rgba(255,255,255,0.4)'}
+                  />
+                </div>
+                <div style={{ flex: 1, paddingTop: '4px' }}>
+                  <p style={{
+                    fontSize: '15px',
+                    fontWeight: '600',
+                    color: step.done ? 'white' : 'rgba(255,255,255,0.7)',
+                    margin: '0 0 4px 0'
+                  }}>
+                    {step.title}
+                  </p>
+                  <p style={{
+                    fontSize: '13px',
+                    color: 'rgba(255,255,255,0.45)',
+                    margin: 0,
+                    lineHeight: '1.4'
+                  }}>
+                    {step.description}
+                  </p>
+                </div>
+                {index < steps.length - 1 && (
+                  <div style={{
+                    position: 'absolute',
+                    left: '47px',
+                    marginTop: '44px',
+                    width: '2px',
+                    height: '20px',
+                    background: step.done
+                      ? 'linear-gradient(to bottom, #22c55e, rgba(255,255,255,0.1))'
+                      : 'rgba(255,255,255,0.1)'
+                  }} />
+                )}
               </div>
             ))}
           </div>
         </div>
 
-        {/* Sección de compartir */}
+        {/* Estadísticas del impacto */}
         <div style={{
-          background: 'rgba(255,255,255,0.05)',
-          borderRadius: '16px',
-          padding: '32px',
-          marginBottom: '40px',
-          border: '1px solid rgba(255,255,255,0.1)',
-          animation: 'slideInUp 0.8s ease-out 1.2s both'
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gap: '12px',
+          marginBottom: '24px'
         }}>
-          <h3 style={{
-            fontSize: '24px',
-            fontWeight: '700',
-            marginBottom: '16px',
-            display: 'flex',
+          {[
+            { value: '286', label: 'Adopciones', icon: Heart },
+            { value: '14,774', label: 'Esterilizaciones', icon: CheckCircle },
+            { value: '2,207', label: 'Consultas', icon: Sparkles }
+          ].map((stat, index) => (
+            <div
+              key={index}
+              style={{
+                background: 'rgba(255,255,255,0.06)',
+                borderRadius: '14px',
+                padding: '16px 12px',
+                textAlign: 'center',
+                border: '1px solid rgba(255,255,255,0.08)'
+              }}
+            >
+              <stat.icon
+                size={18}
+                color="#bfb591"
+                style={{ marginBottom: '8px' }}
+              />
+              <p style={{
+                fontSize: '20px',
+                fontWeight: '700',
+                color: 'white',
+                margin: '0 0 4px 0'
+              }}>
+                {stat.value}
+              </p>
+              <p style={{
+                fontSize: '11px',
+                color: 'rgba(255,255,255,0.5)',
+                margin: 0,
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px'
+              }}>
+                {stat.label}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        {/* Mensaje motivacional */}
+        <p style={{
+          fontSize: '14px',
+          color: 'rgba(255,255,255,0.6)',
+          lineHeight: '1.6',
+          marginBottom: '24px'
+        }}>
+          Al adoptar, te unes a cientos de familias que han cambiado la vida de un animal.
+        </p>
+
+        {/* Botón de inicio */}
+        <Link
+          href="/"
+          style={{
+            display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: '12px'
-          }}>
-            <ShareIcon size={28} color="#bfb591" />
-            Ayuda a Otros Perritos
-          </h3>
-          <p style={{
-            fontSize: '16px',
-            marginBottom: '24px',
-            opacity: 0.9,
-            lineHeight: '1.5'
-          }}>
-            Comparte nuestra misión y ayuda a que más familias encuentren a su mejor amigo
-          </p>
+            gap: '8px',
+            padding: '14px 28px',
+            background: 'rgba(255,255,255,0.08)',
+            color: 'rgba(255,255,255,0.8)',
+            border: '1px solid rgba(255,255,255,0.15)',
+            borderRadius: '12px',
+            textDecoration: 'none',
+            fontSize: '14px',
+            fontWeight: '500',
+            transition: 'all 0.3s ease'
+          }}
+        >
+          Volver al inicio
+        </Link>
 
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-            gap: '12px',
-            marginBottom: '20px'
-          }}>
-            <a
-              href={shareLinks.whatsapp}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                padding: '14px 20px',
-                background: '#25D366',
-                color: 'white',
-                borderRadius: '12px',
-                textDecoration: 'none',
-                fontSize: '15px',
-                fontWeight: '600',
-                transition: 'all 0.2s'
-              }}
-            >
-              📱 WhatsApp
-            </a>
-            <a
-              href={shareLinks.facebook}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                padding: '14px 20px',
-                background: '#1877F2',
-                color: 'white',
-                borderRadius: '12px',
-                textDecoration: 'none',
-                fontSize: '15px',
-                fontWeight: '600',
-                transition: 'all 0.2s'
-              }}
-            >
-              👥 Facebook
-            </a>
-            <a
-              href={shareLinks.twitter}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                padding: '14px 20px',
-                background: '#1DA1F2',
-                color: 'white',
-                borderRadius: '12px',
-                textDecoration: 'none',
-                fontSize: '15px',
-                fontWeight: '600',
-                transition: 'all 0.2s'
-              }}
-            >
-              🐦 Twitter
-            </a>
-            <button
-              onClick={handleCopyLink}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                padding: '14px 20px',
-                background: 'rgba(255,255,255,0.2)',
-                color: 'white',
-                border: '2px solid rgba(255,255,255,0.3)',
-                borderRadius: '12px',
-                fontSize: '15px',
-                fontWeight: '600',
-                cursor: 'pointer',
-                transition: 'all 0.2s'
-              }}
-            >
-              📋 Copiar enlace
-            </button>
-          </div>
-        </div>
-
-        {/* Botones de navegación */}
-        <div style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          justifyContent: 'center',
-          gap: '16px',
-          animation: 'slideInUp 0.8s ease-out 1.4s both'
-        }}>
-          <Link
-            href="/catalogo"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              padding: '16px 32px',
-              background: '#bfb591',
-              color: '#0e312d',
-              borderRadius: '12px',
-              textDecoration: 'none',
-              fontSize: '17px',
-              fontWeight: '700',
-              transition: 'all 0.3s',
-              boxShadow: '0 4px 14px rgba(191, 181, 145, 0.3)'
-            }}
-          >
-            <DogIcon size={20} color="#0e312d" />
-            Ver Más Perritos
-          </Link>
-          <Link
-            href="/"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              padding: '16px 32px',
-              background: 'transparent',
-              color: 'white',
-              border: '2px solid rgba(255,255,255,0.3)',
-              borderRadius: '12px',
-              textDecoration: 'none',
-              fontSize: '17px',
-              fontWeight: '600',
-              transition: 'all 0.3s'
-            }}
-          >
-            <HomeIcon size={20} color="white" />
-            Ir al Inicio
-          </Link>
-        </div>
-
-        {/* Mensaje final */}
+        {/* Footer sutil */}
         <p style={{
-          marginTop: '40px',
-          fontSize: '16px',
-          opacity: 0.7,
-          fontStyle: 'italic',
-          animation: 'fadeIn 0.8s ease-out 1.6s both'
+          marginTop: '32px',
+          fontSize: '12px',
+          color: 'rgba(255,255,255,0.3)'
         }}>
-          "Salvar una vida de animal no cambiará el mundo, pero para ese animal, el mundo cambiará para siempre"
+          Centro Municipal de Adopción y Bienestar Animal
         </p>
       </div>
 
-      {/* Animaciones CSS */}
       <style jsx>{`
-        @keyframes scaleIn {
-          from {
-            opacity: 0;
-            transform: scale(0.8);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1);
-          }
+        @keyframes float {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-20px) rotate(180deg); }
         }
-        
-        @keyframes slideInUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
         }
-        
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-        
-        button:hover, a:hover {
-          transform: translateY(-2px) !important;
-          box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
-        }
-        
-        @media (max-width: 768px) {
-          .share-buttons {
-            grid-template-columns: 1fr !important;
-          }
+        @keyframes pulse {
+          0%, 100% { opacity: 0.5; transform: scale(1); }
+          50% { opacity: 0.8; transform: scale(1.05); }
         }
       `}</style>
     </div>
@@ -439,24 +434,20 @@ export default function GraciasPage() {
     <Suspense fallback={
       <div style={{
         minHeight: '100vh',
-        background: 'linear-gradient(135deg, #0e312d 0%, #1a4a45 50%, #246257 100%)',
+        background: 'linear-gradient(135deg, #0e312d 0%, #1a4a45 100%)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         color: 'white'
       }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{
-            width: '60px',
-            height: '60px',
-            border: '4px solid rgba(255,255,255,0.3)',
-            borderTopColor: 'white',
-            borderRadius: '50%',
-            margin: '0 auto 20px',
-            animation: 'spin 1s linear infinite'
-          }} />
-          <p>Cargando...</p>
-        </div>
+        <div style={{
+          width: '40px',
+          height: '40px',
+          border: '3px solid rgba(255,255,255,0.2)',
+          borderTopColor: '#bfb591',
+          borderRadius: '50%',
+          animation: 'spin 1s linear infinite'
+        }} />
         <style jsx>{`
           @keyframes spin {
             from { transform: rotate(0deg); }

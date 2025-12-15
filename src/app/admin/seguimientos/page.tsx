@@ -169,104 +169,30 @@ export default function SeguimientosAdmin() {
 
   async function fetchSeguimientos() {
     try {
+      setLoading(true)
       const params = new URLSearchParams({
         page: currentPage.toString(),
         limit: '10'
       })
-      
+
       if (filterTipo) params.append('tipo', filterTipo)
       if (filterEstado) params.append('estado', filterEstado)
       if (searchTerm) params.append('search', searchTerm)
 
-      // Mock data - replace with actual API call
-      const mockData = {
-        seguimientos: [
-          {
-            id: '1',
-            folio: 'SEG-2024-001',
-            fechaSeguimiento: '2024-01-15',
-            tipoSeguimiento: 'inicial',
-            adopcion: {
-              id: 'adop1',
-              folio: 'ADOP-2024-001',
-              fechaAdopcion: '2024-01-08'
-            },
-            adoptante: {
-              nombre: 'María González',
-              telefono: '222-123-4567',
-              email: 'maria.gonzalez@email.com',
-              direccion: 'Av. Reforma 123, Col. Centro'
-            },
-            mascota: {
-              id: 'perro1',
-              nombre: 'Luna',
-              codigo: 'PER-001',
-              foto: '/placeholder-dog.jpg',
-              raza: 'Mestizo'
-            },
-            estado: 'completado',
-            estadoMascota: 'excelente',
-            satisfaccionAdoptante: 5,
-            observaciones: 'Adaptación excelente, mascota muy feliz',
-            problemas: [],
-            proximoSeguimiento: '2024-02-15',
-            responsable: 'Dr. Carlos Méndez'
-          },
-          {
-            id: '2',
-            folio: 'SEG-2024-002',
-            fechaSeguimiento: '2024-01-20',
-            tipoSeguimiento: 'mensual',
-            adopcion: {
-              id: 'adop2',
-              folio: 'ADOP-2023-045',
-              fechaAdopcion: '2023-12-20'
-            },
-            adoptante: {
-              nombre: 'José Ramírez',
-              telefono: '222-987-6543',
-              email: 'jose.ramirez@email.com',
-              direccion: 'Calle 5 de Mayo 456, Col. San Miguel'
-            },
-            mascota: {
-              id: 'perro2',
-              nombre: 'Max',
-              codigo: 'PER-015',
-              foto: '/placeholder-dog.jpg',
-              raza: 'Labrador Mix'
-            },
-            estado: 'problema_detectado',
-            estadoMascota: 'regular',
-            satisfaccionAdoptante: 3,
-            observaciones: 'Problemas de comportamiento menores',
-            problemas: ['Ansiedad por separación', 'Ladridos excesivos'],
-            proximoSeguimiento: '2024-02-05',
-            responsable: 'Dra. Ana Torres'
-          }
-        ] as Seguimiento[],
-        total: 25,
-        totalPages: 3,
-        metrics: {
-          totalSeguimientos: 25,
-          seguimientosPendientes: 8,
-          seguimientosCompletados: 15,
-          problemasDetectados: 2,
-          satisfaccionPromedio: 4.2,
-          porTipo: {
-            inicial: 12,
-            mensual: 8,
-            semestral: 3,
-            anual: 1,
-            problema: 1
-          }
-        } as Metrics
-      }
+      const response = await fetch(`/api/admin/seguimientos?${params}`)
 
-      setSeguimientos(mockData.seguimientos)
-      setTotalPages(mockData.totalPages)
-      setMetrics(mockData.metrics)
+      if (response.ok) {
+        const data = await response.json()
+        setSeguimientos(data.seguimientos || [])
+        setTotalPages(data.pagination?.totalPages || 1)
+        setMetrics(data.metrics || null)
+      } else {
+        console.error('Error en respuesta:', response.status)
+        setSeguimientos([])
+      }
     } catch (error) {
       console.error('Error fetching seguimientos:', error)
+      setSeguimientos([])
     } finally {
       setLoading(false)
     }

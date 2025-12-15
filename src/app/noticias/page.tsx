@@ -114,9 +114,11 @@ export default function NoticiasPage() {
           <h1 style={{
             fontSize: 'clamp(32px, 4vw, 48px)',
             fontWeight: '800',
-            marginBottom: '16px'
+            marginBottom: '16px',
+            lineHeight: '1.2'
           }}>
-            Noticias y Eventos
+            Noticias y{' '}
+            <span style={{ color: '#bfb591' }}>Eventos</span>
           </h1>
           <p style={{
             fontSize: '20px',
@@ -336,23 +338,25 @@ export default function NoticiasPage() {
 
       {/* CTA para eventos */}
       <section style={{
-        backgroundColor: '#0e312d',
-        color: 'white',
-        padding: 'clamp(40px, 8vw, 60px) 20px',
+        backgroundColor: '#f5f3ed',
+        color: '#0e312d',
+        padding: 'clamp(48px, 8vw, 72px) 20px',
         textAlign: 'center'
       }}>
         <div style={{ maxWidth: '600px', margin: '0 auto' }}>
           <h2 style={{
             fontSize: '32px',
             fontWeight: '700',
-            marginBottom: '16px'
+            marginBottom: '16px',
+            color: '#0e312d'
           }}>
-            ¿Quieres participar en nuestros eventos?
+            ¿Quieres participar en nuestros{' '}
+            <span style={{ color: '#8b7355' }}>eventos</span>?
           </h2>
           <p style={{
             fontSize: '18px',
             marginBottom: '24px',
-            color: 'rgba(255,255,255,0.9)'
+            color: '#666'
           }}>
             Únete como voluntario o asiste a nuestras ferias de adopción
           </p>
@@ -360,8 +364,8 @@ export default function NoticiasPage() {
             display: 'inline-flex',
             alignItems: 'center',
             gap: '8px',
-            backgroundColor: '#bfb591',
-            color: '#0e312d',
+            backgroundColor: '#0e312d',
+            color: 'white',
             padding: '14px 28px',
             borderRadius: '8px',
             textDecoration: 'none',

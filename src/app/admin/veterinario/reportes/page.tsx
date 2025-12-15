@@ -57,39 +57,33 @@ export default function ReportesSaludPage() {
 
   const fetchReportes = async () => {
     try {
-      // Datos mock para demostrar funcionalidad
-      setReporteActual({
-        periodo: 'Enero 2024',
-        totalConsultas: 142,
-        vacunasAplicadas: 89,
-        esterilizaciones: 23,
-        emergencias: 15,
-        adopciones: 31
-      })
+      setLoading(true)
+      const params = new URLSearchParams({ periodo: periodoSeleccionado })
+      const response = await fetch(`/api/admin/reportes/veterinario?${params}`)
 
-      setEstadisticas({
-        mascotasTotal: 45,
-        consultasMes: 142,
-        vacunacionPorcentaje: 87,
-        esterilizacionPorcentaje: 72,
-        saludPromedio: 8.4,
-        tratamientosActivos: 12
-      })
-
-      setDistribucionEdad([
-        { categoria: 'Cachorros (0-1 año)', cantidad: 12, porcentaje: 27 },
-        { categoria: 'Jóvenes (1-3 años)', cantidad: 18, porcentaje: 40 },
-        { categoria: 'Adultos (3-7 años)', cantidad: 11, porcentaje: 24 },
-        { categoria: 'Seniors (7+ años)', cantidad: 4, porcentaje: 9 }
-      ])
-
-      setTendenciaMensual([
-        { mes: 'Sep', consultas: 98, vacunas: 67, emergencias: 8 },
-        { mes: 'Oct', consultas: 112, vacunas: 78, emergencias: 12 },
-        { mes: 'Nov', consultas: 125, vacunas: 82, emergencias: 10 },
-        { mes: 'Dic', consultas: 134, vacunas: 85, emergencias: 13 },
-        { mes: 'Ene', consultas: 142, vacunas: 89, emergencias: 15 }
-      ])
+      if (response.ok) {
+        const data = await response.json()
+        setReporteActual(data.reporteActual || {
+          periodo: 'Sin datos',
+          totalConsultas: 0,
+          vacunasAplicadas: 0,
+          esterilizaciones: 0,
+          emergencias: 0,
+          adopciones: 0
+        })
+        setEstadisticas(data.estadisticas || {
+          mascotasTotal: 0,
+          consultasMes: 0,
+          vacunacionPorcentaje: 0,
+          esterilizacionPorcentaje: 0,
+          saludPromedio: 0,
+          tratamientosActivos: 0
+        })
+        setDistribucionEdad(data.distribucionEdad || [])
+        setTendenciaMensual(data.tendenciaMensual || [])
+      } else {
+        console.error('Error en respuesta:', response.status)
+      }
     } catch (error) {
       console.error('Error fetching reportes:', error)
     } finally {

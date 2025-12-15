@@ -1,15 +1,17 @@
 'use client'
 
-import { RealtimeDashboardOptimized } from '../../../components/admin/RealtimeDashboardOptimized'
+import { ProfessionalDashboard } from '../../../components/admin/ProfessionalDashboard'
 
 export default function DashboardPage() {
   return (
-    <div style={{ 
+    <div style={{
       padding: '24px',
       maxWidth: '1400px',
-      margin: '0 auto'
+      margin: '0 auto',
+      backgroundColor: '#f8fafc',
+      minHeight: '100vh'
     }}>
-      <RealtimeDashboardOptimized />
+      <ProfessionalDashboard />
     </div>
   )
 }

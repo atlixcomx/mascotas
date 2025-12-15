@@ -16,7 +16,9 @@ export default function NuevoIngresoPage() {
   const { data: session } = useSession()
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [uploadingPhotos, setUploadingPhotos] = useState(false)
   const [fotos, setFotos] = useState<string[]>([])
+  const [fotosPreview, setFotosPreview] = useState<string[]>([])
   
   const [formData, setFormData] = useState({
     // Información básica
@@ -61,41 +63,126 @@ export default function NuevoIngresoPage() {
     diasCuarentena: '15'
   })
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
-    if (files) {
-      // Por ahora solo simular la carga
-      const newFotos = Array.from(files).map(file => URL.createObjectURL(file))
-      setFotos(prev => [...prev, ...newFotos])
+    if (!files || files.length === 0) return
+
+    setUploadingPhotos(true)
+
+    try {
+      const uploadPromises = Array.from(files).map(async (file) => {
+        // Crear preview local
+        const preview = URL.createObjectURL(file)
+
+        // Subir archivo al servidor
+        const formData = new FormData()
+        formData.append('image', file)
+
+        const response = await fetch('/api/upload-image', {
+          method: 'POST',
+          body: formData
+        })
+
+        if (!response.ok) {
+          throw new Error('Error al subir imagen')
+        }
+
+        const data = await response.json()
+        return { preview, url: data.data.url }
+      })
+
+      const results = await Promise.all(uploadPromises)
+
+      setFotosPreview(prev => [...prev, ...results.map(r => r.preview)])
+      setFotos(prev => [...prev, ...results.map(r => r.url)])
+    } catch (error) {
+      console.error('Error uploading images:', error)
+      alert('Error al subir algunas imágenes')
+    } finally {
+      setUploadingPhotos(false)
     }
   }
 
   const removeFoto = (index: number) => {
     setFotos(prev => prev.filter((_, i) => i !== index))
+    setFotosPreview(prev => prev.filter((_, i) => i !== index))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!formData.nombre || !formData.edad) {
       alert('Por favor completa los campos obligatorios')
       return
     }
 
+    if (uploadingPhotos) {
+      alert('Espera a que terminen de subir las fotos')
+      return
+    }
+
     setLoading(true)
-    
+
     try {
-      // Generar código único
-      const codigo = `P${Date.now().toString().slice(-6)}`
-      
+      // Mapear tamaño al formato esperado
+      const tamanoMap: Record<string, string> = {
+        'pequeno': 'chico',
+        'mediano': 'mediano',
+        'grande': 'grande'
+      }
+
+      // Mapear energía basada en temperamento
+      const energiaMap: Record<string, string> = {
+        'critico': 'baja',
+        'grave': 'baja',
+        'regular': 'media',
+        'estable': 'media',
+        'bueno': 'alta'
+      }
+
+      // Crear historia completa
+      const historiaCompleta = [
+        formData.condicionRescate || 'Rescatado por el municipio',
+        formData.lugarRescate ? `Lugar: ${formData.lugarRescate}` : '',
+        formData.sintomas ? `Síntomas iniciales: ${formData.sintomas}` : '',
+        formData.lesiones ? `Lesiones: ${formData.lesiones}` : '',
+        formData.enfermedades ? `Enfermedades: ${formData.enfermedades}` : '',
+        formData.tratamientoInmediato ? `Tratamiento: ${formData.tratamientoInmediato}` : '',
+        formData.observaciones || ''
+      ].filter(Boolean).join('. ')
+
+      // Crear notas de salud
+      const saludNotas = [
+        formData.peso ? `Peso: ${formData.peso}kg` : '',
+        formData.temperatura ? `Temperatura: ${formData.temperatura}°C` : '',
+        formData.cuidadosEspeciales ? `Cuidados especiales: ${formData.cuidadosEspeciales}` : '',
+        formData.medicamentos ? `Medicamentos: ${formData.medicamentos}` : ''
+      ].filter(Boolean).join('. ')
+
       const mascotaData = {
-        ...formData,
-        codigo,
-        fotoPrincipal: fotos[0] || '/placeholder-dog.jpg',
-        fotosAdicionales: fotos.slice(1),
-        estado: formData.disponibleAdopcion ? 'disponible' : 'tratamiento',
-        registradoPor: session?.user?.name || 'Veterinario',
-        fechaRegistro: new Date().toISOString()
+        nombre: formData.nombre,
+        raza: formData.raza || 'Mestizo',
+        edad: formData.edad,
+        sexo: formData.sexo as 'macho' | 'hembra',
+        tamano: tamanoMap[formData.tamano] || 'mediano',
+        peso: formData.peso ? parseFloat(formData.peso) : undefined,
+        historia: historiaCompleta.length >= 10 ? historiaCompleta : 'Mascota rescatada e ingresada al centro de adopción municipal.',
+        tipoIngreso: 'rescate' as const,
+        procedencia: formData.lugarRescate || 'Atlixco, Puebla',
+        responsableIngreso: session?.user?.name || 'Veterinario',
+        vacunas: formData.vacunas,
+        esterilizado: formData.esterilizado,
+        desparasitado: formData.desparasitado,
+        saludNotas: saludNotas || undefined,
+        energia: (energiaMap[formData.estadoGeneral] || 'media') as 'baja' | 'media' | 'alta',
+        aptoNinos: false,
+        aptoPerros: false,
+        aptoGatos: false,
+        caracter: formData.temperamento ? [formData.temperamento] : ['sociable'],
+        fotoPrincipal: fotos[0] || null,
+        fotos: fotos,
+        destacado: false,
+        estado: formData.disponibleAdopcion ? 'disponible' : 'proceso'
       }
 
       // Crear la mascota
@@ -106,14 +193,16 @@ export default function NuevoIngresoPage() {
       })
 
       if (!response.ok) {
-        throw new Error('Error al crear mascota')
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Error al crear mascota')
       }
 
-      alert('Mascota registrada exitosamente con código: ' + codigo)
+      const data = await response.json()
+      alert(`Mascota registrada exitosamente con código: ${data.perrito?.codigo || 'N/A'}`)
       router.push('/admin/veterinario')
     } catch (error) {
       console.error('Error al guardar:', error)
-      alert('Error al registrar la mascota')
+      alert(`Error al registrar la mascota: ${(error as Error).message}`)
     } finally {
       setLoading(false)
     }
@@ -123,9 +212,9 @@ export default function NuevoIngresoPage() {
     <div className={styles.container}>
       {/* Header */}
       <div className={styles.formHeader}>
-        <Link href="/admin/veterinario" className={styles.backButton}>
+        <Link href="/admin/perritos" className={styles.backButton}>
           <ArrowLeft size={20} />
-          Volver
+          Volver a Mascotas
         </Link>
         <h1 className={styles.formTitle}>Nuevo Ingreso por Diagnóstico Veterinario</h1>
       </div>
@@ -425,7 +514,7 @@ export default function NuevoIngresoPage() {
             />
             
             <div className={styles.photoGrid}>
-              {fotos.map((foto, index) => (
+              {fotosPreview.map((foto, index) => (
                 <div key={index} className={styles.photoItem}>
                   <img src={foto} alt={`Foto ${index + 1}`} />
                   <button
@@ -438,10 +527,19 @@ export default function NuevoIngresoPage() {
                   {index === 0 && <span className={styles.photoPrincipal}>Principal</span>}
                 </div>
               ))}
-              
-              <label htmlFor="fotos" className={styles.addPhoto}>
-                <Plus size={24} />
-                <span>Agregar Foto</span>
+
+              <label htmlFor="fotos" className={styles.addPhoto} style={{ opacity: uploadingPhotos ? 0.5 : 1, pointerEvents: uploadingPhotos ? 'none' : 'auto' }}>
+                {uploadingPhotos ? (
+                  <>
+                    <div style={{ width: 24, height: 24, border: '2px solid #ccc', borderTopColor: '#0e312d', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+                    <span>Subiendo...</span>
+                  </>
+                ) : (
+                  <>
+                    <Plus size={24} />
+                    <span>Agregar Foto</span>
+                  </>
+                )}
               </label>
             </div>
             

@@ -4,8 +4,17 @@ import { useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
+import { Home, Dog, Store, Newspaper } from 'lucide-react'
 import { navigationItems } from './navigation.config'
 import styles from './MobileMenuModern.module.css'
+
+// Mapeo de nombres de iconos a componentes
+const iconMap = {
+  home: Home,
+  dog: Dog,
+  store: Store,
+  newspaper: Newspaper,
+}
 
 interface MobileMenuModernProps {
   isOpen: boolean
@@ -121,7 +130,7 @@ export default function MobileMenuModern({ isOpen, onClose }: MobileMenuModernPr
                 <Link
                   href={item.href}
                   className={`
-                    ${styles.menuLink} 
+                    ${styles.menuLink}
                     ${isActiveRoute(item.href) ? styles.active : ''}
                     ${item.highlight ? styles.highlight : ''}
                   `}
@@ -131,7 +140,14 @@ export default function MobileMenuModern({ isOpen, onClose }: MobileMenuModernPr
                     onClose()
                   }}
                 >
-                  <span className={styles.menuIcon}>{item.icon}</span>
+                  <span className={styles.menuIcon}>
+                    {item.iconName && iconMap[item.iconName] &&
+                      (() => {
+                        const IconComponent = iconMap[item.iconName]
+                        return <IconComponent size={20} />
+                      })()
+                    }
+                  </span>
                   <span className={styles.menuLabel}>{item.label}</span>
                   {isActiveRoute(item.href) && (
                     <span className={styles.activeIndicator} aria-hidden="true" />
@@ -144,8 +160,8 @@ export default function MobileMenuModern({ isOpen, onClose }: MobileMenuModernPr
 
         {/* CTA Section */}
         <div className={styles.ctaSection}>
-          <Link 
-            href="/catalogo" 
+          <Link
+            href="/catalogo"
             className={styles.ctaButton}
             onClick={(e) => {
               e.stopPropagation()
@@ -153,15 +169,17 @@ export default function MobileMenuModern({ isOpen, onClose }: MobileMenuModernPr
               onClose()
             }}
           >
-            <span className={styles.ctaIcon}>🐕</span>
+            <span className={styles.ctaIcon}>
+              <Dog size={24} />
+            </span>
             <span className={styles.ctaText}>Conoce a nuestros perritos</span>
-            <svg 
+            <svg
               className={styles.ctaArrow}
-              width="20" 
-              height="20" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="currentColor" 
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
               strokeWidth="2"
             >
               <path d="M5 12h14M12 5l7 7-7 7" />

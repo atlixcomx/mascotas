@@ -282,8 +282,8 @@ export default function SolicitudesPage() {
               style={{
                 padding: '10px 20px',
                 backgroundColor: 'white',
-                color: '#af1731',
-                border: '1px solid #af1731',
+                color: '#7d2447',
+                border: '1px solid #7d2447',
                 borderRadius: '8px',
                 fontSize: '0.875rem',
                 fontWeight: '500',
@@ -300,7 +300,7 @@ export default function SolicitudesPage() {
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.backgroundColor = 'white'
-                e.currentTarget.style.borderColor = '#af1731'
+                e.currentTarget.style.borderColor = '#7d2447'
               }}
             >
               <Activity style={{ width: '16px', height: '16px' }} />
@@ -327,7 +327,7 @@ export default function SolicitudesPage() {
               }}
               style={{
                 padding: '10px 20px',
-                backgroundColor: '#af1731',
+                backgroundColor: '#7d2447',
                 color: 'white',
                 border: 'none',
                 borderRadius: '8px',
@@ -339,8 +339,8 @@ export default function SolicitudesPage() {
                 gap: '8px',
                 transition: 'all 0.2s'
               }}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#8b1227'}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#af1731'}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#5a1a33'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#7d2447'}
             >
               <Download style={{ width: '16px', height: '16px' }} />
               Exportar Reporte
@@ -465,7 +465,7 @@ export default function SolicitudesPage() {
                   transition: 'all 0.2s'
                 }}
                 onFocus={(e) => {
-                  e.target.style.borderColor = '#af1731'
+                  e.target.style.borderColor = '#7d2447'
                   e.target.style.boxShadow = '0 0 0 3px rgba(175, 23, 49, 0.1)'
                 }}
                 onBlur={(e) => {
@@ -572,11 +572,11 @@ export default function SolicitudesPage() {
             onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
             style={{
               padding: '10px 20px',
-              border: `1px solid ${showAdvancedFilters ? '#af1731' : '#e2e8f0'}`,
+              border: `1px solid ${showAdvancedFilters ? '#7d2447' : '#e2e8f0'}`,
               backgroundColor: showAdvancedFilters ? '#fef2f2' : 'white',
               borderRadius: '8px',
               fontSize: '0.875rem',
-              color: showAdvancedFilters ? '#af1731' : '#64748b',
+              color: showAdvancedFilters ? '#7d2447' : '#64748b',
               cursor: 'pointer',
               transition: 'all 0.2s',
               display: 'flex',
@@ -637,7 +637,7 @@ export default function SolicitudesPage() {
                     transition: 'all 0.2s'
                   }}
                   onFocus={(e) => {
-                    e.target.style.borderColor = '#af1731'
+                    e.target.style.borderColor = '#7d2447'
                     e.target.style.boxShadow = '0 0 0 3px rgba(175, 23, 49, 0.1)'
                   }}
                   onBlur={(e) => {
@@ -671,7 +671,7 @@ export default function SolicitudesPage() {
                     transition: 'all 0.2s'
                   }}
                   onFocus={(e) => {
-                    e.target.style.borderColor = '#af1731'
+                    e.target.style.borderColor = '#7d2447'
                     e.target.style.boxShadow = '0 0 0 3px rgba(175, 23, 49, 0.1)'
                   }}
                   onBlur={(e) => {
@@ -772,7 +772,7 @@ export default function SolicitudesPage() {
             width: '48px',
             height: '48px',
             border: '4px solid #f3f4f6',
-            borderTop: '4px solid #af1731',
+            borderTop: '4px solid #7d2447',
             borderRadius: '50%',
             margin: '0 auto 16px',
             animation: 'spin 1s linear infinite'
@@ -978,7 +978,7 @@ export default function SolicitudesPage() {
                         href={`/admin/solicitudes/${solicitud.id}`}
                         style={{
                           padding: '8px 16px',
-                          backgroundColor: '#af1731',
+                          backgroundColor: '#7d2447',
                           color: 'white',
                           borderRadius: '8px',
                           textDecoration: 'none',
@@ -989,8 +989,8 @@ export default function SolicitudesPage() {
                           gap: '6px',
                           transition: 'all 0.2s'
                         }}
-                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#8b1227'}
-                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#af1731'}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#5a1a33'}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#7d2447'}
                       >
                         <Eye style={{ width: '16px', height: '16px' }} />
                         Ver Detalles
@@ -1169,9 +1169,9 @@ export default function SolicitudesPage() {
                     style={{
                       width: '36px',
                       height: '36px',
-                      backgroundColor: pageNum === currentPage ? '#af1731' : 'white',
+                      backgroundColor: pageNum === currentPage ? '#7d2447' : 'white',
                       color: pageNum === currentPage ? 'white' : '#64748b',
-                      border: `1px solid ${pageNum === currentPage ? '#af1731' : '#e2e8f0'}`,
+                      border: `1px solid ${pageNum === currentPage ? '#7d2447' : '#e2e8f0'}`,
                       borderRadius: '8px',
                       fontSize: '0.875rem',
                       fontWeight: pageNum === currentPage ? '600' : '400',
@@ -1184,8 +1184,8 @@ export default function SolicitudesPage() {
                     onMouseEnter={(e) => {
                       if (pageNum !== currentPage) {
                         e.currentTarget.style.backgroundColor = '#fef2f2'
-                        e.currentTarget.style.borderColor = '#af1731'
-                        e.currentTarget.style.color = '#af1731'
+                        e.currentTarget.style.borderColor = '#7d2447'
+                        e.currentTarget.style.color = '#7d2447'
                       }
                     }}
                     onMouseLeave={(e) => {

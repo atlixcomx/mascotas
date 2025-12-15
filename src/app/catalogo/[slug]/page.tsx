@@ -2,7 +2,7 @@
 
 export const dynamic = 'force-dynamic'
 
-import { useState } from 'react'
+import { useState, use } from 'react'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -10,23 +10,29 @@ import { usePerrito } from '../../../hooks/usePerritos'
 import LoadingSpinner from '../../../components/ui/LoadingSpinner'
 import ErrorMessage from '../../../components/ui/ErrorMessage'
 import PerritoDetailSkeleton from '../../../components/ui/PerritoDetailSkeleton'
-import { 
-  HeartIcon, HomeIcon, CalendarIcon, LocationIcon, 
+import {
+  HeartIcon, HomeIcon, CalendarIcon, LocationIcon,
   CheckCircleIcon, ArrowRightIcon, DogIcon, ShieldIcon,
   VaccineIcon, ScissorsIcon, StethoscopeIcon
 } from '../../../components/icons/Icons'
+import { Baby, Dog, Cat } from 'lucide-react'
 
 interface PageProps {
-  params: { slug: string }
+  params: Promise<{ slug: string }>
 }
 
-// URL de imagen estándar para todos los perritos
-const defaultDogImage = 'https://somosmaka.com/cdn/shop/articles/perro_mestizo.jpg?v=1697855331'
+// Imagen placeholder local para perritos sin foto
+const defaultDogImage = '/images/placeholder-dog.svg'
 
 export default function PerritoDetailPage({ params }: PageProps) {
+  // Unwrap params Promise (Next.js 15+)
+  const { slug } = use(params)
+
   const [selectedImage, setSelectedImage] = useState(0)
   const [isLiked, setIsLiked] = useState(false)
   const [imageError, setImageError] = useState(false)
+  const [lightboxOpen, setLightboxOpen] = useState(false)
+  const [lightboxIndex, setLightboxIndex] = useState(0)
 
   const {
     perrito,
@@ -36,7 +42,7 @@ export default function PerritoDetailPage({ params }: PageProps) {
     retryCount,
     isRetrying,
     retry
-  } = usePerrito(params.slug)
+  } = usePerrito(slug)
 
   if (loading) {
     return <PerritoDetailSkeleton />
@@ -252,63 +258,136 @@ export default function PerritoDetailPage({ params }: PageProps) {
             <p style={{
               fontSize: '20px',
               opacity: 0.9,
-              marginBottom: '24px'
+              marginBottom: '16px'
             }}>
               {(perrito.raza || 'Mestizo')} • {(perrito.edad || 'Sin especificar')} • {(perrito.sexo || 'Sin especificar')}
             </p>
 
-            {/* Image thumbnails */}
+            {/* Indicador de fotos */}
             {allImages.length > 1 && (
-              <div style={{
+              <p style={{
+                fontSize: '14px',
+                opacity: 0.7,
                 display: 'flex',
-                gap: '12px',
-                overflowX: 'auto',
-                paddingBottom: '8px'
+                alignItems: 'center',
+                gap: '8px'
               }}>
-                {allImages.slice(0, 5).map((img, index) => (
-                  <button
-                    key={index}
-                    onClick={() => {
-                      setSelectedImage(index)
-                      setImageError(false)
-                    }}
-                    style={{
-                      minWidth: '80px',
-                      height: '80px',
-                      borderRadius: '12px',
-                      overflow: 'hidden',
-                      border: selectedImage === index ? '3px solid white' : '3px solid transparent',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s'
-                    }}
-                  >
-                    <Image
-                      src={img || defaultDogImage}
-                      alt={`${perrito.nombre} ${index + 1}`}
-                      width={80}
-                      height={80}
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        imageOrientation: 'from-image'
-                      }}
-                      quality={90}
-                    />
-                  </button>
-                ))}
-              </div>
+                📷 {allImages.length} fotos disponibles - Ver galería abajo
+              </p>
             )}
           </div>
         </div>
       </div>
 
+      {/* Galería de Fotos */}
+      {allImages.length > 1 && (
+        <div style={{
+          background: 'white',
+          padding: '32px 24px',
+          borderBottom: '1px solid #e5e7eb'
+        }}>
+          <div style={{
+            maxWidth: '1200px',
+            margin: '0 auto'
+          }}>
+            <h3 style={{
+              fontSize: '20px',
+              fontWeight: '700',
+              color: '#0e312d',
+              marginBottom: '20px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px'
+            }}>
+              📷 Galería de Fotos
+              <span style={{
+                fontSize: '14px',
+                fontWeight: '400',
+                color: '#666'
+              }}>
+                (clic para ampliar)
+              </span>
+            </h3>
+
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+              gap: '16px'
+            }}>
+              {allImages.map((img, index) => (
+                <button
+                  key={index}
+                  onClick={() => {
+                    setLightboxIndex(index)
+                    setLightboxOpen(true)
+                  }}
+                  style={{
+                    position: 'relative',
+                    aspectRatio: '1',
+                    borderRadius: '16px',
+                    overflow: 'hidden',
+                    border: '3px solid transparent',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    background: '#f3f4f6'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'scale(1.02)'
+                    e.currentTarget.style.boxShadow = '0 8px 25px rgba(0,0,0,0.15)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'scale(1)'
+                    e.currentTarget.style.boxShadow = 'none'
+                  }}
+                >
+                  <Image
+                    src={img || defaultDogImage}
+                    alt={`${perrito.nombre} - Foto ${index + 1}`}
+                    fill
+                    style={{
+                      objectFit: 'cover'
+                    }}
+                    sizes="(max-width: 768px) 50vw, 200px"
+                  />
+                  {/* Overlay con icono de zoom */}
+                  <div style={{
+                    position: 'absolute',
+                    inset: 0,
+                    background: 'rgba(0,0,0,0)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(0,0,0,0.3)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(0,0,0,0)'
+                  }}
+                  >
+                    <span style={{
+                      fontSize: '32px',
+                      opacity: 0,
+                      transition: 'opacity 0.3s ease'
+                    }}
+                    className="zoom-icon"
+                    >
+                      🔍
+                    </span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Main Content */}
       <div style={{
         maxWidth: '1200px',
         margin: '0 auto',
-        padding: '0 24px',
-        transform: 'translateY(-40px)'
+        padding: '32px 24px 0'
       }}>
         <div style={{
           display: 'grid',
@@ -555,7 +634,17 @@ export default function PerritoDetailPage({ params }: PageProps) {
                   background: perrito.aptoNinos ? '#dcfce7' : '#f3f4f6',
                   borderRadius: '12px'
                 }}>
-                  <p style={{ fontSize: '24px', marginBottom: '8px' }}>👶</p>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    marginBottom: '8px'
+                  }}>
+                    <Baby
+                      size={28}
+                      color={perrito.aptoNinos ? '#15803d' : '#9ca3af'}
+                      strokeWidth={1.5}
+                    />
+                  </div>
                   <p style={{
                     fontSize: '14px',
                     fontWeight: '600',
@@ -572,7 +661,17 @@ export default function PerritoDetailPage({ params }: PageProps) {
                   background: perrito.aptoPerros ? '#dcfce7' : '#f3f4f6',
                   borderRadius: '12px'
                 }}>
-                  <p style={{ fontSize: '24px', marginBottom: '8px' }}>🐕</p>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    marginBottom: '8px'
+                  }}>
+                    <Dog
+                      size={28}
+                      color={perrito.aptoPerros ? '#15803d' : '#9ca3af'}
+                      strokeWidth={1.5}
+                    />
+                  </div>
                   <p style={{
                     fontSize: '14px',
                     fontWeight: '600',
@@ -589,7 +688,17 @@ export default function PerritoDetailPage({ params }: PageProps) {
                   background: perrito.aptoGatos ? '#dcfce7' : '#f3f4f6',
                   borderRadius: '12px'
                 }}>
-                  <p style={{ fontSize: '24px', marginBottom: '8px' }}>🐱</p>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    marginBottom: '8px'
+                  }}>
+                    <Cat
+                      size={28}
+                      color={perrito.aptoGatos ? '#15803d' : '#9ca3af'}
+                      strokeWidth={1.5}
+                    />
+                  </div>
                   <p style={{
                     fontSize: '14px',
                     fontWeight: '600',
@@ -614,77 +723,77 @@ export default function PerritoDetailPage({ params }: PageProps) {
             padding: '0 24px'
           }}>
             <div style={{
-              background: 'linear-gradient(135deg, #6b3838 0%, #8b4848 100%)',
+              background: 'linear-gradient(135deg, #0e312d 0%, #1a4a45 100%)',
               borderRadius: '24px',
               padding: '48px 40px',
               color: 'white',
               textAlign: 'center',
               position: 'relative',
               overflow: 'hidden',
-              boxShadow: '0 12px 40px rgba(107, 56, 56, 0.2)'
+              boxShadow: '0 12px 40px rgba(14, 49, 45, 0.3)'
             }}>
-              {/* Patrón decorativo de fondo */}
-              <div style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                opacity: 0.1,
-                backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(255,255,255,0.1) 20px, rgba(255,255,255,0.1) 40px)`
-              }} />
-              
               <div style={{ position: 'relative', zIndex: 1 }}>
+                <div style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '72px',
+                  height: '72px',
+                  background: 'rgba(191, 181, 145, 0.2)',
+                  borderRadius: '50%',
+                  marginBottom: '20px'
+                }}>
+                  <HeartIcon size={36} color="#bfb591" />
+                </div>
                 <h3 style={{
-                  fontSize: 'clamp(28px, 4vw, 42px)',
+                  fontSize: 'clamp(28px, 4vw, 40px)',
                   fontWeight: '700',
-                  marginBottom: '16px',
+                  marginBottom: '12px',
                   letterSpacing: '-1px'
                 }}>
-                  ¿Listo para adoptar?
+                  ¿Listo para <span style={{ color: '#bfb591' }}>adoptar</span>?
                 </h3>
                 <p style={{
-                  fontSize: '20px',
+                  fontSize: '18px',
                   opacity: 0.9,
-                  marginBottom: '32px',
-                  maxWidth: '600px',
-                  margin: '0 auto 32px',
+                  marginBottom: '28px',
+                  maxWidth: '500px',
+                  margin: '0 auto 28px',
                   lineHeight: '1.6'
                 }}>
-                  {perrito.nombre} está esperando conocerte. Inicia el proceso de adopción 
-                  y dale la oportunidad de ser parte de tu familia.
+                  <strong style={{ color: '#bfb591' }}>{perrito.nombre}</strong> está esperando conocerte.
+                  Deja tus datos y te contactaremos.
                 </p>
                 <Link
-                  href={`/solicitud-adopcion/${params.slug}`}
+                  href={`/solicitud-adopcion/${slug}`}
                   style={{
                     display: 'inline-flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    gap: '12px',
-                    padding: '18px 36px',
-                    background: 'white',
-                    color: '#6b3838',
+                    gap: '10px',
+                    padding: '16px 32px',
+                    background: '#bfb591',
+                    color: '#0e312d',
                     border: 'none',
                     borderRadius: '12px',
-                    fontSize: '18px',
+                    fontSize: '16px',
                     fontWeight: '700',
                     cursor: 'pointer',
                     transition: 'all 0.3s ease',
-                    boxShadow: '0 4px 14px rgba(0,0,0,0.15)',
+                    boxShadow: '0 4px 14px rgba(191, 181, 145, 0.3)',
                     textDecoration: 'none'
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = 'translateY(-3px)'
-                    e.currentTarget.style.boxShadow = '0 8px 25px rgba(0,0,0,0.2)'
+                    e.currentTarget.style.boxShadow = '0 8px 25px rgba(191, 181, 145, 0.4)'
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.transform = 'translateY(0)'
-                    e.currentTarget.style.boxShadow = '0 4px 14px rgba(0,0,0,0.15)'
+                    e.currentTarget.style.boxShadow = '0 4px 14px rgba(191, 181, 145, 0.3)'
                   }}
                 >
-                  <HomeIcon size={22} color="#6b3838" />
-                  Iniciar Solicitud de Adopción
-                  <ArrowRightIcon size={22} color="#6b3838" />
+                  <HeartIcon size={20} color="#0e312d" />
+                  Quiero Adoptar a {perrito.nombre}
                 </Link>
               </div>
             </div>
@@ -757,7 +866,215 @@ export default function PerritoDetailPage({ params }: PageProps) {
           </div>
         )}
       </div>
-      
+
+      {/* Lightbox Modal */}
+      {lightboxOpen && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 9999,
+            background: 'rgba(0,0,0,0.95)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+          onClick={() => setLightboxOpen(false)}
+        >
+          {/* Botón Cerrar */}
+          <button
+            onClick={() => setLightboxOpen(false)}
+            style={{
+              position: 'absolute',
+              top: '20px',
+              right: '20px',
+              width: '50px',
+              height: '50px',
+              borderRadius: '50%',
+              background: 'rgba(255,255,255,0.1)',
+              border: '2px solid rgba(255,255,255,0.3)',
+              color: 'white',
+              fontSize: '28px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'all 0.2s'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(255,255,255,0.2)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'rgba(255,255,255,0.1)'
+            }}
+          >
+            ✕
+          </button>
+
+          {/* Contador */}
+          <div style={{
+            position: 'absolute',
+            top: '24px',
+            left: '24px',
+            color: 'white',
+            fontSize: '16px',
+            fontWeight: '500',
+            background: 'rgba(0,0,0,0.5)',
+            padding: '8px 16px',
+            borderRadius: '8px'
+          }}>
+            {lightboxIndex + 1} / {allImages.length}
+          </div>
+
+          {/* Flecha Izquierda */}
+          {allImages.length > 1 && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                setLightboxIndex((prev) => (prev === 0 ? allImages.length - 1 : prev - 1))
+              }}
+              style={{
+                position: 'absolute',
+                left: '20px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                width: '60px',
+                height: '60px',
+                borderRadius: '50%',
+                background: 'rgba(255,255,255,0.1)',
+                border: '2px solid rgba(255,255,255,0.3)',
+                color: 'white',
+                fontSize: '28px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.2s'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(255,255,255,0.2)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(255,255,255,0.1)'
+              }}
+            >
+              ‹
+            </button>
+          )}
+
+          {/* Imagen Principal */}
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              position: 'relative',
+              maxWidth: '90vw',
+              maxHeight: '85vh',
+              width: 'auto',
+              height: 'auto'
+            }}
+          >
+            <Image
+              src={allImages[lightboxIndex] || defaultDogImage}
+              alt={`${perrito.nombre} - Foto ${lightboxIndex + 1}`}
+              width={1200}
+              height={800}
+              style={{
+                maxWidth: '90vw',
+                maxHeight: '85vh',
+                width: 'auto',
+                height: 'auto',
+                objectFit: 'contain',
+                borderRadius: '8px'
+              }}
+              priority
+            />
+          </div>
+
+          {/* Flecha Derecha */}
+          {allImages.length > 1 && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                setLightboxIndex((prev) => (prev === allImages.length - 1 ? 0 : prev + 1))
+              }}
+              style={{
+                position: 'absolute',
+                right: '20px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                width: '60px',
+                height: '60px',
+                borderRadius: '50%',
+                background: 'rgba(255,255,255,0.1)',
+                border: '2px solid rgba(255,255,255,0.3)',
+                color: 'white',
+                fontSize: '28px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.2s'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(255,255,255,0.2)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(255,255,255,0.1)'
+              }}
+            >
+              ›
+            </button>
+          )}
+
+          {/* Miniaturas en el lightbox */}
+          {allImages.length > 1 && (
+            <div style={{
+              position: 'absolute',
+              bottom: '20px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              display: 'flex',
+              gap: '10px',
+              padding: '12px',
+              background: 'rgba(0,0,0,0.5)',
+              borderRadius: '12px'
+            }}>
+              {allImages.map((img, index) => (
+                <button
+                  key={index}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setLightboxIndex(index)
+                  }}
+                  style={{
+                    width: '60px',
+                    height: '60px',
+                    borderRadius: '8px',
+                    overflow: 'hidden',
+                    border: lightboxIndex === index ? '3px solid white' : '3px solid transparent',
+                    cursor: 'pointer',
+                    opacity: lightboxIndex === index ? 1 : 0.6,
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  <Image
+                    src={img || defaultDogImage}
+                    alt={`Miniatura ${index + 1}`}
+                    width={60}
+                    height={60}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover'
+                    }}
+                  />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
     </div>
   )
 }

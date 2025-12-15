@@ -89,31 +89,71 @@ export default function NuevaConsultaPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!selectedMascota) {
       alert('Por favor selecciona una mascota')
       return
     }
 
+    if (!formData.motivo || !formData.diagnostico) {
+      alert('Por favor completa el motivo y diagnóstico')
+      return
+    }
+
     setLoading(true)
-    
+
     try {
-      // Crear la consulta
-      const consultaData = {
-        mascotaId: selectedMascota.id,
-        veterinarioId: session?.user?.id,
-        veterinarioNombre: session?.user?.name || 'Veterinario',
-        ...formData
+      // Mapear motivo a tipo de expediente
+      const tipoExpediente = {
+        'revision_general': 'consulta',
+        'vacunacion': 'vacuna',
+        'esterilizacion': 'cirugia',
+        'desparasitacion': 'desparasitacion',
+        'enfermedad': 'consulta',
+        'lesion': 'consulta',
+        'cirugia': 'cirugia',
+        'emergencia': 'emergencia',
+        'seguimiento': 'consulta',
+        'otro': 'consulta'
+      }[formData.motivo] || 'consulta'
+
+      // Crear descripción completa
+      const descripcionCompleta = [
+        `Motivo: ${formData.motivo}`,
+        formData.sintomas ? `Síntomas: ${formData.sintomas}` : '',
+        formData.temperatura ? `Temperatura: ${formData.temperatura}°C` : '',
+        formData.peso ? `Peso: ${formData.peso}kg` : '',
+        `Diagnóstico: ${formData.diagnostico}`,
+        formData.tratamiento ? `Tratamiento: ${formData.tratamiento}` : '',
+        `Estado general: ${formData.estadoGeneral}`
+      ].filter(Boolean).join('\n')
+
+      // Guardar expediente médico
+      const response = await fetch('/api/admin/expedientes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          perritoId: selectedMascota.id,
+          tipo: tipoExpediente,
+          fecha: `${formData.fecha}T${formData.hora}:00`,
+          descripcion: descripcionCompleta,
+          veterinario: session?.user?.name || 'Veterinario',
+          medicamento: formData.medicamentos || null,
+          proximaDosis: formData.proximaCita || null,
+          notas: formData.observaciones || null
+        })
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Error al guardar')
       }
 
-      // Por ahora solo simular guardado
-      console.log('Guardando consulta:', consultaData)
-      
       // Actualizar datos médicos de la mascota si cambiaron
       if (formData.vacunas !== selectedMascota.vacunas ||
           formData.esterilizado !== selectedMascota.esterilizado ||
           formData.desparasitado !== selectedMascota.desparasitado) {
-        
+
         await fetch(`/api/admin/perritos/${selectedMascota.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -124,7 +164,22 @@ export default function NuevaConsultaPage() {
           })
         })
       }
-      
+
+      // Si hay próxima cita, crearla
+      if (formData.proximaCita) {
+        await fetch('/api/admin/citas', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            perritoId: selectedMascota.id,
+            fecha: formData.proximaCita,
+            hora: '09:00',
+            motivo: 'Seguimiento',
+            veterinario: session?.user?.name
+          })
+        })
+      }
+
       alert('Consulta guardada exitosamente')
       router.push('/admin/veterinario')
     } catch (error) {
@@ -144,9 +199,9 @@ export default function NuevaConsultaPage() {
     <div className={styles.container}>
       {/* Header */}
       <div className={styles.formHeader}>
-        <Link href="/admin/veterinario" className={styles.backButton}>
+        <Link href="/admin/veterinario/expedientes" className={styles.backButton}>
           <ArrowLeft size={20} />
-          Volver
+          Volver a Expedientes
         </Link>
         <h1 className={styles.formTitle}>Nueva Consulta Veterinaria</h1>
       </div>

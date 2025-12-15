@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, use } from 'react'
 
 // Forzar renderizado dinámico
 export const dynamic = 'force-dynamic'
@@ -102,7 +102,8 @@ interface Comercio {
   longitud?: number
 }
 
-export default function ComercioPage({ params }: { params: { slug: string } }) {
+export default function ComercioPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = use(params)
   const [comercio, setComercio] = useState<Comercio | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
@@ -112,11 +113,11 @@ export default function ComercioPage({ params }: { params: { slug: string } }) {
     fetchComercio()
     fetchMascotas()
     trackQRScan() // Trackear si llegó via QR
-  }, [params.slug])
+  }, [slug])
 
   const fetchComercio = async () => {
     try {
-      const response = await fetch(`/api/comercios/${params.slug}`)
+      const response = await fetch(`/api/comercios/${slug}`)
       
       if (!response.ok) {
         setError(true)
@@ -162,7 +163,7 @@ export default function ComercioPage({ params }: { params: { slug: string } }) {
     // Verificar si viene de QR (sin referrer o con parámetro específico)
     if (!referrer || referrer === '' || urlParams.get('qr') === '1') {
       try {
-        await fetch(`/api/comercios/${params.slug}/track`, {
+        await fetch(`/api/comercios/${slug}/track`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -283,30 +284,16 @@ export default function ComercioPage({ params }: { params: { slug: string } }) {
   }
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
-      {/* Hero Section con Certificación */}
+    <div style={{ minHeight: '100vh', backgroundColor: '#f8f9fa' }}>
+      {/* Hero Section Institucional */}
       <div style={{
-        background: `linear-gradient(135deg, ${categoria.color}15 0%, ${categoria.bg} 100%)`,
-        padding: '40px 20px 60px',
-        position: 'relative',
-        overflow: 'hidden'
+        background: 'linear-gradient(135deg, #0e312d 0%, #1a4a45 100%)',
+        padding: '60px 20px 80px',
+        color: 'white'
       }}>
-        {/* Patrón decorativo */}
         <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          opacity: 0.1,
-          backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 35px, ${categoria.color} 35px, ${categoria.color} 70px)`
-        }} />
-
-        <div style={{ 
-          maxWidth: '1200px', 
-          margin: '0 auto',
-          position: 'relative',
-          zIndex: 1
+          maxWidth: '900px',
+          margin: '0 auto'
         }}>
           {/* Navegación */}
           <Link
@@ -315,575 +302,237 @@ export default function ComercioPage({ params }: { params: { slug: string } }) {
               display: 'inline-flex',
               alignItems: 'center',
               gap: '8px',
-              color: categoria.color,
+              color: 'rgba(255,255,255,0.7)',
               textDecoration: 'none',
-              fontSize: '0.875rem',
-              fontWeight: '600',
+              fontSize: '14px',
+              fontWeight: '500',
               marginBottom: '32px',
-              fontFamily: 'Albert Sans, sans-serif'
+              transition: 'color 0.2s'
             }}
           >
-            <ArrowLeft size={20} />
+            <ArrowLeft size={18} />
             Volver al directorio
           </Link>
 
           {/* Header */}
-          <div style={{ display: 'flex', gap: '40px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
-            {/* Logo/Icon */}
+          <div style={{ textAlign: 'center' }}>
+            {/* Badge de categoría */}
             <div style={{
-              width: '120px',
-              height: '120px',
-              borderRadius: '24px',
-              backgroundColor: 'white',
-              display: 'flex',
+              display: 'inline-flex',
               alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
-              flexShrink: 0
+              gap: '8px',
+              backgroundColor: 'rgba(255,255,255,0.1)',
+              padding: '8px 16px',
+              borderRadius: '20px',
+              marginBottom: '20px',
+              fontSize: '14px',
+              fontWeight: '500'
             }}>
-              <Icon size={60} style={{ color: categoria.color }} />
+              <Icon size={18} />
+              {categoria.label}
             </div>
 
-            {/* Info */}
-            <div style={{ flex: 1, minWidth: '300px' }}>
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', flexWrap: 'wrap', marginBottom: '16px' }}>
-                <h1 style={{
-                  fontSize: '2.5rem',
-                  fontWeight: '800',
-                  color: '#111827',
-                  margin: 0,
-                  lineHeight: 1.2,
-                  fontFamily: 'Albert Sans, sans-serif',
-                  flex: 1
-                }}>
-                  {comercio.nombre}
-                </h1>
-                {comercio.certificado && (
-                  <div style={{
-                    backgroundColor: '#16a34a',
-                    color: 'white',
-                    padding: '8px 16px',
-                    borderRadius: '24px',
-                    fontSize: '0.875rem',
-                    fontWeight: '600',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    boxShadow: '0 4px 12px rgba(22, 163, 74, 0.2)',
-                    fontFamily: 'Poppins, sans-serif'
-                  }}>
-                    <Shield size={16} />
-                    Certificado Pet Friendly
-                  </div>
-                )}
-              </div>
+            {/* Título */}
+            <h1 style={{
+              fontSize: 'clamp(32px, 5vw, 48px)',
+              fontWeight: '800',
+              margin: '0 0 16px 0',
+              lineHeight: 1.2
+            }}>
+              {comercio.nombre}
+            </h1>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '24px', flexWrap: 'wrap' }}>
-                <span style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  fontSize: '1.125rem',
-                  fontWeight: '600',
-                  color: categoria.color,
-                  backgroundColor: 'white',
-                  padding: '8px 20px',
-                  borderRadius: '12px',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-                  fontFamily: 'Poppins, sans-serif'
-                }}>
-                  <Icon size={20} />
-                  {categoria.label}
-                </span>
-
+            {/* Certificación */}
+            {comercio.certificado && (
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                backgroundColor: '#bfb591',
+                color: '#0e312d',
+                padding: '10px 20px',
+                borderRadius: '8px',
+                fontSize: '14px',
+                fontWeight: '600'
+              }}>
+                <Shield size={18} />
+                Certificado Pet Friendly
                 {comercio.fechaCert && (
-                  <div style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    gap: '8px',
-                    color: '#6b7280',
-                    fontSize: '0.875rem',
-                    fontFamily: 'Poppins, sans-serif'
-                  }}>
-                    <Calendar size={16} />
-                    Certificado desde {new Date(comercio.fechaCert).toLocaleDateString('es-MX', { 
-                      year: 'numeric', 
-                      month: 'long' 
+                  <span style={{ opacity: 0.7, marginLeft: '8px' }}>
+                    · desde {new Date(comercio.fechaCert).toLocaleDateString('es-MX', {
+                      year: 'numeric',
+                      month: 'short'
                     })}
-                  </div>
+                  </span>
                 )}
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
 
       {/* Contenido Principal */}
-      <div style={{ maxWidth: '1200px', margin: '-40px auto 0', padding: '0 20px 80px', position: 'relative', zIndex: 2 }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '32px' }}>
-          
-          {/* Información General */}
-          <div style={{
-            backgroundColor: 'white',
-            borderRadius: '20px',
-            padding: '32px',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
-          }}>
-            <h2 style={{ 
-              fontSize: '1.5rem', 
-              fontWeight: '700', 
-              color: '#111827',
-              marginBottom: '24px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              fontFamily: 'Albert Sans, sans-serif'
-            }}>
-              <Store size={24} style={{ color: categoria.color }} />
-              Información General
-            </h2>
-
-            <p style={{ 
-              fontSize: '1rem', 
-              color: '#4b5563', 
-              lineHeight: 1.8,
-              marginBottom: '24px',
-              fontFamily: 'Poppins, sans-serif'
+      <div style={{ maxWidth: '900px', margin: '-40px auto 0', padding: '0 20px 60px', position: 'relative', zIndex: 2 }}>
+        {/* Tarjeta única con toda la información */}
+        <div style={{
+          backgroundColor: 'white',
+          borderRadius: '16px',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+          overflow: 'hidden'
+        }}>
+          {/* Descripción */}
+          <div style={{ padding: '32px', borderBottom: '1px solid #f0f0f0' }}>
+            <p style={{
+              fontSize: '17px',
+              color: '#4b5563',
+              lineHeight: 1.7,
+              margin: 0
             }}>
               {comercio.descripcion}
             </p>
-
-            {/* Horarios */}
-            <div style={{
-              backgroundColor: categoria.lightBg,
-              borderRadius: '12px',
-              padding: '20px',
-              marginBottom: '20px'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-                <div style={{
-                  width: '40px',
-                  height: '40px',
-                  borderRadius: '10px',
-                  backgroundColor: categoria.bg,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}>
-                  <Clock size={20} style={{ color: categoria.color }} />
-                </div>
-                <h3 style={{ 
-                  fontSize: '1.125rem', 
-                  fontWeight: '600', 
-                  color: '#111827',
-                  margin: 0,
-                  fontFamily: 'Poppins, sans-serif'
-                }}>Horarios de Atención</h3>
-              </div>
-              <pre style={{ 
-                fontSize: '0.875rem', 
-                color: '#4b5563',
-                whiteSpace: 'pre-wrap',
-                fontFamily: 'Poppins, sans-serif',
-                margin: 0
-              }}>{comercio.horarios}</pre>
-            </div>
           </div>
 
-          {/* Información de Contacto */}
+          {/* Grid de 2 columnas */}
           <div style={{
-            backgroundColor: 'white',
-            borderRadius: '20px',
-            padding: '32px',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))'
           }}>
-            <h2 style={{ 
-              fontSize: '1.5rem', 
-              fontWeight: '700', 
-              color: '#111827',
-              marginBottom: '24px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              fontFamily: 'Albert Sans, sans-serif'
-            }}>
-              <Phone size={24} style={{ color: categoria.color }} />
-              Contacto y Ubicación
-            </h2>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
-                <div style={{
-                  width: '48px',
-                  height: '48px',
-                  borderRadius: '12px',
-                  backgroundColor: categoria.bg,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0
-                }}>
-                  <MapPin size={24} style={{ color: categoria.color }} />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <p style={{ 
-                    fontSize: '0.875rem', 
-                    fontWeight: '600', 
-                    color: '#374151',
-                    marginBottom: '4px',
-                    fontFamily: 'Poppins, sans-serif'
-                  }}>Dirección</p>
-                  <p style={{ 
-                    fontSize: '1rem', 
-                    color: '#6b7280',
-                    margin: 0,
-                    fontFamily: 'Poppins, sans-serif'
-                  }}>{comercio.direccion}</p>
-                </div>
-              </div>
-
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
-                <div style={{
-                  width: '48px',
-                  height: '48px',
-                  borderRadius: '12px',
-                  backgroundColor: categoria.bg,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0
-                }}>
-                  <Phone size={24} style={{ color: categoria.color }} />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <p style={{ 
-                    fontSize: '0.875rem', 
-                    fontWeight: '600', 
-                    color: '#374151',
-                    marginBottom: '4px',
-                    fontFamily: 'Poppins, sans-serif'
-                  }}>Teléfono</p>
-                  <a 
-                    href={`tel:${comercio.telefono}`}
-                    style={{ 
-                      fontSize: '1rem', 
-                      color: '#3b82f6',
-                      textDecoration: 'none',
-                      fontFamily: 'Poppins, sans-serif'
-                    }}
-                  >{comercio.telefono}</a>
-                </div>
-              </div>
-
-              {comercio.email && (
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
-                  <div style={{
-                    width: '48px',
-                    height: '48px',
-                    borderRadius: '12px',
-                    backgroundColor: categoria.bg,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0
-                  }}>
-                    <Mail size={24} style={{ color: categoria.color }} />
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <p style={{ 
-                      fontSize: '0.875rem', 
-                      fontWeight: '600', 
-                      color: '#374151',
-                      marginBottom: '4px',
-                      fontFamily: 'Poppins, sans-serif'
-                    }}>Email</p>
-                    <a 
-                      href={`mailto:${comercio.email}`}
-                      style={{ 
-                        fontSize: '1rem', 
-                        color: '#3b82f6',
-                        textDecoration: 'none',
-                        fontFamily: 'Poppins, sans-serif'
-                      }}
-                    >{comercio.email}</a>
-                  </div>
-                </div>
-              )}
-
-              {comercio.website && (
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
-                  <div style={{
-                    width: '48px',
-                    height: '48px',
-                    borderRadius: '12px',
-                    backgroundColor: categoria.bg,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0
-                  }}>
-                    <Globe size={24} style={{ color: categoria.color }} />
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <p style={{ 
-                      fontSize: '0.875rem', 
-                      fontWeight: '600', 
-                      color: '#374151',
-                      marginBottom: '4px',
-                      fontFamily: 'Poppins, sans-serif'
-                    }}>Sitio Web</p>
-                    <a 
-                      href={comercio.website}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ 
-                        fontSize: '1rem', 
-                        color: '#3b82f6',
-                        textDecoration: 'none',
-                        fontFamily: 'Poppins, sans-serif'
-                      }}
-                    >{comercio.website}</a>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Servicios Pet Friendly */}
-          <div style={{
-            backgroundColor: 'white',
-            borderRadius: '20px',
-            padding: '32px',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
-          }}>
-            <h2 style={{ 
-              fontSize: '1.5rem', 
-              fontWeight: '700', 
-              color: '#111827',
-              marginBottom: '24px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              fontFamily: 'Albert Sans, sans-serif'
-            }}>
-              <Heart size={24} style={{ color: categoria.color }} />
-              Servicios Pet Friendly
-            </h2>
-
-            <div style={{
-              backgroundColor: '#f0fdf4',
-              borderRadius: '12px',
-              padding: '20px',
-              marginBottom: '20px'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-                <CheckCircle2 size={20} style={{ color: '#16a34a' }} />
-                <span style={{ 
-                  fontWeight: '600', 
-                  color: '#16a34a',
-                  fontFamily: 'Poppins, sans-serif'
-                }}>Servicios Disponibles</span>
-              </div>
-              <pre style={{ 
-                fontSize: '0.875rem', 
-                color: '#4b5563',
-                whiteSpace: 'pre-wrap',
-                fontFamily: 'Poppins, sans-serif',
-                margin: 0,
-                lineHeight: 1.8
-              }}>{serviciosTexto}</pre>
-            </div>
-
-            {/* Restricciones */}
-            {comercio.restricciones && (
-              <div style={{
-                backgroundColor: '#fef3c7',
-                borderRadius: '12px',
-                padding: '20px'
+            {/* Columna izquierda - Contacto */}
+            <div style={{ padding: '32px', borderRight: '1px solid #f0f0f0' }}>
+              <h3 style={{
+                fontSize: '14px',
+                fontWeight: '600',
+                color: '#8b7355',
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+                marginBottom: '20px'
               }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-                  <Shield size={20} style={{ color: '#d97706' }} />
-                  <span style={{ 
-                    fontWeight: '600', 
-                    color: '#d97706',
-                    fontFamily: 'Poppins, sans-serif'
-                  }}>Restricciones</span>
-                </div>
-                <pre style={{ 
-                  fontSize: '0.875rem', 
-                  color: '#92400e',
-                  whiteSpace: 'pre-wrap',
-                  fontFamily: 'Poppins, sans-serif',
-                  margin: 0
-                }}>{comercio.restricciones}</pre>
-              </div>
-            )}
-          </div>
+                Contacto
+              </h3>
 
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <MapPin size={18} style={{ color: '#0e312d', flexShrink: 0 }} />
+                  <span style={{ fontSize: '15px', color: '#374151' }}>{comercio.direccion}</span>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <Phone size={18} style={{ color: '#0e312d', flexShrink: 0 }} />
+                  <a href={`tel:${comercio.telefono}`} style={{ fontSize: '15px', color: '#0e312d', textDecoration: 'none', fontWeight: '500' }}>
+                    {comercio.telefono}
+                  </a>
+                </div>
+
+                {comercio.email && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <Mail size={18} style={{ color: '#0e312d', flexShrink: 0 }} />
+                    <a href={`mailto:${comercio.email}`} style={{ fontSize: '15px', color: '#0e312d', textDecoration: 'none' }}>
+                      {comercio.email}
+                    </a>
+                  </div>
+                )}
+
+                {comercio.website && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <Globe size={18} style={{ color: '#0e312d', flexShrink: 0 }} />
+                    <a href={comercio.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: '15px', color: '#0e312d', textDecoration: 'none' }}>
+                      Visitar sitio web
+                    </a>
+                  </div>
+                )}
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <Clock size={18} style={{ color: '#0e312d', flexShrink: 0 }} />
+                  <span style={{ fontSize: '15px', color: '#374151' }}>{comercio.horarios}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Columna derecha - Servicios */}
+            <div style={{ padding: '32px' }}>
+              <h3 style={{
+                fontSize: '14px',
+                fontWeight: '600',
+                color: '#8b7355',
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+                marginBottom: '20px'
+              }}>
+                Servicios Pet Friendly
+              </h3>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {(typeof serviciosTexto === 'string' ? serviciosTexto.split('\n') : []).map((servicio, idx) => (
+                  <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <CheckCircle2 size={16} style={{ color: '#16a34a', flexShrink: 0 }} />
+                    <span style={{ fontSize: '15px', color: '#374151' }}>{servicio}</span>
+                  </div>
+                ))}
+              </div>
+
+              {comercio.restricciones && (
+                <div style={{
+                  marginTop: '24px',
+                  padding: '16px',
+                  backgroundColor: '#fef9e7',
+                  borderRadius: '8px',
+                  borderLeft: '3px solid #d97706'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                    <Shield size={16} style={{ color: '#d97706' }} />
+                    <span style={{ fontSize: '13px', fontWeight: '600', color: '#d97706' }}>Restricciones</span>
+                  </div>
+                  <p style={{ fontSize: '14px', color: '#92400e', margin: 0, lineHeight: 1.5 }}>
+                    {comercio.restricciones}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
-        {/* Sección de Mascotas en Adopción */}
+        {/* CTA para adopción */}
         <div style={{
-          marginTop: '64px',
-          padding: '48px',
-          backgroundColor: '#f8f9fa',
-          borderRadius: '24px',
+          marginTop: '48px',
+          padding: '40px',
+          backgroundColor: '#f5f3ed',
+          borderRadius: '16px',
           textAlign: 'center'
         }}>
-          <Dog size={48} style={{ color: '#16a34a', margin: '0 auto 16px' }} />
           <h3 style={{
-            fontSize: '1.75rem',
+            fontSize: '24px',
             fontWeight: '700',
-            color: '#111827',
-            marginBottom: '16px',
-            fontFamily: 'Albert Sans, sans-serif'
-          }}>Conoce a nuestros amigos en adopción</h3>
-          <p style={{
-            fontSize: '1.125rem',
-            color: '#6b7280',
-            marginBottom: '40px',
-            maxWidth: '600px',
-            margin: '0 auto 40px',
-            fontFamily: 'Poppins, sans-serif'
+            color: '#0e312d',
+            marginBottom: '12px'
           }}>
-            Dale una segunda oportunidad a estos hermosos peluditos que buscan un hogar lleno de amor
+            ¿Buscas un compañero <span style={{ color: '#8b7355' }}>peludo</span>?
+          </h3>
+          <p style={{
+            fontSize: '16px',
+            color: '#666',
+            marginBottom: '24px',
+            maxWidth: '500px',
+            margin: '0 auto 24px'
+          }}>
+            Visita nuestro catálogo de adopción y encuentra a tu nuevo mejor amigo
           </p>
-
-          {/* Grid de 3 mascotas */}
-          {mascotas.length > 0 && (
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-              gap: '24px',
-              marginBottom: '40px',
-              maxWidth: '900px',
-              margin: '0 auto 40px'
-            }}>
-              {mascotas.map((mascota) => (
-                <Link
-                  key={mascota.id}
-                  href={`/catalogo/${mascota.slug}`}
-                  style={{
-                    textDecoration: 'none',
-                    color: 'inherit'
-                  }}
-                >
-                  <div style={{
-                    backgroundColor: 'white',
-                    borderRadius: '16px',
-                    overflow: 'hidden',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-                    transition: 'all 0.3s ease',
-                    cursor: 'pointer'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-4px)'
-                    e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,0,0,0.12)'
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'translateY(0)'
-                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.08)'
-                  }}>
-                    {/* Imagen */}
-                    <div style={{
-                      width: '100%',
-                      height: '200px',
-                      backgroundColor: '#f3f4f6',
-                      position: 'relative',
-                      overflow: 'hidden'
-                    }}>
-                      {mascota.fotoPrincipal && (
-                        <img
-                          src={mascota.fotoPrincipal}
-                          alt={mascota.nombre}
-                          style={{
-                            width: '100%',
-                            height: '100%',
-                            objectFit: 'cover'
-                          }}
-                        />
-                      )}
-                      <div style={{
-                        position: 'absolute',
-                        top: '12px',
-                        right: '12px',
-                        backgroundColor: mascota.sexo === 'macho' ? '#3b82f6' : '#ec4899',
-                        color: 'white',
-                        padding: '4px 12px',
-                        borderRadius: '12px',
-                        fontSize: '12px',
-                        fontWeight: '600',
-                        textTransform: 'capitalize'
-                      }}>
-                        {mascota.sexo}
-                      </div>
-                    </div>
-                    {/* Info */}
-                    <div style={{ padding: '20px' }}>
-                      <h4 style={{
-                        fontSize: '18px',
-                        fontWeight: '700',
-                        color: '#111827',
-                        marginBottom: '8px',
-                        fontFamily: 'Albert Sans, sans-serif'
-                      }}>{mascota.nombre}</h4>
-                      <p style={{
-                        fontSize: '14px',
-                        color: '#6b7280',
-                        marginBottom: '12px',
-                        fontFamily: 'Poppins, sans-serif'
-                      }}>
-                        {mascota.edad} • {mascota.raza}
-                      </p>
-                      <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '4px',
-                        color: '#16a34a',
-                        fontSize: '14px',
-                        fontWeight: '600'
-                      }}>
-                        <Heart size={16} />
-                        Conocer más
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          )}
-
-          {/* CTA para ver catálogo completo */}
           <Link
             href="/catalogo"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
               gap: '8px',
-              backgroundColor: '#16a34a',
+              backgroundColor: '#0e312d',
               color: 'white',
-              padding: '14px 32px',
+              padding: '14px 28px',
               borderRadius: '8px',
               textDecoration: 'none',
-              fontSize: '1.125rem',
-              fontWeight: '600',
-              fontFamily: 'Albert Sans, sans-serif',
-              boxShadow: '0 4px 12px rgba(22, 163, 74, 0.3)',
-              transition: 'all 0.3s ease'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#15803d'
-              e.currentTarget.style.transform = 'translateY(-2px)'
-              e.currentTarget.style.boxShadow = '0 6px 16px rgba(22, 163, 74, 0.4)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#16a34a'
-              e.currentTarget.style.transform = 'translateY(0)'
-              e.currentTarget.style.boxShadow = '0 4px 12px rgba(22, 163, 74, 0.3)'
+              fontSize: '16px',
+              fontWeight: '600'
             }}
           >
             <Dog size={20} />
-            Ver Catálogo Completo
+            Ver Catálogo de Adopción
           </Link>
         </div>
       </div>

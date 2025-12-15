@@ -75,28 +75,40 @@ export async function POST(request: NextRequest) {
       tipo,
       fecha,
       descripcion,
-      tratamiento,
-      medicamentos,
-      veterinarioId,
+      veterinario,
       veterinariaId,
-      proximaCita,
-      observaciones,
-      costo
+      vacunaTipo,
+      proximaDosis,
+      medicamento,
+      dosis,
+      duracion,
+      costo,
+      notas
     } = body
+
+    // Validaciones básicas
+    if (!perritoId || !tipo || !descripcion) {
+      return NextResponse.json(
+        { error: 'Campos requeridos: perritoId, tipo, descripcion' },
+        { status: 400 }
+      )
+    }
 
     const expediente = await prisma.expedienteMedico.create({
       data: {
         perritoId,
         tipo,
-        fecha: new Date(fecha),
+        fecha: fecha ? new Date(fecha) : new Date(),
         descripcion,
-        tratamiento,
-        medicamentos,
-        veterinarioId,
-        veterinariaId,
-        proximaCita: proximaCita ? new Date(proximaCita) : null,
-        observaciones,
-        costo: costo ? parseFloat(costo) : null
+        veterinario: veterinario || session.user.name,
+        veterinariaId: veterinariaId || null,
+        vacunaTipo: vacunaTipo || null,
+        proximaDosis: proximaDosis ? new Date(proximaDosis) : null,
+        medicamento: medicamento || null,
+        dosis: dosis || null,
+        duracion: duracion || null,
+        costo: costo ? parseFloat(costo) : null,
+        notas: notas || null
       },
       include: {
         perrito: true,
@@ -104,16 +116,21 @@ export async function POST(request: NextRequest) {
       }
     })
 
-    // Actualizar estado de vacunación/esterilización si aplica
-    if (tipo === 'vacunacion') {
+    // Actualizar estado de vacunación/esterilización/desparasitación si aplica
+    if (tipo === 'vacuna' || tipo === 'vacunacion') {
       await prisma.perrito.update({
         where: { id: perritoId },
         data: { vacunas: true }
       })
-    } else if (tipo === 'esterilizacion') {
+    } else if (tipo === 'cirugia' && descripcion?.toLowerCase().includes('esteriliz')) {
       await prisma.perrito.update({
         where: { id: perritoId },
         data: { esterilizado: true }
+      })
+    } else if (tipo === 'desparasitacion') {
+      await prisma.perrito.update({
+        where: { id: perritoId },
+        data: { desparasitado: true }
       })
     }
 
@@ -121,7 +138,7 @@ export async function POST(request: NextRequest) {
     await prisma.notaPerrito.create({
       data: {
         perritoId,
-        contenido: `${tipo.charAt(0).toUpperCase() + tipo.slice(1)} realizada: ${descripcion}`,
+        contenido: `Expediente médico: ${tipo} - ${descripcion.substring(0, 100)}`,
         autor: session.user.name || 'Admin',
         tipo: 'medico'
       }

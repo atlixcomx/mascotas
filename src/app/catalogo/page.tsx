@@ -35,36 +35,25 @@ export default function PerritosPage() {
             textAlign: 'center',
             color: 'white'
           }}>
-            <div style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '80px',
-              height: '80px',
-              background: 'rgba(255,255,255,0.1)',
-              borderRadius: '50%',
-              marginBottom: '24px',
-              backdropFilter: 'blur(10px)',
-              border: '2px solid rgba(255,255,255,0.2)'
+            <h1 style={{
+              fontSize: 'clamp(36px, 5vw, 56px)',
+              fontWeight: '800',
+              marginBottom: '20px',
+              letterSpacing: '-1px',
+              lineHeight: '1.2'
             }}>
-              <DogIcon size={40} color="white" />
-            </div>
-            <h1 style={{ 
-              fontSize: 'clamp(36px, 5vw, 56px)', 
-              fontWeight: '800', 
-              marginBottom: '16px',
-              letterSpacing: '-1px'
-            }}>
-              Encuentra a Tu Nuevo Mejor Amigo
+              Encuentra a Tu Nuevo{' '}
+              <span style={{ color: '#bfb591' }}>Mejor Amigo</span>
             </h1>
-            <p style={{ 
-              fontSize: '20px', 
-              opacity: 0.9,
+            <p style={{
+              fontSize: '20px',
+              opacity: 0.85,
               maxWidth: '600px',
               margin: '0 auto',
-              lineHeight: '1.6'
+              lineHeight: '1.6',
+              fontWeight: '300'
             }}>
-              Cada uno de nuestros rescatados está listo para llenar tu hogar de amor, 
+              Cada uno de nuestros rescatados está listo para llenar tu hogar de amor,
               lealtad y momentos inolvidables
             </p>
           </div>

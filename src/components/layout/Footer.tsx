@@ -1,262 +1,188 @@
 import Image from 'next/image'
-import { 
-  LocationIcon, PhoneIcon, MailIcon, ClockIcon,
-  ArrowRightIcon, FacebookIcon, InstagramIcon, WhatsAppIcon
+import Link from 'next/link'
+import {
+  LocationIcon, PhoneIcon, MailIcon,
+  FacebookIcon, InstagramIcon, WhatsAppIcon
 } from '../icons/Icons'
 
 export default function Footer() {
+  const currentYear = new Date().getFullYear()
+
   return (
     <footer style={{
       backgroundColor: '#0e312d',
-      color: 'white',
-      padding: '40px 20px 24px',
-      position: 'relative'
+      color: 'white'
     }}>
-      {/* Patrón decorativo sutil */}
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        opacity: 0.03,
-        backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,0.1) 35px, rgba(255,255,255,0.1) 70px)`
-      }} />
-
+      {/* Sección principal */}
       <div style={{
         maxWidth: '1200px',
         margin: '0 auto',
-        position: 'relative',
-        zIndex: 1
+        padding: '48px 20px 32px'
       }}>
+        {/* Logos lado a lado */}
         <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-          gap: '24px',
-          marginBottom: '24px'
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '48px',
+          marginBottom: '32px',
+          flexWrap: 'wrap'
         }}>
-
-          {/* Sección 2 - Enlaces Rápidos */}
-          <div>
-            <h4 style={{
-              fontWeight: '600',
-              fontSize: '16px',
-              marginBottom: '20px',
-              color: '#bfb591',
-              letterSpacing: '0.5px'
-            }}>Enlaces Rápidos</h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <a href="/catalogo" style={{
-                color: 'rgba(255,255,255,0.8)',
-                textDecoration: 'none',
-                fontSize: '15px',
-                transition: 'color 0.3s',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px'
-              }}>
-                <ArrowRightIcon size={16} color="rgba(255,255,255,0.8)" /> Catálogo de Adopción
-              </a>
-              <a href="#adoptar" style={{
-                color: 'rgba(255,255,255,0.8)',
-                textDecoration: 'none',
-                fontSize: '15px',
-                transition: 'color 0.3s',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px'
-              }}>
-                <ArrowRightIcon size={16} color="rgba(255,255,255,0.8)" /> Proceso de Adopción
-              </a>
-              <a href="#voluntariado" style={{
-                color: 'rgba(255,255,255,0.8)',
-                textDecoration: 'none',
-                fontSize: '15px',
-                transition: 'color 0.3s',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px'
-              }}>
-                <ArrowRightIcon size={16} color="rgba(255,255,255,0.8)" /> Voluntariado
-              </a>
-              <a href="#contacto" style={{
-                color: 'rgba(255,255,255,0.8)',
-                textDecoration: 'none',
-                fontSize: '15px',
-                transition: 'color 0.3s',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px'
-              }}>
-                <ArrowRightIcon size={16} color="rgba(255,255,255,0.8)" /> Donaciones
-              </a>
-            </div>
-          </div>
-
-          {/* Sección 3 - Contacto */}
-          <div>
-            <h4 style={{
-              fontWeight: '600',
-              fontSize: '16px',
-              marginBottom: '20px',
-              color: '#bfb591',
-              letterSpacing: '0.5px'
-            }}>Contacto</h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <p style={{
-                color: 'rgba(255,255,255,0.8)',
-                fontSize: '15px',
-                margin: 0,
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px'
-              }}>
-                <LocationIcon size={18} color="rgba(255,255,255,0.8)" /> [Dirección del centro]
-              </p>
-              <p style={{
-                color: 'rgba(255,255,255,0.8)',
-                fontSize: '15px',
-                margin: 0,
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px'
-              }}>
-                <PhoneIcon size={18} color="rgba(255,255,255,0.8)" /> Tel: 244-XXX-XXXX
-              </p>
-              <p style={{
-                color: 'rgba(255,255,255,0.8)',
-                fontSize: '15px',
-                margin: 0,
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px'
-              }}>
-                <MailIcon size={18} color="rgba(255,255,255,0.8)" /> adopciones@atlixco.gob.mx
-              </p>
-              <p style={{
-                color: 'rgba(255,255,255,0.8)',
-                fontSize: '15px',
-                margin: 0,
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px'
-              }}>
-                <ClockIcon size={18} color="rgba(255,255,255,0.8)" /> Lun-Dom: 9:00 - 17:00
-              </p>
-            </div>
-          </div>
-
-          {/* Sección 4 - Redes Sociales */}
-          <div>
-            <h4 style={{
-              fontWeight: '600',
-              fontSize: '16px',
-              marginBottom: '20px',
-              color: '#bfb591',
-              letterSpacing: '0.5px'
-            }}>Redes Sociales</h4>
-            <p style={{
-              color: 'rgba(255,255,255,0.8)',
-              fontSize: '15px',
-              marginBottom: '20px',
-              lineHeight: '1.6'
-            }}>
-              Síguenos para conocer más historias de amor y segundas oportunidades
-            </p>
-            <div style={{ display: 'flex', gap: '12px' }}>
-              <a href="#" style={{
-                width: '40px',
-                height: '40px',
-                background: 'rgba(255,255,255,0.1)',
-                borderRadius: '8px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                textDecoration: 'none',
-                transition: 'all 0.3s',
-                border: '1px solid rgba(255,255,255,0.2)'
-              }}>
-                <FacebookIcon size={20} color="rgba(255,255,255,0.8)" />
-              </a>
-              <a href="#" style={{
-                width: '40px',
-                height: '40px',
-                background: 'rgba(255,255,255,0.1)',
-                borderRadius: '8px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                textDecoration: 'none',
-                transition: 'all 0.3s',
-                border: '1px solid rgba(255,255,255,0.2)'
-              }}>
-                <InstagramIcon size={20} color="rgba(255,255,255,0.8)" />
-              </a>
-              <a href="#" style={{
-                width: '40px',
-                height: '40px',
-                background: 'rgba(255,255,255,0.1)',
-                borderRadius: '8px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                textDecoration: 'none',
-                transition: 'all 0.3s',
-                border: '1px solid rgba(255,255,255,0.2)'
-              }}>
-                <WhatsAppIcon size={20} color="rgba(255,255,255,0.8)" />
-              </a>
-            </div>
-          </div>
+          <Image
+            src="/centroB.png"
+            alt="Centro Municipal de Adopción y Bienestar Animal"
+            width={160}
+            height={56}
+            style={{ objectFit: 'contain' }}
+          />
+          <div style={{
+            width: '1px',
+            height: '48px',
+            backgroundColor: 'rgba(255,255,255,0.2)'
+          }} />
+          <Image
+            src="/ayuntamientoB.png"
+            alt="H. Ayuntamiento de Atlixco"
+            width={140}
+            height={140}
+            style={{ objectFit: 'contain' }}
+          />
         </div>
 
-        {/* Línea divisoria */}
+        {/* Info compacta en una línea */}
         <div style={{
-          borderTop: '1px solid rgba(255,255,255,0.1)',
-          paddingTop: '24px',
-          marginTop: '24px',
           display: 'flex',
-          flexDirection: 'column',
+          justifyContent: 'center',
           alignItems: 'center',
-          gap: '24px'
+          gap: '32px',
+          flexWrap: 'wrap',
+          marginBottom: '24px'
         }}>
-          {/* Logos del Ayuntamiento y Mi Casa */}
           <div style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '40px',
-            flexWrap: 'wrap',
-            justifyContent: 'center'
+            gap: '8px',
+            color: 'rgba(255,255,255,0.8)',
+            fontSize: '14px'
           }}>
-            {/* Logo del Ayuntamiento */}
-            <div style={{
-              width: '280px',
-              height: '280px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-              <Image 
-                src="/ayuntamientoB.png" 
-                alt="H. Ayuntamiento de Atlixco"
-                width={280}
-                height={280}
-                style={{ objectFit: 'contain' }}
-              />
-            </div>
-
+            <LocationIcon size={16} color="rgba(255,255,255,0.6)" />
+            <span>Blvd. Niños Héroes #1003</span>
           </div>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            color: 'rgba(255,255,255,0.8)',
+            fontSize: '14px'
+          }}>
+            <PhoneIcon size={16} color="rgba(255,255,255,0.6)" />
+            <span>244-445-8765</span>
+          </div>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            color: 'rgba(255,255,255,0.8)',
+            fontSize: '14px'
+          }}>
+            <MailIcon size={16} color="rgba(255,255,255,0.6)" />
+            <span>adopciones@atlixco.gob.mx</span>
+          </div>
+        </div>
 
+        {/* Links de navegación */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          gap: '24px',
+          flexWrap: 'wrap',
+          marginBottom: '24px'
+        }}>
+          {[
+            { href: '/catalogo', label: 'Catálogo' },
+            { href: '/comercios-friendly', label: 'Comercios Pet Friendly' },
+            { href: '/noticias', label: 'Noticias' }
+          ].map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              style={{
+                color: 'rgba(255,255,255,0.7)',
+                textDecoration: 'none',
+                fontSize: '14px',
+                transition: 'color 0.2s'
+              }}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
+
+        {/* Redes sociales */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          gap: '16px',
+          marginBottom: '32px'
+        }}>
+          {[
+            { icon: FacebookIcon, href: '#', label: 'Facebook' },
+            { icon: InstagramIcon, href: '#', label: 'Instagram' },
+            { icon: WhatsAppIcon, href: '#', label: 'WhatsApp' }
+          ].map((social) => (
+            <a
+              key={social.label}
+              href={social.href}
+              aria-label={social.label}
+              style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: '50%',
+                backgroundColor: 'rgba(255,255,255,0.1)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'background-color 0.2s'
+              }}
+            >
+              <social.icon size={18} color="rgba(255,255,255,0.8)" />
+            </a>
+          ))}
+        </div>
+      </div>
+
+      {/* Barra inferior */}
+      <div style={{
+        borderTop: '1px solid rgba(255,255,255,0.1)',
+        padding: '16px 20px',
+        backgroundColor: 'rgba(0,0,0,0.2)'
+      }}>
+        <div style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '12px'
+        }}>
           <p style={{
             color: 'rgba(255,255,255,0.5)',
-            fontSize: '14px',
-            margin: 0,
-            textAlign: 'center'
+            fontSize: '13px',
+            margin: 0
           }}>
-            © 2025 Centro de Adopción y Bienestar Animal de Atlixco. Todos los derechos reservados.
+            © {currentYear} Centro de Adopción y Bienestar Animal de Atlixco
+          </p>
+          <p style={{
+            color: '#bfb591',
+            fontSize: '13px',
+            margin: 0,
+            fontWeight: '500'
+          }}>
+            Gobierno Municipal 2024-2027
           </p>
         </div>
       </div>
     </footer>
-  );
+  )
 }

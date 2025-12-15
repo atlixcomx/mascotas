@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { 
   Heart, Dog, Building2, Search, FileText, Home as HomeIcon, 
@@ -23,13 +24,13 @@ interface Perrito {
 // Componente contador animado
 function AnimatedCounter({ value, suffix = '' }: { value: number; suffix?: string }) {
   const [count, setCount] = useState(0)
-  
+
   useEffect(() => {
     const duration = 2000 // 2 segundos
     const steps = 60
     const increment = value / steps
     let current = 0
-    
+
     const timer = setInterval(() => {
       current += increment
       if (current >= value) {
@@ -39,17 +40,21 @@ function AnimatedCounter({ value, suffix = '' }: { value: number; suffix?: strin
         setCount(Math.floor(current))
       }
     }, duration / steps)
-    
+
     return () => clearInterval(timer)
   }, [value])
-  
-  return <span>{count}{suffix}</span>
+
+  // Formatear número con comas
+  const formattedCount = count.toLocaleString('es-MX')
+
+  return <span>{formattedCount}{suffix}</span>
 }
 
 export default function HomeNew() {
   const [perritosRecientes, setPerritosRecientes] = useState<Perrito[]>([])
   const [loading, setLoading] = useState(true)
   const [isVisible, setIsVisible] = useState(false)
+  const [showDetails, setShowDetails] = useState(false)
 
   useEffect(() => {
     // Cargar perritos
@@ -100,7 +105,7 @@ export default function HomeNew() {
             left: 0,
             width: '100%',
             height: '100%',
-            backgroundImage: 'url(/images/centro/foto1.jpeg)',
+            backgroundImage: 'url(/images/header-bg.jpg)',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             zIndex: 0
@@ -137,17 +142,31 @@ export default function HomeNew() {
           position: 'relative',
           zIndex: 2
         }}>
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            backgroundColor: 'rgba(191, 181, 145, 0.2)',
-            padding: '8px 20px',
-            borderRadius: '24px',
-            marginBottom: '16px'
-          }}>
-            <span style={{ color: '#bfb591', fontSize: '14px', fontWeight: '600' }}>
-              GOBIERNO DE ATLIXCO 2024-2027
-            </span>
+          {/* Logo del Ayuntamiento + Pill como un solo bloque */}
+          <div style={{ marginBottom: '40px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Image
+              src="/ayuntamientoB.png"
+              alt="H. Ayuntamiento de Atlixco"
+              width={220}
+              height={220}
+              style={{
+                objectFit: 'contain',
+                filter: 'brightness(0) invert(1)',
+                opacity: 0.95
+              }}
+            />
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              backgroundColor: 'rgba(191, 181, 145, 0.2)',
+              padding: '8px 20px',
+              borderRadius: '24px',
+              marginTop: '4px'
+            }}>
+              <span style={{ color: '#bfb591', fontSize: '14px', fontWeight: '600' }}>
+                GOBIERNO DE ATLIXCO 2024-2027
+              </span>
+            </div>
           </div>
 
           <h1 style={{
@@ -883,7 +902,7 @@ export default function HomeNew() {
             gap: '40px',
             marginBottom: '40px'
           }}>
-            <div style={{ 
+            <div style={{
               textAlign: 'center',
               padding: '32px',
               backgroundColor: 'white',
@@ -896,14 +915,14 @@ export default function HomeNew() {
                 fontWeight: '700',
                 color: '#0e312d'
               }}>
-                {isVisible && <AnimatedCounter value={500} suffix="+" />}
+                {isVisible && <AnimatedCounter value={14774} />}
               </div>
               <p style={{ fontSize: '16px', color: '#666', marginTop: '8px' }}>
-                Animales rescatados
+                Esterilizaciones
               </p>
             </div>
-            
-            <div style={{ 
+
+            <div style={{
               textAlign: 'center',
               padding: '32px',
               backgroundColor: 'white',
@@ -916,194 +935,229 @@ export default function HomeNew() {
                 fontWeight: '700',
                 color: '#0e312d'
               }}>
-                {isVisible && <AnimatedCounter value={350} suffix="+" />}
+                {isVisible && <AnimatedCounter value={286} />}
               </div>
               <p style={{ fontSize: '16px', color: '#666', marginTop: '8px' }}>
                 Adopciones exitosas
               </p>
             </div>
-            
-            <div style={{ 
+
+            <div style={{
               textAlign: 'center',
               padding: '32px',
               backgroundColor: 'white',
               borderRadius: '16px',
               boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
             }}>
-              <Users size={40} style={{ color: '#0891b2', marginBottom: '16px' }} />
+              <Stethoscope size={40} style={{ color: '#0891b2', marginBottom: '16px' }} />
               <div style={{
                 fontSize: 'clamp(36px, 8vw, 48px)',
                 fontWeight: '700',
                 color: '#0e312d'
               }}>
-                {isVisible && <AnimatedCounter value={1200} suffix="+" />}
+                {isVisible && <AnimatedCounter value={70360} />}
               </div>
               <p style={{ fontSize: '16px', color: '#666', marginTop: '8px' }}>
-                Familias felices
+                Vacunas antirrábicas
               </p>
             </div>
-            
-            <div style={{ 
+
+            <div style={{
               textAlign: 'center',
               padding: '32px',
               backgroundColor: 'white',
               borderRadius: '16px',
               boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
             }}>
-              <Store size={40} style={{ color: '#9333ea', marginBottom: '16px' }} />
+              <Activity size={40} style={{ color: '#9333ea', marginBottom: '16px' }} />
               <div style={{
                 fontSize: 'clamp(36px, 8vw, 48px)',
                 fontWeight: '700',
                 color: '#0e312d'
               }}>
-                {isVisible && <AnimatedCounter value={50} />}
+                {isVisible && <AnimatedCounter value={2207} />}
               </div>
               <p style={{ fontSize: '16px', color: '#666', marginTop: '8px' }}>
-                Comercios pet friendly
+                Consultas veterinarias
               </p>
             </div>
+          </div>
+
+          {/* Botón Ver Detalles */}
+          <div style={{ textAlign: 'center', marginTop: '40px' }}>
+            <button
+              onClick={() => setShowDetails(!showDetails)}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                backgroundColor: 'white',
+                color: '#0e312d',
+                padding: '14px 28px',
+                borderRadius: '12px',
+                border: '2px solid #e5e7eb',
+                fontSize: '16px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.06)'
+              }}
+            >
+              {showDetails ? 'Ocultar detalles' : 'Ver detalles por año'}
+              <ChevronRight
+                size={20}
+                style={{
+                  transform: showDetails ? 'rotate(90deg)' : 'rotate(0deg)',
+                  transition: 'transform 0.3s ease'
+                }}
+              />
+            </button>
+          </div>
+
+          {/* Tabla de Resultados Detallados */}
+          <div style={{
+            marginTop: '24px',
+            maxHeight: showDetails ? '2000px' : '0',
+            overflow: 'hidden',
+            transition: 'max-height 0.5s ease-in-out, opacity 0.3s ease',
+            opacity: showDetails ? 1 : 0
+          }}>
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '16px',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+            overflow: 'hidden'
+          }}>
+            <div style={{
+              backgroundColor: '#0e312d',
+              padding: '20px 24px',
+              textAlign: 'center'
+            }}>
+              <h3 style={{
+                color: 'white',
+                fontSize: '20px',
+                fontWeight: '700',
+                margin: 0
+              }}>
+                Resultados del CEMA por Año
+              </h3>
+              <p style={{
+                color: 'rgba(255,255,255,0.7)',
+                fontSize: '14px',
+                margin: '8px 0 0 0'
+              }}>
+                Jefatura de Bienestar Animal - Centro y Jornadas
+              </p>
+            </div>
+
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{
+                width: '100%',
+                borderCollapse: 'collapse',
+                fontSize: '14px'
+              }}>
+                <thead>
+                  <tr style={{ backgroundColor: '#f8f9fa' }}>
+                    <th style={{ padding: '14px 16px', textAlign: 'left', fontWeight: '600', color: '#0e312d', borderBottom: '2px solid #e5e7eb' }}>Descripción</th>
+                    <th style={{ padding: '14px 16px', textAlign: 'right', fontWeight: '600', color: '#0e312d', borderBottom: '2px solid #e5e7eb' }}>2022</th>
+                    <th style={{ padding: '14px 16px', textAlign: 'right', fontWeight: '600', color: '#0e312d', borderBottom: '2px solid #e5e7eb' }}>2023</th>
+                    <th style={{ padding: '14px 16px', textAlign: 'right', fontWeight: '600', color: '#0e312d', borderBottom: '2px solid #e5e7eb' }}>2024</th>
+                    <th style={{ padding: '14px 16px', textAlign: 'right', fontWeight: '600', color: '#0e312d', borderBottom: '2px solid #e5e7eb' }}>2025</th>
+                    <th style={{ padding: '14px 16px', textAlign: 'right', fontWeight: '700', color: '#0e312d', borderBottom: '2px solid #e5e7eb', backgroundColor: '#bfb591' }}>Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    { desc: 'Esterilizaciones caninas y felinas', d2022: '4,868', d2023: '3,508', d2024: '3,963', d2025: '2,435', total: '14,774', highlight: true },
+                    { desc: 'Consultas veterinarias', d2022: '480', d2023: '560', d2024: '720', d2025: '447', total: '2,207' },
+                    { desc: 'Desparasitaciones', d2022: '0', d2023: '330', d2024: '390', d2025: '1,256', total: '1,976' },
+                    { desc: 'Curaciones', d2022: '0', d2023: '11', d2024: '55', d2025: '123', total: '189' },
+                    { desc: 'Sacrificios humanitarios', d2022: '0', d2023: '1', d2024: '41', d2025: '69', total: '111' },
+                    { desc: 'Vacunas (Puppy, Cuádruple, Quíntuple)', d2022: '0', d2023: '1', d2024: '87', d2025: '362', total: '450' },
+                    { desc: 'Otros procedimientos médicos', d2022: '0', d2023: '25', d2024: '34', d2025: '59', total: '118' },
+                    { desc: 'Tratamiento médico', d2022: '0', d2023: '0', d2024: '20', d2025: '141', total: '161' },
+                    { desc: 'Simparica', d2022: '0', d2023: '40', d2024: '300', d2025: '100', total: '440' },
+                    { desc: 'Adopciones', d2022: '0', d2023: '45', d2024: '43', d2025: '198', total: '286', highlight: true },
+                    { desc: 'Perros ingresados', d2022: '0', d2023: '60', d2024: '83', d2025: '447', total: '590' },
+                    { desc: 'Perros reubicados', d2022: '0', d2023: '10', d2024: '15', d2025: '199', total: '224' },
+                    { desc: 'Perros entregados a su dueño', d2022: '0', d2023: '0', d2024: '0', d2025: '33', total: '33' },
+                    { desc: 'Perros en el CEMA', d2022: '0', d2023: '5', d2024: '27', d2025: '45', total: '77' },
+                    { desc: 'Vacuna antirrábica', d2022: '0', d2023: '26,800', d2024: '21,700', d2025: '21,860', total: '70,360', highlight: true },
+                  ].map((row, idx) => (
+                    <tr key={idx} style={{ backgroundColor: row.highlight ? '#f0fdf4' : idx % 2 === 0 ? 'white' : '#fafafa' }}>
+                      <td style={{ padding: '12px 16px', borderBottom: '1px solid #e5e7eb', fontWeight: row.highlight ? '600' : '400', color: '#1f2937' }}>{row.desc}</td>
+                      <td style={{ padding: '12px 16px', textAlign: 'right', borderBottom: '1px solid #e5e7eb', color: '#374151' }}>{row.d2022}</td>
+                      <td style={{ padding: '12px 16px', textAlign: 'right', borderBottom: '1px solid #e5e7eb', color: '#374151' }}>{row.d2023}</td>
+                      <td style={{ padding: '12px 16px', textAlign: 'right', borderBottom: '1px solid #e5e7eb', color: '#374151' }}>{row.d2024}</td>
+                      <td style={{ padding: '12px 16px', textAlign: 'right', borderBottom: '1px solid #e5e7eb', color: '#374151' }}>{row.d2025}</td>
+                      <td style={{ padding: '12px 16px', textAlign: 'right', borderBottom: '1px solid #e5e7eb', fontWeight: '700', backgroundColor: row.highlight ? '#dcfce7' : '#fef9e7', color: '#0e312d' }}>{row.total}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div style={{
+              padding: '16px 24px',
+              backgroundColor: '#f8f9fa',
+              borderTop: '1px solid #e5e7eb',
+              textAlign: 'center'
+            }}>
+              <p style={{ color: '#666', fontSize: '13px', margin: 0 }}>
+                Datos oficiales del Centro Municipal de Adopción y Bienestar Animal de Atlixco
+              </p>
+            </div>
+          </div>
           </div>
         </div>
       </section>
 
 
-      {/* Centro Municipal - Contacto */}
-      <section 
-        id="contacto"
+      {/* CTA Final */}
+      <section
         style={{
-          background: 'linear-gradient(135deg, #0e312d 0%, #1a4a45 100%)',
-          padding: 'clamp(40px, 10vw, 100px) 20px',
-          color: 'white'
+          backgroundColor: '#f5f3ed',
+          padding: 'clamp(48px, 8vw, 80px) 20px',
+          textAlign: 'center'
         }}
       >
         <div style={{
-          maxWidth: '1200px',
-          margin: '0 auto',
-          textAlign: 'center'
+          maxWidth: '700px',
+          margin: '0 auto'
         }}>
           <h2 style={{
-            fontSize: 'clamp(32px, 4vw, 48px)',
-            fontWeight: '800',
-            marginBottom: '16px'
+            fontSize: 'clamp(28px, 4vw, 40px)',
+            fontWeight: '700',
+            marginBottom: '16px',
+            color: '#0e312d',
+            lineHeight: '1.2'
           }}>
-            Centro Municipal de Adopción
+            ¿Listo para cambiar una{' '}
+            <span style={{ color: '#8b7355' }}>vida</span>?
           </h2>
           <p style={{
-            fontSize: 'clamp(18px, 3vw, 24px)',
-            color: 'rgba(255,255,255,0.8)',
-            marginBottom: 'clamp(32px, 8vw, 60px)',
-            fontWeight: '300',
-            padding: '0 16px'
+            fontSize: '18px',
+            color: '#666',
+            marginBottom: '32px',
+            lineHeight: '1.6'
           }}>
-            Visítanos y Conoce Nuestro Trabajo
+            Cada adopción es una segunda oportunidad. Visita nuestro catálogo y encuentra a tu nuevo compañero.
           </p>
-          
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(min(250px, 100%), 1fr))',
-            gap: '32px',
-            marginBottom: '60px'
+          <Link href="/catalogo" style={{
+            backgroundColor: '#0e312d',
+            color: 'white',
+            padding: '16px 32px',
+            borderRadius: '10px',
+            textDecoration: 'none',
+            fontSize: '17px',
+            fontWeight: '600',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            transition: 'all 0.3s ease'
           }}>
-            <div>
-              <MapPin size={32} style={{ marginBottom: '12px', color: '#bfb591' }} />
-              <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>Dirección</h3>
-              <p style={{ color: 'rgba(255,255,255,0.8)', lineHeight: '1.6' }}>
-                Boulevard Niños Héroes #1003<br />
-                Col. Centro, Atlixco, Puebla
-              </p>
-            </div>
-            
-            <div>
-              <Phone size={32} style={{ marginBottom: '12px', color: '#bfb591' }} />
-              <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>Teléfono</h3>
-              <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '20px' }}>
-                244-445-8765
-              </p>
-            </div>
-            
-            <div>
-              <Mail size={32} style={{ marginBottom: '12px', color: '#bfb591' }} />
-              <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>Email</h3>
-              <p style={{ color: 'rgba(255,255,255,0.8)' }}>
-                adopciones@atlixco.gob.mx
-              </p>
-            </div>
-            
-            <div>
-              <Clock size={32} style={{ marginBottom: '12px', color: '#bfb591' }} />
-              <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>Horarios</h3>
-              <p style={{ color: 'rgba(255,255,255,0.8)' }}>
-                Lunes a Domingo<br />
-                9:00 - 17:00 horas
-              </p>
-            </div>
-          </div>
-          
-          <div style={{
-            display: 'flex',
-            gap: '16px',
-            justifyContent: 'center',
-            flexWrap: 'wrap',
-            marginBottom: '60px'
-          }}>
-            <Link href="/catalogo" style={{
-              backgroundColor: '#bfb591',
-              color: '#0e312d',
-              padding: '16px 32px',
-              borderRadius: '12px',
-              textDecoration: 'none',
-              fontSize: '17px',
-              fontWeight: '700',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              boxShadow: '0 4px 14px rgba(191, 181, 145, 0.3)'
-            }}>
-              <Dog size={20} /> Ver Catálogo de Adopción
-            </Link>
-            <Link href="/noticias" style={{
-              backgroundColor: 'transparent',
-              color: 'white',
-              padding: '16px 32px',
-              borderRadius: '12px',
-              textDecoration: 'none',
-              fontSize: '17px',
-              fontWeight: '600',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              border: '2px solid rgba(255,255,255,0.3)'
-            }}>
-              Noticias y Eventos
-            </Link>
-          </div>
-          
-          <div style={{
-            borderTop: '1px solid rgba(255,255,255,0.2)',
-            paddingTop: '40px',
-            marginTop: '40px'
-          }}>
-            <h3 style={{
-              fontSize: '28px',
-              fontWeight: '700',
-              marginBottom: '16px',
-              color: '#bfb591'
-            }}>
-              Un Gobierno que Cuida Cada Vida
-            </h3>
-            <p style={{
-              fontSize: '16px',
-              color: 'rgba(255,255,255,0.8)',
-              lineHeight: '1.8',
-              maxWidth: '700px',
-              margin: '0 auto',
-              fontStyle: 'italic'
-            }}>
-              El Centro Municipal de Adopción y Bienestar Animal es testimonio del compromiso 
-              del Gobierno de Atlixco con el bienestar animal y la construcción de una comunidad 
-              más compasiva e inclusiva. Juntos, transformamos vidas.
-            </p>
-          </div>
+            <Dog size={20} /> Ver Catálogo de Adopción
+          </Link>
         </div>
       </section>
 

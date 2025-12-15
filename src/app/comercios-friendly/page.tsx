@@ -144,20 +144,11 @@ export default function ComerciosFriendlyPage() {
   return (
     <div style={{ backgroundColor: '#f8f9fa', minHeight: '100vh' }}>
       {/* Hero Section */}
-      <div style={{ 
-        background: 'linear-gradient(135deg, #0e312d 0%, #1a4a45 50%, #246257 100%)',
+      <div style={{
+        background: 'linear-gradient(135deg, #0e312d 0%, #1a4a45 100%)',
         position: 'relative',
         overflow: 'hidden'
       }}>
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          opacity: 0.05,
-          backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,0.1) 35px, rgba(255,255,255,0.1) 70px)`
-        }} />
         
         <div style={{ 
           maxWidth: '1200px', 
@@ -170,27 +161,16 @@ export default function ComerciosFriendlyPage() {
             textAlign: 'center',
             color: 'white'
           }}>
-            <div style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '80px',
-              height: '80px',
-              background: 'rgba(255,255,255,0.1)',
-              borderRadius: '50%',
-              marginBottom: '24px',
-              backdropFilter: 'blur(10px)',
-              border: '2px solid rgba(255,255,255,0.2)'
-            }}>
-              <Store size={40} color="white" />
-            </div>
             <h1 style={{
               fontSize: 'clamp(36px, 5vw, 56px)',
               fontWeight: '800',
               marginBottom: '16px',
-              letterSpacing: '-1px'
+              letterSpacing: '-1px',
+              lineHeight: '1.2'
             }}>
-              Comercios Pet Friendly Certificados
+              Comercios{' '}
+              <span style={{ color: '#bfb591' }}>Pet Friendly</span>
+              {' '}Certificados
             </h1>
             <p style={{
               fontSize: 'clamp(18px, 2vw, 22px)',
@@ -279,8 +259,8 @@ export default function ComerciosFriendlyPage() {
                   transition: 'all 0.2s'
                 }}
                 onFocus={(e) => {
-                  e.target.style.borderColor = '#3b82f6'
-                  e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)'
+                  e.target.style.borderColor = '#0e312d'
+                  e.target.style.boxShadow = '0 0 0 3px rgba(14, 49, 45, 0.1)'
                 }}
                 onBlur={(e) => {
                   e.target.style.borderColor = '#e5e7eb'
@@ -297,9 +277,9 @@ export default function ComerciosFriendlyPage() {
                 alignItems: 'center',
                 gap: '8px',
                 padding: '12px 24px',
-                backgroundColor: showFilters ? '#3b82f6' : 'white',
+                backgroundColor: showFilters ? '#0e312d' : 'white',
                 color: showFilters ? 'white' : '#374151',
-                border: `2px solid ${showFilters ? '#3b82f6' : '#e5e7eb'}`,
+                border: `2px solid ${showFilters ? '#0e312d' : '#e5e7eb'}`,
                 borderRadius: '12px',
                 fontSize: '16px',
                 fontWeight: '500',
@@ -311,7 +291,7 @@ export default function ComerciosFriendlyPage() {
               Filtros
               {selectedCategoria !== 'todos' && (
                 <span style={{
-                  backgroundColor: showFilters ? 'rgba(255,255,255,0.2)' : '#3b82f6',
+                  backgroundColor: showFilters ? 'rgba(255,255,255,0.2)' : '#0e312d',
                   color: showFilters ? 'white' : 'white',
                   padding: '2px 8px',
                   borderRadius: '12px',
@@ -339,9 +319,9 @@ export default function ComerciosFriendlyPage() {
                     padding: '8px 16px',
                     borderRadius: '8px',
                     border: '2px solid',
-                    borderColor: selectedCategoria === 'todos' ? '#3b82f6' : '#e5e7eb',
-                    backgroundColor: selectedCategoria === 'todos' ? '#eff6ff' : 'white',
-                    color: selectedCategoria === 'todos' ? '#3b82f6' : '#6b7280',
+                    borderColor: selectedCategoria === 'todos' ? '#0e312d' : '#e5e7eb',
+                    backgroundColor: selectedCategoria === 'todos' ? '#f0f4f3' : 'white',
+                    color: selectedCategoria === 'todos' ? '#0e312d' : '#6b7280',
                     fontSize: '14px',
                     fontWeight: '500',
                     cursor: 'pointer',
@@ -401,7 +381,7 @@ export default function ComerciosFriendlyPage() {
               width: '50px',
               height: '50px',
               border: '3px solid #f3f4f6',
-              borderTop: '3px solid #3b82f6',
+              borderTop: '3px solid #0e312d',
               borderRadius: '50%',
               animation: 'spin 1s linear infinite'
             }} />
@@ -471,27 +451,6 @@ export default function ComerciosFriendlyPage() {
                     e.currentTarget.style.transform = 'translateY(0)'
                     e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)'
                   }}>
-                    {/* Certification Badge */}
-                    <div style={{
-                      position: 'absolute',
-                      top: '16px',
-                      right: '16px',
-                      backgroundColor: '#16a34a',
-                      color: 'white',
-                      padding: '6px 12px',
-                      borderRadius: '20px',
-                      fontSize: '12px',
-                      fontWeight: '600',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                      zIndex: 10,
-                      boxShadow: '0 2px 8px rgba(22, 163, 74, 0.3)'
-                    }}>
-                      <Shield size={14} />
-                      Certificado
-                    </div>
-
                     {/* Header with logo */}
                     <div style={{
                       padding: '24px',
@@ -641,7 +600,7 @@ export default function ComerciosFriendlyPage() {
                         <span style={{
                           fontSize: '14px',
                           fontWeight: '600',
-                          color: '#3b82f6',
+                          color: '#0e312d',
                           display: 'flex',
                           alignItems: 'center',
                           gap: '4px'
@@ -649,7 +608,20 @@ export default function ComerciosFriendlyPage() {
                           Ver detalles
                           <ChevronRight size={16} />
                         </span>
-                        <Award size={20} style={{ color: '#fbbf24' }} />
+                        <div style={{
+                          backgroundColor: '#0e312d',
+                          color: '#bfb591',
+                          padding: '4px 10px',
+                          borderRadius: '12px',
+                          fontSize: '11px',
+                          fontWeight: '600',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px'
+                        }}>
+                          <Shield size={12} />
+                          Certificado
+                        </div>
                       </div>
                     </div>
                   </div>

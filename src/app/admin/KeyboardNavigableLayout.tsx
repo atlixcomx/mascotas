@@ -9,10 +9,10 @@ import Link from 'next/link'
 import Image from 'next/image'
 import './admin-global.css'
 import './admin-layout-professional.css'
-import { 
-  LayoutDashboard, 
-  Dog, 
-  FileText, 
+import {
+  LayoutDashboard,
+  Dog,
+  FileText,
   Building2,
   Settings,
   LogOut,
@@ -26,21 +26,55 @@ import {
   Activity,
   Share2,
   Stethoscope,
-  Newspaper
+  Newspaper,
+  PlusCircle,
+  FolderOpen,
+  Calendar,
+  Syringe,
+  ClipboardCheck,
+  PartyPopper
 } from 'lucide-react'
 import { NotificationPanel } from '../../components/ui/NotificationPanel'
 
-const navigation = [
-  { name: 'Dashboard en Vivo', href: '/admin/dashboard', icon: Activity },
-  { name: 'Gestión de Mascotas', href: '/admin/perritos', icon: Dog },
-  { name: 'Solicitudes de Adopción', href: '/admin/solicitudes', icon: FileText },
-  { name: 'Módulo Veterinario', href: '/admin/veterinario', icon: Stethoscope },
-  { name: 'Noticias y Eventos', href: '/admin/noticias', icon: Newspaper },
-  { name: 'Recordatorios', href: '/admin/recordatorios', icon: Bell },
-  { name: 'Comercios Aliados', href: '/admin/comercios', icon: Building2 },
-  { name: 'Módulo de Difusión', href: '/admin/difusion', icon: Share2 },
-  { name: 'Configuración del Sistema', href: '/admin/configuracion', icon: Settings },
+// Navegación organizada por grupos de procesos
+const navigationGroups = [
+  {
+    title: 'Mascotas',
+    items: [
+      { name: 'Dashboard', href: '/admin/dashboard', icon: Activity },
+      { name: 'Gestión de Mascotas', href: '/admin/perritos', icon: Dog },
+      { name: 'Nuevo Ingreso', href: '/admin/veterinario/nuevo-ingreso', icon: PlusCircle },
+      { name: 'Expedientes Médicos', href: '/admin/veterinario/expedientes', icon: FolderOpen },
+      { name: 'Calendario Citas', href: '/admin/veterinario/calendario', icon: Calendar },
+      { name: 'Vacunación', href: '/admin/veterinario/vacunacion', icon: Syringe },
+    ]
+  },
+  {
+    title: 'Adopción',
+    items: [
+      { name: 'Solicitudes', href: '/admin/solicitudes', icon: FileText },
+      { name: 'Seguimientos', href: '/admin/seguimientos', icon: ClipboardCheck },
+    ]
+  },
+  {
+    title: 'Difusión',
+    items: [
+      { name: 'Eventos', href: '/admin/eventos', icon: PartyPopper },
+      { name: 'Noticias', href: '/admin/noticias', icon: Newspaper },
+      { name: 'Comercios Aliados', href: '/admin/comercios', icon: Building2 },
+    ]
+  },
+  {
+    title: 'Sistema',
+    items: [
+      { name: 'Recordatorios', href: '/admin/recordatorios', icon: Bell },
+      { name: 'Configuración', href: '/admin/configuracion', icon: Settings },
+    ]
+  }
 ]
+
+// Flatten para keyboard navigation
+const navigation = navigationGroups.flatMap(group => group.items)
 
 export default function KeyboardNavigableLayout({
   children,
@@ -194,36 +228,48 @@ export default function KeyboardNavigableLayout({
           </button>
         </div>
 
-        {/* Navegación principal */}
+        {/* Navegación principal por grupos */}
         <nav className="admin-navigation" role="menubar">
-          <div className="admin-nav-section">
-            <h3 className="admin-nav-header" id="nav-heading">Gestión Administrativa</h3>
-            <div className="admin-nav-items" role="group" aria-labelledby="nav-heading">
-              {navigation.map((item, index) => {
-                const isActive = pathname === item.href
-                return (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    ref={el => navRefs.current[index] = el}
-                    className={`admin-nav-item ${isActive ? 'admin-nav-item-active' : ''}`}
-                    onClick={() => setSidebarOpen(false)}
-                    role="menuitem"
-                    tabIndex={focusedIndex === index ? 0 : -1}
-                    aria-current={isActive ? 'page' : undefined}
-                    onFocus={() => setFocusedIndex(index)}
-                  >
-                    <div className="admin-nav-icon" aria-hidden="true">
-                      <item.icon className="nav-icon" />
-                    </div>
-                    <span className="admin-nav-text">{item.name}</span>
-                    {isActive && <ChevronRight className="admin-nav-arrow" aria-hidden="true" />}
-                    <div className="admin-nav-glow"></div>
-                  </Link>
-                )
-              })}
-            </div>
-          </div>
+          {navigationGroups.map((group, groupIndex) => {
+            // Calcular el índice base para keyboard navigation
+            const baseIndex = navigationGroups
+              .slice(0, groupIndex)
+              .reduce((acc, g) => acc + g.items.length, 0)
+
+            return (
+              <div key={group.title} className="admin-nav-section">
+                <h3 className="admin-nav-header" id={`nav-heading-${groupIndex}`}>
+                  {group.title}
+                </h3>
+                <div className="admin-nav-items" role="group" aria-labelledby={`nav-heading-${groupIndex}`}>
+                  {group.items.map((item, itemIndex) => {
+                    const globalIndex = baseIndex + itemIndex
+                    const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
+                    return (
+                      <Link
+                        key={item.name}
+                        href={item.href}
+                        ref={el => navRefs.current[globalIndex] = el}
+                        className={`admin-nav-item ${isActive ? 'admin-nav-item-active' : ''}`}
+                        onClick={() => setSidebarOpen(false)}
+                        role="menuitem"
+                        tabIndex={focusedIndex === globalIndex ? 0 : -1}
+                        aria-current={isActive ? 'page' : undefined}
+                        onFocus={() => setFocusedIndex(globalIndex)}
+                      >
+                        <div className="admin-nav-icon" aria-hidden="true">
+                          <item.icon className="nav-icon" />
+                        </div>
+                        <span className="admin-nav-text">{item.name}</span>
+                        {isActive && <ChevronRight className="admin-nav-arrow" aria-hidden="true" />}
+                        <div className="admin-nav-glow"></div>
+                      </Link>
+                    )
+                  })}
+                </div>
+              </div>
+            )
+          })}
         </nav>
 
         {/* Sección de usuario */}

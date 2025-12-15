@@ -62,15 +62,36 @@ export default function ExpedientesMedicosPage() {
 
   const fetchExpedientes = async () => {
     try {
-      // Obtener datos reales de mascotas para los expedientes
-      const response = await fetch('/api/admin/perritos')
+      // Obtener datos reales de mascotas
+      const [perritosRes, expedientesRes] = await Promise.all([
+        fetch('/api/admin/perritos?limit=100'),
+        fetch('/api/admin/expedientes?limit=100')
+      ])
+
       let realPets: any[] = []
-      
-      if (response.ok) {
-        const data = await response.json()
+      let expedientesData: any[] = []
+
+      if (perritosRes.ok) {
+        const data = await perritosRes.json()
         realPets = data.perritos || []
       }
-      
+
+      if (expedientesRes.ok) {
+        const data = await expedientesRes.json()
+        expedientesData = data.expedientes || []
+      }
+
+      // Contar expedientes por mascota
+      const expedientesPorMascota: Record<string, number> = {}
+      const ultimaConsultaPorMascota: Record<string, string> = {}
+
+      expedientesData.forEach((exp: any) => {
+        expedientesPorMascota[exp.perritoId] = (expedientesPorMascota[exp.perritoId] || 0) + 1
+        if (!ultimaConsultaPorMascota[exp.perritoId] || exp.fecha > ultimaConsultaPorMascota[exp.perritoId]) {
+          ultimaConsultaPorMascota[exp.perritoId] = exp.fecha
+        }
+      })
+
       // Mapear mascotas reales a formato de expedientes
       const expedientesReales: ExpedienteMedico[] = realPets.map(pet => ({
         id: pet.id,
@@ -81,89 +102,38 @@ export default function ExpedientesMedicosPage() {
         edad: pet.edad,
         sexo: pet.sexo,
         raza: pet.raza,
-        duenio: 'Sin asignar', // Estos datos vendrían de la tabla de adopciones
-        telefono: '--',
-        ultimaConsulta: pet.fechaIngreso,
-        estadoGeneral: pet.vacunas && pet.esterilizado && pet.desparasitado ? 'bueno' : 'regular',
+        duenio: pet.adoptanteNombre || 'Centro de Adopción',
+        telefono: pet.adoptanteTelefono || '--',
+        ultimaConsulta: ultimaConsultaPorMascota[pet.id] || pet.fechaIngreso,
+        estadoGeneral: (pet.vacunas && pet.esterilizado && pet.desparasitado ? 'bueno' :
+                       pet.vacunas || pet.esterilizado ? 'regular' : 'delicado') as ExpedienteMedico['estadoGeneral'],
         vacunas: pet.vacunas,
         esterilizado: pet.esterilizado,
         desparasitado: pet.desparasitado,
-        alergias: [],
-        condicionesCronicas: [],
-        totalConsultas: Math.floor(Math.random() * 10) + 1
+        alergias: pet.saludNotas?.includes('alergia') ? ['Ver notas'] : [],
+        condicionesCronicas: pet.saludNotas?.includes('crónic') ? ['Ver notas'] : [],
+        totalConsultas: expedientesPorMascota[pet.id] || 0
       }))
-      
-      // Si no hay datos reales, usar algunos mock como fallback
-      const expedientesMock: ExpedienteMedico[] = expedientesReales.length > 0 ? expedientesReales : [
-        {
-          id: '1',
-          mascotaId: '1',
-          mascotaNombre: 'Max',
-          mascotaCodigo: 'P001',
-          fotoPrincipal: defaultDogImage,
-          edad: '3 años',
-          sexo: 'Macho',
-          raza: 'Labrador Retriever',
-          duenio: 'Juan Pérez',
-          telefono: '244-123-4567',
-          ultimaConsulta: '2024-01-15',
-          estadoGeneral: 'bueno',
-          vacunas: true,
-          esterilizado: true,
-          desparasitado: true,
-          alergias: ['Polen'],
-          condicionesCronicas: [],
-          totalConsultas: 8
-        },
-        {
-          id: '2',
-          mascotaId: '2',
-          mascotaNombre: 'Luna',
-          mascotaCodigo: 'P002',
-          fotoPrincipal: defaultDogImage,
-          edad: '2 años',
-          sexo: 'Hembra',
-          raza: 'Golden Retriever',
-          duenio: 'María García',
-          telefono: '244-987-6543',
-          ultimaConsulta: '2024-01-10',
-          estadoGeneral: 'regular',
-          vacunas: false,
-          esterilizado: false,
-          desparasitado: true,
-          alergias: [],
-          condicionesCronicas: ['Displasia de cadera'],
-          totalConsultas: 12
-        },
-        {
-          id: '3',
-          mascotaId: '3',
-          mascotaNombre: 'Rocky',
-          mascotaCodigo: 'P003',
-          fotoPrincipal: defaultDogImage,
-          edad: '5 años',
-          sexo: 'Macho',
-          raza: 'Pastor Alemán',
-          duenio: 'Carlos López',
-          telefono: '244-555-0123',
-          ultimaConsulta: '2024-01-12',
-          estadoGeneral: 'excelente',
-          vacunas: true,
-          esterilizado: true,
-          desparasitado: true,
-          alergias: [],
-          condicionesCronicas: [],
-          totalConsultas: 15
-        }
-      ]
 
-      setExpedientes(expedientesReales.length > 0 ? expedientesReales : expedientesMock)
-      
+      setExpedientes(expedientesReales)
+
+      // Calcular stats reales
+      const hace30Dias = new Date()
+      hace30Dias.setDate(hace30Dias.getDate() - 30)
+
+      const consultas30Dias = expedientesData.filter((exp: any) =>
+        new Date(exp.fecha) >= hace30Dias
+      ).length
+
+      const tratamientosActivos = expedientesData.filter((exp: any) =>
+        exp.tipo === 'tratamiento' && new Date(exp.proximaDosis || exp.fecha) >= new Date()
+      ).length
+
       setResumen({
-        totalExpedientes: 45,
-        expedientesActivos: 42,
-        consultas30Dias: 38,
-        tratamientosActivos: 8
+        totalExpedientes: realPets.length,
+        expedientesActivos: realPets.filter(p => p.estado === 'disponible' || p.estado === 'en_proceso').length,
+        consultas30Dias,
+        tratamientosActivos
       })
     } catch (error) {
       console.error('Error fetching expedientes:', error)

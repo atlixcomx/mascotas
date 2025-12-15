@@ -2,37 +2,72 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
-import { EmailService } from '../../../../../../src/lib/email'
-import { sendNotificationToAdmins } from '../../../../../../src/lib/notifications'
-import { addActivityEvent, broadcastActivityEvent } from '../../../../../../src/lib/metrics'
+import { EmailService } from '@/lib/email'
+import { sendNotificationToAdmins } from '@/lib/notifications'
+import { addActivityEvent, broadcastActivityEvent } from '@/lib/metrics'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> | { id: string } }
 ) {
+  console.log('=== GET /api/admin/solicitudes/[id] ===')
+  console.log('Params received:', context.params)
   try {
+    // Handle both Promise and non-Promise params (Next.js 15 compatibility)
+    const resolvedParams = context.params instanceof Promise
+      ? await context.params
+      : context.params
+    const { id } = resolvedParams
+    console.log('Buscando solicitud con ID:', id)
+
     const session = await getServerSession(authOptions)
+    console.log('Session:', session ? 'existe' : 'no existe', session?.user?.role)
+
     if (!session || session.user.role !== 'admin') {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
     }
 
     const solicitud = await prisma.solicitud.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         perrito: true
       }
     })
 
+    console.log('Solicitud encontrada:', solicitud ? 'sí' : 'no')
+
     if (!solicitud) {
       return NextResponse.json({ error: 'Solicitud no encontrada' }, { status: 404 })
+    }
+
+    // Si no tiene perrito asociado, crear un objeto placeholder
+    if (!solicitud.perrito) {
+      const solicitudConPlaceholder = {
+        ...solicitud,
+        perrito: {
+          id: solicitud.perritoId || 'unknown',
+          nombre: 'Perrito no disponible',
+          fotoPrincipal: '/placeholder-dog.jpg',
+          raza: 'Desconocida',
+          edad: 'Desconocida',
+          sexo: 'Desconocido',
+          tamano: 'Desconocido',
+          slug: 'unknown'
+        }
+      }
+      return NextResponse.json(solicitudConPlaceholder)
     }
 
     return NextResponse.json(solicitud)
 
   } catch (error) {
     console.error('Error fetching solicitud:', error)
+    console.error('Error details:', {
+      message: (error as Error).message,
+      stack: (error as Error).stack
+    })
     return NextResponse.json(
-      { error: 'Error interno del servidor' },
+      { error: 'Error interno del servidor', details: (error as Error).message },
       { status: 500 }
     )
   }
@@ -40,9 +75,15 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> | { id: string } }
 ) {
   try {
+    // Handle both Promise and non-Promise params (Next.js 15 compatibility)
+    const resolvedParams = context.params instanceof Promise
+      ? await context.params
+      : context.params
+    const { id } = resolvedParams
+
     const session = await getServerSession(authOptions)
     if (!session || session.user.role !== 'admin') {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
@@ -64,7 +105,7 @@ export async function PUT(
 
     // Obtener la solicitud actual para comparar el estado
     const solicitudActual = await prisma.solicitud.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         perrito: true
       }
@@ -100,7 +141,7 @@ export async function PUT(
 
     // Actualizar la solicitud
     const solicitud = await prisma.solicitud.update({
-      where: { id: params.id },
+      where: { id },
       data: updateData,
       include: {
         perrito: true,
@@ -166,12 +207,35 @@ export async function PUT(
         timestamp: new Date().toISOString()
       })
 
-      // Si se aprueba la adopción, actualizar el estado del perrito
+      // Si se aprueba la adopción, actualizar el estado del perrito y crear seguimiento inicial
       if (estado === 'aprobada') {
+        // Actualizar estado del perrito
         await prisma.perrito.update({
           where: { id: solicitud.perritoId },
-          data: { estado: 'adoptado' }
+          data: {
+            estado: 'adoptado',
+            fechaAdopcion: new Date(),
+            adoptanteNombre: solicitud.nombre,
+            adoptanteTelefono: solicitud.telefono
+          }
         })
+
+        // Crear seguimiento inicial automático (7 días después de la adopción)
+        const fechaSeguimientoInicial = new Date()
+        fechaSeguimientoInicial.setDate(fechaSeguimientoInicial.getDate() + 7)
+
+        await prisma.seguimientoAdopcion.create({
+          data: {
+            perritoId: solicitud.perritoId,
+            solicitudId: solicitud.id,
+            tipo: 'inicial',
+            fecha: fechaSeguimientoInicial,
+            realizado: false,
+            responsable: session.user.name || 'Admin'
+          }
+        })
+
+        console.log(`Seguimiento inicial creado para ${solicitud.perrito.nombre} - Fecha: ${fechaSeguimientoInicial.toISOString()}`)
       }
 
       // Notificar al admin

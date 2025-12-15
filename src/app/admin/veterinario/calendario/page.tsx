@@ -40,51 +40,33 @@ export default function CalendarioCitasPage() {
 
   const fetchCitas = async () => {
     try {
-      // Por ahora usar datos mock
-      const citasMock: CitaVeterinaria[] = [
-        {
-          id: '1',
-          fecha: '2024-01-20',
-          hora: '09:00',
-          mascotaId: '1',
-          mascotaNombre: 'Max',
-          mascotaCodigo: 'P001',
-          duenio: 'Juan Pérez',
-          motivo: 'Vacunación anual',
-          estado: 'confirmada',
-          veterinario: session?.user?.name || 'Dr. Veterinario',
-          notas: 'Primera dosis de refuerzo'
-        },
-        {
-          id: '2',
-          fecha: '2024-01-20',
-          hora: '10:30',
-          mascotaId: '2',
-          mascotaNombre: 'Luna',
-          mascotaCodigo: 'P002',
-          duenio: 'María García',
-          motivo: 'Revisión general',
-          estado: 'programada',
-          veterinario: session?.user?.name || 'Dr. Veterinario'
-        },
-        {
-          id: '3',
-          fecha: '2024-01-20',
-          hora: '14:00',
-          mascotaId: '3',
-          mascotaNombre: 'Rocky',
-          mascotaCodigo: 'P003',
-          duenio: 'Carlos López',
-          motivo: 'Esterilización',
-          estado: 'confirmada',
-          veterinario: session?.user?.name || 'Dr. Veterinario',
-          notas: 'Cirugía programada'
-        }
-      ]
-      
-      setCitas(citasMock)
+      setLoading(true)
+      const fechaStr = selectedDate.toISOString().split('T')[0]
+      const response = await fetch(`/api/admin/citas?fecha=${fechaStr}`)
+
+      if (response.ok) {
+        const data = await response.json()
+        const citasData: CitaVeterinaria[] = (data.citas || []).map((c: any) => ({
+          id: c.id,
+          fecha: c.fecha,
+          hora: c.hora,
+          mascotaId: c.mascotaId,
+          mascotaNombre: c.mascotaNombre,
+          mascotaCodigo: c.mascotaCodigo,
+          duenio: c.duenio || 'Sin asignar',
+          motivo: c.motivo,
+          estado: c.estado,
+          veterinario: c.veterinario || session?.user?.name || 'Veterinario',
+          notas: c.notas
+        }))
+        setCitas(citasData)
+      } else {
+        console.error('Error en respuesta:', response.status)
+        setCitas([])
+      }
     } catch (error) {
       console.error('Error fetching citas:', error)
+      setCitas([])
     } finally {
       setLoading(false)
     }
@@ -119,13 +101,51 @@ export default function CalendarioCitasPage() {
     })
   }
 
+  const handleUpdateStatus = async (id: string, nuevoEstado: string) => {
+    try {
+      const response = await fetch(`/api/admin/citas/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ estado: nuevoEstado })
+      })
+
+      if (response.ok) {
+        setCitas(citas.map(c =>
+          c.id === id ? { ...c, estado: nuevoEstado as CitaVeterinaria['estado'] } : c
+        ))
+      }
+    } catch (error) {
+      console.error('Error updating cita:', error)
+    }
+  }
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('¿Estás seguro de que deseas cancelar esta cita?')) return
+
+    try {
+      const response = await fetch(`/api/admin/citas/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ estado: 'cancelada' })
+      })
+
+      if (response.ok) {
+        setCitas(citas.map(c =>
+          c.id === id ? { ...c, estado: 'cancelada' } : c
+        ))
+      }
+    } catch (error) {
+      console.error('Error canceling cita:', error)
+    }
+  }
+
   const filteredCitas = citas.filter(cita => {
     const matchesSearch = cita.mascotaNombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          cita.duenio.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          cita.mascotaCodigo.toLowerCase().includes(searchTerm.toLowerCase())
-    
+
     const matchesFilter = filterStatus === 'todas' || cita.estado === filterStatus
-    
+
     return matchesSearch && matchesFilter
   })
 
@@ -291,15 +311,35 @@ export default function CalendarioCitasPage() {
               </div>
 
               <div className={styles.citaActions}>
-                <button className={styles.actionButton} title="Ver detalles">
-                  <Eye size={18} />
-                </button>
-                <button className={styles.actionButton} title="Editar">
-                  <Edit size={18} />
-                </button>
-                <button className={styles.actionButton} title="Cancelar">
-                  <Trash2 size={18} />
-                </button>
+                {cita.estado === 'programada' && (
+                  <button
+                    className={styles.actionButton}
+                    title="Confirmar cita"
+                    onClick={() => handleUpdateStatus(cita.id, 'confirmada')}
+                    style={{ color: '#16a34a' }}
+                  >
+                    <CheckCircle size={18} />
+                  </button>
+                )}
+                {(cita.estado === 'programada' || cita.estado === 'confirmada') && (
+                  <button
+                    className={styles.actionButton}
+                    title="Marcar completada"
+                    onClick={() => handleUpdateStatus(cita.id, 'completada')}
+                  >
+                    <Eye size={18} />
+                  </button>
+                )}
+                {cita.estado !== 'cancelada' && cita.estado !== 'completada' && (
+                  <button
+                    className={styles.actionButton}
+                    title="Cancelar cita"
+                    onClick={() => handleDelete(cita.id)}
+                    style={{ color: '#dc2626' }}
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                )}
               </div>
             </div>
           ))}

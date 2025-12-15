@@ -188,8 +188,8 @@ export default function NuevoPerrito() {
         aptoGatos: formData.aptoGatos,
         caracter: formData.personalidad ? [formData.personalidad] : [], // Array, no string
         // Fotos - usar las URLs reales de Uploadthing
-        fotoPrincipal: fotoPrincipal || '',
-        fotos: fotosCatalogo, // Usar las fotos del catálogo
+        fotoPrincipal: fotoPrincipal || undefined,
+        fotos: fotosCatalogo.length > 0 ? fotosCatalogo : [], // Usar las fotos del catálogo
         fotosInternas: fotosInternas,
         fotosCatalogo: fotosCatalogo,
         // Estado

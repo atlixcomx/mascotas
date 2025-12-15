@@ -15,8 +15,8 @@ export async function GET(request: NextRequest) {
     const fecha = searchParams.get('fecha')
     const estado = searchParams.get('estado')
     const perritoId = searchParams.get('perritoId')
-    const desde = searchParams.get('desde')
-    const hasta = searchParams.get('hasta')
+    const desde = searchParams.get('desde') || searchParams.get('fechaInicio')
+    const hasta = searchParams.get('hasta') || searchParams.get('fechaFin')
 
     // Construir filtros
     const where: any = {}

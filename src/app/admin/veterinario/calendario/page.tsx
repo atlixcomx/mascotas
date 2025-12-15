@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
-import { 
-  Calendar, Plus, Clock, Dog, User, 
+import {
+  Calendar, Plus, Clock, Dog, User,
   ChevronLeft, ChevronRight, Search,
   Filter, AlertCircle, CheckCircle,
   Edit, Trash2, Eye, MapPin
@@ -36,13 +36,35 @@ export default function CalendarioCitasPage() {
 
   useEffect(() => {
     fetchCitas()
-  }, [selectedDate])
+  }, [selectedDate, viewType])
+
+  const getDateRange = () => {
+    const start = new Date(selectedDate)
+    const end = new Date(selectedDate)
+
+    if (viewType === 'dia') {
+      return { start, end }
+    } else if (viewType === 'semana') {
+      const dayOfWeek = start.getDay()
+      start.setDate(start.getDate() - dayOfWeek)
+      end.setDate(start.getDate() + 6)
+      return { start, end }
+    } else {
+      start.setDate(1)
+      end.setMonth(end.getMonth() + 1)
+      end.setDate(0)
+      return { start, end }
+    }
+  }
 
   const fetchCitas = async () => {
     try {
       setLoading(true)
-      const fechaStr = selectedDate.toISOString().split('T')[0]
-      const response = await fetch(`/api/admin/citas?fecha=${fechaStr}`)
+      const { start, end } = getDateRange()
+      const startStr = start.toISOString().split('T')[0]
+      const endStr = end.toISOString().split('T')[0]
+
+      const response = await fetch(`/api/admin/citas?fechaInicio=${startStr}&fechaFin=${endStr}`)
 
       if (response.ok) {
         const data = await response.json()
@@ -101,6 +123,13 @@ export default function CalendarioCitasPage() {
     })
   }
 
+  const formatShortDate = (date: Date) => {
+    return date.toLocaleDateString('es-ES', {
+      weekday: 'short',
+      day: 'numeric'
+    })
+  }
+
   const handleUpdateStatus = async (id: string, nuevoEstado: string) => {
     try {
       const response = await fetch(`/api/admin/citas/${id}`, {
@@ -149,6 +178,359 @@ export default function CalendarioCitasPage() {
     return matchesSearch && matchesFilter
   })
 
+  const getCitasForDate = (date: Date) => {
+    const dateStr = date.toISOString().split('T')[0]
+    return filteredCitas.filter(c => c.fecha === dateStr)
+  }
+
+  const navigateDate = (direction: number) => {
+    const newDate = new Date(selectedDate)
+    if (viewType === 'dia') {
+      newDate.setDate(newDate.getDate() + direction)
+    } else if (viewType === 'semana') {
+      newDate.setDate(newDate.getDate() + (direction * 7))
+    } else {
+      newDate.setMonth(newDate.getMonth() + direction)
+    }
+    setSelectedDate(newDate)
+  }
+
+  const getWeekDays = () => {
+    const days: Date[] = []
+    const start = new Date(selectedDate)
+    const dayOfWeek = start.getDay()
+    start.setDate(start.getDate() - dayOfWeek)
+
+    for (let i = 0; i < 7; i++) {
+      const day = new Date(start)
+      day.setDate(start.getDate() + i)
+      days.push(day)
+    }
+    return days
+  }
+
+  const getMonthDays = () => {
+    const days: (Date | null)[] = []
+    const firstDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1)
+    const lastDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 0)
+
+    // Días vacíos antes del primer día del mes
+    for (let i = 0; i < firstDay.getDay(); i++) {
+      days.push(null)
+    }
+
+    // Días del mes
+    for (let i = 1; i <= lastDay.getDate(); i++) {
+      days.push(new Date(selectedDate.getFullYear(), selectedDate.getMonth(), i))
+    }
+
+    return days
+  }
+
+  const getHeaderTitle = () => {
+    if (viewType === 'dia') {
+      return formatDate(selectedDate)
+    } else if (viewType === 'semana') {
+      const days = getWeekDays()
+      return `${days[0].getDate()} - ${days[6].getDate()} de ${days[0].toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}`
+    } else {
+      return selectedDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })
+    }
+  }
+
+  const renderCitaCard = (cita: CitaVeterinaria, compact: boolean = false) => (
+    <div
+      key={cita.id}
+      style={{
+        padding: compact ? '8px' : '16px',
+        backgroundColor: 'white',
+        borderRadius: '8px',
+        border: `2px solid ${getStatusColor(cita.estado)}20`,
+        marginBottom: '8px',
+        fontSize: compact ? '12px' : '14px'
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: compact ? '4px' : '8px' }}>
+        <Clock size={compact ? 12 : 14} style={{ color: '#6b7280' }} />
+        <span style={{ fontWeight: '600' }}>{cita.hora}</span>
+        <span
+          style={{
+            padding: '2px 8px',
+            borderRadius: '12px',
+            fontSize: compact ? '10px' : '12px',
+            backgroundColor: `${getStatusColor(cita.estado)}20`,
+            color: getStatusColor(cita.estado)
+          }}
+        >
+          {cita.estado}
+        </span>
+      </div>
+      <div style={{ fontWeight: '600', color: '#0f172a' }}>
+        {cita.mascotaNombre}
+      </div>
+      {!compact && (
+        <>
+          <div style={{ color: '#6b7280', fontSize: '13px' }}>
+            {cita.duenio} • {cita.motivo}
+          </div>
+          <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
+            {cita.estado === 'programada' && (
+              <button
+                onClick={() => handleUpdateStatus(cita.id, 'confirmada')}
+                style={{
+                  padding: '4px 8px',
+                  backgroundColor: '#dcfce7',
+                  color: '#16a34a',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontSize: '12px'
+                }}
+              >
+                Confirmar
+              </button>
+            )}
+            {cita.estado !== 'cancelada' && cita.estado !== 'completada' && (
+              <button
+                onClick={() => handleDelete(cita.id)}
+                style={{
+                  padding: '4px 8px',
+                  backgroundColor: '#fee2e2',
+                  color: '#dc2626',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontSize: '12px'
+                }}
+              >
+                Cancelar
+              </button>
+            )}
+          </div>
+        </>
+      )}
+    </div>
+  )
+
+  const renderDayView = () => (
+    <div className={styles.citasList}>
+      {filteredCitas.length > 0 ? (
+        filteredCitas.map(cita => renderCitaCard(cita, false))
+      ) : (
+        <div className={styles.emptyCitas}>
+          <Calendar size={48} />
+          <h3>No hay citas programadas</h3>
+          <p>No se encontraron citas para este día</p>
+          <Link href="/admin/veterinario/calendario/nueva" className={styles.primaryButton}>
+            <Plus size={20} />
+            Programar Cita
+          </Link>
+        </div>
+      )}
+    </div>
+  )
+
+  const renderWeekView = () => {
+    const weekDays = getWeekDays()
+    const today = new Date().toISOString().split('T')[0]
+
+    return (
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(7, 1fr)',
+        gap: '8px',
+        backgroundColor: '#f8fafc',
+        padding: '16px',
+        borderRadius: '12px'
+      }}>
+        {weekDays.map((day, index) => {
+          const dayStr = day.toISOString().split('T')[0]
+          const isToday = dayStr === today
+          const dayCitas = getCitasForDate(day)
+
+          return (
+            <div
+              key={index}
+              style={{
+                backgroundColor: isToday ? '#eff6ff' : 'white',
+                borderRadius: '8px',
+                padding: '12px',
+                minHeight: '200px',
+                border: isToday ? '2px solid #3b82f6' : '1px solid #e2e8f0'
+              }}
+            >
+              <div style={{
+                textAlign: 'center',
+                marginBottom: '12px',
+                paddingBottom: '8px',
+                borderBottom: '1px solid #e2e8f0'
+              }}>
+                <div style={{
+                  fontSize: '12px',
+                  color: '#6b7280',
+                  textTransform: 'uppercase'
+                }}>
+                  {day.toLocaleDateString('es-ES', { weekday: 'short' })}
+                </div>
+                <div style={{
+                  fontSize: '20px',
+                  fontWeight: '700',
+                  color: isToday ? '#3b82f6' : '#0f172a'
+                }}>
+                  {day.getDate()}
+                </div>
+              </div>
+
+              <div style={{ fontSize: '12px' }}>
+                {dayCitas.length > 0 ? (
+                  dayCitas.map(cita => renderCitaCard(cita, true))
+                ) : (
+                  <div style={{
+                    color: '#9ca3af',
+                    textAlign: 'center',
+                    padding: '20px 0'
+                  }}>
+                    Sin citas
+                  </div>
+                )}
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    )
+  }
+
+  const renderMonthView = () => {
+    const monthDays = getMonthDays()
+    const today = new Date().toISOString().split('T')[0]
+    const weekDayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']
+
+    return (
+      <div style={{
+        backgroundColor: 'white',
+        borderRadius: '12px',
+        padding: '16px',
+        border: '1px solid #e2e8f0'
+      }}>
+        {/* Header con días de la semana */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(7, 1fr)',
+          gap: '4px',
+          marginBottom: '8px'
+        }}>
+          {weekDayNames.map(day => (
+            <div key={day} style={{
+              textAlign: 'center',
+              padding: '8px',
+              fontWeight: '600',
+              color: '#6b7280',
+              fontSize: '12px'
+            }}>
+              {day}
+            </div>
+          ))}
+        </div>
+
+        {/* Días del mes */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(7, 1fr)',
+          gap: '4px'
+        }}>
+          {monthDays.map((day, index) => {
+            if (!day) {
+              return <div key={`empty-${index}`} style={{ padding: '8px' }} />
+            }
+
+            const dayStr = day.toISOString().split('T')[0]
+            const isToday = dayStr === today
+            const dayCitas = getCitasForDate(day)
+            const hasConfirmed = dayCitas.some(c => c.estado === 'confirmada')
+            const hasProgrammed = dayCitas.some(c => c.estado === 'programada')
+
+            return (
+              <div
+                key={index}
+                onClick={() => {
+                  setSelectedDate(day)
+                  setViewType('dia')
+                }}
+                style={{
+                  padding: '8px',
+                  borderRadius: '8px',
+                  backgroundColor: isToday ? '#eff6ff' : dayCitas.length > 0 ? '#f8fafc' : 'white',
+                  border: isToday ? '2px solid #3b82f6' : '1px solid #e2e8f0',
+                  cursor: 'pointer',
+                  minHeight: '80px',
+                  transition: 'all 0.2s'
+                }}
+              >
+                <div style={{
+                  fontWeight: isToday ? '700' : '500',
+                  color: isToday ? '#3b82f6' : '#0f172a',
+                  marginBottom: '4px'
+                }}>
+                  {day.getDate()}
+                </div>
+
+                {dayCitas.length > 0 && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                    <div style={{
+                      fontSize: '11px',
+                      color: '#6b7280',
+                      fontWeight: '500'
+                    }}>
+                      {dayCitas.length} cita{dayCitas.length > 1 ? 's' : ''}
+                    </div>
+                    <div style={{ display: 'flex', gap: '4px' }}>
+                      {hasConfirmed && (
+                        <div style={{
+                          width: '8px',
+                          height: '8px',
+                          borderRadius: '50%',
+                          backgroundColor: '#16a34a'
+                        }} />
+                      )}
+                      {hasProgrammed && (
+                        <div style={{
+                          width: '8px',
+                          height: '8px',
+                          borderRadius: '50%',
+                          backgroundColor: '#eab308'
+                        }} />
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </div>
+
+        {/* Leyenda */}
+        <div style={{
+          display: 'flex',
+          gap: '16px',
+          marginTop: '16px',
+          paddingTop: '16px',
+          borderTop: '1px solid #e2e8f0',
+          justifyContent: 'center'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#6b7280' }}>
+            <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#16a34a' }} />
+            Confirmada
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#6b7280' }}>
+            <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#eab308' }} />
+            Programada
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   if (loading) {
     return (
       <div className={styles.loadingContainer}>
@@ -170,7 +552,7 @@ export default function CalendarioCitasPage() {
               <p className={styles.subtitle}>Gestión de citas veterinarias</p>
             </div>
           </div>
-          
+
           <div className={styles.headerActions}>
             <Link href="/admin/veterinario/calendario/nueva" className={styles.primaryButton}>
               <Plus size={20} />
@@ -184,21 +566,37 @@ export default function CalendarioCitasPage() {
       <div className={styles.calendarControls}>
         <div className={styles.dateNavigation}>
           <button
-            onClick={() => setSelectedDate(new Date(selectedDate.getTime() - 24 * 60 * 60 * 1000))}
+            onClick={() => navigateDate(-1)}
             className={styles.navButton}
           >
             <ChevronLeft size={20} />
           </button>
-          
-          <h2 className={styles.selectedDate}>
-            {formatDate(selectedDate)}
+
+          <h2 className={styles.selectedDate} style={{ textTransform: 'capitalize' }}>
+            {getHeaderTitle()}
           </h2>
-          
+
           <button
-            onClick={() => setSelectedDate(new Date(selectedDate.getTime() + 24 * 60 * 60 * 1000))}
+            onClick={() => navigateDate(1)}
             className={styles.navButton}
           >
             <ChevronRight size={20} />
+          </button>
+
+          <button
+            onClick={() => setSelectedDate(new Date())}
+            style={{
+              marginLeft: '16px',
+              padding: '8px 16px',
+              backgroundColor: '#f1f5f9',
+              border: '1px solid #e2e8f0',
+              borderRadius: '8px',
+              fontSize: '14px',
+              cursor: 'pointer',
+              color: '#475569'
+            }}
+          >
+            Hoy
           </button>
         </div>
 
@@ -255,107 +653,19 @@ export default function CalendarioCitasPage() {
         </div>
       </div>
 
-      {/* Lista de Citas */}
+      {/* Vista del Calendario */}
       <div className={styles.section}>
         <div className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>
-            Citas del día ({filteredCitas.length})
+            {viewType === 'dia' && `Citas del día (${filteredCitas.length})`}
+            {viewType === 'semana' && `Vista Semanal`}
+            {viewType === 'mes' && `Vista Mensual`}
           </h2>
         </div>
 
-        <div className={styles.citasList}>
-          {filteredCitas.map(cita => (
-            <div key={cita.id} className={styles.citaCard}>
-              <div className={styles.citaTime}>
-                <Clock size={18} />
-                <span>{cita.hora}</span>
-              </div>
-
-              <div className={styles.citaInfo}>
-                <div className={styles.citaHeader}>
-                  <h3 className={styles.citaMascota}>
-                    {cita.mascotaNombre} ({cita.mascotaCodigo})
-                  </h3>
-                  <span 
-                    className={styles.citaEstado}
-                    style={{ 
-                      backgroundColor: `${getStatusColor(cita.estado)}20`,
-                      color: getStatusColor(cita.estado)
-                    }}
-                  >
-                    {getStatusIcon(cita.estado)}
-                    {cita.estado.charAt(0).toUpperCase() + cita.estado.slice(1)}
-                  </span>
-                </div>
-
-                <div className={styles.citaDetails}>
-                  <div className={styles.citaDetail}>
-                    <User size={14} />
-                    <span>Dueño: {cita.duenio}</span>
-                  </div>
-                  <div className={styles.citaDetail}>
-                    <MapPin size={14} />
-                    <span>Motivo: {cita.motivo}</span>
-                  </div>
-                  <div className={styles.citaDetail}>
-                    <User size={14} />
-                    <span>Veterinario: {cita.veterinario}</span>
-                  </div>
-                </div>
-
-                {cita.notas && (
-                  <div className={styles.citaNotas}>
-                    <strong>Notas:</strong> {cita.notas}
-                  </div>
-                )}
-              </div>
-
-              <div className={styles.citaActions}>
-                {cita.estado === 'programada' && (
-                  <button
-                    className={styles.actionButton}
-                    title="Confirmar cita"
-                    onClick={() => handleUpdateStatus(cita.id, 'confirmada')}
-                    style={{ color: '#16a34a' }}
-                  >
-                    <CheckCircle size={18} />
-                  </button>
-                )}
-                {(cita.estado === 'programada' || cita.estado === 'confirmada') && (
-                  <button
-                    className={styles.actionButton}
-                    title="Marcar completada"
-                    onClick={() => handleUpdateStatus(cita.id, 'completada')}
-                  >
-                    <Eye size={18} />
-                  </button>
-                )}
-                {cita.estado !== 'cancelada' && cita.estado !== 'completada' && (
-                  <button
-                    className={styles.actionButton}
-                    title="Cancelar cita"
-                    onClick={() => handleDelete(cita.id)}
-                    style={{ color: '#dc2626' }}
-                  >
-                    <Trash2 size={18} />
-                  </button>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {filteredCitas.length === 0 && (
-          <div className={styles.emptyCitas}>
-            <Calendar size={48} />
-            <h3>No hay citas programadas</h3>
-            <p>No se encontraron citas para los filtros seleccionados</p>
-            <Link href="/admin/veterinario/calendario/nueva" className={styles.primaryButton}>
-              <Plus size={20} />
-              Programar Primera Cita
-            </Link>
-          </div>
-        )}
+        {viewType === 'dia' && renderDayView()}
+        {viewType === 'semana' && renderWeekView()}
+        {viewType === 'mes' && renderMonthView()}
       </div>
     </div>
   )
